@@ -1,0 +1,2117 @@
+<!--
+Codefassung zum Weitergeben an ein Sprachmodell.
+       Identisch zur Standalone-Datei, aber ohne Base64-Bilder: alle Bilder sind
+       durch ein 1x1-Pixel ersetzt. Die echten Dateien liegen unter:
+         assets/thitronik-logo.png
+         assets/v12/hero-640|1024|1600.webp
+         assets/v12/background-800|1600.webp
+         assets/v12/inselhopping-700|1100.webp
+         assets/v12/islands/{vejro,hiddensee,fehmarn,poel,usedom,langeland,samsoe}.webp
+-->
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#1D3661">
+  <meta name="description" content="THITRONIK Campus 2026 - Feedbackbogen f&uuml;r H&auml;ndlerinnen und H&auml;ndler.">
+  <title>Campus 2026 Feedback | THITRONIK</title>
+  <style>
+/* ============================================================================
+   THITRONIK Campus 2026 Feedbackbogen - v13
+   Schritt fuer Schritt. Mobile first.
+
+   FARBEN: verbindliche THITRONIK Markenpalette.
+     th_blue_primary   #1D3661  Primary Flaechen, Headlines, Primary Buttons
+     th_blue_secondary #3BA9D3  Akzente, Badges, Links, Info-Flaechen
+     th_accent_lime    #AFCA05  Marker und Status, sehr sparsam
+     th_red_brand      #CE132D  Logo-Segel, sehr sparsam
+     graySoft          #F0F0F0  Backgrounds, Card-Flaechen
+     white             #FFFFFF  Ruheflaechen
+     ink               #111111  Text und Icons auf hell
+
+   Rot erscheint deshalb ausschliesslich bei Fehlern und in der Skalen-Note 5,
+   also dort, wo die Signalwirkung inhaltlich verdient ist. Primary Buttons
+   sind blau. Lime markiert Status, nie Flaeche.
+
+   RADIEN (verbindlich):
+     --r-control  Eingaben, Optionen, Kommentarfelder
+     --r-card     Karten und grosse Flaechen
+     --r-pill     Aktionen und Badges
+   ========================================================================== */
+
+:root {
+  /* Marke */
+  --blue: #1D3661;
+  --blue-2: #3BA9D3;
+  --lime: #AFCA05;
+  --red: #CE132D;
+  --gray-soft: #F0F0F0;
+  --white: #FFFFFF;
+  --ink: #111111;
+
+  /* Abgeleitet, bleibt im Farbklang der Marke */
+  --blue-deep: #14284A;
+  --blue-hover: #16294B;
+  --blue-tint: #E9F3F9;
+  --lime-deep: #7C8F04;
+  --red-deep: #A50F24;
+  --muted: #55606B;
+  --line: #D8DEE5;
+  --line-soft: #E6EAEF;
+
+  /* Radien */
+  --r-control: 12px;
+  --r-card: 20px;
+  --r-pill: 999px;
+
+  --gap: 20px;
+  --shell: 1200px;
+  --ring: 0 0 0 3px rgba(59, 169, 211, .5);
+  --lift: 0 10px 30px rgba(29, 54, 97, .10);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; scroll-padding-top: 108px; }
+
+body {
+  margin: 0;
+  background: var(--gray-soft);
+  color: var(--ink);
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Text",
+    "Segoe UI", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img { max-width: 100%; display: block; }
+button, input, textarea { font: inherit; color: inherit; }
+button { background: none; border: 0; }
+button, label, input[type="radio"], input[type="checkbox"] { cursor: pointer; }
+
+h1, h2 { margin: 0; color: var(--blue); letter-spacing: -.021em; }
+
+.shell { width: min(var(--shell), 100% - 28px); margin-inline: auto; }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+
+.skip {
+  position: fixed; z-index: 999; top: 10px; left: 10px;
+  transform: translateY(-160%);
+  padding: 11px 16px; border-radius: var(--r-pill);
+  background: var(--white); color: var(--blue);
+  font-weight: 700; text-decoration: none;
+  box-shadow: var(--lift);
+}
+.skip:focus-visible { transform: translateY(0); }
+
+.noscript {
+  margin: 0; padding: 16px;
+  background: #FFF6E0; color: #6B4A00;
+  border-bottom: 2px solid #E0B23A;
+  text-align: center; font-weight: 600;
+}
+
+:where(a, button, input, textarea, [tabindex]):focus-visible {
+  outline: 3px solid var(--blue-2);
+  outline-offset: 2px;
+}
+
+input[type="text"], textarea, .rate, .field { scroll-margin-top: 118px; }
+
+/* Auf Touch gibt es keinen Hover, der die Beruehrung bestaetigt. */
+.rate__opt span, .chip span, .overall__opt span, .rate__na span, .isle__box,
+.stepbar__next, .stepbar__back, .intro__start { -webkit-tap-highlight-color: transparent; }
+.rate__opt:active span, .chip:active span,
+.overall__opt:active span, .rate__na:active span { transform: scale(.97); }
+.isle:active .isle__box { transform: scale(.99); }
+
+/* ---------------------------------------------------------------- Kopfbereich */
+
+.masthead {
+  position: relative;
+  background: var(--blue);
+  overflow: hidden;
+}
+/* Das maritime Motiv bleibt als leiser Marken-Anklang, aber nur hier oben.
+   Die Seitenflaeche selbst ist graySoft, wie in der Palette vorgesehen. */
+.masthead::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII=") center / cover no-repeat;
+  opacity: .34;
+  pointer-events: none;
+}
+.masthead__bar {
+  position: relative;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: 12px 16px; min-height: 76px;
+}
+.masthead__logo { width: min(220px, 46vw); height: auto; }
+
+/* "Campus 2026" im THITRONIK Neongruen. Lime als Marker, dunkler Text darauf
+   erreicht 10:1 Kontrast, weisser Text waere unlesbar. */
+.masthead__tag {
+  padding: 6px 13px; border-radius: var(--r-pill);
+  background: var(--lime); color: var(--ink);
+  font-size: .74rem; font-weight: 800;
+  letter-spacing: .1em; text-transform: uppercase; white-space: nowrap;
+}
+
+@media (min-width: 760px) { .masthead__bar { min-height: 96px; } }
+
+/* ------------------------------------------------------- Fortschrittsanzeige */
+
+.rail {
+  position: sticky; top: 0; z-index: 40;
+  background: rgba(255, 255, 255, .96);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line-soft);
+  box-shadow: 0 6px 20px rgba(29, 54, 97, .07);
+}
+.rail[hidden] { display: none; }
+
+.rail__inner {
+  display: grid; gap: 9px;
+  padding: 11px 0 12px;
+}
+
+.rail__head { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; }
+.rail__now { margin: 0; display: flex; align-items: baseline; gap: 9px; min-width: 0; }
+.rail__step { flex: none; color: var(--muted); font-size: .74rem; font-weight: 700; white-space: nowrap; }
+.rail__now strong {
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  color: var(--blue); font-size: 1.02rem; letter-spacing: -.015em;
+}
+.rail__count { margin: 0; flex: none; color: var(--muted); font-size: .76rem; font-weight: 650; font-variant-numeric: tabular-nums; }
+
+/* Sechs Segmente statt eines durchgehenden Balkens: bei einem Fluss mit
+   bekannter Laenge sagt die Form selbst, wie weit man ist. Erledigte
+   Segmente sind anklickbar und fuehren zurueck. */
+.steps { display: flex; gap: 5px; margin: 0; padding: 0; list-style: none; }
+.steps li { flex: 1; min-width: 0; }
+.steps button {
+  display: block; width: 100%;
+  padding: 7px 0 3px;
+  cursor: default;
+}
+.steps button::before {
+  content: "";
+  display: block; height: 5px;
+  border-radius: var(--r-pill);
+  background: var(--line);
+  transition: background .25s ease, transform .25s ease;
+}
+.steps button:disabled { cursor: default; }
+.steps [data-state="done"] button { cursor: pointer; }
+.steps [data-state="done"] button::before { background: var(--blue-2); }
+.steps [data-state="done"] button:hover::before { background: var(--blue); }
+.steps [data-state="current"] button::before { background: var(--blue); transform: scaleY(1.6); }
+.steps button:focus-visible { outline: 3px solid var(--blue-2); outline-offset: 3px; border-radius: 6px; }
+
+.steps__label { display: none; }
+
+@media (min-width: 900px) {
+  .steps { gap: 8px; }
+  .steps button { padding-bottom: 0; }
+  .steps__label {
+    display: block; margin-top: 7px;
+    color: var(--muted); font-size: .72rem; font-weight: 650;
+    text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .steps [data-state="current"] .steps__label { color: var(--blue); font-weight: 800; }
+  .steps [data-state="done"] .steps__label { color: var(--blue); }
+}
+
+@media (max-width: 620px) { .rail__step { display: none; } }
+
+/* ---------------------------------------------------------------- Grundlayout */
+
+.main { padding: 20px 0 24px; }
+
+.panel[hidden] { display: none; }
+/* Der Fokus wandert beim Schrittwechsel auf das Panel, damit Vorlesesoftware
+   den Abschnitt ansagt. Ein Rahmen um die ganze Karte waere dabei nur Laerm. */
+.panel:focus, .panel:focus-visible { outline: none; }
+
+body.is-stepping { padding-bottom: calc(86px + env(safe-area-inset-bottom, 0px)); }
+body.is-stepping .foot { display: none; }
+
+.form { display: block; }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+/* --------------------------------------------------------------- Startscreen */
+
+.intro {
+  overflow: hidden;
+  border-radius: var(--r-card);
+  background: var(--white);
+  box-shadow: var(--lift);
+}
+.intro__media { position: relative; }
+.intro__media img {
+  width: 100%; height: clamp(168px, 36vw, 310px);
+  object-fit: cover; object-position: center 45%;
+}
+.intro__time {
+  position: absolute; right: 14px; bottom: 14px;
+  padding: 7px 14px; border-radius: var(--r-pill);
+  background: rgba(29, 54, 97, .94); color: var(--white);
+  font-size: .76rem; font-weight: 700;
+  backdrop-filter: blur(6px);
+}
+.intro__copy { padding: 26px 22px 30px; }
+.intro h1 { font-size: clamp(1.74rem, 6.2vw, 2.85rem); line-height: 1.1; }
+.intro h1 br { display: none; }
+.intro__lead {
+  margin: 15px 0 0; max-width: 54ch;
+  color: var(--muted); font-size: clamp(1rem, 2.4vw, 1.09rem);
+}
+
+.intro__facts {
+  display: grid; gap: 10px;
+  margin: 24px 0 0; padding: 0; list-style: none;
+}
+.intro__facts li {
+  display: flex; align-items: center; gap: 11px;
+  color: var(--blue); font-size: .93rem; font-weight: 620;
+}
+.intro__facts b {
+  display: grid; place-items: center;
+  width: 26px; height: 26px; flex: none;
+  border-radius: 50%;
+  background: var(--blue-tint); color: var(--blue);
+  font-size: .74rem; font-weight: 900;
+}
+
+.draft {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 14px; flex-wrap: wrap;
+  margin: 22px 0 0; padding: 14px 16px;
+  border: 1.5px solid var(--blue-2);
+  border-radius: var(--r-control);
+  background: var(--blue-tint);
+  color: var(--blue); font-size: .89rem; font-weight: 620;
+}
+.draft[hidden] { display: none; }
+.draft button {
+  min-height: 40px; padding: 8px 16px;
+  border: 1.5px solid var(--blue); border-radius: var(--r-pill);
+  color: var(--blue); font-size: .82rem; font-weight: 750;
+  transition: background .15s ease, color .15s ease;
+}
+.draft button:hover { background: var(--blue); color: var(--white); }
+
+.recommend { margin-top: 26px; }
+.recommend__why { margin-top: 24px; }
+
+.intro__start {
+  margin-top: 26px; width: 100%;
+  min-height: 58px; padding: 15px 30px;
+  border-radius: var(--r-pill);
+  background: var(--blue); color: var(--white);
+  font-size: 1.05rem; font-weight: 800;
+  box-shadow: 0 10px 26px rgba(29, 54, 97, .26);
+  transition: background .15s ease, transform .12s ease;
+}
+.intro__start:hover { background: var(--blue-hover); }
+.intro__start:active { transform: scale(.985); }
+
+@media (min-width: 760px) {
+  .intro__copy { padding: 38px 44px 46px; }
+  .intro h1 br { display: block; }
+  .intro__facts { grid-auto-flow: column; justify-content: start; gap: 26px; }
+  .intro__start { width: auto; min-width: 290px; }
+}
+
+/* --------------------------------------------------------------------- Karten */
+
+.card {
+  padding: 24px 20px;
+  border-radius: var(--r-card);
+  background: var(--white);
+  box-shadow: var(--lift);
+}
+
+.card__head { display: flex; align-items: center; gap: 13px; }
+.card__no {
+  display: grid; place-items: center;
+  width: 36px; height: 36px; flex: none;
+  border-radius: 50%;
+  background: var(--blue); color: var(--white);
+  font-weight: 800; font-size: .95rem; font-variant-numeric: tabular-nums;
+}
+.card__head h2 { font-size: clamp(1.18rem, 3.5vw, 1.55rem); line-height: 1.22; }
+
+.card__tally {
+  margin: 0 0 0 auto; flex: none;
+  padding: 5px 11px;
+  border-radius: var(--r-pill);
+  background: var(--gray-soft);
+  color: var(--muted); font-size: .74rem; font-weight: 750;
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.card__tally--full { background: var(--lime); color: var(--ink); }
+
+.card__note {
+  margin: 15px 0 0; max-width: 68ch;
+  color: var(--muted); font-size: .93rem;
+}
+.card__head + .grid, .card__head + .rates, .card__head + .isles,
+.card__head + .overall, .card__note + * { margin-top: 22px; }
+
+@media (min-width: 760px) {
+  .card { padding: 32px 36px 36px; }
+  .card__no { width: 42px; height: 42px; font-size: 1.05rem; }
+}
+
+/* ----------------------------------------------------------------- Formfelder */
+
+.grid { display: grid; gap: var(--gap); }
+@media (min-width: 700px) { .grid--2 { grid-template-columns: 1fr 1fr; } }
+
+.field label, .chips legend, .recommend legend {
+  display: block; margin-bottom: 8px;
+  color: var(--blue); font-weight: 700; font-size: .96rem;
+}
+.req {
+  margin-left: 8px;
+  color: var(--red-deep); font-size: .69rem; font-weight: 800;
+  letter-spacing: .07em; text-transform: uppercase;
+}
+.hint { margin-left: 7px; color: var(--muted); font-size: .8rem; font-weight: 600; }
+
+input[type="text"], textarea {
+  width: 100%; padding: 13px 15px;
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-control);
+  background: var(--gray-soft);
+  transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+}
+input[type="text"] { min-height: 50px; }
+textarea { min-height: 100px; resize: vertical; }
+input[type="text"]:focus, textarea:focus {
+  outline: none;
+  background: var(--white);
+  border-color: var(--blue-2);
+  box-shadow: var(--ring);
+}
+.field--bad input[type="text"], .field--bad textarea {
+  border-color: var(--red); background: #FDF2F4;
+}
+.field__err { margin: 7px 0 0; color: var(--red-deep); font-size: .84rem; font-weight: 650; }
+.field__err[hidden] { display: none; }
+
+/* ---------------------------------------------------------------------- Chips */
+
+.chips, .recommend, .overall, .rate, .isles__list {
+  margin: 0; padding: 0; border: 0; min-inline-size: 0;
+}
+.chips { margin-top: 24px; }
+.chips__row, .recommend__row { display: grid; gap: 10px; }
+@media (min-width: 480px) { .chips__row { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 820px) { .chips__row { grid-template-columns: repeat(4, 1fr); } }
+@media (min-width: 560px) { .recommend__row { grid-template-columns: repeat(3, 1fr); max-width: 480px; } }
+
+.chip { position: relative; display: block; }
+.chip input { position: absolute; opacity: 0; pointer-events: none; }
+.chip span {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 52px; padding: 11px 14px;
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-control);
+  background: var(--white);
+  font-weight: 650; font-size: .95rem; text-align: center;
+  transition: border-color .15s ease, background .15s ease, color .15s ease;
+}
+.chip span:hover { border-color: var(--blue-2); }
+.chip input:checked + span { border-color: var(--blue); background: var(--blue); color: var(--white); }
+.chip input:focus-visible + span { outline: 3px solid var(--blue-2); outline-offset: 2px; }
+
+/* -------------------------------------------------------------- Gesamteindruck */
+
+.overall__row { display: grid; gap: 9px; }
+.overall__opt { position: relative; display: block; }
+.overall__opt input { position: absolute; opacity: 0; pointer-events: none; }
+.overall__opt span {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 54px; padding: 11px 13px;
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-control);
+  background: var(--white);
+  font-weight: 650; font-size: .93rem; text-align: center;
+  transition: border-color .15s ease, background .15s ease, color .15s ease;
+}
+.overall__opt span:hover { border-color: var(--blue-2); }
+.overall__opt input:checked + span { border-color: var(--blue); background: var(--blue); color: var(--white); }
+/* Endpunkte tragen die Bedeutung, damit die Reihe als Skala liest. */
+.overall__opt:first-child input:checked + span {
+  border-color: var(--lime); background: var(--lime); color: var(--ink);
+}
+.overall__opt:last-child input:checked + span { border-color: var(--red); background: var(--red); color: var(--white); }
+.overall__opt input:focus-visible + span { outline: 3px solid var(--blue-2); outline-offset: 2px; }
+
+@media (min-width: 560px) { .overall__row { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 900px) { .overall__row { grid-template-columns: repeat(5, 1fr); } }
+
+/* ---------------------------------------------------------------- Bewertungen */
+
+.rates { border-top: 1px solid var(--line-soft); }
+.rate { padding: 20px 0; border-bottom: 1px solid var(--line-soft); }
+.rate::after { content: ""; display: block; clear: both; }
+
+.rate__label {
+  display: block; padding: 0 0 13px;
+  color: var(--blue); font-weight: 700; font-size: 1rem; line-height: 1.35;
+}
+
+.rate__control { display: flex; flex-direction: column; }
+.rate__options { display: grid; grid-template-columns: repeat(5, 1fr); gap: 7px; }
+.rate__opt { position: relative; display: block; }
+.rate__opt input { position: absolute; opacity: 0; pointer-events: none; }
+.rate__opt span {
+  display: grid; place-items: center;
+  min-height: 52px;
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-control);
+  background: var(--white);
+  color: var(--blue); font-weight: 800; font-size: 1.05rem;
+  font-variant-numeric: tabular-nums;
+  transition: border-color .15s ease, background .15s ease, color .15s ease;
+}
+.rate__opt span:hover { border-color: var(--blue-2); background: var(--blue-tint); }
+.rate__opt input:checked + span { border-color: var(--blue); background: var(--blue); color: var(--white); }
+.rate__opt:first-child input:checked + span {
+  border-color: var(--lime); background: var(--lime); color: var(--ink);
+}
+.rate__opt:last-child input:checked + span { border-color: var(--red); background: var(--red); color: var(--white); }
+.rate__opt input:focus-visible + span { outline: 3px solid var(--blue-2); outline-offset: 2px; }
+
+/* Bleibt auf JEDER Bildschirmgroesse sichtbar. Ohne diese Anker sind die
+   Ziffern 1 bis 5 auf dem Smartphone bedeutungslos. */
+.rate__anchors {
+  display: flex; justify-content: space-between; gap: 12px;
+  margin: 7px 2px 0;
+  color: var(--muted); font-size: .74rem; font-weight: 650;
+}
+.rate__anchors span:last-child { text-align: right; }
+
+.rate__na { position: relative; display: inline-flex; align-self: flex-end; margin-top: 4px; }
+.rate__na input { position: absolute; opacity: 0; pointer-events: none; }
+.rate__na span {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 44px; padding: 8px 15px;
+  border: 1.5px dashed var(--line);
+  border-radius: var(--r-pill);
+  color: var(--muted); font-size: .82rem; font-weight: 650;
+  transition: border-color .15s ease, background .15s ease, color .15s ease;
+}
+.rate__na span:hover { border-color: var(--blue-2); color: var(--blue); }
+.rate__na input:checked + span {
+  border-style: solid; border-color: var(--line);
+  background: var(--gray-soft); color: var(--ink);
+}
+.rate__na input:focus-visible + span { outline: 3px solid var(--blue-2); outline-offset: 2px; }
+
+.rate__comment {
+  margin-top: 14px; padding: 14px;
+  border: 1.5px solid var(--line-soft);
+  border-radius: var(--r-control);
+  background: var(--gray-soft);
+}
+.rate__comment[hidden] { display: none; }
+.rate__comment textarea { min-height: 84px; background: var(--white); }
+.rate__commentLabel { display: block; margin-bottom: 8px; color: var(--blue); font-weight: 700; font-size: .92rem; }
+.rate__commentHelp { margin: 7px 0 0; color: var(--muted); font-size: .82rem; }
+.rate__comment--must { border-color: #EFC3CA; background: #FDF2F4; }
+.rate__comment--must .rate__commentHelp { color: var(--red-deep); font-weight: 650; }
+.rate__comment--good { border-color: #D6E08A; background: #FAFCEB; }
+
+@media (min-width: 900px) {
+  .rate__label { float: left; width: 33%; padding: 6px 26px 0 0; }
+  .rate__control, .rate__comment { margin-left: 35%; }
+  /* Grenze am Container, damit "Nicht beurteilt" buendig zur Skala steht. */
+  .rate__control { max-width: 560px; }
+}
+
+/* --------------------------------------------------------------------- Inseln */
+
+.isles { display: grid; gap: 22px; }
+.isles__list { display: grid; gap: 9px; }
+
+.isle { position: relative; display: block; }
+.isle input { position: absolute; opacity: 0; pointer-events: none; }
+
+.isle__box {
+  position: relative;
+  display: grid; grid-template-columns: 62px 1fr auto;
+  align-items: center; gap: 13px;
+  min-height: 80px; padding: 11px 14px 11px 46px;
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-control);
+  background: var(--white);
+  transition: border-color .15s ease, box-shadow .15s ease, opacity .15s ease;
+}
+.isle__box::before {
+  content: "";
+  position: absolute; left: 15px; top: 50%;
+  width: 21px; height: 21px;
+  transform: translateY(-50%);
+  border: 2px solid #9AA6B2;
+  border-radius: 6px;
+  background: var(--white);
+  transition: background .15s ease, border-color .15s ease;
+}
+.isle input:checked + .isle__box {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 1px var(--blue), 0 10px 24px rgba(29, 54, 97, .14);
+}
+.isle input:checked + .isle__box::before {
+  border-color: var(--blue);
+  background: var(--blue) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round' d='M3.5 8.5l3 3 6-6'/%3E%3C/svg%3E") center / 15px no-repeat;
+}
+.isle input:focus-visible + .isle__box { outline: 3px solid var(--blue-2); outline-offset: 2px; }
+
+/* Sind drei Inseln gewaehlt, treten die uebrigen zurueck statt zu verschwinden.
+   Der Nutzer soll sehen, dass sie noch da sind, nur eben nicht mehr waehlbar. */
+.isle input:disabled + .isle__box { opacity: .42; cursor: not-allowed; }
+.isle input:disabled + .isle__box::before { border-color: #C3CAD2; }
+.isle:has(input:disabled) { cursor: not-allowed; }
+
+/* Rang-Marke: zeigt die Reihenfolge der Auswahl als Top 1 bis 3. */
+.isle__rank {
+  position: absolute; left: 8px; top: 8px;
+  display: none; place-items: center;
+  min-width: 34px; height: 21px; padding: 0 7px;
+  border-radius: var(--r-pill);
+  background: var(--lime); color: var(--ink);
+  font-size: .64rem; font-weight: 900; letter-spacing: .04em;
+}
+.isle input:checked + .isle__box .isle__rank { display: grid; }
+
+.isle__thumb {
+  display: grid; place-items: center;
+  width: 62px; height: 56px;
+  border-radius: 10px;
+  background: var(--gray-soft);
+  overflow: hidden;
+}
+.isle__thumb img { max-width: 56px; max-height: 50px; width: auto; height: auto; }
+.isle__thumb--icon svg {
+  width: 34px; height: 34px;
+  fill: none; stroke: var(--blue); stroke-width: 3;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+
+.isle__text { min-width: 0; }
+.isle__text strong { display: block; color: var(--blue); font-size: 1rem; }
+.isle__text small { display: block; color: var(--muted); font-size: .8rem; line-height: 1.35; }
+
+.isle__no {
+  display: grid; place-items: center;
+  width: 25px; height: 25px; flex: none;
+  border-radius: 50%;
+  background: var(--gray-soft); color: var(--muted);
+  font-size: .74rem; font-weight: 800; font-variant-numeric: tabular-nums;
+}
+
+.isles__poster {
+  margin: 0; overflow: hidden;
+  border-radius: var(--r-control);
+  border: 1px solid var(--line-soft);
+}
+.isles__poster img { width: 100%; height: auto; }
+
+@media (min-width: 1000px) {
+  .isles { grid-template-columns: minmax(0, 1fr) minmax(340px, 440px); gap: 32px; align-items: start; }
+}
+
+/* ------------------------------------------------------------------ Absenden */
+
+.missing {
+  margin-top: 24px; padding: 16px 18px;
+  border: 1.5px solid #EFC3CA;
+  border-radius: var(--r-control);
+  background: #FDF2F4;
+}
+.missing[hidden] { display: none; }
+.missing__head { margin: 0 0 10px; color: var(--red-deep); font-weight: 750; font-size: .92rem; }
+.missing__list { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.missing__list a {
+  display: inline-flex; align-items: center; gap: 9px;
+  min-height: 44px; padding: 4px 0;
+  color: var(--blue); font-size: .93rem; font-weight: 650;
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.missing__list a::before {
+  content: ""; flex: none;
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--red);
+}
+
+.send__status { margin: 14px 0 0; min-height: 1.3em; color: var(--muted); font-weight: 650; font-size: .94rem; }
+.send__status:empty { display: none; }
+.send__status.is-error { color: var(--red-deep); }
+.send__status.is-success { color: var(--lime-deep); }
+
+/* -------------------------------------------------------------- Schrittleiste */
+
+.stepbar {
+  position: fixed; z-index: 60;
+  left: 0; right: 0; bottom: 0;
+  background: rgba(255, 255, 255, .97);
+  backdrop-filter: blur(14px);
+  border-top: 1px solid var(--line-soft);
+  box-shadow: 0 -6px 24px rgba(29, 54, 97, .10);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.stepbar[hidden] { display: none; }
+.stepbar__inner { display: flex; align-items: center; gap: 12px; padding: 11px 0; }
+
+.stepbar__back, .stepbar__next {
+  min-height: 54px; padding: 13px 22px;
+  border-radius: var(--r-pill);
+  font-weight: 800; white-space: nowrap;
+  transition: background .15s ease, transform .12s ease, color .15s ease, border-color .15s ease;
+}
+.stepbar__back {
+  flex: 0 0 auto;
+  border: 1.5px solid var(--line);
+  color: var(--blue);
+}
+.stepbar__back:hover { border-color: var(--blue); }
+.stepbar__back[hidden] { display: none; }
+
+.stepbar__next {
+  flex: 1;
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  background: var(--blue); color: var(--white);
+  font-size: 1.02rem;
+  box-shadow: 0 8px 22px rgba(29, 54, 97, .26);
+}
+.stepbar__next:hover { background: var(--blue-hover); }
+.stepbar__next:disabled { opacity: .7; cursor: progress; }
+.stepbar__back:active, .stepbar__next:active { transform: scale(.985); }
+
+/* Ladezustand: ohne sichtbare Rueckmeldung tippen Leute auf schlechtem Netz
+   ein zweites Mal. */
+.stepbar__spin {
+  display: none;
+  width: 17px; height: 17px; flex: none;
+  border: 2.5px solid rgba(255, 255, 255, .4);
+  border-top-color: var(--white);
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+}
+.stepbar__next[aria-busy="true"] .stepbar__spin { display: block; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (min-width: 760px) {
+  .stepbar__inner { justify-content: flex-end; }
+  .stepbar__next { flex: 0 0 auto; min-width: 250px; }
+}
+
+/* ------------------------------------------------------------------ Fusszeile */
+
+.foot { background: var(--blue); }
+.foot__inner {
+  display: flex; flex-wrap: wrap;
+  align-items: center; justify-content: space-between;
+  gap: 6px 18px; min-height: 70px; padding: 16px 0;
+  color: rgba(255, 255, 255, .84); font-size: .84rem; font-weight: 600;
+}
+
+/* -------------------------------------------------------------- Danke-Ansicht */
+
+.done {
+  position: fixed; inset: 0; z-index: 2000;
+  display: grid; place-items: center;
+  padding: 26px 20px; overflow: auto;
+  background: var(--blue);
+  color: var(--white);
+}
+.done[hidden] { display: none; }
+.done::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII=") center / cover no-repeat;
+  opacity: .28;
+  pointer-events: none;
+}
+.done__inner { position: relative; width: min(660px, 100%); text-align: center; }
+.done__logo { width: min(260px, 58vw); height: auto; margin: 0 auto 30px; }
+.done__check {
+  display: grid; place-items: center;
+  width: 62px; height: 62px; margin: 0 auto 22px;
+  border-radius: 50%;
+  background: var(--lime); color: var(--ink);
+  font-size: 1.9rem; font-weight: 900; line-height: 1;
+}
+.done h2 { color: var(--white); font-size: clamp(1.85rem, 6.6vw, 3.2rem); line-height: 1.08; }
+.done__lead { margin: 14px 0 0; color: rgba(255, 255, 255, .86); font-size: clamp(1rem, 2.6vw, 1.18rem); }
+.done__card {
+  margin: 30px 0 0; padding: 24px;
+  border: 1px solid rgba(255, 255, 255, .28);
+  border-radius: var(--r-card);
+  background: rgba(255, 255, 255, .1);
+  backdrop-filter: blur(10px);
+  text-align: left;
+}
+.done__card strong { display: block; font-size: clamp(1.08rem, 3vw, 1.35rem); }
+.done__card p { margin: 10px 0 0; color: rgba(255, 255, 255, .88); font-size: .96rem; }
+
+body.is-done { overflow: hidden; }
+
+/* ---------------------------------------------------- Reduzierte Bewegung */
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+}
+
+/* Sehr schmale Geraete: die fuenf Bewertungsfelder muessen 44px halten. */
+@media (max-width: 360px) {
+  .card, .intro__copy { padding-left: 15px; padding-right: 15px; }
+  .rate__options { gap: 5px; }
+}
+  </style>
+</head>
+<body data-build="v13">
+  <!-- Codefassung zum Weitergeben an ein Sprachmodell.
+       Identisch zur Standalone-Datei, aber ohne Base64-Bilder: alle Bilder sind
+       durch ein 1x1-Pixel ersetzt. Die echten Dateien liegen unter:
+         assets/thitronik-logo.png
+         assets/v12/hero-640|1024|1600.webp
+         assets/v12/background-800|1600.webp
+         assets/v12/inselhopping-700|1100.webp
+         assets/v12/islands/{vejro,hiddensee,fehmarn,poel,usedom,langeland,samsoe}.webp -->
+  <a class="skip" href="#panel-1">Direkt zum Feedbackbogen</a>
+
+  <noscript>
+    <p class="noscript">Dieser Feedbackbogen ben&ouml;tigt JavaScript. Bitte aktivieren Sie es oder wenden Sie sich
+      an das THITRONIK Team.</p>
+  </noscript>
+
+  <header class="masthead">
+    <div class="shell masthead__bar">
+      <img class="masthead__logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII=" alt="THITRONIK" width="485" height="118">
+      <span class="masthead__tag">Campus 2026</span>
+    </div>
+  </header>
+
+  <div class="rail" id="rail" hidden>
+    <div class="shell rail__inner">
+      <div class="rail__head">
+        <p class="rail__now">
+          <span class="rail__step">Schritt <span id="railStep">1</span> von 6</span>
+          <strong id="railName">Angaben</strong>
+        </p>
+        <p class="rail__count" id="railCount">0 von 17 beantwortet</p>
+      </div>
+      <ol class="steps" id="steps" aria-label="Fortschritt">
+        <li data-step="1"><button type="button" data-goto="1" disabled><span class="sr-only">Schritt 1: </span><span class="steps__label">Angaben</span></button></li>
+        <li data-step="2"><button type="button" data-goto="2" disabled><span class="sr-only">Schritt 2: </span><span class="steps__label">Eindruck</span></button></li>
+        <li data-step="3"><button type="button" data-goto="3" disabled><span class="sr-only">Schritt 3: </span><span class="steps__label">Organisation</span></button></li>
+        <li data-step="4"><button type="button" data-goto="4" disabled><span class="sr-only">Schritt 4: </span><span class="steps__label">Schulung</span></button></li>
+        <li data-step="5"><button type="button" data-goto="5" disabled><span class="sr-only">Schritt 5: </span><span class="steps__label">Inseln</span></button></li>
+        <li data-step="6"><button type="button" data-goto="6" disabled><span class="sr-only">Schritt 6: </span><span class="steps__label">Ausblick</span></button></li>
+      </ol>
+    </div>
+  </div>
+
+  <p class="sr-only" id="stepAnnounce" role="status" aria-live="polite"></p>
+
+  <main class="main shell">
+
+    <section class="intro panel" id="panel-0" data-panel="0" tabindex="-1">
+      <div class="intro__media">
+        <img
+          src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII="
+          alt="Teilnehmende der THITRONIK Campusschulung w&auml;hrend eines Programmpunkts."
+          width="1600" height="558" fetchpriority="high" decoding="async">
+        <span class="intro__time">ca. 4 bis 6 Minuten</span>
+      </div>
+      <div class="intro__copy">
+        <h1>Ihr Feedback zum <br>THITRONIK Campus 2026</h1>
+        <p class="intro__lead">Ihre R&uuml;ckmeldung entscheidet, wie der n&auml;chste Campus aussieht.</p>
+
+        <ul class="intro__facts">
+          <li><b>6</b> kurze Schritte</li>
+          <li><b>2</b> Pflichtangaben</li>
+          <li><b>&#8617;</b> jederzeit zur&uuml;ck</li>
+        </ul>
+
+        <p class="draft" id="draftNote" hidden>
+          <span>Wir haben Ihren Entwurf gefunden. Sie machen dort weiter, wo Sie aufgeh&ouml;rt haben.</span>
+          <button type="button" id="draftClear">Neu beginnen</button>
+        </p>
+
+        <button type="button" class="intro__start" id="startButton">Feedback starten</button>
+      </div>
+    </section>
+
+    <form id="feedbackForm" class="form" autocomplete="on" data-form-version="campus-2026-haendler-v11" novalidate>
+      <div class="hp" aria-hidden="true">
+        <label for="website">Website</label>
+        <input id="website" name="website" type="text" autocomplete="off" tabindex="-1">
+      </div>
+
+      <section class="card panel" id="panel-1" data-panel="1" tabindex="-1" aria-labelledby="section-1-title" hidden>
+        <div class="card__head">
+          <span class="card__no" aria-hidden="true">1</span>
+          <h2 id="section-1-title">Angaben zum H&auml;ndlerbetrieb</h2>
+        </div>
+        <p class="card__note">Damit wir R&uuml;ckmeldungen mehrerer Teilnehmender eines Betriebs zuordnen k&ouml;nnen.</p>
+
+        <div class="grid grid--2">
+          <div class="field">
+            <label for="dealer_name">H&auml;ndlerbetrieb <span class="req" aria-hidden="true">Pflicht</span></label>
+            <input id="dealer_name" name="dealer_name" type="text" autocomplete="organization"
+              enterkeyhint="next" minlength="2" maxlength="160" required aria-describedby="dealer_err">
+            <p class="field__err" id="dealer_err" data-err hidden></p>
+          </div>
+          <div class="field">
+            <label for="name">Ihr Name <span class="req" aria-hidden="true">Pflicht</span></label>
+            <input id="name" name="name" type="text" autocomplete="name"
+              enterkeyhint="done" minlength="2" maxlength="120" required aria-describedby="name_err">
+            <p class="field__err" id="name_err" data-err hidden></p>
+          </div>
+        </div>
+
+        <fieldset class="chips">
+          <legend>Aus welchem Bereich kommen Sie? <span class="hint">Mehrfachauswahl m&ouml;glich</span></legend>
+          <div class="chips__row">
+            <label class="chip"><input type="checkbox" name="bereich" value="Gesch&auml;ftsf&uuml;hrung"><span>Gesch&auml;ftsf&uuml;hrung</span></label>
+            <label class="chip"><input type="checkbox" name="bereich" value="Verkauf"><span>Verkauf</span></label>
+            <label class="chip"><input type="checkbox" name="bereich" value="Werkstatt"><span>Werkstatt</span></label>
+            <label class="chip"><input type="checkbox" name="bereich" value="Service"><span>Service</span></label>
+          </div>
+        </fieldset>
+      </section>
+
+      <section class="card panel" id="panel-2" data-panel="2" tabindex="-1" aria-labelledby="section-2-title" hidden>
+        <div class="card__head">
+          <span class="card__no" aria-hidden="true">2</span>
+          <h2 id="section-2-title">Wie zufrieden waren Sie insgesamt?</h2>
+        </div>
+        <p class="card__note">Ihr spontaner Gesamteindruck vom Campus.</p>
+
+        <fieldset class="overall">
+          <legend class="sr-only">Gesamtzufriedenheit</legend>
+          <div class="overall__row">
+            <label class="overall__opt"><input type="radio" name="overall" value="Sehr zufrieden"><span>Sehr zufrieden</span></label>
+            <label class="overall__opt"><input type="radio" name="overall" value="Zufrieden"><span>Zufrieden</span></label>
+            <label class="overall__opt"><input type="radio" name="overall" value="Teils/teils"><span>Teils / teils</span></label>
+            <label class="overall__opt"><input type="radio" name="overall" value="Eher unzufrieden"><span>Eher unzufrieden</span></label>
+            <label class="overall__opt"><input type="radio" name="overall" value="Unzufrieden"><span>Unzufrieden</span></label>
+          </div>
+        </fieldset>
+      </section>
+
+      <section class="card panel" id="panel-3" data-panel="3" tabindex="-1" aria-labelledby="section-3-title" hidden>
+        <div class="card__head">
+          <span class="card__no" aria-hidden="true">3</span>
+          <h2 id="section-3-title">Organisation &amp; Ablauf</h2>
+          <p class="card__tally" data-tally="3" role="status" aria-live="polite">0 von 7</p>
+        </div>
+        <p class="card__note">1 ist die beste Bewertung. Bei einer 5 bitten wir um einen kurzen Hinweis.</p>
+        <div class="rates">
+        <fieldset class="rate" data-rate>
+          <legend class="rate__label">Kommunikation &amp; Information im Vorfeld</legend>
+          <div class="rate__control">
+            <div class="rate__options">
+            <label class="rate__opt"><input type="radio" name="kommunikation_vorfeld" value="1" aria-label="1 (sehr gut)"><span>1</span></label>
+            <label class="rate__opt"><input type="radio" name="kommunikation_vorfeld" value="2" aria-label="2"><span>2</span></label>
+            <label class="rate__opt"><input type="radio" name="kommunikation_vorfeld" value="3" aria-label="3"><span>3</span></label>
+            <label class="rate__opt"><input type="radio" name="kommunikation_vorfeld" value="4" aria-label="4"><span>4</span></label>
+            <label class="rate__opt"><input type="radio" name="kommunikation_vorfeld" value="5" aria-label="5 (verbesserungsw&uuml;rdig)"><span>5</span></label>
+            </div>
+            <p class="rate__anchors" aria-hidden="true"><span>sehr gut</span><span>verbesserungsw&uuml;rdig</span></p>
+            <label class="rate__na"><input type="radio" name="kommunikation_vorfeld" value="na"><span>Nicht beurteilt</span></label>
+          </div>
+          <div class="rate__comment" data-comment hidden>
+            <label for="kommunikation_vorfeld_comment" class="rate__commentLabel" data-comment-label>Kommentar</label>
+            <textarea id="kommunikation_vorfeld_comment" name="kommunikation_vorfeld_comment" maxlength="1200" rows="3" aria-describedby="kommunikation_vorfeld_help"></textarea>
+            <p class="rate__commentHelp" id="kommunikation_vorfeld_help" data-comment-help>Optional</p>
+          </div>
+        </fieldset>
+
+        <fieldset class="rate" data-rate>
+          <legend class="rate__label">Anmeldung &amp; Vorbereitung</legend>
+          <div class="rate__control">
+            <div class="rate__options">
+            <label class="rate__opt"><input type="radio" name="anmeldung_vorbereitung" value="1" aria-label="1 (sehr gut)"><span>1</span></label>
+            <label class="rate__opt"><input type="radio" name="anmeldung_vorbereitung" value="2" aria-label="2"><span>2</span></label>
+            <label class="rate__opt"><input type="radio" name="anmeldung_vorbereitung" value="3" aria-label="3"><span>3</span></label>
+            <label class="rate__opt"><input type="radio" name="anmeldung_vorbereitung" value="4" aria-label="4"><span>4</span></label>
+            <label class="rate__opt"><input type="radio" name="anmeldung_vorbereitung" value="5" aria-label="5 (verbesserungsw&uuml;rdig)"><span>5</span></label>
+            </div>
+            <p class="rate__anchors" aria-hidden="true"><span>sehr gut</span><span>verbesserungsw&uuml;rdig</span></p>
+            <label class="rate__na"><input type="radio" name="anmeldung_vorbereitung" value="na"><span>Nicht beurteilt</span></label>
+          </div>
+          <div class="rate__comment" data-comment hidden>
+            <label for="anmeldung_vorbereitung_comment" class="rate__commentLabel" data-comment-label>Kommentar</label>
+            <textarea id="anmeldung_vorbereitung_comment" name="anmeldung_vorbereitung_comment" maxlength="1200" rows="3" aria-describedby="anmeldung_vorbereitung_help"></textarea>
+            <p class="rate__commentHelp" id="anmeldung_vorbereitung_help" data-comment-help>Optional</p>
+          </div>
+        </fieldset>
+
+        <fieldset class="rate" data-rate>
+          <legend class="rate__label">Zeitplanung &amp; Tagesablauf</legend>
+          <div class="rate__control">
+            <div class="rate__options">
+            <label class="rate__opt"><input type="radio" name="zeitplanung_tagesablauf" value="1" aria-label="1 (sehr gut)"><span>1</span></label>
+            <label class="rate__opt"><input type="radio" name="zeitplanung_tagesablauf" value="2" aria-label="2"><span>2</span></label>
+            <label class="rate__opt"><input type="radio" name="zeitplanung_tagesablauf" value="3" aria-label="3"><span>3</span></label>
+            <label class="rate__opt"><input type="radio" name="zeitplanung_tagesablauf" value="4" aria-label="4"><span>4</span></label>
+            <label class="rate__opt"><input type="radio" name="zeitplanung_tagesablauf" value="5" aria-label="5 (verbesserungsw&uuml;rdig)"><span>5</span></label>
+            </div>
+            <p class="rate__anchors" aria-hidden="true"><span>sehr gut</span><span>verbesserungsw&uuml;rdig</span></p>
+            <label class="rate__na"><input type="radio" name="zeitplanung_tagesablauf" value="na"><span>Nicht beurteilt</span></label>
+          </div>
+          <div class="rate__comment" data-comment hidden>
+            <label for="zeitplanung_tagesablauf_comment" class="rate__commentLabel" data-comment-label>Kommentar</label>
+            <textarea id="zeitplanung_tagesablauf_comment" name="zeitplanung_tagesablauf_comment" maxlength="1200" rows="3" aria-describedby="zeitplanung_tagesablauf_help"></textarea>
+            <p class="rate__commentHelp" id="zeitplanung_tagesablauf_help" data-comment-help>Optional</p>
+          </div>
+        </fieldset>
+
+        <fieldset class="rate" data-rate>
+          <legend class="rate__label">Organisation vor Ort</legend>
+          <div class="rate__control">
+            <div class="rate__options">
+            <label class="rate__opt"><input type="radio" name="organisation_vor_ort" value="1" aria-label="1 (sehr gut)"><span>1</span></label>
+            <label class="rate__opt"><input type="radio" name="organisation_vor_ort" value="2" aria-label="2"><span>2</span></label>
+            <label class="rate__opt"><input type="radio" name="organisation_vor_ort" value="3" aria-label="3"><span>3</span></label>
+            <label class="rate__opt"><input type="radio" name="organisation_vor_ort" value="4" aria-label="4"><span>4</span></label>
+            <label class="rate__opt"><input type="radio" name="organisation_vor_ort" value="5" aria-label="5 (verbesserungsw&uuml;rdig)"><span>5</span></label>
+            </div>
+            <p class="rate__anchors" aria-hidden="true"><span>sehr gut</span><span>verbesserungsw&uuml;rdig</span></p>
+            <label class="rate__na"><input type="radio" name="organisation_vor_ort" value="na"><span>Nicht beurteilt</span></label>
+          </div>
+          <div class="rate__comment" data-comment hidden>
+            <label for="organisation_vor_ort_comment" class="rate__commentLabel" data-comment-label>Kommentar</label>
+            <textarea id="organisation_vor_ort_comment" name="organisation_vor_ort_comment" maxlength="1200" rows="3" aria-describedby="organisation_vor_ort_help"></textarea>
+            <p class="rate__commentHelp" id="organisation_vor_ort_help" data-comment-help>Optional</p>
+          </div>
+        </fieldset>
+
+        <fieldset class="rate" data-rate>
+          <legend class="rate__label">R&auml;umlichkeiten &amp; Technik</legend>
+          <div class="rate__control">
+            <div class="rate__options">
+            <label class="rate__opt"><input type="radio" name="raeumlichkeiten_technik" value="1" aria-label="1 (sehr gut)"><span>1</span></label>
+            <label class="rate__opt"><input type="radio" name="raeumlichkeiten_technik" value="2" aria-label="2"><span>2</span></label>
+            <label class="rate__opt"><input type="radio" name="raeumlichkeiten_technik" value="3" aria-label="3"><span>3</span></label>
+            <label class="rate__opt"><input type="radio" name="raeumlichkeiten_technik" value="4" aria-label="4"><span>4</span></label>
+            <label class="rate__opt"><input type="radio" name="raeumlichkeiten_technik" value="5" aria-label="5 (verbesserungsw&uuml;rdig)"><span>5</span></label>
+            </div>
+            <p class="rate__anchors" aria-hidden="true"><span>sehr gut</span><span>verbesserungsw&uuml;rdig</span></p>
+            <label class="rate__na"><input type="radio" name="raeumlichkeiten_technik" value="na"><span>Nicht beurteilt</span></label>
+          </div>
+          <div class="rate__comment" data-comment hidden>
+            <label for="raeumlichkeiten_technik_comment" class="rate__commentLabel" data-comment-label>Kommentar</label>
+            <textarea id="raeumlichkeiten_technik_comment" name="raeumlichkeiten_technik_comment" maxlength="1200" rows="3" aria-describedby="raeumlichkeiten_technik_help"></textarea>
+            <p class="rate__commentHelp" id="raeumlichkeiten_technik_help" data-comment-help>Optional</p>
+          </div>
+        </fieldset>
+
+        <fieldset class="rate" data-rate>
+          <legend class="rate__label">Bewirtung im Haus</legend>
+          <div class="rate__control">
+            <div class="rate__options">
+            <label class="rate__opt"><input type="radio" name="bewirtung_haus" value="1" aria-label="1 (sehr gut)"><span>1</span></label>
+            <label class="rate__opt"><input type="radio" name="bewirtung_haus" value="2" aria-label="2"><span>2</span></label>
+            <label class="rate__opt"><input type="radio" name="bewirtung_haus" value="3" aria-label="3"><span>3</span></label>
+            <label class="rate__opt"><input type="radio" name="bewirtung_haus" value="4" aria-label="4"><span>4</span></label>
+            <label class="rate__opt"><input type="radio" name="bewirtung_haus" value="5" aria-label="5 (verbesserungsw&uuml;rdig)"><span>5</span></label>
+            </div>
+            <p class="rate__anchors" aria-hidden="true"><span>sehr gut</span><span>verbesserungsw&uuml;rdig</span></p>
+            <label class="rate__na"><input type="radio" name="bewirtung_haus" value="na"><span>Nicht beurteilt</span></label>
+          </div>
+          <div class="rate__comment" data-comment hidden>
+            <label for="bewirtung_haus_comment" class="rate__commentLabel" data-comment-label>Kommentar</label>
+            <textarea id="bewirtung_haus_comment" name="bewirtung_haus_comment" maxlength="1200" rows="3" aria-describedby="bewirtung_haus_help"></textarea>
+            <p class="rate__commentHelp" id="bewirtung_haus_help" data-comment-help>Optional</p>
+          </div>
+        </fieldset>
+
+        <fieldset class="rate" data-rate>
+          <legend class="rate__label">Abendveranstaltung</legend>
+          <div class="rate__control">
+            <div class="rate__options">
+            <label class="rate__opt"><input type="radio" name="abendveranstaltung" value="1" aria-label="1 (sehr gut)"><span>1</span></label>
+            <label class="rate__opt"><input type="radio" name="abendveranstaltung" value="2" aria-label="2"><span>2</span></label>
+            <label class="rate__opt"><input type="radio" name="abendveranstaltung" value="3" aria-label="3"><span>3</span></label>
+            <label class="rate__opt"><input type="radio" name="abendveranstaltung" value="4" aria-label="4"><span>4</span></label>
+            <label class="rate__opt"><input type="radio" name="abendveranstaltung" value="5" aria-label="5 (verbesserungsw&uuml;rdig)"><span>5</span></label>
+            </div>
+            <p class="rate__anchors" aria-hidden="true"><span>sehr gut</span><span>verbesserungsw&uuml;rdig</span></p>
+            <label class="rate__na"><input type="radio" name="abendveranstaltung" value="na"><span>Nicht teilgenommen</span></label>
+          </div>
+          <div class="rate__comment" data-comment hidden>
+            <label for="abendveranstaltung_comment" class="rate__commentLabel" data-comment-label>Kommentar</label>
+            <textarea id="abendveranstaltung_comment" name="abendveranstaltung_comment" maxlength="1200" rows="3" aria-describedby="abendveranstaltung_help"></textarea>
+            <p class="rate__commentHelp" id="abendveranstaltung_help" data-comment-help>Optional</p>
+          </div>
+        </fieldset>
+        </div>
+      </section>
+
+      <section class="card panel" id="panel-4" data-panel="4" tabindex="-1" aria-labelledby="section-4-title" hidden>
+        <div class="card__head">
+          <span class="card__no" aria-hidden="true">4</span>
+          <h2 id="section-4-title">Inhalte &amp; Durchf&uuml;hrung</h2>
+          <p class="card__tally" data-tally="4" role="status" aria-live="polite">0 von 6</p>
+        </div>
+        <p class="card__note">Wie relevant und hilfreich waren die Inhalte f&uuml;r Ihren H&auml;ndleralltag?</p>
+        <div class="rates">
+        <fieldset class="rate" data-rate>
+          <legend class="rate__label">Relevanz der Themen</legend>
+          <div class="rate__control">
+            <div class="rate__options">
+            <label class="rate__opt"><input type="radio" name="relevanz_themen" value="1" aria-label="1 (sehr gut)"><span>1</span></label>
+            <label class="rate__opt"><input type="radio" name="relevanz_themen" value="2" aria-label="2"><span>2</span></label>
+            <label class="rate__opt"><input type="radio" name="relevanz_themen" value="3" aria-label="3"><span>3</span></label>
+            <label class="rate__opt"><input type="radio" name="relevanz_themen" value="4" aria-label="4"><span>4</span></label>
+            <label class="rate__opt"><input type="radio" name="relevanz_themen" value="5" aria-label="5 (verbesserungsw&uuml;rdig)"><span>5</span></label>
+            </div>
+            <p class="rate__anchors" aria-hidden="true"><span>sehr gut</span><span>verbesserungsw&uuml;rdig</span></p>
+            <label class="rate__na"><input type="radio" name="relevanz_themen" value="na"><span>Nicht beurteilt</span></label>
+          </div>
+          <div class="rate__comment" data-comment hidden>
+            <label for="relevanz_themen_comment" class="rate__commentLabel" data-comment-label>Kommentar</label>
+            <textarea id="relevanz_themen_comment" name="relevanz_themen_comment" maxlength="1200" rows="3" aria-describedby="relevanz_themen_help"></textarea>
+            <p class="rate__commentHelp" id="relevanz_themen_help" data-comment-help>Optional</p>
+          </div>
+        </fieldset>
+
+        <fieldset class="rate" data-rate>
+          <legend class="rate__label">Verst&auml;ndlichkeit der Inhalte</legend>
+          <div class="rate__control">
+            <div class="rate__options">
+            <label class="rate__opt"><input type="radio" name="verstaendlichkeit" value="1" aria-label="1 (sehr gut)"><span>1</span></label>
+            <label class="rate__opt"><input type="radio" name="verstaendlichkeit" value="2" aria-label="2"><span>2</span></label>
+            <label class="rate__opt"><input type="radio" name="verstaendlichkeit" value="3" aria-label="3"><span>3</span></label>
+            <label class="rate__opt"><input type="radio" name="verstaendlichkeit" value="4" aria-label="4"><span>4</span></label>
+            <label class="rate__opt"><input type="radio" name="verstaendlichkeit" value="5" aria-label="5 (verbesserungsw&uuml;rdig)"><span>5</span></label>
+            </div>
+            <p class="rate__anchors" aria-hidden="true"><span>sehr gut</span><span>verbesserungsw&uuml;rdig</span></p>
+            <label class="rate__na"><input type="radio" name="verstaendlichkeit" value="na"><span>Nicht beurteilt</span></label>
+          </div>
+          <div class="rate__comment" data-comment hidden>
+            <label for="verstaendlichkeit_comment" class="rate__commentLabel" data-comment-label>Kommentar</label>
+            <textarea id="verstaendlichkeit_comment" name="verstaendlichkeit_comment" maxlength="1200" rows="3" aria-describedby="verstaendlichkeit_help"></textarea>
+            <p class="rate__commentHelp" id="verstaendlichkeit_help" data-comment-help>Optional</p>
+          </div>
+        </fieldset>
+
+        <fieldset class="rate" data-rate>
+          <legend class="rate__label">Praxisbezug</legend>
+          <div class="rate__control">
+            <div class="rate__options">
+            <label class="rate__opt"><input type="radio" name="praxisbezug" value="1" aria-label="1 (sehr gut)"><span>1</span></label>
+            <label class="rate__opt"><input type="radio" name="praxisbezug" value="2" aria-label="2"><span>2</span></label>
+            <label class="rate__opt"><input type="radio" name="praxisbezug" value="3" aria-label="3"><span>3</span></label>
+            <label class="rate__opt"><input type="radio" name="praxisbezug" value="4" aria-label="4"><span>4</span></label>
+            <label class="rate__opt"><input type="radio" name="praxisbezug" value="5" aria-label="5 (verbesserungsw&uuml;rdig)"><span>5</span></label>
+            </div>
+            <p class="rate__anchors" aria-hidden="true"><span>sehr gut</span><span>verbesserungsw&uuml;rdig</span></p>
+            <label class="rate__na"><input type="radio" name="praxisbezug" value="na"><span>Nicht beurteilt</span></label>
+          </div>
+          <div class="rate__comment" data-comment hidden>
+            <label for="praxisbezug_comment" class="rate__commentLabel" data-comment-label>Kommentar</label>
+            <textarea id="praxisbezug_comment" name="praxisbezug_comment" maxlength="1200" rows="3" aria-describedby="praxisbezug_help"></textarea>
+            <p class="rate__commentHelp" id="praxisbezug_help" data-comment-help>Optional</p>
+          </div>
+        </fieldset>
+
+        <fieldset class="rate" data-rate>
+          <legend class="rate__label">Produktvorf&uuml;hrungen &amp; Demonstrationen</legend>
+          <div class="rate__control">
+            <div class="rate__options">
+            <label class="rate__opt"><input type="radio" name="produktvorfuehrungen" value="1" aria-label="1 (sehr gut)"><span>1</span></label>
+            <label class="rate__opt"><input type="radio" name="produktvorfuehrungen" value="2" aria-label="2"><span>2</span></label>
+            <label class="rate__opt"><input type="radio" name="produktvorfuehrungen" value="3" aria-label="3"><span>3</span></label>
+            <label class="rate__opt"><input type="radio" name="produktvorfuehrungen" value="4" aria-label="4"><span>4</span></label>
+            <label class="rate__opt"><input type="radio" name="produktvorfuehrungen" value="5" aria-label="5 (verbesserungsw&uuml;rdig)"><span>5</span></label>
+            </div>
+            <p class="rate__anchors" aria-hidden="true"><span>sehr gut</span><span>verbesserungsw&uuml;rdig</span></p>
+            <label class="rate__na"><input type="radio" name="produktvorfuehrungen" value="na"><span>Nicht beurteilt</span></label>
+          </div>
+          <div class="rate__comment" data-comment hidden>
+            <label for="produktvorfuehrungen_comment" class="rate__commentLabel" data-comment-label>Kommentar</label>
+            <textarea id="produktvorfuehrungen_comment" name="produktvorfuehrungen_comment" maxlength="1200" rows="3" aria-describedby="produktvorfuehrungen_help"></textarea>
+            <p class="rate__commentHelp" id="produktvorfuehrungen_help" data-comment-help>Optional</p>
+          </div>
+        </fieldset>
+
+        <fieldset class="rate" data-rate>
+          <legend class="rate__label">M&ouml;glichkeit f&uuml;r Fragen</legend>
+          <div class="rate__control">
+            <div class="rate__options">
+            <label class="rate__opt"><input type="radio" name="fragen" value="1" aria-label="1 (sehr gut)"><span>1</span></label>
+            <label class="rate__opt"><input type="radio" name="fragen" value="2" aria-label="2"><span>2</span></label>
+            <label class="rate__opt"><input type="radio" name="fragen" value="3" aria-label="3"><span>3</span></label>
+            <label class="rate__opt"><input type="radio" name="fragen" value="4" aria-label="4"><span>4</span></label>
+            <label class="rate__opt"><input type="radio" name="fragen" value="5" aria-label="5 (verbesserungsw&uuml;rdig)"><span>5</span></label>
+            </div>
+            <p class="rate__anchors" aria-hidden="true"><span>sehr gut</span><span>verbesserungsw&uuml;rdig</span></p>
+            <label class="rate__na"><input type="radio" name="fragen" value="na"><span>Nicht beurteilt</span></label>
+          </div>
+          <div class="rate__comment" data-comment hidden>
+            <label for="fragen_comment" class="rate__commentLabel" data-comment-label>Kommentar</label>
+            <textarea id="fragen_comment" name="fragen_comment" maxlength="1200" rows="3" aria-describedby="fragen_help"></textarea>
+            <p class="rate__commentHelp" id="fragen_help" data-comment-help>Optional</p>
+          </div>
+        </fieldset>
+
+        <fieldset class="rate" data-rate>
+          <legend class="rate__label">Betreuung durch THITRONIK</legend>
+          <div class="rate__control">
+            <div class="rate__options">
+            <label class="rate__opt"><input type="radio" name="betreuung_thitronik" value="1" aria-label="1 (sehr gut)"><span>1</span></label>
+            <label class="rate__opt"><input type="radio" name="betreuung_thitronik" value="2" aria-label="2"><span>2</span></label>
+            <label class="rate__opt"><input type="radio" name="betreuung_thitronik" value="3" aria-label="3"><span>3</span></label>
+            <label class="rate__opt"><input type="radio" name="betreuung_thitronik" value="4" aria-label="4"><span>4</span></label>
+            <label class="rate__opt"><input type="radio" name="betreuung_thitronik" value="5" aria-label="5 (verbesserungsw&uuml;rdig)"><span>5</span></label>
+            </div>
+            <p class="rate__anchors" aria-hidden="true"><span>sehr gut</span><span>verbesserungsw&uuml;rdig</span></p>
+            <label class="rate__na"><input type="radio" name="betreuung_thitronik" value="na"><span>Nicht beurteilt</span></label>
+          </div>
+          <div class="rate__comment" data-comment hidden>
+            <label for="betreuung_thitronik_comment" class="rate__commentLabel" data-comment-label>Kommentar</label>
+            <textarea id="betreuung_thitronik_comment" name="betreuung_thitronik_comment" maxlength="1200" rows="3" aria-describedby="betreuung_thitronik_help"></textarea>
+            <p class="rate__commentHelp" id="betreuung_thitronik_help" data-comment-help>Optional</p>
+          </div>
+        </fieldset>
+        </div>
+      </section>
+
+      <section class="card panel" id="panel-5" data-panel="5" tabindex="-1" aria-labelledby="section-5-title" hidden>
+        <div class="card__head">
+          <span class="card__no" aria-hidden="true">5</span>
+          <h2 id="section-5-title">Ihre Top 3 der Campus-Inseln</h2>
+          <p class="card__tally" data-tally="isles" role="status" aria-live="polite">0 von 3</p>
+        </div>
+        <p class="card__note">W&auml;hlen Sie bis zu drei Inseln in der Reihenfolge, die Ihnen am besten gefallen hat.
+          Die Reihenfolge Ihrer Auswahl ergibt Platz 1 bis 3.</p>
+
+        <div class="isles">
+          <fieldset class="isles__list">
+            <legend class="sr-only">Favorisierte Campus-Inseln, bis zu drei</legend>
+          <label class="isle">
+            <input type="checkbox" name="inseln" value="1">
+            <span class="isle__box">
+              <span class="isle__rank" data-rank aria-hidden="true"></span>
+              <span class="isle__thumb"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII=" alt="" width="90" height="76" loading="lazy" decoding="async"></span>
+              <span class="isle__text"><strong>Vejr&oslash;</strong><small>Premiumpartner-Konzept &amp; Produktschulung</small></span>
+              <span class="isle__no" aria-hidden="true">1</span>
+            </span>
+          </label>
+          <label class="isle">
+            <input type="checkbox" name="inseln" value="2">
+            <span class="isle__box">
+              <span class="isle__rank" data-rank aria-hidden="true"></span>
+              <span class="isle__thumb"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII=" alt="" width="90" height="76" loading="lazy" decoding="async"></span>
+              <span class="isle__text"><strong>Hiddensee</strong><small>Funk-Magnetkontakte &amp; Abzweigverbinder</small></span>
+              <span class="isle__no" aria-hidden="true">2</span>
+            </span>
+          </label>
+          <label class="isle">
+            <input type="checkbox" name="inseln" value="3">
+            <span class="isle__box">
+              <span class="isle__rank" data-rank aria-hidden="true"></span>
+              <span class="isle__thumb"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII=" alt="" width="90" height="76" loading="lazy" decoding="async"></span>
+              <span class="isle__text"><strong>Fehmarn</strong><small>Wichtige Supportthemen</small></span>
+              <span class="isle__no" aria-hidden="true">3</span>
+            </span>
+          </label>
+          <label class="isle">
+            <input type="checkbox" name="inseln" value="4">
+            <span class="isle__box">
+              <span class="isle__rank" data-rank aria-hidden="true"></span>
+              <span class="isle__thumb"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII=" alt="" width="90" height="76" loading="lazy" decoding="async"></span>
+              <span class="isle__text"><strong>Poel</strong><small>H&auml;ndlerbereich</small></span>
+              <span class="isle__no" aria-hidden="true">4</span>
+            </span>
+          </label>
+          <label class="isle">
+            <input type="checkbox" name="inseln" value="5">
+            <span class="isle__box">
+              <span class="isle__rank" data-rank aria-hidden="true"></span>
+              <span class="isle__thumb"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII=" alt="" width="90" height="76" loading="lazy" decoding="async"></span>
+              <span class="isle__text"><strong>Usedom</strong><small>Verkaufsdisplay &amp; Konfigurator</small></span>
+              <span class="isle__no" aria-hidden="true">5</span>
+            </span>
+          </label>
+          <label class="isle">
+            <input type="checkbox" name="inseln" value="6">
+            <span class="isle__box">
+              <span class="isle__rank" data-rank aria-hidden="true"></span>
+              <span class="isle__thumb"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII=" alt="" width="90" height="76" loading="lazy" decoding="async"></span>
+              <span class="isle__text"><strong>Langeland</strong><small>Fahrzeugannahme &amp; &Uuml;bergabe</small></span>
+              <span class="isle__no" aria-hidden="true">6</span>
+            </span>
+          </label>
+          <label class="isle">
+            <input type="checkbox" name="inseln" value="7">
+            <span class="isle__box">
+              <span class="isle__rank" data-rank aria-hidden="true"></span>
+              <span class="isle__thumb"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII=" alt="" width="90" height="76" loading="lazy" decoding="async"></span>
+              <span class="isle__text"><strong>Sams&oslash;</strong><small>Basisfahrzeuge, Gaswarner &amp; Einbaupraxis</small></span>
+              <span class="isle__no" aria-hidden="true">7</span>
+            </span>
+          </label>
+          <label class="isle">
+            <input type="checkbox" name="inseln" value="8">
+            <span class="isle__box">
+              <span class="isle__rank" data-rank aria-hidden="true"></span>
+              <span class="isle__thumb isle__thumb--icon"><svg viewBox="0 0 64 64" focusable="false" aria-hidden="true"><path d="M12 42h40M18 39a14 14 0 0 1 28 0M32 24v-5M28 18h8M9 47h46"/></svg></span>
+              <span class="isle__text"><strong>R&uuml;gen</strong><small>Catering</small></span>
+              <span class="isle__no" aria-hidden="true">8</span>
+            </span>
+          </label>
+          </fieldset>
+          <figure class="isles__poster">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII="
+              alt="" width="700" height="1050" loading="lazy" decoding="async">
+          </figure>
+        </div>
+      </section>
+
+      <section class="card panel" id="panel-6" data-panel="6" tabindex="-1" aria-labelledby="section-6-title" hidden>
+        <div class="card__head">
+          <span class="card__no" aria-hidden="true">6</span>
+          <h2 id="section-6-title">Was sollen wir mitnehmen?</h2>
+        </div>
+        <p class="card__note">Hier ist Platz f&uuml;r das, was in einer Zahl nicht sichtbar wird. Alles freiwillig.</p>
+
+        <div class="grid grid--2">
+          <div class="field">
+            <label for="positive_aspekte">Was hat besonders gut funktioniert?</label>
+            <textarea id="positive_aspekte" name="positive_aspekte" maxlength="2000" rows="4"></textarea>
+          </div>
+          <div class="field">
+            <label for="verbesserungen">Haben Sie Verbesserungsvorschl&auml;ge?</label>
+            <textarea id="verbesserungen" name="verbesserungen" maxlength="2000" rows="4"></textarea>
+          </div>
+          <div class="field">
+            <label for="themenwuensche">Welche Themen w&uuml;nschen Sie sich in Zukunft?</label>
+            <textarea id="themenwuensche" name="themenwuensche" maxlength="2000" rows="4"></textarea>
+          </div>
+          <div class="field">
+            <label for="weitere_anmerkungen">Weitere Anmerkungen</label>
+            <textarea id="weitere_anmerkungen" name="weitere_anmerkungen" maxlength="2000" rows="4"></textarea>
+          </div>
+        </div>
+
+        <!-- Reihenfolge bewusst: erst das Textfeld, danach die Auswahl per Tipp.
+             Sonst steht am Ende die Tastatur offen und verdeckt den Absenden-Knopf. -->
+        <div class="field recommend__why">
+          <label for="weiterempfehlung_grund">Was ist der wichtigste Grund f&uuml;r Ihre Einsch&auml;tzung?</label>
+          <textarea id="weiterempfehlung_grund" name="weiterempfehlung_grund" maxlength="1600" rows="3"></textarea>
+        </div>
+
+        <fieldset class="recommend">
+          <legend>W&uuml;rden Sie die Campus-Schulung weiterempfehlen?</legend>
+          <div class="recommend__row">
+            <label class="chip"><input type="radio" name="weiterempfehlung" value="Ja"><span>Ja</span></label>
+            <label class="chip"><input type="radio" name="weiterempfehlung" value="Vielleicht"><span>Vielleicht</span></label>
+            <label class="chip"><input type="radio" name="weiterempfehlung" value="Nein"><span>Nein</span></label>
+          </div>
+        </fieldset>
+
+        <div class="missing" id="missingBox" hidden>
+          <p class="missing__head">Diese Angaben fehlen noch:</p>
+          <ul class="missing__list" id="missingList"></ul>
+        </div>
+        <p class="send__status" id="statusMessage" role="status" aria-live="polite"></p>
+      </section>
+    </form>
+  </main>
+
+  <nav class="stepbar" id="stepbar" aria-label="Schrittnavigation" hidden>
+    <div class="shell stepbar__inner">
+      <button type="button" class="stepbar__back" id="backButton">Zur&uuml;ck</button>
+      <button type="button" class="stepbar__next" id="nextButton">
+        <span class="stepbar__spin" aria-hidden="true"></span>
+        <span id="nextLabel">Weiter</span>
+      </button>
+    </div>
+  </nav>
+
+  <footer class="foot" id="foot">
+    <div class="shell foot__inner">
+      <span>THITRONIK Campus 2026</span>
+      <span>Feedback f&uuml;r H&auml;ndler</span>
+    </div>
+  </footer>
+
+  <div class="done" id="thankYouScreen" role="dialog" aria-modal="true" aria-labelledby="thankYouTitle" tabindex="-1" hidden>
+    <div class="done__inner">
+      <img class="done__logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII=" alt="THITRONIK" width="485" height="118">
+      <p class="done__check" aria-hidden="true">&#10003;</p>
+      <h2 id="thankYouTitle">Vielen Dank, <span id="thankYouName">Teilnehmer</span></h2>
+      <p class="done__lead">Ihr Feedback ist bei uns angekommen.</p>
+      <div class="done__card">
+        <strong>Ihre Teilnahmeurkunde wartet auf Sie.</strong>
+        <p>Zeigen Sie diese Best&auml;tigung vorne an der Garderobe, als Screenshot oder direkt auf Ihrem
+          Smartphone. Dort erhalten Sie Ihre pers&ouml;nliche Urkunde.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+/* ============================================================================
+   THITRONIK Campus 2026 Feedbackbogen - v13 (Schritt fuer Schritt)
+
+   Ein Abschnitt pro Bildschirm. Der RPC-Payload ist gegenueber v11/v12
+   unveraendert (gleiche Feldnamen, gleiche itemLabel-Strings, gleiches
+   source/formVersion), damit Auswertung und Insel-Contest weiterlaufen.
+   ========================================================================== */
+(() => {
+  'use strict';
+
+  const form = document.getElementById('feedbackForm');
+  if (!form) return;
+
+  const statusEl = document.getElementById('statusMessage');
+  const doneScreen = document.getElementById('thankYouScreen');
+  const doneName = document.getElementById('thankYouName');
+  const rail = document.getElementById('rail');
+  const railFill = document.getElementById('railFill');
+  const railCount = document.getElementById('railCount');
+  const railStep = document.getElementById('railStep');
+  const railName = document.getElementById('railName');
+  const stepbar = document.getElementById('stepbar');
+  const backButton = document.getElementById('backButton');
+  const nextButton = document.getElementById('nextButton');
+  const nextLabel = document.getElementById('nextLabel');
+  const startButton = document.getElementById('startButton');
+  const announce = document.getElementById('stepAnnounce');
+  const draftNote = document.getElementById('draftNote');
+  const draftClear = document.getElementById('draftClear');
+  const missingBox = document.getElementById('missingBox');
+  const missingList = document.getElementById('missingList');
+
+  const SUPABASE_URL = 'https://mhzlayhnyqlxdyiceyqz.supabase.co';
+  const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_bJN8jgtj-Lx6mRyE2hWBgQ_8alccYFG';
+  const SUPABASE_RPC = 'submit_campus_feedback';
+  const DRAFT_KEY = 'thitronik-campus-2026-feedback-draft-v13';
+
+  const demoMode = new URLSearchParams(window.location.search).get('demo') === '1';
+
+  /* itemLabel-Strings exakt wie in v11. Nicht ohne Anpassung der Auswertung
+     aendern. */
+  const ratingDefinitions = [
+    ['organisation_ablauf', 'kommunikation_vorfeld', 'Kommunikation und Information im Vorfeld'],
+    ['organisation_ablauf', 'anmeldung_vorbereitung', 'Anmeldung & Vorbereitung'],
+    ['organisation_ablauf', 'zeitplanung_tagesablauf', 'Zeitplanung / Tagesablauf'],
+    ['organisation_ablauf', 'organisation_vor_ort', 'Organisation vor Ort'],
+    ['organisation_ablauf', 'raeumlichkeiten_technik', 'Räumlichkeiten & Technik'],
+    ['organisation_ablauf', 'bewirtung_haus', 'Bewirtung im Haus'],
+    ['organisation_ablauf', 'abendveranstaltung', 'Abendveranstaltung'],
+    ['durchfuehrung', 'relevanz_themen', 'Relevanz der Themen'],
+    ['durchfuehrung', 'verstaendlichkeit', 'Verständlichkeit der Inhalte'],
+    ['durchfuehrung', 'praxisbezug', 'Praxisbezug'],
+    ['durchfuehrung', 'produktvorfuehrungen', 'Produktvorführungen & Demonstrationen'],
+    ['durchfuehrung', 'fragen', 'Möglichkeit für Fragen'],
+    ['durchfuehrung', 'betreuung_thitronik', 'Betreuung durch THITRONIK']
+  ];
+
+  const islandDefinitions = {
+    '1': ['insel_vejroe', 'Vejrø'],
+    '2': ['insel_hiddensee', 'Hiddensee'],
+    '3': ['insel_fehmarn', 'Fehmarn'],
+    '4': ['insel_poel', 'Poel'],
+    '5': ['insel_usedom', 'Usedom'],
+    '6': ['insel_langeland', 'Langeland'],
+    '7': ['insel_samsoe', 'Samsø'],
+    '8': ['insel_ruegen', 'Rügen']
+  };
+
+  const RATING_KEYS = ratingDefinitions.map((definition) => definition[1]);
+  const SECTION_NAMES = ['Angaben', 'Eindruck', 'Organisation', 'Schulung', 'Inseln', 'Ausblick'];
+
+  const panels = [...document.querySelectorAll('[data-panel]')]
+    .sort((a, b) => Number(a.dataset.panel) - Number(b.dataset.panel));
+  const LAST = panels.length - 1;
+
+  if (demoMode) {
+    const badge = document.createElement('p');
+    badge.textContent = 'Vorschau: es wird nichts gespeichert';
+    badge.style.cssText =
+      /* Unten links: oben rechts verdeckte es auf dem Handy das Logo. */
+      'position:fixed;z-index:3000;left:12px;bottom:calc(96px + env(safe-area-inset-bottom,0px));' +
+      'margin:0;padding:8px 14px;border-radius:999px;background:#fff;color:#A50F24;' +
+      'border:1px solid #EFC3CA;font-size:.74rem;font-weight:800;' +
+      'box-shadow:0 8px 24px rgba(29,54,97,.22)';
+    document.body.appendChild(badge);
+  }
+
+  /* ------------------------------------------------------------ Fehlerausgabe */
+
+  function fieldWrapper(el) {
+    return el.closest('.field') || el.closest('.rate__comment') || el.parentElement;
+  }
+
+  function errorNodeFor(el) {
+    const wrapper = fieldWrapper(el);
+    const id = `${el.id}_err`;
+
+    let target = document.getElementById(id);
+    if (target) return target;
+    if (!wrapper) return null;
+
+    target = wrapper.querySelector('[data-err]');
+    if (!target) {
+      target = document.createElement('p');
+      target.className = 'field__err';
+      target.setAttribute('data-err', '');
+      target.hidden = true;
+      wrapper.appendChild(target);
+    }
+    if (!target.id) target.id = id;
+
+    const described = (el.getAttribute('aria-describedby') || '').split(/\s+/).filter(Boolean);
+    if (!described.includes(target.id)) {
+      described.push(target.id);
+      el.setAttribute('aria-describedby', described.join(' '));
+    }
+    return target;
+  }
+
+  function showFieldError(el, message) {
+    const wrapper = fieldWrapper(el);
+    if (wrapper) wrapper.classList.add('field--bad');
+    const target = errorNodeFor(el);
+    if (target) {
+      target.textContent = message;
+      target.hidden = false;
+    }
+    el.setAttribute('aria-invalid', 'true');
+  }
+
+  function clearFieldError(el) {
+    const wrapper = fieldWrapper(el);
+    if (wrapper) wrapper.classList.remove('field--bad');
+    const target =
+      document.getElementById(`${el.id}_err`) ||
+      (wrapper && wrapper.querySelector('[data-err]'));
+    if (target) {
+      target.textContent = '';
+      target.hidden = true;
+    }
+    el.removeAttribute('aria-invalid');
+  }
+
+  function setStatus(message, type) {
+    if (!statusEl) return;
+    statusEl.textContent = message;
+    statusEl.className = `send__status${type ? ` is-${type}` : ''}`;
+  }
+
+  /* ----------------------------------------------------------- Bewertungszeilen
+     Kommentar ist NUR bei 5 verpflichtend. Eine Pflichtbegruendung fuer die
+     Bestnote treibt Teilnehmende systematisch auf die 2 aus. */
+
+  function setupRatingRow(row) {
+    const radios = [...row.querySelectorAll('input[type="radio"]')];
+    const box = row.querySelector('[data-comment]');
+    const label = row.querySelector('[data-comment-label]');
+    const help = row.querySelector('[data-comment-help]');
+    const textarea = box && box.querySelector('textarea');
+    if (!box || !label || !help || !textarea || !radios.length) return;
+
+    function update(fromUser) {
+      const selected = radios.find((radio) => radio.checked);
+      const value = selected ? selected.value : '';
+      const wasHidden = box.hidden;
+
+      box.hidden = value !== '1' && value !== '5';
+      box.classList.toggle('rate__comment--must', value === '5');
+      box.classList.toggle('rate__comment--good', value === '1');
+      textarea.dataset.required = value === '5' ? 'true' : 'false';
+
+      if (fromUser && wasHidden && !box.hidden) {
+        box.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      }
+
+      if (value === '5') {
+        label.textContent = 'Was sollten wir hier verbessern?';
+        help.textContent = 'Kurz genügt. Diese Angabe brauchen wir.';
+      } else if (value === '1') {
+        label.textContent = 'Was hat hier besonders gut funktioniert?';
+        help.textContent = 'Freiwillig. Hilft uns aber sehr, das beizubehalten.';
+      }
+
+      if (value !== '5') clearFieldError(textarea);
+    }
+
+    radios.forEach((radio) => radio.addEventListener('change', () => {
+      update(true);
+      onFormChanged();
+    }));
+    textarea.addEventListener('input', () => clearFieldError(textarea));
+    update(false);
+  }
+
+  const rows = [...document.querySelectorAll('[data-rate]')];
+  rows.forEach(setupRatingRow);
+
+  /* ------------------------------------------------------------- Validierung */
+
+  function panelOf(el) {
+    const panel = el.closest('[data-panel]');
+    return panel ? Number(panel.dataset.panel) : 0;
+  }
+
+  /* scope === null prueft das gesamte Formular, sonst nur ein Panel. */
+  function collectProblems(scope) {
+    const problems = [];
+    const inScope = (el) => !scope || scope.contains(el);
+
+    [['dealer_name', 'Händlerbetrieb', 'Bitte tragen Sie Ihren Händlerbetrieb ein.'],
+     ['name', 'Ihr Name', 'Bitte tragen Sie Ihren Namen ein.']].forEach(([id, label, message]) => {
+      const el = document.getElementById(id);
+      if (!el || !inScope(el)) return;
+      if (el.value.trim().length < 2) {
+        showFieldError(el, message);
+        problems.push({ el, label, panel: panelOf(el) });
+      } else {
+        clearFieldError(el);
+      }
+    });
+
+    rows.forEach((row) => {
+      const textarea = row.querySelector('[data-comment] textarea');
+      if (!textarea || !inScope(textarea)) return;
+      if (textarea.dataset.required === 'true' && !textarea.value.trim()) {
+        showFieldError(textarea, 'Bitte beschreiben Sie kurz, was wir verbessern können.');
+        const legend = row.querySelector('.rate__label');
+        problems.push({
+          el: textarea,
+          label: `Kommentar zu "${legend ? legend.textContent.trim() : 'Bewertung'}"`,
+          panel: panelOf(textarea)
+        });
+      } else {
+        clearFieldError(textarea);
+      }
+    });
+
+    return problems;
+  }
+
+  function renderMissing(problems) {
+    if (!missingBox || !missingList) return;
+
+    if (!problems.length) {
+      missingBox.hidden = true;
+      missingList.replaceChildren();
+      return;
+    }
+
+    missingList.replaceChildren(...problems.map(({ el, label, panel }) => {
+      const link = document.createElement('a');
+      link.href = `#${el.id}`;
+      link.textContent = label;
+      link.addEventListener('click', (event) => {
+        event.preventDefault();
+        goTo(panel, true);
+        window.setTimeout(() => {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          el.focus({ preventScroll: true });
+        }, 60);
+      });
+      const item = document.createElement('li');
+      item.appendChild(link);
+      return item;
+    }));
+    missingBox.hidden = false;
+  }
+
+  /* ------------------------------------------------------------- Fortschritt */
+
+  const TRACKED = ['dealer_name', 'name', 'overall', ...RATING_KEYS, 'weiterempfehlung'];
+
+  const TALLIES = [
+    ['3', 'organisation_ablauf'],
+    ['4', 'durchfuehrung']
+  ].map(([id, sectionKey]) => ({
+    el: document.querySelector(`[data-tally="${id}"]`),
+    keys: ratingDefinitions.filter((d) => d[0] === sectionKey).map((d) => d[1])
+  })).filter((tally) => tally.el);
+
+  /* ------------------------------------------------------------------ Inseln
+     Hoechstens drei Favoriten, in der Reihenfolge der Auswahl. Eine
+     unbegrenzte Mehrfachauswahl macht den Insel-Contest wertlos: wer alle
+     acht ankreuzt, liefert kein Signal. */
+
+  const ISLAND_MAX = 3;
+  const islandBoxes = [...document.querySelectorAll('input[name="inseln"]')];
+  const islandTally = document.querySelector('[data-tally="isles"]');
+  let islandOrder = [];
+
+  function updateIslands() {
+    islandOrder = islandOrder.filter((value) =>
+      islandBoxes.some((box) => box.value === value && box.checked));
+
+    islandBoxes.forEach((box) => {
+      if (box.checked && !islandOrder.includes(box.value)) islandOrder.push(box.value);
+    });
+    islandOrder = islandOrder.slice(0, ISLAND_MAX);
+
+    const voll = islandOrder.length >= ISLAND_MAX;
+    islandBoxes.forEach((box) => {
+      box.disabled = voll && !box.checked;
+      const rank = box.parentElement.querySelector('[data-rank]');
+      if (!rank) return;
+      const platz = islandOrder.indexOf(box.value);
+      rank.textContent = platz >= 0 ? `PLATZ ${platz + 1}` : '';
+    });
+
+    if (islandTally) {
+      islandTally.textContent = `${islandOrder.length} von ${ISLAND_MAX}`;
+      islandTally.classList.toggle('card__tally--full', voll);
+    }
+  }
+
+  islandBoxes.forEach((box) => box.addEventListener('change', updateIslands));
+
+  /* ----------------------------------------------------------- Schrittsegmente */
+
+  const stepItems = [...document.querySelectorAll('#steps li')];
+  let maxVisited = 1;
+
+  function updateSteps(active) {
+    stepItems.forEach((item) => {
+      const n = Number(item.dataset.step);
+      const button = item.querySelector('button');
+      const state = n === active ? 'current' : (n < active || n <= maxVisited ? 'done' : 'todo');
+      item.dataset.state = state;
+      /* Zurueckspringen ist erlaubt, vorspringen nicht: sonst umgeht man die
+         Pruefung der Pflichtangaben. */
+      button.disabled = !(state === 'done' && n < active);
+    });
+  }
+
+  stepItems.forEach((item) => {
+    item.querySelector('button').addEventListener('click', () => {
+      const target = Number(item.dataset.step);
+      if (target < current) goTo(target, true);
+    });
+  });
+
+  function answeredCount() {
+    let count = 0;
+    for (const key of TRACKED) {
+      const nodes = form.elements[key];
+      if (!nodes) continue;
+      if (nodes instanceof RadioNodeList) {
+        if (nodes.value) count += 1;
+      } else if (typeof nodes.value === 'string') {
+        if (nodes.value.trim().length >= 2) count += 1;
+      }
+    }
+    return count;
+  }
+
+  function updateProgress() {
+    TALLIES.forEach(({ el, keys }) => {
+      const done = keys.filter((key) => {
+        const nodes = form.elements[key];
+        return nodes && nodes.value;
+      }).length;
+      el.textContent = `${done} von ${keys.length}`;
+      el.classList.toggle('card__tally--full', done === keys.length);
+    });
+
+    if (!railFill || !railCount) return;
+    const done = answeredCount();
+    railFill.style.width = `${Math.round((done / TRACKED.length) * 100)}%`;
+    railCount.textContent = `${done} von ${TRACKED.length} beantwortet`;
+  }
+
+  /* ------------------------------------------------------------------ Entwurf */
+
+  let saveTimer = 0;
+  let current = 0;
+
+  function collectDraft() {
+    const draft = { __panel: current, __isles: islandOrder.slice() };
+    for (const el of form.elements) {
+      if (!el.name || el.name === 'website') continue;
+      if (el.type === 'radio') {
+        if (el.checked) draft[el.name] = el.value;
+      } else if (el.type === 'checkbox') {
+        if (el.checked) (draft[el.name] = draft[el.name] || []).push(el.value);
+      } else if (el.value) {
+        draft[el.name] = el.value;
+      }
+    }
+    return draft;
+  }
+
+  function saveDraft() {
+    try { localStorage.setItem(DRAFT_KEY, JSON.stringify(collectDraft())); } catch (error) { /* egal */ }
+  }
+
+  function dropDraft() {
+    try { localStorage.removeItem(DRAFT_KEY); } catch (error) { /* egal */ }
+  }
+
+  let draftPanel = 0;
+
+  function restoreDraft() {
+    let draft;
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (!raw) return false;
+      draft = JSON.parse(raw);
+    } catch (error) {
+      return false;
+    }
+    if (!draft || typeof draft !== 'object') return false;
+
+    if (Array.isArray(draft.__isles)) islandOrder = draft.__isles.slice(0, 3);
+
+    let restored = 0;
+    for (const [name, value] of Object.entries(draft)) {
+      if (name === '__panel' || name === '__isles') continue;
+      const nodes = form.elements[name];
+      if (!nodes) continue;
+
+      if (Array.isArray(value)) {
+        const list = nodes instanceof RadioNodeList ? [...nodes] : [nodes];
+        list.forEach((el) => {
+          if (value.includes(el.value)) { el.checked = true; restored += 1; }
+        });
+      } else if (nodes instanceof RadioNodeList) {
+        [...nodes].forEach((el) => {
+          if (el.value === value) { el.checked = true; restored += 1; }
+        });
+      } else if (typeof nodes.value === 'string') {
+        nodes.value = value;
+        restored += 1;
+      }
+    }
+
+    if (!restored) return false;
+    draftPanel = Math.min(Math.max(Number(draft.__panel) || 1, 1), LAST);
+    rows.forEach(setupRatingRow);
+    return true;
+  }
+
+  function onFormChanged() {
+    updateProgress();
+    window.clearTimeout(saveTimer);
+    saveTimer = window.setTimeout(saveDraft, 400);
+  }
+
+  form.addEventListener('input', onFormChanged);
+  form.addEventListener('change', onFormChanged);
+
+  /* --------------------------------------------------------------- Schritte */
+
+  function goTo(index, push) {
+    const target = Math.min(Math.max(index, 0), LAST);
+    current = target;
+
+    panels.forEach((panel) => {
+      panel.hidden = Number(panel.dataset.panel) !== target;
+    });
+
+    const stepping = target > 0;
+    document.body.classList.toggle('is-stepping', stepping);
+    if (rail) rail.hidden = !stepping;
+    if (stepbar) stepbar.hidden = !stepping;
+
+    if (stepping) {
+      maxVisited = Math.max(maxVisited, target);
+      if (railStep) railStep.textContent = String(target);
+      if (railName) railName.textContent = SECTION_NAMES[target - 1] || '';
+      if (announce) announce.textContent = `Schritt ${target} von ${LAST}: ${SECTION_NAMES[target - 1] || ''}`;
+      if (backButton) backButton.hidden = target === 1;
+      if (nextLabel) nextLabel.textContent = target === LAST ? 'Feedback absenden' : 'Weiter';
+      updateSteps(target);
+    }
+
+    window.scrollTo({ top: 0, behavior: 'auto' });
+    const panel = panels[target];
+    if (panel) panel.focus({ preventScroll: true });
+
+    if (push) {
+      const state = { panel: target };
+      if (window.history.state && window.history.state.panel === target) {
+        window.history.replaceState(state, '', `#schritt-${target}`);
+      } else {
+        window.history.pushState(state, '', target === 0 ? '#start' : `#schritt-${target}`);
+      }
+    }
+
+    saveDraft();
+  }
+
+  window.addEventListener('popstate', (event) => {
+    const panel = event.state && typeof event.state.panel === 'number' ? event.state.panel : 0;
+    goTo(panel, false);
+  });
+
+  if (startButton) {
+    startButton.addEventListener('click', () => goTo(draftPanel || 1, true));
+  }
+  if (backButton) {
+    backButton.addEventListener('click', () => {
+      if (current > 1) window.history.back();
+    });
+  }
+  if (nextButton) {
+    nextButton.addEventListener('click', () => {
+      if (current < LAST) {
+        const problems = collectProblems(panels[current]);
+        if (problems.length) {
+          const first = problems[0].el;
+          first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          first.focus({ preventScroll: true });
+          return;
+        }
+        goTo(current + 1, true);
+        return;
+      }
+      form.requestSubmit();
+    });
+  }
+
+  if (draftClear) {
+    draftClear.addEventListener('click', () => {
+      dropDraft();
+      form.reset();
+      rows.forEach((row) => {
+        const box = row.querySelector('[data-comment]');
+        const textarea = box && box.querySelector('textarea');
+        if (box) box.hidden = true;
+        if (textarea) { textarea.value = ''; textarea.dataset.required = 'false'; }
+      });
+      draftPanel = 1;
+      islandOrder = [];
+      updateIslands();
+      if (draftNote) draftNote.hidden = true;
+      updateProgress();
+    });
+  }
+
+  /* -------------------------------------------------------------- Danke-Ansicht */
+
+  const pageRegions = ['.masthead', '.rail', '.main', '.stepbar', '.foot']
+    .map((selector) => document.querySelector(selector))
+    .filter(Boolean);
+
+  function showDone(name) {
+    if (!doneScreen || !doneName) return;
+    doneName.textContent = String(name || '').trim() || 'Teilnehmer';
+    doneScreen.hidden = false;
+    document.body.classList.add('is-done');
+    pageRegions.forEach((region) => { region.inert = true; });
+    doneScreen.focus({ preventScroll: true });
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }
+
+  /* -------------------------------------------------------------------- Payload */
+
+  function submissionId() {
+    if (form.dataset.submissionId) return form.dataset.submissionId;
+    const id = window.crypto && window.crypto.randomUUID
+      ? window.crypto.randomUUID()
+      : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+        const r = Math.random() * 16 | 0;
+        return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+      });
+    form.dataset.submissionId = id;
+    return id;
+  }
+
+  function normalizeRecommendation(value) {
+    switch (value) {
+      case 'Ja': return 'Ja, auf jeden Fall';
+      case 'Vielleicht': return 'Eher ja';
+      case 'Nein': return 'Nein';
+      case 'Ja, auf jeden Fall':
+      case 'Eher ja':
+      case 'Eher nein':
+        return value;
+      default: return null;
+    }
+  }
+
+  function buildRpcPayload() {
+    const data = new FormData(form);
+    const ratings = [];
+
+    for (const [sectionKey, itemKey, itemLabel] of ratingDefinitions) {
+      const raw = data.get(itemKey);
+      if (!raw || raw === 'na') continue;
+      ratings.push({
+        sectionKey,
+        itemKey,
+        itemLabel,
+        rating: Number(raw),
+        comment: String(data.get(`${itemKey}_comment`) || '').trim() || null
+      });
+    }
+
+    /* islandChoices steht in der Reihenfolge der Auswahl, also Platz 1 bis 3.
+       Die Rating-Eintraege bleiben ALLE bei 1: der bestehende Contest zaehlt
+       ueber anzahl_note_1, eine Gewichtung nach Platz wuerde ihn still
+       veraendern. Die Rangfolge steckt in islandChoices und im raw_payload. */
+    const islandChoices = [];
+    const gewaehlt = islandOrder.length
+      ? islandOrder
+      : data.getAll('inseln').map(String);
+
+    for (const value of gewaehlt) {
+      const definition = islandDefinitions[value];
+      if (!definition) continue;
+      const [itemKey, itemLabel] = definition;
+      islandChoices.push(itemLabel);
+      ratings.push({ sectionKey: 'schulungsinseln', itemKey, itemLabel, rating: 1, comment: null });
+    }
+
+    return {
+      submissionId: submissionId(),
+      createdClientAt: new Date().toISOString(),
+      eventSlug: 'campus-2026',
+      formVersion: form.dataset.formVersion || 'campus-2026-haendler-v11',
+      dealerName: String(data.get('dealer_name') || '').trim(),
+      participantName: String(data.get('name') || '').trim(),
+      participantAreas: data.getAll('bereich').map(String),
+      overallRating: data.get('overall') || null,
+      recommendation: normalizeRecommendation(data.get('weiterempfehlung')),
+      recommendationReason: String(data.get('weiterempfehlung_grund') || '').trim() || null,
+      topicWishes: String(data.get('themenwuensche') || '').trim() || null,
+      teamMood: null,
+      improvementSuggestions: String(data.get('verbesserungen') || '').trim() || null,
+      positiveAspects: String(data.get('positive_aspekte') || '').trim() || null,
+      additionalNotes: String(data.get('weitere_anmerkungen') || '').trim() || null,
+      islandChoices,
+      source: 'thitronik-campus-feedback-v11',
+      ratings
+    };
+  }
+
+  async function saveToSupabase(payload) {
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), 18000);
+
+    try {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${SUPABASE_RPC}`, {
+        method: 'POST',
+        headers: {
+          apikey: SUPABASE_PUBLISHABLE_KEY,
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify({ payload }),
+        signal: controller.signal
+      });
+
+      const text = await response.text();
+      if (!response.ok) {
+        const error = new Error(`Supabase RPC HTTP ${response.status}${text ? `: ${text}` : ''}`);
+        error.httpStatus = response.status;
+        throw error;
+      }
+      return text;
+    } finally {
+      window.clearTimeout(timeout);
+    }
+  }
+
+  function messageForError(error) {
+    if (error && error.name === 'AbortError') {
+      return 'Die Speicherung hat zu lange gedauert. Bitte prüfen Sie Ihre Verbindung und senden Sie erneut. Ihre Eingaben bleiben erhalten.';
+    }
+    const status = error && error.httpStatus;
+    if (status === 401 || status === 403) {
+      return 'Die Verbindung zur Feedback-Datenbank wurde abgewiesen. Bitte wenden Sie sich kurz an das THITRONIK Team.';
+    }
+    if (status === 404) {
+      return 'Der Feedback-Dienst ist momentan nicht erreichbar. Bitte wenden Sie sich kurz an das THITRONIK Team.';
+    }
+    return 'Das Feedback konnte gerade nicht gespeichert werden. Bitte versuchen Sie es erneut. Ihre Eingaben bleiben erhalten.';
+  }
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    setStatus('');
+
+    if (form.elements.website && form.elements.website.value) return;
+
+    const problems = collectProblems(null);
+    renderMissing(problems);
+    if (problems.length) {
+      setStatus(
+        problems.length === 1 ? 'Eine Angabe fehlt noch.' : `${problems.length} Angaben fehlen noch.`,
+        'error'
+      );
+      if (missingBox) missingBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    const payload = buildRpcPayload();
+
+    if (demoMode) {
+      console.info('Campus-Feedback Vorschau-Payload:', payload);
+      showDone(payload.participantName);
+      return;
+    }
+
+    nextButton.disabled = true;
+    nextButton.setAttribute('aria-busy', 'true');
+    if (nextLabel) nextLabel.textContent = 'Wird gesendet';
+    setStatus('Ihr Feedback wird gespeichert.');
+
+    try {
+      await saveToSupabase(payload);
+      const participantName = payload.participantName;
+      dropDraft();
+      delete form.dataset.submissionId;
+      showDone(participantName);
+    } catch (error) {
+      console.error('Supabase-Speicherfehler:', error);
+      setStatus(messageForError(error), 'error');
+      if (statusEl) statusEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } finally {
+      nextButton.disabled = false;
+      nextButton.removeAttribute('aria-busy');
+      if (nextLabel) nextLabel.textContent = 'Feedback absenden';
+    }
+  });
+
+  /* -------------------------------------------------------------------- Aufbau */
+
+  if (restoreDraft() && draftNote) draftNote.hidden = false;
+  updateIslands();
+  updateProgress();
+
+  /* Direkteinstieg per #schritt-N erlauben, sonst Startbildschirm. */
+  const fromHash = /^#schritt-(\d)$/.exec(window.location.hash);
+  const initial = fromHash ? Number(fromHash[1]) : 0;
+  window.history.replaceState({ panel: initial }, '', window.location.hash || '#start');
+  goTo(initial, false);
+})();
+  </script>
+</body>
+</html>

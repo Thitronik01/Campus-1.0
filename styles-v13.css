@@ -1,0 +1,768 @@
+/* ============================================================================
+   THITRONIK Campus 2026 Feedbackbogen - v13
+   Schritt fuer Schritt. Mobile first.
+
+   FARBEN: verbindliche THITRONIK Markenpalette.
+     th_blue_primary   #1D3661  Primary Flaechen, Headlines, Primary Buttons
+     th_blue_secondary #3BA9D3  Akzente, Badges, Links, Info-Flaechen
+     th_accent_lime    #AFCA05  Marker und Status, sehr sparsam
+     th_red_brand      #CE132D  Logo-Segel, sehr sparsam
+     graySoft          #F0F0F0  Backgrounds, Card-Flaechen
+     white             #FFFFFF  Ruheflaechen
+     ink               #111111  Text und Icons auf hell
+
+   Rot erscheint deshalb ausschliesslich bei Fehlern und in der Skalen-Note 5,
+   also dort, wo die Signalwirkung inhaltlich verdient ist. Primary Buttons
+   sind blau. Lime markiert Status, nie Flaeche.
+
+   RADIEN (verbindlich):
+     --r-control  Eingaben, Optionen, Kommentarfelder
+     --r-card     Karten und grosse Flaechen
+     --r-pill     Aktionen und Badges
+   ========================================================================== */
+
+:root {
+  /* Marke */
+  --blue: #1D3661;
+  --blue-2: #3BA9D3;
+  --lime: #AFCA05;
+  --red: #CE132D;
+  --gray-soft: #F0F0F0;
+  --white: #FFFFFF;
+  --ink: #111111;
+
+  /* Abgeleitet, bleibt im Farbklang der Marke */
+  --blue-deep: #14284A;
+  --blue-hover: #16294B;
+  --blue-tint: #E9F3F9;
+  --lime-deep: #7C8F04;
+  --red-deep: #A50F24;
+  --muted: #55606B;
+  --line: #D8DEE5;
+  --line-soft: #E6EAEF;
+
+  /* Radien */
+  --r-control: 12px;
+  --r-card: 20px;
+  --r-pill: 999px;
+
+  --gap: 20px;
+  --shell: 1200px;
+  --ring: 0 0 0 3px rgba(59, 169, 211, .5);
+  --lift: 0 10px 30px rgba(29, 54, 97, .10);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; scroll-padding-top: 108px; }
+
+body {
+  margin: 0;
+  background: var(--gray-soft);
+  color: var(--ink);
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Text",
+    "Segoe UI", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img { max-width: 100%; display: block; }
+button, input, textarea { font: inherit; color: inherit; }
+button { background: none; border: 0; }
+button, label, input[type="radio"], input[type="checkbox"] { cursor: pointer; }
+
+h1, h2 { margin: 0; color: var(--blue); letter-spacing: -.021em; }
+
+.shell { width: min(var(--shell), 100% - 28px); margin-inline: auto; }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+
+.skip {
+  position: fixed; z-index: 999; top: 10px; left: 10px;
+  transform: translateY(-160%);
+  padding: 11px 16px; border-radius: var(--r-pill);
+  background: var(--white); color: var(--blue);
+  font-weight: 700; text-decoration: none;
+  box-shadow: var(--lift);
+}
+.skip:focus-visible { transform: translateY(0); }
+
+.noscript {
+  margin: 0; padding: 16px;
+  background: #FFF6E0; color: #6B4A00;
+  border-bottom: 2px solid #E0B23A;
+  text-align: center; font-weight: 600;
+}
+
+:where(a, button, input, textarea, [tabindex]):focus-visible {
+  outline: 3px solid var(--blue-2);
+  outline-offset: 2px;
+}
+
+input[type="text"], textarea, .rate, .field { scroll-margin-top: 118px; }
+
+/* Auf Touch gibt es keinen Hover, der die Beruehrung bestaetigt. */
+.rate__opt span, .chip span, .overall__opt span, .rate__na span, .isle__box,
+.stepbar__next, .stepbar__back, .intro__start { -webkit-tap-highlight-color: transparent; }
+.rate__opt:active span, .chip:active span,
+.overall__opt:active span, .rate__na:active span { transform: scale(.97); }
+.isle:active .isle__box { transform: scale(.99); }
+
+/* ---------------------------------------------------------------- Kopfbereich */
+
+.masthead {
+  position: relative;
+  background: var(--blue);
+  overflow: hidden;
+}
+/* Das maritime Motiv bleibt als leiser Marken-Anklang, aber nur hier oben.
+   Die Seitenflaeche selbst ist graySoft, wie in der Palette vorgesehen. */
+.masthead::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: url("assets/v12/background-800.webp") center / cover no-repeat;
+  opacity: .34;
+  pointer-events: none;
+}
+.masthead__bar {
+  position: relative;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: 12px 16px; min-height: 76px;
+}
+.masthead__logo { width: min(220px, 46vw); height: auto; }
+
+/* "Campus 2026" im THITRONIK Neongruen. Lime als Marker, dunkler Text darauf
+   erreicht 10:1 Kontrast, weisser Text waere unlesbar. */
+.masthead__tag {
+  padding: 6px 13px; border-radius: var(--r-pill);
+  background: var(--lime); color: var(--ink);
+  font-size: .74rem; font-weight: 800;
+  letter-spacing: .1em; text-transform: uppercase; white-space: nowrap;
+}
+
+@media (min-width: 760px) { .masthead__bar { min-height: 96px; } }
+
+/* ------------------------------------------------------- Fortschrittsanzeige */
+
+.rail {
+  position: sticky; top: 0; z-index: 40;
+  background: rgba(255, 255, 255, .96);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line-soft);
+  box-shadow: 0 6px 20px rgba(29, 54, 97, .07);
+}
+.rail[hidden] { display: none; }
+
+.rail__inner {
+  display: grid; gap: 9px;
+  padding: 11px 0 12px;
+}
+
+.rail__head { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; }
+.rail__now { margin: 0; display: flex; align-items: baseline; gap: 9px; min-width: 0; }
+.rail__step { flex: none; color: var(--muted); font-size: .74rem; font-weight: 700; white-space: nowrap; }
+.rail__now strong {
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  color: var(--blue); font-size: 1.02rem; letter-spacing: -.015em;
+}
+.rail__count { margin: 0; flex: none; color: var(--muted); font-size: .76rem; font-weight: 650; font-variant-numeric: tabular-nums; }
+
+/* Sechs Segmente statt eines durchgehenden Balkens: bei einem Fluss mit
+   bekannter Laenge sagt die Form selbst, wie weit man ist. Erledigte
+   Segmente sind anklickbar und fuehren zurueck. */
+.steps { display: flex; gap: 5px; margin: 0; padding: 0; list-style: none; }
+.steps li { flex: 1; min-width: 0; }
+.steps button {
+  display: block; width: 100%;
+  padding: 7px 0 3px;
+  cursor: default;
+}
+.steps button::before {
+  content: "";
+  display: block; height: 5px;
+  border-radius: var(--r-pill);
+  background: var(--line);
+  transition: background .25s ease, transform .25s ease;
+}
+.steps button:disabled { cursor: default; }
+.steps [data-state="done"] button { cursor: pointer; }
+.steps [data-state="done"] button::before { background: var(--blue-2); }
+.steps [data-state="done"] button:hover::before { background: var(--blue); }
+.steps [data-state="current"] button::before { background: var(--blue); transform: scaleY(1.6); }
+.steps button:focus-visible { outline: 3px solid var(--blue-2); outline-offset: 3px; border-radius: 6px; }
+
+.steps__label { display: none; }
+
+@media (min-width: 900px) {
+  .steps { gap: 8px; }
+  .steps button { padding-bottom: 0; }
+  .steps__label {
+    display: block; margin-top: 7px;
+    color: var(--muted); font-size: .72rem; font-weight: 650;
+    text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .steps [data-state="current"] .steps__label { color: var(--blue); font-weight: 800; }
+  .steps [data-state="done"] .steps__label { color: var(--blue); }
+}
+
+@media (max-width: 620px) { .rail__step { display: none; } }
+
+/* ---------------------------------------------------------------- Grundlayout */
+
+.main { padding: 20px 0 24px; }
+
+.panel[hidden] { display: none; }
+/* Der Fokus wandert beim Schrittwechsel auf das Panel, damit Vorlesesoftware
+   den Abschnitt ansagt. Ein Rahmen um die ganze Karte waere dabei nur Laerm. */
+.panel:focus, .panel:focus-visible { outline: none; }
+
+body.is-stepping { padding-bottom: calc(86px + env(safe-area-inset-bottom, 0px)); }
+body.is-stepping .foot { display: none; }
+
+.form { display: block; }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+/* --------------------------------------------------------------- Startscreen */
+
+.intro {
+  overflow: hidden;
+  border-radius: var(--r-card);
+  background: var(--white);
+  box-shadow: var(--lift);
+}
+.intro__media { position: relative; }
+.intro__media img {
+  width: 100%; height: clamp(168px, 36vw, 310px);
+  object-fit: cover; object-position: center 45%;
+}
+.intro__time {
+  position: absolute; right: 14px; bottom: 14px;
+  padding: 7px 14px; border-radius: var(--r-pill);
+  background: rgba(29, 54, 97, .94); color: var(--white);
+  font-size: .76rem; font-weight: 700;
+  backdrop-filter: blur(6px);
+}
+.intro__copy { padding: 26px 22px 30px; }
+.intro h1 { font-size: clamp(1.74rem, 6.2vw, 2.85rem); line-height: 1.1; }
+.intro h1 br { display: none; }
+.intro__lead {
+  margin: 15px 0 0; max-width: 54ch;
+  color: var(--muted); font-size: clamp(1rem, 2.4vw, 1.09rem);
+}
+
+.intro__facts {
+  display: grid; gap: 10px;
+  margin: 24px 0 0; padding: 0; list-style: none;
+}
+.intro__facts li {
+  display: flex; align-items: center; gap: 11px;
+  color: var(--blue); font-size: .93rem; font-weight: 620;
+}
+.intro__facts b {
+  display: grid; place-items: center;
+  width: 26px; height: 26px; flex: none;
+  border-radius: 50%;
+  background: var(--blue-tint); color: var(--blue);
+  font-size: .74rem; font-weight: 900;
+}
+
+.draft {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 14px; flex-wrap: wrap;
+  margin: 22px 0 0; padding: 14px 16px;
+  border: 1.5px solid var(--blue-2);
+  border-radius: var(--r-control);
+  background: var(--blue-tint);
+  color: var(--blue); font-size: .89rem; font-weight: 620;
+}
+.draft[hidden] { display: none; }
+.draft button {
+  min-height: 40px; padding: 8px 16px;
+  border: 1.5px solid var(--blue); border-radius: var(--r-pill);
+  color: var(--blue); font-size: .82rem; font-weight: 750;
+  transition: background .15s ease, color .15s ease;
+}
+.draft button:hover { background: var(--blue); color: var(--white); }
+
+.recommend { margin-top: 26px; }
+.recommend__why { margin-top: 24px; }
+
+.intro__start {
+  margin-top: 26px; width: 100%;
+  min-height: 58px; padding: 15px 30px;
+  border-radius: var(--r-pill);
+  background: var(--blue); color: var(--white);
+  font-size: 1.05rem; font-weight: 800;
+  box-shadow: 0 10px 26px rgba(29, 54, 97, .26);
+  transition: background .15s ease, transform .12s ease;
+}
+.intro__start:hover { background: var(--blue-hover); }
+.intro__start:active { transform: scale(.985); }
+
+@media (min-width: 760px) {
+  .intro__copy { padding: 38px 44px 46px; }
+  .intro h1 br { display: block; }
+  .intro__facts { grid-auto-flow: column; justify-content: start; gap: 26px; }
+  .intro__start { width: auto; min-width: 290px; }
+}
+
+/* --------------------------------------------------------------------- Karten */
+
+.card {
+  padding: 24px 20px;
+  border-radius: var(--r-card);
+  background: var(--white);
+  box-shadow: var(--lift);
+}
+
+.card__head { display: flex; align-items: center; gap: 13px; }
+.card__no {
+  display: grid; place-items: center;
+  width: 36px; height: 36px; flex: none;
+  border-radius: 50%;
+  background: var(--blue); color: var(--white);
+  font-weight: 800; font-size: .95rem; font-variant-numeric: tabular-nums;
+}
+.card__head h2 { font-size: clamp(1.18rem, 3.5vw, 1.55rem); line-height: 1.22; }
+
+.card__tally {
+  margin: 0 0 0 auto; flex: none;
+  padding: 5px 11px;
+  border-radius: var(--r-pill);
+  background: var(--gray-soft);
+  color: var(--muted); font-size: .74rem; font-weight: 750;
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.card__tally--full { background: var(--lime); color: var(--ink); }
+
+.card__note {
+  margin: 15px 0 0; max-width: 68ch;
+  color: var(--muted); font-size: .93rem;
+}
+.card__head + .grid, .card__head + .rates, .card__head + .isles,
+.card__head + .overall, .card__note + * { margin-top: 22px; }
+
+@media (min-width: 760px) {
+  .card { padding: 32px 36px 36px; }
+  .card__no { width: 42px; height: 42px; font-size: 1.05rem; }
+}
+
+/* ----------------------------------------------------------------- Formfelder */
+
+.grid { display: grid; gap: var(--gap); }
+@media (min-width: 700px) { .grid--2 { grid-template-columns: 1fr 1fr; } }
+
+.field label, .chips legend, .recommend legend {
+  display: block; margin-bottom: 8px;
+  color: var(--blue); font-weight: 700; font-size: .96rem;
+}
+.req {
+  margin-left: 8px;
+  color: var(--red-deep); font-size: .69rem; font-weight: 800;
+  letter-spacing: .07em; text-transform: uppercase;
+}
+.hint { margin-left: 7px; color: var(--muted); font-size: .8rem; font-weight: 600; }
+
+input[type="text"], textarea {
+  width: 100%; padding: 13px 15px;
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-control);
+  background: var(--gray-soft);
+  transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+}
+input[type="text"] { min-height: 50px; }
+textarea { min-height: 100px; resize: vertical; }
+input[type="text"]:focus, textarea:focus {
+  outline: none;
+  background: var(--white);
+  border-color: var(--blue-2);
+  box-shadow: var(--ring);
+}
+.field--bad input[type="text"], .field--bad textarea {
+  border-color: var(--red); background: #FDF2F4;
+}
+.field__err { margin: 7px 0 0; color: var(--red-deep); font-size: .84rem; font-weight: 650; }
+.field__err[hidden] { display: none; }
+
+/* ---------------------------------------------------------------------- Chips */
+
+.chips, .recommend, .overall, .rate, .isles__list {
+  margin: 0; padding: 0; border: 0; min-inline-size: 0;
+}
+.chips { margin-top: 24px; }
+.chips__row, .recommend__row { display: grid; gap: 10px; }
+@media (min-width: 480px) { .chips__row { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 820px) { .chips__row { grid-template-columns: repeat(4, 1fr); } }
+@media (min-width: 560px) { .recommend__row { grid-template-columns: repeat(3, 1fr); max-width: 480px; } }
+
+.chip { position: relative; display: block; }
+.chip input { position: absolute; opacity: 0; pointer-events: none; }
+.chip span {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 52px; padding: 11px 14px;
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-control);
+  background: var(--white);
+  font-weight: 650; font-size: .95rem; text-align: center;
+  transition: border-color .15s ease, background .15s ease, color .15s ease;
+}
+.chip span:hover { border-color: var(--blue-2); }
+.chip input:checked + span { border-color: var(--blue); background: var(--blue); color: var(--white); }
+.chip input:focus-visible + span { outline: 3px solid var(--blue-2); outline-offset: 2px; }
+
+/* -------------------------------------------------------------- Gesamteindruck */
+
+.overall__row { display: grid; gap: 9px; }
+.overall__opt { position: relative; display: block; }
+.overall__opt input { position: absolute; opacity: 0; pointer-events: none; }
+.overall__opt span {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 54px; padding: 11px 13px;
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-control);
+  background: var(--white);
+  font-weight: 650; font-size: .93rem; text-align: center;
+  transition: border-color .15s ease, background .15s ease, color .15s ease;
+}
+.overall__opt span:hover { border-color: var(--blue-2); }
+.overall__opt input:checked + span { border-color: var(--blue); background: var(--blue); color: var(--white); }
+/* Endpunkte tragen die Bedeutung, damit die Reihe als Skala liest. */
+.overall__opt:first-child input:checked + span {
+  border-color: var(--lime); background: var(--lime); color: var(--ink);
+}
+.overall__opt:last-child input:checked + span { border-color: var(--red); background: var(--red); color: var(--white); }
+.overall__opt input:focus-visible + span { outline: 3px solid var(--blue-2); outline-offset: 2px; }
+
+@media (min-width: 560px) { .overall__row { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 900px) { .overall__row { grid-template-columns: repeat(5, 1fr); } }
+
+/* ---------------------------------------------------------------- Bewertungen */
+
+.rates { border-top: 1px solid var(--line-soft); }
+.rate { padding: 20px 0; border-bottom: 1px solid var(--line-soft); }
+.rate::after { content: ""; display: block; clear: both; }
+
+.rate__label {
+  display: block; padding: 0 0 13px;
+  color: var(--blue); font-weight: 700; font-size: 1rem; line-height: 1.35;
+}
+
+.rate__control { display: flex; flex-direction: column; }
+.rate__options { display: grid; grid-template-columns: repeat(5, 1fr); gap: 7px; }
+.rate__opt { position: relative; display: block; }
+.rate__opt input { position: absolute; opacity: 0; pointer-events: none; }
+.rate__opt span {
+  display: grid; place-items: center;
+  min-height: 52px;
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-control);
+  background: var(--white);
+  color: var(--blue); font-weight: 800; font-size: 1.05rem;
+  font-variant-numeric: tabular-nums;
+  transition: border-color .15s ease, background .15s ease, color .15s ease;
+}
+.rate__opt span:hover { border-color: var(--blue-2); background: var(--blue-tint); }
+.rate__opt input:checked + span { border-color: var(--blue); background: var(--blue); color: var(--white); }
+.rate__opt:first-child input:checked + span {
+  border-color: var(--lime); background: var(--lime); color: var(--ink);
+}
+.rate__opt:last-child input:checked + span { border-color: var(--red); background: var(--red); color: var(--white); }
+.rate__opt input:focus-visible + span { outline: 3px solid var(--blue-2); outline-offset: 2px; }
+
+/* Bleibt auf JEDER Bildschirmgroesse sichtbar. Ohne diese Anker sind die
+   Ziffern 1 bis 5 auf dem Smartphone bedeutungslos. */
+.rate__anchors {
+  display: flex; justify-content: space-between; gap: 12px;
+  margin: 7px 2px 0;
+  color: var(--muted); font-size: .74rem; font-weight: 650;
+}
+.rate__anchors span:last-child { text-align: right; }
+
+.rate__na { position: relative; display: inline-flex; align-self: flex-end; margin-top: 4px; }
+.rate__na input { position: absolute; opacity: 0; pointer-events: none; }
+.rate__na span {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 44px; padding: 8px 15px;
+  border: 1.5px dashed var(--line);
+  border-radius: var(--r-pill);
+  color: var(--muted); font-size: .82rem; font-weight: 650;
+  transition: border-color .15s ease, background .15s ease, color .15s ease;
+}
+.rate__na span:hover { border-color: var(--blue-2); color: var(--blue); }
+.rate__na input:checked + span {
+  border-style: solid; border-color: var(--line);
+  background: var(--gray-soft); color: var(--ink);
+}
+.rate__na input:focus-visible + span { outline: 3px solid var(--blue-2); outline-offset: 2px; }
+
+.rate__comment {
+  margin-top: 14px; padding: 14px;
+  border: 1.5px solid var(--line-soft);
+  border-radius: var(--r-control);
+  background: var(--gray-soft);
+}
+.rate__comment[hidden] { display: none; }
+.rate__comment textarea { min-height: 84px; background: var(--white); }
+.rate__commentLabel { display: block; margin-bottom: 8px; color: var(--blue); font-weight: 700; font-size: .92rem; }
+.rate__commentHelp { margin: 7px 0 0; color: var(--muted); font-size: .82rem; }
+.rate__comment--must { border-color: #EFC3CA; background: #FDF2F4; }
+.rate__comment--must .rate__commentHelp { color: var(--red-deep); font-weight: 650; }
+.rate__comment--good { border-color: #D6E08A; background: #FAFCEB; }
+
+@media (min-width: 900px) {
+  .rate__label { float: left; width: 33%; padding: 6px 26px 0 0; }
+  .rate__control, .rate__comment { margin-left: 35%; }
+  /* Grenze am Container, damit "Nicht beurteilt" buendig zur Skala steht. */
+  .rate__control { max-width: 560px; }
+}
+
+/* --------------------------------------------------------------------- Inseln */
+
+.isles { display: grid; gap: 22px; }
+.isles__list { display: grid; gap: 9px; }
+
+.isle { position: relative; display: block; }
+.isle input { position: absolute; opacity: 0; pointer-events: none; }
+
+.isle__box {
+  position: relative;
+  display: grid; grid-template-columns: 62px 1fr auto;
+  align-items: center; gap: 13px;
+  min-height: 80px; padding: 11px 14px 11px 46px;
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-control);
+  background: var(--white);
+  transition: border-color .15s ease, box-shadow .15s ease, opacity .15s ease;
+}
+.isle__box::before {
+  content: "";
+  position: absolute; left: 15px; top: 50%;
+  width: 21px; height: 21px;
+  transform: translateY(-50%);
+  border: 2px solid #9AA6B2;
+  border-radius: 6px;
+  background: var(--white);
+  transition: background .15s ease, border-color .15s ease;
+}
+.isle input:checked + .isle__box {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 1px var(--blue), 0 10px 24px rgba(29, 54, 97, .14);
+}
+.isle input:checked + .isle__box::before {
+  border-color: var(--blue);
+  background: var(--blue) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round' d='M3.5 8.5l3 3 6-6'/%3E%3C/svg%3E") center / 15px no-repeat;
+}
+.isle input:focus-visible + .isle__box { outline: 3px solid var(--blue-2); outline-offset: 2px; }
+
+/* Sind drei Inseln gewaehlt, treten die uebrigen zurueck statt zu verschwinden.
+   Der Nutzer soll sehen, dass sie noch da sind, nur eben nicht mehr waehlbar. */
+.isle input:disabled + .isle__box { opacity: .42; cursor: not-allowed; }
+.isle input:disabled + .isle__box::before { border-color: #C3CAD2; }
+.isle:has(input:disabled) { cursor: not-allowed; }
+
+/* Rang-Marke: zeigt die Reihenfolge der Auswahl als Top 1 bis 3. */
+.isle__rank {
+  position: absolute; left: 8px; top: 8px;
+  display: none; place-items: center;
+  min-width: 34px; height: 21px; padding: 0 7px;
+  border-radius: var(--r-pill);
+  background: var(--lime); color: var(--ink);
+  font-size: .64rem; font-weight: 900; letter-spacing: .04em;
+}
+.isle input:checked + .isle__box .isle__rank { display: grid; }
+
+.isle__thumb {
+  display: grid; place-items: center;
+  width: 62px; height: 56px;
+  border-radius: 10px;
+  background: var(--gray-soft);
+  overflow: hidden;
+}
+.isle__thumb img { max-width: 56px; max-height: 50px; width: auto; height: auto; }
+.isle__thumb--icon svg {
+  width: 34px; height: 34px;
+  fill: none; stroke: var(--blue); stroke-width: 3;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+
+.isle__text { min-width: 0; }
+.isle__text strong { display: block; color: var(--blue); font-size: 1rem; }
+.isle__text small { display: block; color: var(--muted); font-size: .8rem; line-height: 1.35; }
+
+.isle__no {
+  display: grid; place-items: center;
+  width: 25px; height: 25px; flex: none;
+  border-radius: 50%;
+  background: var(--gray-soft); color: var(--muted);
+  font-size: .74rem; font-weight: 800; font-variant-numeric: tabular-nums;
+}
+
+.isles__poster {
+  margin: 0; overflow: hidden;
+  border-radius: var(--r-control);
+  border: 1px solid var(--line-soft);
+}
+.isles__poster img { width: 100%; height: auto; }
+
+@media (min-width: 1000px) {
+  .isles { grid-template-columns: minmax(0, 1fr) minmax(340px, 440px); gap: 32px; align-items: start; }
+}
+
+/* ------------------------------------------------------------------ Absenden */
+
+.missing {
+  margin-top: 24px; padding: 16px 18px;
+  border: 1.5px solid #EFC3CA;
+  border-radius: var(--r-control);
+  background: #FDF2F4;
+}
+.missing[hidden] { display: none; }
+.missing__head { margin: 0 0 10px; color: var(--red-deep); font-weight: 750; font-size: .92rem; }
+.missing__list { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.missing__list a {
+  display: inline-flex; align-items: center; gap: 9px;
+  min-height: 44px; padding: 4px 0;
+  color: var(--blue); font-size: .93rem; font-weight: 650;
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.missing__list a::before {
+  content: ""; flex: none;
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--red);
+}
+
+.send__status { margin: 14px 0 0; min-height: 1.3em; color: var(--muted); font-weight: 650; font-size: .94rem; }
+.send__status:empty { display: none; }
+.send__status.is-error { color: var(--red-deep); }
+.send__status.is-success { color: var(--lime-deep); }
+
+/* -------------------------------------------------------------- Schrittleiste */
+
+.stepbar {
+  position: fixed; z-index: 60;
+  left: 0; right: 0; bottom: 0;
+  background: rgba(255, 255, 255, .97);
+  backdrop-filter: blur(14px);
+  border-top: 1px solid var(--line-soft);
+  box-shadow: 0 -6px 24px rgba(29, 54, 97, .10);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.stepbar[hidden] { display: none; }
+.stepbar__inner { display: flex; align-items: center; gap: 12px; padding: 11px 0; }
+
+.stepbar__back, .stepbar__next {
+  min-height: 54px; padding: 13px 22px;
+  border-radius: var(--r-pill);
+  font-weight: 800; white-space: nowrap;
+  transition: background .15s ease, transform .12s ease, color .15s ease, border-color .15s ease;
+}
+.stepbar__back {
+  flex: 0 0 auto;
+  border: 1.5px solid var(--line);
+  color: var(--blue);
+}
+.stepbar__back:hover { border-color: var(--blue); }
+.stepbar__back[hidden] { display: none; }
+
+.stepbar__next {
+  flex: 1;
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  background: var(--blue); color: var(--white);
+  font-size: 1.02rem;
+  box-shadow: 0 8px 22px rgba(29, 54, 97, .26);
+}
+.stepbar__next:hover { background: var(--blue-hover); }
+.stepbar__next:disabled { opacity: .7; cursor: progress; }
+.stepbar__back:active, .stepbar__next:active { transform: scale(.985); }
+
+/* Ladezustand: ohne sichtbare Rueckmeldung tippen Leute auf schlechtem Netz
+   ein zweites Mal. */
+.stepbar__spin {
+  display: none;
+  width: 17px; height: 17px; flex: none;
+  border: 2.5px solid rgba(255, 255, 255, .4);
+  border-top-color: var(--white);
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+}
+.stepbar__next[aria-busy="true"] .stepbar__spin { display: block; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (min-width: 760px) {
+  .stepbar__inner { justify-content: flex-end; }
+  .stepbar__next { flex: 0 0 auto; min-width: 250px; }
+}
+
+/* ------------------------------------------------------------------ Fusszeile */
+
+.foot { background: var(--blue); }
+.foot__inner {
+  display: flex; flex-wrap: wrap;
+  align-items: center; justify-content: space-between;
+  gap: 6px 18px; min-height: 70px; padding: 16px 0;
+  color: rgba(255, 255, 255, .84); font-size: .84rem; font-weight: 600;
+}
+
+/* -------------------------------------------------------------- Danke-Ansicht */
+
+.done {
+  position: fixed; inset: 0; z-index: 2000;
+  display: grid; place-items: center;
+  padding: 26px 20px; overflow: auto;
+  background: var(--blue);
+  color: var(--white);
+}
+.done[hidden] { display: none; }
+.done::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: url("assets/v12/background-800.webp") center / cover no-repeat;
+  opacity: .28;
+  pointer-events: none;
+}
+.done__inner { position: relative; width: min(660px, 100%); text-align: center; }
+.done__logo { width: min(260px, 58vw); height: auto; margin: 0 auto 30px; }
+.done__check {
+  display: grid; place-items: center;
+  width: 62px; height: 62px; margin: 0 auto 22px;
+  border-radius: 50%;
+  background: var(--lime); color: var(--ink);
+  font-size: 1.9rem; font-weight: 900; line-height: 1;
+}
+.done h2 { color: var(--white); font-size: clamp(1.85rem, 6.6vw, 3.2rem); line-height: 1.08; }
+.done__lead { margin: 14px 0 0; color: rgba(255, 255, 255, .86); font-size: clamp(1rem, 2.6vw, 1.18rem); }
+.done__card {
+  margin: 30px 0 0; padding: 24px;
+  border: 1px solid rgba(255, 255, 255, .28);
+  border-radius: var(--r-card);
+  background: rgba(255, 255, 255, .1);
+  backdrop-filter: blur(10px);
+  text-align: left;
+}
+.done__card strong { display: block; font-size: clamp(1.08rem, 3vw, 1.35rem); }
+.done__card p { margin: 10px 0 0; color: rgba(255, 255, 255, .88); font-size: .96rem; }
+
+body.is-done { overflow: hidden; }
+
+/* ---------------------------------------------------- Reduzierte Bewegung */
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+}
+
+/* Sehr schmale Geraete: die fuenf Bewertungsfelder muessen 44px halten. */
+@media (max-width: 360px) {
+  .card, .intro__copy { padding-left: 15px; padding-right: 15px; }
+  .rate__options { gap: 5px; }
+}
