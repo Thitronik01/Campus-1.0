@@ -20,7 +20,7 @@ Codefassung zum Weitergeben an ein Sprachmodell.
   <link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII=">
   <style>
 /* ============================================================================
-   THITRONIK Campus 2026 Feedbackbogen - v13
+   THITRONIK Campus 2026 Feedbackbogen - v14
    Schritt fuer Schritt. Mobile first.
 
    FARBEN: verbindliche THITRONIK Markenpalette.
@@ -480,6 +480,19 @@ body.is-stepping .foot { display: none; }
 .grid { display: grid; gap: var(--gap); }
 @media (min-width: 700px) { .grid--2 { grid-template-columns: 1fr 1fr; } }
 
+/* Schritt 1 traegt seit v14 drei Felder statt zwei. Betrieb und Nummer stehen
+   nebeneinander, weil beide denselben Betrieb bezeichnen; der Name faellt
+   darunter in die volle Breite, sonst bliebe rechts ein sichtbares Loch.
+   Die Nummer bekommt eine feste schmale Spalte: fuenf Ziffern in einem Feld
+   ueber die halbe Kartenbreite versprechen mehr Eingabe als hineinpasst. */
+@media (min-width: 700px) {
+  .grid--angaben { grid-template-columns: minmax(0, 1fr) 200px; }
+  .grid--angaben .field--wide { grid-column: 1 / -1; }
+}
+
+/* Ziffern gleich breit, damit die Nummer beim Tippen nicht zappelt. */
+.field--num input[type="text"] { font-variant-numeric: tabular-nums; letter-spacing: .09em; }
+
 .field label, .chips legend, .recommend legend {
   display: block; margin-bottom: 8px;
   color: var(--blue); font-weight: 700; font-size: .96rem;
@@ -520,6 +533,12 @@ input[type="text"]::placeholder, textarea::placeholder { color: #8B95A1; }
 }
 .field__err { margin: 7px 0 0; color: var(--red-deep); font-size: .84rem; font-weight: 650; }
 .field__err[hidden] { display: none; }
+
+/* Das Format steht dauerhaft unter dem Feld, nicht erst im Fehlerfall. Eine
+   Regel, die man vorher kennt, ist keine Ruege hinterher. Verschwindet, sobald
+   der Fehlertext die Stelle braucht, damit nicht zwei Zeilen konkurrieren. */
+.field__hint { margin: 7px 0 0; color: var(--muted); font-size: .82rem; }
+.field--bad .field__hint { display: none; }
 
 /* ---------------------------------------------------------------------- Chips */
 
@@ -625,10 +644,27 @@ input[type="text"]::placeholder, textarea::placeholder { color: #8B95A1; }
 }
 .rate__opt span:hover { border-color: var(--blue-2); background: var(--blue-tint); }
 .rate__opt input:checked + span { border-color: var(--blue); background: var(--blue); color: var(--white); }
-.rate__opt:first-child input:checked + span {
+
+/* Die Farbe haengt am WERT, nicht an der Position. Bis v13 stand hier
+   :first-child und :last-child - als sich die Skala drehte, blieben die Farben
+   an ihrem Platz stehen und die schlechteste Note leuchtete gruen. Ueber den
+   Wert angesprochen wandert sie beim naechsten Mal von allein mit.
+
+   Nur die Endpunkte tragen Farbe. Lime und Rot sind laut Markenpalette "sehr
+   sparsam" einzusetzen, und eine durchgefaerbte Skala braeuchte Zwischentoene
+   in Orange und Gelb, die es in der Palette nicht gibt. Die Bedeutung haengt
+   ohnehin nicht an der Farbe allein: Ziffer, Anker darunter und aria-label
+   sagen dasselbe - Farbe bestaetigt hier nur, sie traegt nicht (WCAG 1.4.1).
+
+   Kontrast am fertigen Feld gemessen: Lime mit ink 10,1:1, Rot mit weiss
+   5,6:1. Beides ueber AA. Rot braucht weissen Text, Lime schwarzen - eine
+   gemeinsame Textfarbe gibt es fuer beide nicht. */
+.rate__opt input[value="1"]:checked + span {
+  border-color: var(--red); background: var(--red); color: var(--white);
+}
+.rate__opt input[value="5"]:checked + span {
   border-color: var(--lime); background: var(--lime); color: var(--ink);
 }
-.rate__opt:last-child input:checked + span { border-color: var(--red); background: var(--red); color: var(--white); }
 .rate__opt input:focus-visible + span { outline: 3px solid var(--blue-2); outline-offset: 2px; }
 
 /* Bleibt auf JEDER Bildschirmgroesse sichtbar. Ohne diese Anker sind die
@@ -1016,7 +1052,7 @@ body.is-done .demo { display: none; }
 }
   </style>
 </head>
-<body data-build="v13">
+<body data-build="v14">
   <!-- Codefassung zum Weitergeben an ein Sprachmodell.
        Identisch zur Standalone-Datei, aber ohne Base64-Bilder: alle Bilder sind
        durch ein 1x1-Pixel ersetzt. Die echten Dateien liegen unter:
@@ -1046,7 +1082,7 @@ body.is-done .demo { display: none; }
           <span class="rail__step">Schritt <span id="railStep">1</span> von 6</span>
           <strong id="railName">Angaben</strong>
         </p>
-        <p class="rail__count" id="railCount">0 von 17 beantwortet</p>
+        <p class="rail__count" id="railCount">0 von 18 beantwortet</p>
       </div>
       <ol class="steps" id="steps" aria-label="Fortschritt">
         <li data-step="1"><button type="button" data-goto="1" disabled><span class="sr-only">Schritt 1: </span><span class="steps__label">Angaben</span></button></li>
@@ -1077,7 +1113,7 @@ body.is-done .demo { display: none; }
 
         <ul class="intro__facts">
           <li><b>6</b> kurze Schritte</li>
-          <li><b>2</b> Pflichtangaben</li>
+          <li><b>3</b> Pflichtangaben</li>
           <li><b>&#8617;</b> jederzeit zur&uuml;ck</li>
         </ul>
 
@@ -1090,7 +1126,7 @@ body.is-done .demo { display: none; }
       </div>
     </section>
 
-    <form id="feedbackForm" class="form" autocomplete="on" data-form-version="campus-2026-haendler-v11" novalidate>
+    <form id="feedbackForm" class="form" autocomplete="on" data-form-version="campus-2026-haendler-v14" novalidate>
       <div class="hp" aria-hidden="true">
         <label for="website">Website</label>
         <input id="website" name="website" type="text" autocomplete="off" tabindex="-1">
@@ -1101,16 +1137,38 @@ body.is-done .demo { display: none; }
           <span class="card__no" aria-hidden="true">1</span>
           <h2 id="section-1-title">Angaben zum H&auml;ndlerbetrieb</h2>
         </div>
-        <p class="card__note">Damit wir R&uuml;ckmeldungen mehrerer Teilnehmender eines Betriebs zuordnen k&ouml;nnen.</p>
+        <p class="card__note">Damit wir R&uuml;ckmeldungen mehrerer Teilnehmender eines Betriebs zuordnen k&ouml;nnen.
+          Die H&auml;ndlernummer finden Sie auf Ihren Rechnungen und Lieferscheinen.</p>
 
-        <div class="grid grid--2">
+        <div class="grid grid--angaben">
           <div class="field">
             <label for="dealer_name">H&auml;ndlerbetrieb <span class="req" aria-hidden="true">Pflicht</span></label>
             <input id="dealer_name" name="dealer_name" type="text" autocomplete="organization"
               enterkeyhint="next" minlength="2" maxlength="160" required aria-describedby="dealer_err">
             <p class="field__err" id="dealer_err" data-err hidden></p>
           </div>
-          <div class="field">
+          <!-- type="text" statt type="number": eine Haendlernummer ist eine
+               Ziffernfolge, keine Rechengroesse. type="number" wuerde eine
+               fuehrende Null verschlucken (03451 wird 3451), blendet Drehpfeile
+               ein und laesst sich versehentlich mit dem Mausrad verstellen.
+               inputmode holt auf dem Smartphone trotzdem den Ziffernblock.
+
+               BEWUSST OHNE maxlength: das Attribut kappt schon beim Einfuegen
+               auf fuenf ZEICHEN, bevor der Ziffernfilter in app-v14.js die
+               Nicht-Ziffern entfernen kann. Aus eingefuegtem " 34512" wurde so
+               " 3451" und daraus "3451" - eine Ziffer weg, und der Teilnehmer
+               liest "genau fuenf Ziffern", obwohl er fuenf eingefuegt hat.
+               Die Begrenzung auf fuenf macht der Filter, in der richtigen
+               Reihenfolge: erst putzen, dann kappen. -->
+          <div class="field field--num">
+            <label for="dealer_number">H&auml;ndlernummer <span class="req" aria-hidden="true">Pflicht</span></label>
+            <input id="dealer_number" name="dealer_number" type="text" inputmode="numeric"
+              autocomplete="off" enterkeyhint="next" pattern="[0-9]{5}"
+              placeholder="34512" required aria-describedby="dealer_number_hint dealer_number_err">
+            <p class="field__hint" id="dealer_number_hint">F&uuml;nf Ziffern</p>
+            <p class="field__err" id="dealer_number_err" data-err hidden></p>
+          </div>
+          <div class="field field--wide">
             <label for="name">Ihr Name <span class="req" aria-hidden="true">Pflicht</span></label>
             <input id="name" name="name" type="text" autocomplete="name"
               enterkeyhint="done" minlength="2" maxlength="120" required aria-describedby="name_err">
@@ -1154,19 +1212,19 @@ body.is-done .demo { display: none; }
           <h2 id="section-3-title">Organisation &amp; Ablauf</h2>
           <p class="card__tally" data-tally="3" role="status" aria-live="polite">0 von 7</p>
         </div>
-        <p class="card__note">1 ist die beste Bewertung. Bei einer 5 bitten wir um einen kurzen Hinweis.</p>
+        <p class="card__note">5 ist die beste Bewertung. Bei einer 1 bitten wir um einen kurzen Hinweis.</p>
         <div class="rates">
         <fieldset class="rate" data-rate>
           <legend class="rate__label">Kommunikation &amp; Information im Vorfeld</legend>
           <div class="rate__control">
             <div class="rate__options">
-            <label class="rate__opt"><input type="radio" name="kommunikation_vorfeld" value="1" aria-label="1 (sehr gut)"><span>1</span></label>
+            <label class="rate__opt"><input type="radio" name="kommunikation_vorfeld" value="1" aria-label="1 (verbesserungsw&uuml;rdig)"><span>1</span></label>
             <label class="rate__opt"><input type="radio" name="kommunikation_vorfeld" value="2" aria-label="2"><span>2</span></label>
             <label class="rate__opt"><input type="radio" name="kommunikation_vorfeld" value="3" aria-label="3"><span>3</span></label>
             <label class="rate__opt"><input type="radio" name="kommunikation_vorfeld" value="4" aria-label="4"><span>4</span></label>
-            <label class="rate__opt"><input type="radio" name="kommunikation_vorfeld" value="5" aria-label="5 (verbesserungsw&uuml;rdig)"><span>5</span></label>
+            <label class="rate__opt"><input type="radio" name="kommunikation_vorfeld" value="5" aria-label="5 (sehr gut)"><span>5</span></label>
             </div>
-            <p class="rate__anchors" aria-hidden="true"><span>sehr gut</span><span>verbesserungsw&uuml;rdig</span></p>
+            <p class="rate__anchors" aria-hidden="true"><span>verbesserungsw&uuml;rdig</span><span>sehr gut</span></p>
             <label class="rate__na"><input type="radio" name="kommunikation_vorfeld" value="na"><span>Nicht beurteilt</span></label>
           </div>
           <div class="rate__comment" data-comment hidden>
@@ -1180,13 +1238,13 @@ body.is-done .demo { display: none; }
           <legend class="rate__label">Anmeldung &amp; Vorbereitung</legend>
           <div class="rate__control">
             <div class="rate__options">
-            <label class="rate__opt"><input type="radio" name="anmeldung_vorbereitung" value="1" aria-label="1 (sehr gut)"><span>1</span></label>
+            <label class="rate__opt"><input type="radio" name="anmeldung_vorbereitung" value="1" aria-label="1 (verbesserungsw&uuml;rdig)"><span>1</span></label>
             <label class="rate__opt"><input type="radio" name="anmeldung_vorbereitung" value="2" aria-label="2"><span>2</span></label>
             <label class="rate__opt"><input type="radio" name="anmeldung_vorbereitung" value="3" aria-label="3"><span>3</span></label>
             <label class="rate__opt"><input type="radio" name="anmeldung_vorbereitung" value="4" aria-label="4"><span>4</span></label>
-            <label class="rate__opt"><input type="radio" name="anmeldung_vorbereitung" value="5" aria-label="5 (verbesserungsw&uuml;rdig)"><span>5</span></label>
+            <label class="rate__opt"><input type="radio" name="anmeldung_vorbereitung" value="5" aria-label="5 (sehr gut)"><span>5</span></label>
             </div>
-            <p class="rate__anchors" aria-hidden="true"><span>sehr gut</span><span>verbesserungsw&uuml;rdig</span></p>
+            <p class="rate__anchors" aria-hidden="true"><span>verbesserungsw&uuml;rdig</span><span>sehr gut</span></p>
             <label class="rate__na"><input type="radio" name="anmeldung_vorbereitung" value="na"><span>Nicht beurteilt</span></label>
           </div>
           <div class="rate__comment" data-comment hidden>
@@ -1200,13 +1258,13 @@ body.is-done .demo { display: none; }
           <legend class="rate__label">Zeitplanung &amp; Tagesablauf</legend>
           <div class="rate__control">
             <div class="rate__options">
-            <label class="rate__opt"><input type="radio" name="zeitplanung_tagesablauf" value="1" aria-label="1 (sehr gut)"><span>1</span></label>
+            <label class="rate__opt"><input type="radio" name="zeitplanung_tagesablauf" value="1" aria-label="1 (verbesserungsw&uuml;rdig)"><span>1</span></label>
             <label class="rate__opt"><input type="radio" name="zeitplanung_tagesablauf" value="2" aria-label="2"><span>2</span></label>
             <label class="rate__opt"><input type="radio" name="zeitplanung_tagesablauf" value="3" aria-label="3"><span>3</span></label>
             <label class="rate__opt"><input type="radio" name="zeitplanung_tagesablauf" value="4" aria-label="4"><span>4</span></label>
-            <label class="rate__opt"><input type="radio" name="zeitplanung_tagesablauf" value="5" aria-label="5 (verbesserungsw&uuml;rdig)"><span>5</span></label>
+            <label class="rate__opt"><input type="radio" name="zeitplanung_tagesablauf" value="5" aria-label="5 (sehr gut)"><span>5</span></label>
             </div>
-            <p class="rate__anchors" aria-hidden="true"><span>sehr gut</span><span>verbesserungsw&uuml;rdig</span></p>
+            <p class="rate__anchors" aria-hidden="true"><span>verbesserungsw&uuml;rdig</span><span>sehr gut</span></p>
             <label class="rate__na"><input type="radio" name="zeitplanung_tagesablauf" value="na"><span>Nicht beurteilt</span></label>
           </div>
           <div class="rate__comment" data-comment hidden>
@@ -1220,13 +1278,13 @@ body.is-done .demo { display: none; }
           <legend class="rate__label">Organisation vor Ort</legend>
           <div class="rate__control">
             <div class="rate__options">
-            <label class="rate__opt"><input type="radio" name="organisation_vor_ort" value="1" aria-label="1 (sehr gut)"><span>1</span></label>
+            <label class="rate__opt"><input type="radio" name="organisation_vor_ort" value="1" aria-label="1 (verbesserungsw&uuml;rdig)"><span>1</span></label>
             <label class="rate__opt"><input type="radio" name="organisation_vor_ort" value="2" aria-label="2"><span>2</span></label>
             <label class="rate__opt"><input type="radio" name="organisation_vor_ort" value="3" aria-label="3"><span>3</span></label>
             <label class="rate__opt"><input type="radio" name="organisation_vor_ort" value="4" aria-label="4"><span>4</span></label>
-            <label class="rate__opt"><input type="radio" name="organisation_vor_ort" value="5" aria-label="5 (verbesserungsw&uuml;rdig)"><span>5</span></label>
+            <label class="rate__opt"><input type="radio" name="organisation_vor_ort" value="5" aria-label="5 (sehr gut)"><span>5</span></label>
             </div>
-            <p class="rate__anchors" aria-hidden="true"><span>sehr gut</span><span>verbesserungsw&uuml;rdig</span></p>
+            <p class="rate__anchors" aria-hidden="true"><span>verbesserungsw&uuml;rdig</span><span>sehr gut</span></p>
             <label class="rate__na"><input type="radio" name="organisation_vor_ort" value="na"><span>Nicht beurteilt</span></label>
           </div>
           <div class="rate__comment" data-comment hidden>
@@ -1240,13 +1298,13 @@ body.is-done .demo { display: none; }
           <legend class="rate__label">R&auml;umlichkeiten &amp; Technik</legend>
           <div class="rate__control">
             <div class="rate__options">
-            <label class="rate__opt"><input type="radio" name="raeumlichkeiten_technik" value="1" aria-label="1 (sehr gut)"><span>1</span></label>
+            <label class="rate__opt"><input type="radio" name="raeumlichkeiten_technik" value="1" aria-label="1 (verbesserungsw&uuml;rdig)"><span>1</span></label>
             <label class="rate__opt"><input type="radio" name="raeumlichkeiten_technik" value="2" aria-label="2"><span>2</span></label>
             <label class="rate__opt"><input type="radio" name="raeumlichkeiten_technik" value="3" aria-label="3"><span>3</span></label>
             <label class="rate__opt"><input type="radio" name="raeumlichkeiten_technik" value="4" aria-label="4"><span>4</span></label>
-            <label class="rate__opt"><input type="radio" name="raeumlichkeiten_technik" value="5" aria-label="5 (verbesserungsw&uuml;rdig)"><span>5</span></label>
+            <label class="rate__opt"><input type="radio" name="raeumlichkeiten_technik" value="5" aria-label="5 (sehr gut)"><span>5</span></label>
             </div>
-            <p class="rate__anchors" aria-hidden="true"><span>sehr gut</span><span>verbesserungsw&uuml;rdig</span></p>
+            <p class="rate__anchors" aria-hidden="true"><span>verbesserungsw&uuml;rdig</span><span>sehr gut</span></p>
             <label class="rate__na"><input type="radio" name="raeumlichkeiten_technik" value="na"><span>Nicht beurteilt</span></label>
           </div>
           <div class="rate__comment" data-comment hidden>
@@ -1260,13 +1318,13 @@ body.is-done .demo { display: none; }
           <legend class="rate__label">Bewirtung im Haus</legend>
           <div class="rate__control">
             <div class="rate__options">
-            <label class="rate__opt"><input type="radio" name="bewirtung_haus" value="1" aria-label="1 (sehr gut)"><span>1</span></label>
+            <label class="rate__opt"><input type="radio" name="bewirtung_haus" value="1" aria-label="1 (verbesserungsw&uuml;rdig)"><span>1</span></label>
             <label class="rate__opt"><input type="radio" name="bewirtung_haus" value="2" aria-label="2"><span>2</span></label>
             <label class="rate__opt"><input type="radio" name="bewirtung_haus" value="3" aria-label="3"><span>3</span></label>
             <label class="rate__opt"><input type="radio" name="bewirtung_haus" value="4" aria-label="4"><span>4</span></label>
-            <label class="rate__opt"><input type="radio" name="bewirtung_haus" value="5" aria-label="5 (verbesserungsw&uuml;rdig)"><span>5</span></label>
+            <label class="rate__opt"><input type="radio" name="bewirtung_haus" value="5" aria-label="5 (sehr gut)"><span>5</span></label>
             </div>
-            <p class="rate__anchors" aria-hidden="true"><span>sehr gut</span><span>verbesserungsw&uuml;rdig</span></p>
+            <p class="rate__anchors" aria-hidden="true"><span>verbesserungsw&uuml;rdig</span><span>sehr gut</span></p>
             <label class="rate__na"><input type="radio" name="bewirtung_haus" value="na"><span>Nicht beurteilt</span></label>
           </div>
           <div class="rate__comment" data-comment hidden>
@@ -1280,13 +1338,13 @@ body.is-done .demo { display: none; }
           <legend class="rate__label">Abendveranstaltung</legend>
           <div class="rate__control">
             <div class="rate__options">
-            <label class="rate__opt"><input type="radio" name="abendveranstaltung" value="1" aria-label="1 (sehr gut)"><span>1</span></label>
+            <label class="rate__opt"><input type="radio" name="abendveranstaltung" value="1" aria-label="1 (verbesserungsw&uuml;rdig)"><span>1</span></label>
             <label class="rate__opt"><input type="radio" name="abendveranstaltung" value="2" aria-label="2"><span>2</span></label>
             <label class="rate__opt"><input type="radio" name="abendveranstaltung" value="3" aria-label="3"><span>3</span></label>
             <label class="rate__opt"><input type="radio" name="abendveranstaltung" value="4" aria-label="4"><span>4</span></label>
-            <label class="rate__opt"><input type="radio" name="abendveranstaltung" value="5" aria-label="5 (verbesserungsw&uuml;rdig)"><span>5</span></label>
+            <label class="rate__opt"><input type="radio" name="abendveranstaltung" value="5" aria-label="5 (sehr gut)"><span>5</span></label>
             </div>
-            <p class="rate__anchors" aria-hidden="true"><span>sehr gut</span><span>verbesserungsw&uuml;rdig</span></p>
+            <p class="rate__anchors" aria-hidden="true"><span>verbesserungsw&uuml;rdig</span><span>sehr gut</span></p>
             <label class="rate__na"><input type="radio" name="abendveranstaltung" value="na"><span>Nicht teilgenommen</span></label>
           </div>
           <div class="rate__comment" data-comment hidden>
@@ -1310,13 +1368,13 @@ body.is-done .demo { display: none; }
           <legend class="rate__label">Relevanz der Themen</legend>
           <div class="rate__control">
             <div class="rate__options">
-            <label class="rate__opt"><input type="radio" name="relevanz_themen" value="1" aria-label="1 (sehr gut)"><span>1</span></label>
+            <label class="rate__opt"><input type="radio" name="relevanz_themen" value="1" aria-label="1 (verbesserungsw&uuml;rdig)"><span>1</span></label>
             <label class="rate__opt"><input type="radio" name="relevanz_themen" value="2" aria-label="2"><span>2</span></label>
             <label class="rate__opt"><input type="radio" name="relevanz_themen" value="3" aria-label="3"><span>3</span></label>
             <label class="rate__opt"><input type="radio" name="relevanz_themen" value="4" aria-label="4"><span>4</span></label>
-            <label class="rate__opt"><input type="radio" name="relevanz_themen" value="5" aria-label="5 (verbesserungsw&uuml;rdig)"><span>5</span></label>
+            <label class="rate__opt"><input type="radio" name="relevanz_themen" value="5" aria-label="5 (sehr gut)"><span>5</span></label>
             </div>
-            <p class="rate__anchors" aria-hidden="true"><span>sehr gut</span><span>verbesserungsw&uuml;rdig</span></p>
+            <p class="rate__anchors" aria-hidden="true"><span>verbesserungsw&uuml;rdig</span><span>sehr gut</span></p>
             <label class="rate__na"><input type="radio" name="relevanz_themen" value="na"><span>Nicht beurteilt</span></label>
           </div>
           <div class="rate__comment" data-comment hidden>
@@ -1330,13 +1388,13 @@ body.is-done .demo { display: none; }
           <legend class="rate__label">Verst&auml;ndlichkeit der Inhalte</legend>
           <div class="rate__control">
             <div class="rate__options">
-            <label class="rate__opt"><input type="radio" name="verstaendlichkeit" value="1" aria-label="1 (sehr gut)"><span>1</span></label>
+            <label class="rate__opt"><input type="radio" name="verstaendlichkeit" value="1" aria-label="1 (verbesserungsw&uuml;rdig)"><span>1</span></label>
             <label class="rate__opt"><input type="radio" name="verstaendlichkeit" value="2" aria-label="2"><span>2</span></label>
             <label class="rate__opt"><input type="radio" name="verstaendlichkeit" value="3" aria-label="3"><span>3</span></label>
             <label class="rate__opt"><input type="radio" name="verstaendlichkeit" value="4" aria-label="4"><span>4</span></label>
-            <label class="rate__opt"><input type="radio" name="verstaendlichkeit" value="5" aria-label="5 (verbesserungsw&uuml;rdig)"><span>5</span></label>
+            <label class="rate__opt"><input type="radio" name="verstaendlichkeit" value="5" aria-label="5 (sehr gut)"><span>5</span></label>
             </div>
-            <p class="rate__anchors" aria-hidden="true"><span>sehr gut</span><span>verbesserungsw&uuml;rdig</span></p>
+            <p class="rate__anchors" aria-hidden="true"><span>verbesserungsw&uuml;rdig</span><span>sehr gut</span></p>
             <label class="rate__na"><input type="radio" name="verstaendlichkeit" value="na"><span>Nicht beurteilt</span></label>
           </div>
           <div class="rate__comment" data-comment hidden>
@@ -1350,13 +1408,13 @@ body.is-done .demo { display: none; }
           <legend class="rate__label">Praxisbezug</legend>
           <div class="rate__control">
             <div class="rate__options">
-            <label class="rate__opt"><input type="radio" name="praxisbezug" value="1" aria-label="1 (sehr gut)"><span>1</span></label>
+            <label class="rate__opt"><input type="radio" name="praxisbezug" value="1" aria-label="1 (verbesserungsw&uuml;rdig)"><span>1</span></label>
             <label class="rate__opt"><input type="radio" name="praxisbezug" value="2" aria-label="2"><span>2</span></label>
             <label class="rate__opt"><input type="radio" name="praxisbezug" value="3" aria-label="3"><span>3</span></label>
             <label class="rate__opt"><input type="radio" name="praxisbezug" value="4" aria-label="4"><span>4</span></label>
-            <label class="rate__opt"><input type="radio" name="praxisbezug" value="5" aria-label="5 (verbesserungsw&uuml;rdig)"><span>5</span></label>
+            <label class="rate__opt"><input type="radio" name="praxisbezug" value="5" aria-label="5 (sehr gut)"><span>5</span></label>
             </div>
-            <p class="rate__anchors" aria-hidden="true"><span>sehr gut</span><span>verbesserungsw&uuml;rdig</span></p>
+            <p class="rate__anchors" aria-hidden="true"><span>verbesserungsw&uuml;rdig</span><span>sehr gut</span></p>
             <label class="rate__na"><input type="radio" name="praxisbezug" value="na"><span>Nicht beurteilt</span></label>
           </div>
           <div class="rate__comment" data-comment hidden>
@@ -1370,13 +1428,13 @@ body.is-done .demo { display: none; }
           <legend class="rate__label">Produktvorf&uuml;hrungen &amp; Demonstrationen</legend>
           <div class="rate__control">
             <div class="rate__options">
-            <label class="rate__opt"><input type="radio" name="produktvorfuehrungen" value="1" aria-label="1 (sehr gut)"><span>1</span></label>
+            <label class="rate__opt"><input type="radio" name="produktvorfuehrungen" value="1" aria-label="1 (verbesserungsw&uuml;rdig)"><span>1</span></label>
             <label class="rate__opt"><input type="radio" name="produktvorfuehrungen" value="2" aria-label="2"><span>2</span></label>
             <label class="rate__opt"><input type="radio" name="produktvorfuehrungen" value="3" aria-label="3"><span>3</span></label>
             <label class="rate__opt"><input type="radio" name="produktvorfuehrungen" value="4" aria-label="4"><span>4</span></label>
-            <label class="rate__opt"><input type="radio" name="produktvorfuehrungen" value="5" aria-label="5 (verbesserungsw&uuml;rdig)"><span>5</span></label>
+            <label class="rate__opt"><input type="radio" name="produktvorfuehrungen" value="5" aria-label="5 (sehr gut)"><span>5</span></label>
             </div>
-            <p class="rate__anchors" aria-hidden="true"><span>sehr gut</span><span>verbesserungsw&uuml;rdig</span></p>
+            <p class="rate__anchors" aria-hidden="true"><span>verbesserungsw&uuml;rdig</span><span>sehr gut</span></p>
             <label class="rate__na"><input type="radio" name="produktvorfuehrungen" value="na"><span>Nicht beurteilt</span></label>
           </div>
           <div class="rate__comment" data-comment hidden>
@@ -1390,13 +1448,13 @@ body.is-done .demo { display: none; }
           <legend class="rate__label">M&ouml;glichkeit f&uuml;r Fragen</legend>
           <div class="rate__control">
             <div class="rate__options">
-            <label class="rate__opt"><input type="radio" name="fragen" value="1" aria-label="1 (sehr gut)"><span>1</span></label>
+            <label class="rate__opt"><input type="radio" name="fragen" value="1" aria-label="1 (verbesserungsw&uuml;rdig)"><span>1</span></label>
             <label class="rate__opt"><input type="radio" name="fragen" value="2" aria-label="2"><span>2</span></label>
             <label class="rate__opt"><input type="radio" name="fragen" value="3" aria-label="3"><span>3</span></label>
             <label class="rate__opt"><input type="radio" name="fragen" value="4" aria-label="4"><span>4</span></label>
-            <label class="rate__opt"><input type="radio" name="fragen" value="5" aria-label="5 (verbesserungsw&uuml;rdig)"><span>5</span></label>
+            <label class="rate__opt"><input type="radio" name="fragen" value="5" aria-label="5 (sehr gut)"><span>5</span></label>
             </div>
-            <p class="rate__anchors" aria-hidden="true"><span>sehr gut</span><span>verbesserungsw&uuml;rdig</span></p>
+            <p class="rate__anchors" aria-hidden="true"><span>verbesserungsw&uuml;rdig</span><span>sehr gut</span></p>
             <label class="rate__na"><input type="radio" name="fragen" value="na"><span>Nicht beurteilt</span></label>
           </div>
           <div class="rate__comment" data-comment hidden>
@@ -1410,13 +1468,13 @@ body.is-done .demo { display: none; }
           <legend class="rate__label">Betreuung durch THITRONIK</legend>
           <div class="rate__control">
             <div class="rate__options">
-            <label class="rate__opt"><input type="radio" name="betreuung_thitronik" value="1" aria-label="1 (sehr gut)"><span>1</span></label>
+            <label class="rate__opt"><input type="radio" name="betreuung_thitronik" value="1" aria-label="1 (verbesserungsw&uuml;rdig)"><span>1</span></label>
             <label class="rate__opt"><input type="radio" name="betreuung_thitronik" value="2" aria-label="2"><span>2</span></label>
             <label class="rate__opt"><input type="radio" name="betreuung_thitronik" value="3" aria-label="3"><span>3</span></label>
             <label class="rate__opt"><input type="radio" name="betreuung_thitronik" value="4" aria-label="4"><span>4</span></label>
-            <label class="rate__opt"><input type="radio" name="betreuung_thitronik" value="5" aria-label="5 (verbesserungsw&uuml;rdig)"><span>5</span></label>
+            <label class="rate__opt"><input type="radio" name="betreuung_thitronik" value="5" aria-label="5 (sehr gut)"><span>5</span></label>
             </div>
-            <p class="rate__anchors" aria-hidden="true"><span>sehr gut</span><span>verbesserungsw&uuml;rdig</span></p>
+            <p class="rate__anchors" aria-hidden="true"><span>verbesserungsw&uuml;rdig</span><span>sehr gut</span></p>
             <label class="rate__na"><input type="radio" name="betreuung_thitronik" value="na"><span>Nicht beurteilt</span></label>
           </div>
           <div class="rate__comment" data-comment hidden>
@@ -1444,7 +1502,7 @@ body.is-done .demo { display: none; }
             <input type="checkbox" name="inseln" value="1">
             <span class="isle__box">
               <span class="isle__thumb"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII=" alt="" width="90" height="76" loading="lazy" decoding="async"></span>
-              <span class="isle__text"><strong>Vejr&oslash;</strong><small>Premiumpartner-Konzept &amp; Produktschulung</small></span>
+              <span class="isle__text"><strong>Vejr&oslash;</strong><small>Premiumpartner und Produktschulung</small></span>
               <span class="isle__slot"><span class="isle__rank" data-rank></span></span>
             </span>
           </label>
@@ -1596,11 +1654,23 @@ body.is-done .demo { display: none; }
 
   <script>
 /* ============================================================================
-   THITRONIK Campus 2026 Feedbackbogen - v13 (Schritt fuer Schritt)
+   THITRONIK Campus 2026 Feedbackbogen - v14 (Schritt fuer Schritt)
 
-   Ein Abschnitt pro Bildschirm. Der RPC-Payload ist gegenueber v11/v12
-   unveraendert (gleiche Feldnamen, gleiche itemLabel-Strings, gleiches
-   source/formVersion), damit Auswertung und Insel-Contest weiterlaufen.
+   Ein Abschnitt pro Bildschirm.
+
+   ACHTUNG, hier bricht v14 bewusst mit v11 bis v13:
+
+   1. Die Notenskala ist umgedreht. 5 ist ab jetzt die beste Note, 1 die
+      schlechteste. Die Zahl wird SO gespeichert, wie sie angekreuzt wurde -
+      es wird nichts zurueckgerechnet.
+   2. Deshalb tragen formVersion und source neue Werte. Die Auswertungs-Views
+      gruppieren nach form_version; nur so stehen die alten Einsendungen mit
+      "1 = beste" nicht in derselben Durchschnittsrechnung wie die neuen.
+      Wer diese Strings zurueckdreht, mischt zwei Bedeutungen in einer Spalte.
+   3. Neues Pflichtfeld dealerNumber, genau fuenf Ziffern.
+
+   Die itemLabel-Strings und Feldnamen bleiben unveraendert, damit sich
+   dieselbe Frage ueber alle Jahrgaenge hinweg wiederfinden laesst.
    ========================================================================== */
 (() => {
   'use strict';
@@ -1629,7 +1699,12 @@ body.is-done .demo { display: none; }
   const SUPABASE_URL = 'https://mhzlayhnyqlxdyiceyqz.supabase.co';
   const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_bJN8jgtj-Lx6mRyE2hWBgQ_8alccYFG';
   const SUPABASE_RPC = 'submit_campus_feedback';
-  const DRAFT_KEY = 'thitronik-campus-2026-feedback-draft-v13';
+  /* Eigener Schluessel fuer v14, und das ist kein Schoenheitsfehler: ein
+     liegengebliebener v13-Entwurf enthaelt Noten der alten Richtung. Unter
+     demselben Schluessel wiederhergestellt wuerde aus einer 1 ("war sehr gut")
+     stillschweigend die schlechteste Bewertung. Lieber faengt so jemand neu an,
+     als dass sein Urteil unbemerkt kippt. */
+  const DRAFT_KEY = 'thitronik-campus-2026-feedback-draft-v14';
 
   const demoMode = new URLSearchParams(window.location.search).get('demo') === '1';
 
@@ -1664,6 +1739,10 @@ body.is-done .demo { display: none; }
 
   const RATING_KEYS = ratingDefinitions.map((definition) => definition[1]);
   const SECTION_NAMES = ['Angaben', 'Eindruck', 'Organisation', 'Schulung', 'Inseln', 'Ausblick'];
+
+  /* Genau fuenf Ziffern. Fuehrende Nullen bleiben erhalten, die Nummer wird
+     als Zeichenkette gefuehrt und nirgends in eine Zahl umgewandelt. */
+  const DEALER_NUMBER = /^\d{5}$/;
 
   const panels = [...document.querySelectorAll('[data-panel]')]
     .sort((a, b) => Number(a.dataset.panel) - Number(b.dataset.panel));
@@ -1743,8 +1822,9 @@ body.is-done .demo { display: none; }
   }
 
   /* ----------------------------------------------------------- Bewertungszeilen
-     Kommentar ist NUR bei 5 verpflichtend. Eine Pflichtbegruendung fuer die
-     Bestnote treibt Teilnehmende systematisch auf die 2 aus. */
+     Kommentar ist NUR bei der schlechtesten Note verpflichtend, seit v14 also
+     bei der 1. Eine Pflichtbegruendung fuer die Bestnote treibt Teilnehmende
+     systematisch auf die zweitbeste Note aus. */
 
   /* refreshRatingRow ist absichtlich von der Verdrahtung getrennt. Vorher rief
      das Wiederherstellen eines Entwurfs die komplette Einrichtung ein zweites
@@ -1760,10 +1840,12 @@ body.is-done .demo { display: none; }
     const value = selected ? selected.value : '';
     const wasHidden = box.hidden;
 
+    /* Beide Enden der Skala oeffnen ein Feld, nur mit vertauschten Rollen:
+       die 1 verlangt eine Begruendung, die 5 laedt zu einer ein. */
     box.hidden = value !== '1' && value !== '5';
-    box.classList.toggle('rate__comment--must', value === '5');
-    box.classList.toggle('rate__comment--good', value === '1');
-    textarea.dataset.required = value === '5' ? 'true' : 'false';
+    box.classList.toggle('rate__comment--must', value === '1');
+    box.classList.toggle('rate__comment--good', value === '5');
+    textarea.dataset.required = value === '1' ? 'true' : 'false';
 
     if (fromUser && wasHidden && !box.hidden) {
       /* Nur das Aufblenden erklaert, dass dieses Feld eine Folge der eigenen
@@ -1776,15 +1858,15 @@ body.is-done .demo { display: none; }
     }
     if (box.hidden) box.classList.remove('is-revealed');
 
-    if (value === '5') {
+    if (value === '1') {
       label.textContent = 'Was sollten wir hier verbessern?';
       help.textContent = 'Kurz genügt. Diese Angabe brauchen wir.';
-    } else if (value === '1') {
+    } else if (value === '5') {
       label.textContent = 'Was hat hier besonders gut funktioniert?';
       help.textContent = 'Freiwillig. Hilft uns aber sehr, das beizubehalten.';
     }
 
-    if (value !== '5') clearFieldError(textarea);
+    if (value !== '1') clearFieldError(textarea);
   }
 
   function setupRatingRow(row) {
@@ -1831,6 +1913,23 @@ body.is-done .demo { display: none; }
         clearFieldError(el);
       }
     });
+
+    /* Zwei Meldungen statt einer: "fehlt" und "hat das falsche Format" sind
+       verschiedene Lagen, und wer 3451 getippt hat, sucht sonst den Fehler an
+       der falschen Stelle. */
+    const nummer = document.getElementById('dealer_number');
+    if (nummer && inScope(nummer)) {
+      const wert = nummer.value.trim();
+      if (!wert) {
+        showFieldError(nummer, 'Bitte tragen Sie Ihre Händlernummer ein.');
+        problems.push({ el: nummer, label: 'Händlernummer', panel: panelOf(nummer) });
+      } else if (!DEALER_NUMBER.test(wert)) {
+        showFieldError(nummer, 'Die Händlernummer besteht aus genau fünf Ziffern, zum Beispiel 34512.');
+        problems.push({ el: nummer, label: 'Händlernummer', panel: panelOf(nummer) });
+      } else {
+        clearFieldError(nummer);
+      }
+    }
 
     rows.forEach((row) => {
       const textarea = row.querySelector('[data-comment] textarea');
@@ -1879,9 +1978,31 @@ body.is-done .demo { display: none; }
     missingBox.hidden = false;
   }
 
+  /* --------------------------------------------------------- Haendlernummer
+     Alles, was keine Ziffer ist, faellt schon beim Tippen weg: Leerzeichen aus
+     "34 512", Punkte, ein vorangestelltes "Nr.". Sonst scheitert die Pruefung
+     an einer Eingabe, die der Teilnehmer fuer richtig haelt - und er sieht
+     nicht, woran. Der Wert wird nur zurueckgeschrieben, wenn wirklich etwas
+     entfernt wurde, sonst springt die Schreibmarke bei jedem Zeichen ans Ende. */
+
+  const dealerNumberInput = document.getElementById('dealer_number');
+  if (dealerNumberInput) {
+    dealerNumberInput.addEventListener('input', () => {
+      const nurZiffern = dealerNumberInput.value.replace(/\D/g, '').slice(0, 5);
+      if (nurZiffern !== dealerNumberInput.value) dealerNumberInput.value = nurZiffern;
+      clearFieldError(dealerNumberInput);
+    });
+  }
+
   /* ------------------------------------------------------------- Fortschritt */
 
-  const TRACKED = ['dealer_name', 'name', 'overall', ...RATING_KEYS, 'weiterempfehlung'];
+  const TRACKED = ['dealer_name', 'dealer_number', 'name', 'overall', ...RATING_KEYS, 'weiterempfehlung'];
+
+  /* Zwei Zeichen genuegen sonst, um ein Textfeld als beantwortet zu zaehlen.
+     Bei der Haendlernummer waere "34" damit erledigt, obwohl die Pruefung sie
+     zurueckweist: der Zaehler im Kopf verspraeche einen Fortschritt, den der
+     Weiter-Knopf gleich wieder einkassiert. */
+  const ANSWERED_MIN = { dealer_number: 5 };
 
   const TALLIES = [
     ['3', 'organisation_ablauf'],
@@ -1974,7 +2095,7 @@ body.is-done .demo { display: none; }
       if (nodes instanceof RadioNodeList) {
         if (nodes.value) count += 1;
       } else if (typeof nodes.value === 'string') {
-        if (nodes.value.trim().length >= 2) count += 1;
+        if (nodes.value.trim().length >= (ANSWERED_MIN[key] || 2)) count += 1;
       }
     }
     return count;
@@ -2278,9 +2399,15 @@ body.is-done .demo { display: none; }
     }
 
     /* islandChoices steht in der Reihenfolge der Auswahl, also Platz 1 bis 3.
-       Die Rating-Eintraege bleiben ALLE bei 1: der bestehende Contest zaehlt
-       ueber anzahl_note_1, eine Gewichtung nach Platz wuerde ihn still
-       veraendern. Die Rangfolge steckt in islandChoices und im raw_payload. */
+       Die Rating-Eintraege tragen ALLE dieselbe Zahl - eine Gewichtung nach
+       Platz wuerde den Contest still veraendern. Die Rangfolge steckt in
+       islandChoices und im raw_payload.
+
+       Diese Zahl ist seit v14 die 5 statt der 1: es ist die Bestnote, und eine
+       Lieblingsinsel mit der schlechtesten Note zu markieren waere im Bestand
+       nicht mehr lesbar. Der Contest zaehlt fuer v14-Zeilen entsprechend ueber
+       anzahl_note_5, nicht mehr ueber anzahl_note_1 (siehe
+       supabase_v14_migration.sql). */
     const islandChoices = [];
     const gewaehlt = islandOrder.length
       ? islandOrder
@@ -2291,15 +2418,20 @@ body.is-done .demo { display: none; }
       if (!definition) continue;
       const [itemKey, itemLabel] = definition;
       islandChoices.push(itemLabel);
-      ratings.push({ sectionKey: 'schulungsinseln', itemKey, itemLabel, rating: 1, comment: null });
+      ratings.push({ sectionKey: 'schulungsinseln', itemKey, itemLabel, rating: 5, comment: null });
     }
 
     return {
       submissionId: submissionId(),
       createdClientAt: new Date().toISOString(),
       eventSlug: 'campus-2026',
-      formVersion: form.dataset.formVersion || 'campus-2026-haendler-v11',
+      formVersion: form.dataset.formVersion || 'campus-2026-haendler-v14',
       dealerName: String(data.get('dealer_name') || '').trim(),
+      /* Zeichenkette, nicht Number: 03451 ist eine gueltige Haendlernummer und
+         wuerde als Zahl zu 3451 zusammenfallen. Bis die Migration eingespielt
+         ist, landet der Wert ausschliesslich im raw_payload - der Bogen
+         funktioniert dadurch schon vorher vollstaendig. */
+      dealerNumber: String(data.get('dealer_number') || '').trim(),
       participantName: String(data.get('name') || '').trim(),
       participantAreas: data.getAll('bereich').map(String),
       overallRating: data.get('overall') || null,
@@ -2311,7 +2443,7 @@ body.is-done .demo { display: none; }
       positiveAspects: String(data.get('positive_aspekte') || '').trim() || null,
       additionalNotes: String(data.get('weitere_anmerkungen') || '').trim() || null,
       islandChoices,
-      source: 'thitronik-campus-feedback-v11',
+      source: 'thitronik-campus-feedback-v14',
       ratings
     };
   }

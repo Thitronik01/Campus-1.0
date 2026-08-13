@@ -15,7 +15,6 @@
   const doneScreen = document.getElementById('thankYouScreen');
   const doneName = document.getElementById('thankYouName');
   const rail = document.getElementById('rail');
-  const railFill = document.getElementById('railFill');
   const railCount = document.getElementById('railCount');
   const railStep = document.getElementById('railStep');
   const railName = document.getElementById('railName');
@@ -73,15 +72,14 @@
     .sort((a, b) => Number(a.dataset.panel) - Number(b.dataset.panel));
   const LAST = panels.length - 1;
 
+  /* Unten links: oben rechts verdeckte es auf dem Handy das Logo. Die Lage
+     steht jetzt im Stylesheet, damit sie sich mitbewegen kann, wenn die
+     Schrittleiste erscheint. Vorher lag der Hinweis auf dem Startbildschirm
+     genau auf der Fusszeile. */
   if (demoMode) {
     const badge = document.createElement('p');
+    badge.className = 'demo';
     badge.textContent = 'Vorschau: es wird nichts gespeichert';
-    badge.style.cssText =
-      /* Unten links: oben rechts verdeckte es auf dem Handy das Logo. */
-      'position:fixed;z-index:3000;left:12px;bottom:calc(96px + env(safe-area-inset-bottom,0px));' +
-      'margin:0;padding:8px 14px;border-radius:999px;background:#fff;color:#A50F24;' +
-      'border:1px solid #EFC3CA;font-size:.74rem;font-weight:800;' +
-      'box-shadow:0 8px 24px rgba(29,54,97,.22)';
     document.body.appendChild(badge);
   }
 
@@ -151,6 +149,47 @@
      Kommentar ist NUR bei 5 verpflichtend. Eine Pflichtbegruendung fuer die
      Bestnote treibt Teilnehmende systematisch auf die 2 aus. */
 
+  /* refreshRatingRow ist absichtlich von der Verdrahtung getrennt. Vorher rief
+     das Wiederherstellen eines Entwurfs die komplette Einrichtung ein zweites
+     Mal auf und haengte damit an jedes Bewertungsfeld einen zweiten Listener:
+     jede Auswahl loeste danach doppelt aus. Jetzt darf refresh beliebig oft
+     laufen, addEventListener genau einmal. */
+  function refreshRatingRow(row, fromUser) {
+    const parts = row.__rate;
+    if (!parts) return;
+    const { radios, box, label, help, textarea } = parts;
+
+    const selected = radios.find((radio) => radio.checked);
+    const value = selected ? selected.value : '';
+    const wasHidden = box.hidden;
+
+    box.hidden = value !== '1' && value !== '5';
+    box.classList.toggle('rate__comment--must', value === '5');
+    box.classList.toggle('rate__comment--good', value === '1');
+    textarea.dataset.required = value === '5' ? 'true' : 'false';
+
+    if (fromUser && wasHidden && !box.hidden) {
+      /* Nur das Aufblenden erklaert, dass dieses Feld eine Folge der eigenen
+         Auswahl ist. Beim Wiederherstellen waere es eine Animation ohne
+         Ursache, deshalb haengt die Klasse an fromUser. */
+      box.classList.remove('is-revealed');
+      void box.offsetWidth;
+      box.classList.add('is-revealed');
+      box.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+    if (box.hidden) box.classList.remove('is-revealed');
+
+    if (value === '5') {
+      label.textContent = 'Was sollten wir hier verbessern?';
+      help.textContent = 'Kurz genügt. Diese Angabe brauchen wir.';
+    } else if (value === '1') {
+      label.textContent = 'Was hat hier besonders gut funktioniert?';
+      help.textContent = 'Freiwillig. Hilft uns aber sehr, das beizubehalten.';
+    }
+
+    if (value !== '5') clearFieldError(textarea);
+  }
+
   function setupRatingRow(row) {
     const radios = [...row.querySelectorAll('input[type="radio"]')];
     const box = row.querySelector('[data-comment]');
@@ -159,37 +198,14 @@
     const textarea = box && box.querySelector('textarea');
     if (!box || !label || !help || !textarea || !radios.length) return;
 
-    function update(fromUser) {
-      const selected = radios.find((radio) => radio.checked);
-      const value = selected ? selected.value : '';
-      const wasHidden = box.hidden;
-
-      box.hidden = value !== '1' && value !== '5';
-      box.classList.toggle('rate__comment--must', value === '5');
-      box.classList.toggle('rate__comment--good', value === '1');
-      textarea.dataset.required = value === '5' ? 'true' : 'false';
-
-      if (fromUser && wasHidden && !box.hidden) {
-        box.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-      }
-
-      if (value === '5') {
-        label.textContent = 'Was sollten wir hier verbessern?';
-        help.textContent = 'Kurz genügt. Diese Angabe brauchen wir.';
-      } else if (value === '1') {
-        label.textContent = 'Was hat hier besonders gut funktioniert?';
-        help.textContent = 'Freiwillig. Hilft uns aber sehr, das beizubehalten.';
-      }
-
-      if (value !== '5') clearFieldError(textarea);
-    }
+    row.__rate = { radios, box, label, help, textarea };
 
     radios.forEach((radio) => radio.addEventListener('change', () => {
-      update(true);
+      refreshRatingRow(row, true);
       onFormChanged();
     }));
     textarea.addEventListener('input', () => clearFieldError(textarea));
-    update(false);
+    refreshRatingRow(row, false);
   }
 
   const rows = [...document.querySelectorAll('[data-rate]')];
@@ -303,7 +319,18 @@
       const rank = box.parentElement.querySelector('[data-rank]');
       if (!rank) return;
       const platz = islandOrder.indexOf(box.value);
-      rank.textContent = platz >= 0 ? `PLATZ ${platz + 1}` : '';
+      /* Normal geschrieben, die Versalien macht das Stylesheet: der Text ist
+         Teil des Beschriftungstextes und wird mitgelesen. Das Wort steht in
+         einem eigenen Element, weil es auf schmalen Geraeten nur noch
+         vorgelesen und nicht mehr angezeigt wird. */
+      if (platz < 0) {
+        rank.replaceChildren();
+        return;
+      }
+      const wort = document.createElement('span');
+      wort.className = 'isle__rankWord';
+      wort.textContent = 'Platz ';
+      rank.replaceChildren(wort, document.createTextNode(String(platz + 1)));
     });
 
     if (islandTally) {
@@ -328,6 +355,10 @@
       /* Zurueckspringen ist erlaubt, vorspringen nicht: sonst umgeht man die
          Pruefung der Pflichtangaben. */
       button.disabled = !(state === 'done' && n < active);
+      /* Ohne aria-current hoert man beim Durchtabben sechs gleich klingende
+         Schaltflaechen und nicht, an welcher Stelle man gerade steht. */
+      if (state === 'current') button.setAttribute('aria-current', 'step');
+      else button.removeAttribute('aria-current');
     });
   }
 
@@ -362,9 +393,12 @@
       el.classList.toggle('card__tally--full', done === keys.length);
     });
 
-    if (!railFill || !railCount) return;
+    /* Frueher haengte diese Zeile an einem Balken-Element, das es in v13 gar
+       nicht mehr gibt: die Segmentanzeige hat ihn abgeloest. Die Pruefung auf
+       das fehlende Element brach die Funktion vorher ab, weshalb im Kopf
+       dauerhaft "0 von 17 beantwortet" stand, egal wie viel ausgefuellt war. */
+    if (!railCount) return;
     const done = answeredCount();
-    railFill.style.width = `${Math.round((done / TRACKED.length) * 100)}%`;
     railCount.textContent = `${done} von ${TRACKED.length} beantwortet`;
   }
 
@@ -372,6 +406,7 @@
 
   let saveTimer = 0;
   let current = 0;
+  let aufgebaut = false;
 
   function collectDraft() {
     const draft = { __panel: current, __isles: islandOrder.slice() };
@@ -434,7 +469,7 @@
 
     if (!restored) return false;
     draftPanel = Math.min(Math.max(Number(draft.__panel) || 1, 1), LAST);
-    rows.forEach(setupRatingRow);
+    rows.forEach((row) => refreshRatingRow(row, false));
     return true;
   }
 
@@ -451,6 +486,8 @@
 
   function goTo(index, push) {
     const target = Math.min(Math.max(index, 0), LAST);
+    const rueckwaerts = target < current;
+    const wechsel = target !== current;
     current = target;
 
     panels.forEach((panel) => {
@@ -472,9 +509,30 @@
       updateSteps(target);
     }
 
-    window.scrollTo({ top: 0, behavior: 'auto' });
+    /* 'instant' statt 'auto': 'auto' bedeutet laut Spezifikation "nimm das
+       CSS scroll-behavior", und das steht hier auf smooth. Jeder Schrittwechsel
+       hat deshalb den ganzen Weg nach oben weggescrollt, teils ueber 800 px.
+       Das kostete bei jedem Klick eine halbe Sekunde, in der die neue Seite
+       schon da war. Fuer Ankerspruenge bleibt smooth erhalten. */
+    window.scrollTo({ top: 0, behavior: 'instant' });
     const panel = panels[target];
-    if (panel) panel.focus({ preventScroll: true });
+    if (panel) {
+      /* Beim ersten Aufbau nicht animieren: da erklaert die Bewegung nichts,
+         sie verzoegert nur den ersten Eindruck. */
+      if (wechsel && aufgebaut) {
+        panel.classList.remove('is-entering', 'is-entering--back');
+        void panel.offsetWidth;
+        panel.classList.add('is-entering');
+        if (rueckwaerts) panel.classList.add('is-entering--back');
+      }
+      /* Fokus NUR beim echten Schrittwechsel setzen. Beim Aufbau der Seite
+         haette ihn das auf das Panel gezogen, und weil der Sprunglink im
+         Quelltext davor steht, war er danach mit Tab nicht mehr erreichbar:
+         der erste Tabulator landete direkt auf "Feedback starten". Ohne
+         diesen Aufruf bleibt der Startpunkt der Tabreihenfolge am
+         Dokumentanfang, wo der Sprunglink hingehoert. */
+      if (aufgebaut) panel.focus({ preventScroll: true });
+    }
 
     if (push) {
       const state = { panel: target };
@@ -496,6 +554,21 @@
   if (startButton) {
     startButton.addEventListener('click', () => goTo(draftPanel || 1, true));
   }
+
+  /* Der Sprunglink zeigte auf #panel-1, und dieses Panel ist auf dem
+     Startbildschirm noch versteckt: der Klick landete im Nichts, der Fokus
+     blieb auf dem Body. Fuer Tastaturnutzende war das der einzige angebotene
+     Weg an den Anfang des Bogens. Jetzt startet er ihn wirklich. */
+  const skipLink = document.querySelector('.skip');
+  if (skipLink) {
+    skipLink.addEventListener('click', (event) => {
+      event.preventDefault();
+      const ziel = current > 0 ? current : (draftPanel || 1);
+      goTo(ziel, true);
+      const panel = panels[ziel];
+      if (panel) panel.focus({ preventScroll: true });
+    });
+  }
   if (backButton) {
     backButton.addEventListener('click', () => {
       if (current > 1) window.history.back();
@@ -507,6 +580,13 @@
         const problems = collectProblems(panels[current]);
         if (problems.length) {
           const first = problems[0].el;
+          /* Sehend erkennt man den Stillstand am roten Feld. Ohne Ansage bleibt
+             fuer Vorlesesoftware sonst nur ein Knopf, der scheinbar nichts tut. */
+          if (announce) {
+            announce.textContent = problems.length === 1
+              ? `Es fehlt noch eine Angabe: ${problems[0].label}.`
+              : `Es fehlen noch ${problems.length} Angaben auf diesem Schritt.`;
+          }
           first.scrollIntoView({ behavior: 'smooth', block: 'center' });
           first.focus({ preventScroll: true });
           return;
@@ -522,28 +602,33 @@
     draftClear.addEventListener('click', () => {
       dropDraft();
       form.reset();
-      rows.forEach((row) => {
-        const box = row.querySelector('[data-comment]');
-        const textarea = box && box.querySelector('textarea');
-        if (box) box.hidden = true;
-        if (textarea) { textarea.value = ''; textarea.dataset.required = 'false'; }
-      });
+      rows.forEach((row) => refreshRatingRow(row, false));
       draftPanel = 1;
+      maxVisited = 1;
       islandOrder = [];
       updateIslands();
       if (draftNote) draftNote.hidden = true;
       updateProgress();
+      if (announce) announce.textContent = 'Der gespeicherte Entwurf wurde gelöscht. Sie beginnen von vorn.';
+      /* Der geklickte Knopf verschwindet mit dem Hinweis. Ohne dieses Umsetzen
+         faellt der Fokus auf den Body und die Tastaturposition geht verloren. */
+      if (startButton) {
+        startButton.textContent = 'Feedback starten';
+        startButton.focus();
+      }
     });
   }
 
   /* -------------------------------------------------------------- Danke-Ansicht */
 
-  const pageRegions = ['.masthead', '.rail', '.main', '.stepbar', '.foot']
-    .map((selector) => document.querySelector(selector))
-    .filter(Boolean);
-
   function showDone(name) {
     if (!doneScreen || !doneName) return;
+    /* Erst hier einsammeln: der Vorschau-Hinweis wird nachtraeglich angehaengt
+       und muss ebenfalls aus dem Zugriff, sonst bleibt hinter dem Dialog ein
+       fokussierbarer Rest liegen. */
+    const pageRegions = ['.masthead', '.rail', '.main', '.stepbar', '.foot', '.demo', '.skip']
+      .map((selector) => document.querySelector(selector))
+      .filter(Boolean);
     doneName.textContent = String(name || '').trim() || 'Teilnehmer';
     doneScreen.hidden = false;
     document.body.classList.add('is-done');
@@ -725,7 +810,11 @@
 
   /* -------------------------------------------------------------------- Aufbau */
 
-  if (restoreDraft() && draftNote) draftNote.hidden = false;
+  if (restoreDraft()) {
+    if (draftNote) draftNote.hidden = false;
+    /* "Feedback starten" waere hier gelogen: der Knopf setzt fort. */
+    if (startButton) startButton.textContent = 'Weiter ausfüllen';
+  }
   updateIslands();
   updateProgress();
 
@@ -734,4 +823,5 @@
   const initial = fromHash ? Number(fromHash[1]) : 0;
   window.history.replaceState({ panel: initial }, '', window.location.hash || '#start');
   goTo(initial, false);
+  aufgebaut = true;
 })();

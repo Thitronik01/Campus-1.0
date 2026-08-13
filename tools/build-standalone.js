@@ -1,14 +1,20 @@
-/* Baut zwei Einzeldateien aus v13:
+/* Baut zwei Einzeldateien aus einer Version:
    1. Standalone  - alles eingebettet, per Doppelklick lauffaehig
-   2. fuer ChatGPT - identischer Code, Bilder als Platzhalter statt Base64  */
+   2. fuer ChatGPT - identischer Code, Bilder als Platzhalter statt Base64
+
+   Version als Argument, sonst die aktuelle:  node tools/build-standalone.js v13
+   Die Datei ist bewusst nicht pro Version kopiert - hier steckt keine
+   Version-spezifische Logik, nur Dateinamen. */
 const fs = require('fs');
 const path = require('path');
 
 const P = require('path').resolve(__dirname, '..');
+const V = process.argv[2] || 'v14';
 
-const html = fs.readFileSync(`${P}/index-v13.html`, 'utf8');
-const css = fs.readFileSync(`${P}/styles-v13.css`, 'utf8');
-const js = fs.readFileSync(`${P}/app-v13.js`, 'utf8');
+const html = fs.readFileSync(`${P}/index-${V}.html`, 'utf8');
+const css = fs.readFileSync(`${P}/styles-${V}.css`, 'utf8');
+const js = fs.readFileSync(`${P}/app-${V}.js`, 'utf8');
+const rays = fs.readFileSync(`${P}/rays-${V}.js`, 'utf8');
 
 const MIME = { webp: 'image/webp', png: 'image/png', jpg: 'image/jpeg', svg: 'image/svg+xml' };
 
@@ -34,18 +40,29 @@ function build({ embed, outFile, kopf }) {
   });
 
   out = out.replace(
-    /  <link rel="stylesheet" href="styles-v13\.css">/,
+    new RegExp(`  <link rel="stylesheet" href="styles-${V}\\.css">`),
     `  <style>\n${cssOut.trim()}\n  </style>`
   );
   out = out.replace(
-    /  <script src="app-v13\.js" defer><\/script>/,
+    new RegExp(`  <script src="app-${V}\\.js" defer></script>`),
     `  <script>\n${js.trim()}\n  </script>`
   );
+  out = out.replace(
+    new RegExp(`  <script src="rays-${V}\\.js" defer></script>`),
+    `  <script>\n${rays.trim()}\n  </script>`
+  );
 
-  /* Preload und Favicon zeigen auf externe Dateien, in einer Einzeldatei
-     ergeben sie keinen Sinn mehr. */
+  /* Preload zeigt auf eine externe Datei und ergibt in einer Einzeldatei
+     keinen Sinn mehr. Das Favicon dagegen bleibt: als Data-URI funktioniert
+     es auch ohne Nachbardateien. Ohne es fragt der Browser /favicon.ico an
+     und quittiert mit einem 404 in der Konsole - in einer Datei, die per
+     Doppelklick laufen soll, ein unnoetiger Fehler. In der Platzhalter-
+     Fassung bleibt es beim 1x1-Pixel, dort zaehlt nur der Code. */
   out = out.replace(/ {2}<link rel="preload"[\s\S]*?fetchpriority="high">\n/, '');
-  out = out.replace(/ {2}<link rel="icon"[^>]*>\n/, '');
+  out = out.replace(
+    / {2}<link rel="icon"[^>]*>/,
+    `  <link rel="icon" href="${embed ? dataUri('assets/thitronik-logo.png') : PLACEHOLDER}">`
+  );
 
   /* srcset und sizes entfernen: eine Einzeldatei traegt nur eine Bildgroesse. */
   out = out.replace(/\n\s*srcset="[^"]*"/g, '');
@@ -59,7 +76,7 @@ function build({ embed, outFile, kopf }) {
     out = out.split(`"${rel}"`).join(`"${embed ? dataUri(rel) : PLACEHOLDER}"`);
   });
 
-  out = out.replace('<body data-build="v13">', `<body data-build="v13">\n${kopf}`);
+  out = out.replace(`<body data-build="${V}">`, `<body data-build="${V}">\n${kopf}`);
   out = out.replace(/<!doctype html>/, `<!--\n${kopf.replace(/<!--|-->/g, '').trim()}\n-->\n<!doctype html>`);
 
   fs.writeFileSync(path.join(P, outFile), out, 'utf8');
@@ -68,14 +85,14 @@ function build({ embed, outFile, kopf }) {
 
 const a = build({
   embed: true,
-  outFile: 'THITRONIK_Campus_Feedbackbogen_v13_Standalone.html',
+  outFile: `THITRONIK_Campus_Feedbackbogen_${V}_Standalone.html`,
   kopf: '  <!-- Einzeldatei: HTML, CSS, JavaScript und Bilder vollstaendig eingebettet.\n' +
         '       Per Doppelklick lauffaehig. Speichert echt in Supabase, ausser mit ?demo=1. -->'
 });
 
 const b = build({
   embed: false,
-  outFile: 'THITRONIK_Campus_Feedbackbogen_v13_Code.html',
+  outFile: `THITRONIK_Campus_Feedbackbogen_${V}_Code.html`,
   kopf: '  <!-- Codefassung zum Weitergeben an ein Sprachmodell.\n' +
         '       Identisch zur Standalone-Datei, aber ohne Base64-Bilder: alle Bilder sind\n' +
         '       durch ein 1x1-Pixel ersetzt. Die echten Dateien liegen unter:\n' +

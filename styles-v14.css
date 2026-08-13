@@ -1,5 +1,5 @@
 /* ============================================================================
-   THITRONIK Campus 2026 Feedbackbogen - v13
+   THITRONIK Campus 2026 Feedbackbogen - v14
    Schritt fuer Schritt. Mobile first.
 
    FARBEN: verbindliche THITRONIK Markenpalette.
@@ -459,6 +459,19 @@ body.is-stepping .foot { display: none; }
 .grid { display: grid; gap: var(--gap); }
 @media (min-width: 700px) { .grid--2 { grid-template-columns: 1fr 1fr; } }
 
+/* Schritt 1 traegt seit v14 drei Felder statt zwei. Betrieb und Nummer stehen
+   nebeneinander, weil beide denselben Betrieb bezeichnen; der Name faellt
+   darunter in die volle Breite, sonst bliebe rechts ein sichtbares Loch.
+   Die Nummer bekommt eine feste schmale Spalte: fuenf Ziffern in einem Feld
+   ueber die halbe Kartenbreite versprechen mehr Eingabe als hineinpasst. */
+@media (min-width: 700px) {
+  .grid--angaben { grid-template-columns: minmax(0, 1fr) 200px; }
+  .grid--angaben .field--wide { grid-column: 1 / -1; }
+}
+
+/* Ziffern gleich breit, damit die Nummer beim Tippen nicht zappelt. */
+.field--num input[type="text"] { font-variant-numeric: tabular-nums; letter-spacing: .09em; }
+
 .field label, .chips legend, .recommend legend {
   display: block; margin-bottom: 8px;
   color: var(--blue); font-weight: 700; font-size: .96rem;
@@ -499,6 +512,12 @@ input[type="text"]::placeholder, textarea::placeholder { color: #8B95A1; }
 }
 .field__err { margin: 7px 0 0; color: var(--red-deep); font-size: .84rem; font-weight: 650; }
 .field__err[hidden] { display: none; }
+
+/* Das Format steht dauerhaft unter dem Feld, nicht erst im Fehlerfall. Eine
+   Regel, die man vorher kennt, ist keine Ruege hinterher. Verschwindet, sobald
+   der Fehlertext die Stelle braucht, damit nicht zwei Zeilen konkurrieren. */
+.field__hint { margin: 7px 0 0; color: var(--muted); font-size: .82rem; }
+.field--bad .field__hint { display: none; }
 
 /* ---------------------------------------------------------------------- Chips */
 
@@ -604,10 +623,27 @@ input[type="text"]::placeholder, textarea::placeholder { color: #8B95A1; }
 }
 .rate__opt span:hover { border-color: var(--blue-2); background: var(--blue-tint); }
 .rate__opt input:checked + span { border-color: var(--blue); background: var(--blue); color: var(--white); }
-.rate__opt:first-child input:checked + span {
+
+/* Die Farbe haengt am WERT, nicht an der Position. Bis v13 stand hier
+   :first-child und :last-child - als sich die Skala drehte, blieben die Farben
+   an ihrem Platz stehen und die schlechteste Note leuchtete gruen. Ueber den
+   Wert angesprochen wandert sie beim naechsten Mal von allein mit.
+
+   Nur die Endpunkte tragen Farbe. Lime und Rot sind laut Markenpalette "sehr
+   sparsam" einzusetzen, und eine durchgefaerbte Skala braeuchte Zwischentoene
+   in Orange und Gelb, die es in der Palette nicht gibt. Die Bedeutung haengt
+   ohnehin nicht an der Farbe allein: Ziffer, Anker darunter und aria-label
+   sagen dasselbe - Farbe bestaetigt hier nur, sie traegt nicht (WCAG 1.4.1).
+
+   Kontrast am fertigen Feld gemessen: Lime mit ink 10,1:1, Rot mit weiss
+   5,6:1. Beides ueber AA. Rot braucht weissen Text, Lime schwarzen - eine
+   gemeinsame Textfarbe gibt es fuer beide nicht. */
+.rate__opt input[value="1"]:checked + span {
+  border-color: var(--red); background: var(--red); color: var(--white);
+}
+.rate__opt input[value="5"]:checked + span {
   border-color: var(--lime); background: var(--lime); color: var(--ink);
 }
-.rate__opt:last-child input:checked + span { border-color: var(--red); background: var(--red); color: var(--white); }
 .rate__opt input:focus-visible + span { outline: 3px solid var(--blue-2); outline-offset: 2px; }
 
 /* Bleibt auf JEDER Bildschirmgroesse sichtbar. Ohne diese Anker sind die

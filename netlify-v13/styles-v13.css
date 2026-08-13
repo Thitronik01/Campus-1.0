@@ -50,11 +50,32 @@
   --shell: 1200px;
   --ring: 0 0 0 3px rgba(59, 169, 211, .5);
   --lift: 0 10px 30px rgba(29, 54, 97, .10);
+
+  /* BEWEGUNG: kurz und ausklingend. Eine Animation darf einen Zustandswechsel
+     bestaetigen, sie darf ihn nie verzoegern. Deshalb nichts ueber 220 ms und
+     kein ease-in auf Interaktionen: der traege Anlauf laesst die Oberflaeche
+     langsamer wirken, als sie ist. */
+  --t-tap: 90ms;
+  --t-fast: 130ms;
+  --t-base: 180ms;
+  --ease-out: cubic-bezier(.22, .76, .35, 1);
 }
 
 *, *::before, *::after { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; scroll-padding-top: 108px; }
+/* Solange die Schrittleiste unten klebt, deckt sie die letzten rund 86 px des
+   Sichtfensters ab. Ohne scroll-padding-bottom schiebt jedes scrollIntoView
+   und jeder Tastatursprung ein Feld genau dorthin, also unter die Leiste.
+   Betrifft besonders block:'nearest' beim Aufklappen der Kommentarfelder.
+   Bewusst ohne :has() an die Bedingung geknuepft: das hier ist eine
+   Zugaenglichkeitszusage und soll nicht an Browserunterstuetzung haengen.
+   Auf dem Startbildschirm ohne Leiste schadet der Abstand nichts, dort
+   springt nichts ins Bild. */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 108px;
+  scroll-padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px));
+}
 
 body {
   margin: 0;
@@ -90,8 +111,11 @@ h1, h2 { margin: 0; color: var(--blue); letter-spacing: -.021em; }
   background: var(--white); color: var(--blue);
   font-weight: 700; text-decoration: none;
   box-shadow: var(--lift);
+  transition: transform var(--t-fast) var(--ease-out);
 }
-.skip:focus-visible { transform: translateY(0); }
+/* Auch :focus, nicht nur :focus-visible. Der Sprunglink ist ausschliesslich
+   ueber die Tastatur erreichbar, darf aber nie unsichtbar den Fokus halten. */
+.skip:focus, .skip:focus-visible { transform: translateY(0); }
 
 .noscript {
   margin: 0; padding: 16px;
@@ -107,12 +131,16 @@ h1, h2 { margin: 0; color: var(--blue); letter-spacing: -.021em; }
 
 input[type="text"], textarea, .rate, .field { scroll-margin-top: 118px; }
 
-/* Auf Touch gibt es keinen Hover, der die Beruehrung bestaetigt. */
+/* Auf Touch gibt es keinen Hover, der die Beruehrung bestaetigt. Das Einsinken
+   beim Druecken uebernimmt diese Rolle: sofort beim Beruehren, weiches
+   Zurueckfedern beim Loslassen. Nur transform, damit es auf der Compositor-
+   Ebene bleibt und auch auf schwachen Geraeten nicht ruckelt. */
 .rate__opt span, .chip span, .overall__opt span, .rate__na span, .isle__box,
 .stepbar__next, .stepbar__back, .intro__start { -webkit-tap-highlight-color: transparent; }
 .rate__opt:active span, .chip:active span,
-.overall__opt:active span, .rate__na:active span { transform: scale(.97); }
-.isle:active .isle__box { transform: scale(.99); }
+.overall__opt:active span, .rate__na:active span { transform: scale(.96); }
+.isle:active .isle__box { transform: scale(.985); }
+.isle input:disabled:active + .isle__box { transform: none; }
 
 /* ---------------------------------------------------------------- Kopfbereich */
 
@@ -130,8 +158,51 @@ input[type="text"], textarea, .rate, .field { scroll-margin-top: 118px; }
   opacity: .34;
   pointer-events: none;
 }
+/* Lichtstrahlen. Liegen ueber dem Motiv, aber unter allem Lesbaren: eine
+   Dekoration darf nie zwischen Nutzer und Inhalt geraten.
+
+   Die Reihenfolge ist bewusst durchnummeriert statt der Baumreihenfolge
+   ueberlassen: Motiv, dann Lichtschein aus CSS, dann der Canvas, dann der
+   Inhalt. Mit gemischten z-index-Angaben und Pseudoelementen wird die
+   Stapelung sonst schnell zur Ratesache. */
+.masthead::before, .done::before { z-index: 0; }
+.masthead::after, .done::after { z-index: 1; }
+.rays { z-index: 2; }
+
+/* Der Lichtschein steckt in CSS, nicht nur im Shader. Er ist da, bevor
+   JavaScript laeuft, und er bleibt da, wenn WebGL fehlt oder blockiert ist -
+   etwa in den eingebauten Browsern mancher Messenger-Apps. Ohne ihn hiesse
+   "kein WebGL" schlicht: eine leere blaue Flaeche. */
+.masthead::after {
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(130% 260% at 50% -55%,
+      rgba(89, 196, 236, .40) 0%,
+      rgba(59, 169, 211, .22) 34%,
+      rgba(59, 169, 211, .08) 58%,
+      transparent 78%);
+}
+.done::after {
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(95% 62% at 50% 118%,
+      rgba(89, 196, 236, .46) 0%,
+      rgba(59, 169, 211, .22) 38%,
+      transparent 72%);
+}
+
+.rays {
+  position: absolute; inset: 0;
+  overflow: hidden; pointer-events: none;
+}
+.rays canvas { display: block; width: 100%; height: 100%; }
+
 .masthead__bar {
-  position: relative;
+  position: relative; z-index: 3;
   display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
   gap: 12px 16px; min-height: 76px;
 }
@@ -178,9 +249,12 @@ input[type="text"], textarea, .rate, .field { scroll-margin-top: 118px; }
    Segmente sind anklickbar und fuehren zurueck. */
 .steps { display: flex; gap: 5px; margin: 0; padding: 0; list-style: none; }
 .steps li { flex: 1; min-width: 0; }
+/* Der sichtbare Balken ist 5 px hoch, die Trefferflaeche misst 24 px. WCAG 2.2
+   verlangt 24x24 fuer jedes Ziel, und ein 15 px hoher Streifen ist auf dem
+   Daumen nicht sicher zu treffen. */
 .steps button {
   display: block; width: 100%;
-  padding: 7px 0 3px;
+  padding: 10px 0 9px;
   cursor: default;
 }
 .steps button::before {
@@ -188,14 +262,17 @@ input[type="text"], textarea, .rate, .field { scroll-margin-top: 118px; }
   display: block; height: 5px;
   border-radius: var(--r-pill);
   background: var(--line);
-  transition: background .25s ease, transform .25s ease;
+  transition: background var(--t-base) var(--ease-out), transform var(--t-base) var(--ease-out);
 }
 .steps button:disabled { cursor: default; }
-.steps [data-state="done"] button { cursor: pointer; }
-.steps [data-state="done"] button::before { background: var(--blue-2); }
-.steps [data-state="done"] button:hover::before { background: var(--blue); }
+/* Erledigt und anklickbar. Erledigt, aber gesperrt (vorwaerts) bleibt heller,
+   damit die Farbe nicht zum Klicken einlaedt, wo nichts passiert. */
+.steps [data-state="done"] button::before { background: #9CC9DF; }
+.steps [data-state="done"] button:not(:disabled) { cursor: pointer; }
+.steps [data-state="done"] button:not(:disabled)::before { background: var(--blue-2); }
+.steps [data-state="done"] button:not(:disabled):hover::before { background: var(--blue); }
 .steps [data-state="current"] button::before { background: var(--blue); transform: scaleY(1.6); }
-.steps button:focus-visible { outline: 3px solid var(--blue-2); outline-offset: 3px; border-radius: 6px; }
+.steps button:focus-visible { outline: 3px solid var(--blue-2); outline-offset: -1px; border-radius: 8px; }
 
 .steps__label { display: none; }
 
@@ -221,6 +298,26 @@ input[type="text"], textarea, .rate, .field { scroll-margin-top: 118px; }
 /* Der Fokus wandert beim Schrittwechsel auf das Panel, damit Vorlesesoftware
    den Abschnitt ansagt. Ein Rahmen um die ganze Karte waere dabei nur Laerm. */
 .panel:focus, .panel:focus-visible { outline: none; }
+
+/* Der Schrittwechsel tauscht die komplette Flaeche aus. Ohne jede Bewegung
+   wirkt das wie ein Seitensprung und man verliert kurz die Orientierung.
+   Ein sehr kurzes Aufblenden mit 6 px Weg beantwortet die Frage "ist etwas
+   passiert?", ohne den naechsten Klick auszubremsen: die Karte ist waehrend
+   der Animation bereits bedienbar. Nur beim Vorwaerts- und Rueckwaertsgehen,
+   nicht beim ersten Aufbau der Seite. */
+@keyframes panelIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+/* fill-mode backwards, nicht both: der Endzustand der Animation ist exakt der
+   normale Zustand des Panels. Mit "both" bliebe die Animation danach dauerhaft
+   auf opacity und transform liegen und keine andere Regel kaeme mehr daran. */
+.panel.is-entering { animation: panelIn 190ms var(--ease-out) backwards; }
+.panel.is-entering--back { animation-name: panelInBack; }
+@keyframes panelInBack {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: none; }
+}
 
 body.is-stepping { padding-bottom: calc(86px + env(safe-area-inset-bottom, 0px)); }
 body.is-stepping .foot { display: none; }
@@ -283,12 +380,15 @@ body.is-stepping .foot { display: none; }
 }
 .draft[hidden] { display: none; }
 .draft button {
-  min-height: 40px; padding: 8px 16px;
+  min-height: 44px; padding: 8px 16px;
   border: 1.5px solid var(--blue); border-radius: var(--r-pill);
   color: var(--blue); font-size: .82rem; font-weight: 750;
-  transition: background .15s ease, color .15s ease;
+  transition: background var(--t-fast) var(--ease-out),
+              color var(--t-fast) var(--ease-out),
+              transform var(--t-tap) var(--ease-out);
 }
 .draft button:hover { background: var(--blue); color: var(--white); }
+.draft button:active { transform: scale(.97); }
 
 .recommend { margin-top: 26px; }
 .recommend__why { margin-top: 24px; }
@@ -300,10 +400,11 @@ body.is-stepping .foot { display: none; }
   background: var(--blue); color: var(--white);
   font-size: 1.05rem; font-weight: 800;
   box-shadow: 0 10px 26px rgba(29, 54, 97, .26);
-  transition: background .15s ease, transform .12s ease;
+  transition: background var(--t-fast) var(--ease-out),
+              transform var(--t-tap) var(--ease-out);
 }
 .intro__start:hover { background: var(--blue-hover); }
-.intro__start:active { transform: scale(.985); }
+.intro__start:active { transform: scale(.975); }
 
 @media (min-width: 760px) {
   .intro__copy { padding: 38px 44px 46px; }
@@ -362,28 +463,37 @@ body.is-stepping .foot { display: none; }
   display: block; margin-bottom: 8px;
   color: var(--blue); font-weight: 700; font-size: .96rem;
 }
+/* "Pflicht" bleibt als Wort stehen, verliert aber das Rot: Rot ist in diesem
+   Bogen die Fehlerfarbe. Ein rotes Etikett an einem noch unberuehrten Feld
+   sieht aus wie eine Ruege, bevor man etwas falsch gemacht hat. */
 .req {
   margin-left: 8px;
-  color: var(--red-deep); font-size: .69rem; font-weight: 800;
+  color: var(--muted); font-size: .69rem; font-weight: 800;
   letter-spacing: .07em; text-transform: uppercase;
 }
 .hint { margin-left: 7px; color: var(--muted); font-size: .8rem; font-weight: 600; }
 
+/* Eingaben sind weiss mit Rahmen, nicht grau gefuellt. Die Seitenflaeche ist
+   selbst graySoft: ein graues Feld auf weisser Karte liest sich als gesperrt.
+   Weiss plus Rahmen ist ausserdem dieselbe Sprache wie Chips und Skalenfelder,
+   damit alles Bedienbare gleich aussieht. */
 input[type="text"], textarea {
   width: 100%; padding: 13px 15px;
   border: 1.5px solid var(--line);
   border-radius: var(--r-control);
-  background: var(--gray-soft);
-  transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+  background: var(--white);
+  transition: border-color var(--t-fast) var(--ease-out),
+              box-shadow var(--t-fast) var(--ease-out);
 }
 input[type="text"] { min-height: 50px; }
 textarea { min-height: 100px; resize: vertical; }
+input[type="text"]:hover, textarea:hover { border-color: #BFC8D2; }
 input[type="text"]:focus, textarea:focus {
   outline: none;
-  background: var(--white);
   border-color: var(--blue-2);
   box-shadow: var(--ring);
 }
+input[type="text"]::placeholder, textarea::placeholder { color: #8B95A1; }
 .field--bad input[type="text"], .field--bad textarea {
   border-color: var(--red); background: #FDF2F4;
 }
@@ -396,10 +506,10 @@ input[type="text"]:focus, textarea:focus {
   margin: 0; padding: 0; border: 0; min-inline-size: 0;
 }
 .chips { margin-top: 24px; }
-.chips__row, .recommend__row { display: grid; gap: 10px; }
-@media (min-width: 480px) { .chips__row { grid-template-columns: 1fr 1fr; } }
-@media (min-width: 820px) { .chips__row { grid-template-columns: repeat(4, 1fr); } }
-@media (min-width: 560px) { .recommend__row { grid-template-columns: repeat(3, 1fr); max-width: 480px; } }
+/* Fliessend statt an festen Bruchpunkten: die Spalten entstehen, sobald ein
+   Wort wie "Geschaeftsfuehrung" ohne Umbruch hineinpasst. */
+.chips__row { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(184px, 1fr)); }
+.recommend__row { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); max-width: 480px; }
 
 .chip { position: relative; display: block; }
 .chip input { position: absolute; opacity: 0; pointer-events: none; }
@@ -410,11 +520,30 @@ input[type="text"]:focus, textarea:focus {
   border-radius: var(--r-control);
   background: var(--white);
   font-weight: 650; font-size: .95rem; text-align: center;
-  transition: border-color .15s ease, background .15s ease, color .15s ease;
+  transition: border-color var(--t-fast) var(--ease-out),
+              background var(--t-fast) var(--ease-out),
+              color var(--t-fast) var(--ease-out),
+              transform var(--t-tap) var(--ease-out);
 }
 .chip span:hover { border-color: var(--blue-2); }
 .chip input:checked + span { border-color: var(--blue); background: var(--blue); color: var(--white); }
 .chip input:focus-visible + span { outline: 3px solid var(--blue-2); outline-offset: 2px; }
+
+/* Mehrfachauswahl braucht ein Kaestchen. Ohne Markierung sehen die Felder aus
+   wie Knoepfe, bei denen eine Wahl die vorige ersetzt. Die Einfachauswahl
+   weiter unten ("Ja / Vielleicht / Nein") bekommt bewusst keines. */
+.chips .chip span { justify-content: flex-start; gap: 11px; text-align: left; }
+.chips .chip span::before {
+  content: ""; flex: none;
+  width: 20px; height: 20px;
+  border: 2px solid #9AA6B2; border-radius: 6px;
+  background: var(--white);
+  transition: border-color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
+}
+.chips .chip input:checked + span::before {
+  border-color: var(--white);
+  background: var(--white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%231D3661' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round' d='M3.5 8.5l3 3 6-6'/%3E%3C/svg%3E") center / 14px no-repeat;
+}
 
 /* -------------------------------------------------------------- Gesamteindruck */
 
@@ -428,7 +557,10 @@ input[type="text"]:focus, textarea:focus {
   border-radius: var(--r-control);
   background: var(--white);
   font-weight: 650; font-size: .93rem; text-align: center;
-  transition: border-color .15s ease, background .15s ease, color .15s ease;
+  transition: border-color var(--t-fast) var(--ease-out),
+              background var(--t-fast) var(--ease-out),
+              color var(--t-fast) var(--ease-out),
+              transform var(--t-tap) var(--ease-out);
 }
 .overall__opt span:hover { border-color: var(--blue-2); }
 .overall__opt input:checked + span { border-color: var(--blue); background: var(--blue); color: var(--white); }
@@ -453,7 +585,7 @@ input[type="text"]:focus, textarea:focus {
   color: var(--blue); font-weight: 700; font-size: 1rem; line-height: 1.35;
 }
 
-.rate__control { display: flex; flex-direction: column; }
+.rate__control { display: grid; grid-template-columns: minmax(0, 1fr); }
 .rate__options { display: grid; grid-template-columns: repeat(5, 1fr); gap: 7px; }
 .rate__opt { position: relative; display: block; }
 .rate__opt input { position: absolute; opacity: 0; pointer-events: none; }
@@ -465,7 +597,10 @@ input[type="text"]:focus, textarea:focus {
   background: var(--white);
   color: var(--blue); font-weight: 800; font-size: 1.05rem;
   font-variant-numeric: tabular-nums;
-  transition: border-color .15s ease, background .15s ease, color .15s ease;
+  transition: border-color var(--t-fast) var(--ease-out),
+              background var(--t-fast) var(--ease-out),
+              color var(--t-fast) var(--ease-out),
+              transform var(--t-tap) var(--ease-out);
 }
 .rate__opt span:hover { border-color: var(--blue-2); background: var(--blue-tint); }
 .rate__opt input:checked + span { border-color: var(--blue); background: var(--blue); color: var(--white); }
@@ -484,7 +619,11 @@ input[type="text"]:focus, textarea:focus {
 }
 .rate__anchors span:last-child { text-align: right; }
 
-.rate__na { position: relative; display: inline-flex; align-self: flex-end; margin-top: 4px; }
+/* "Nicht beurteilt" stand vorher rechtsbuendig direkt unter dem Anker
+   "verbesserungswuerdig" und las sich dadurch wie ein Anhaengsel der Note 5.
+   Es gehoert aber zur ganzen Zeile, nicht zu einem Ende der Skala. Deshalb
+   links an der Zeilenkante, mit deutlichem Abstand zur Skala. */
+.rate__na { position: relative; display: inline-flex; justify-self: start; margin-top: 12px; }
 .rate__na input { position: absolute; opacity: 0; pointer-events: none; }
 .rate__na span {
   display: flex; align-items: center; justify-content: center;
@@ -492,11 +631,14 @@ input[type="text"]:focus, textarea:focus {
   border: 1.5px dashed var(--line);
   border-radius: var(--r-pill);
   color: var(--muted); font-size: .82rem; font-weight: 650;
-  transition: border-color .15s ease, background .15s ease, color .15s ease;
+  transition: border-color var(--t-fast) var(--ease-out),
+              background var(--t-fast) var(--ease-out),
+              color var(--t-fast) var(--ease-out),
+              transform var(--t-tap) var(--ease-out);
 }
 .rate__na span:hover { border-color: var(--blue-2); color: var(--blue); }
 .rate__na input:checked + span {
-  border-style: solid; border-color: var(--line);
+  border-style: solid; border-color: #C2CBD5;
   background: var(--gray-soft); color: var(--ink);
 }
 .rate__na input:focus-visible + span { outline: 3px solid var(--blue-2); outline-offset: 2px; }
@@ -515,11 +657,30 @@ input[type="text"]:focus, textarea:focus {
 .rate__comment--must .rate__commentHelp { color: var(--red-deep); font-weight: 650; }
 .rate__comment--good { border-color: #D6E08A; background: #FAFCEB; }
 
+/* Das Feld erscheint als Folge der eigenen Auswahl. Ein kurzes Aufblenden
+   erklaert diesen Zusammenhang; ohne das wirkt es, als sei die Seite
+   gesprungen. Nur bei eigener Eingabe, nicht beim Wiederherstellen. */
+@keyframes commentIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: none; }
+}
+.rate__comment.is-revealed { animation: commentIn var(--t-base) var(--ease-out) backwards; }
+
 @media (min-width: 900px) {
   .rate__label { float: left; width: 33%; padding: 6px 26px 0 0; }
   .rate__control, .rate__comment { margin-left: 35%; }
-  /* Grenze am Container, damit "Nicht beurteilt" buendig zur Skala steht. */
-  .rate__control { max-width: 560px; }
+  /* Skala links, Opt-out ganz rechts am Zeilenende. Das schliesst die tote
+     Flaeche am rechten Kartenrand, macht die Zeile knapp 50 px flacher und
+     legt sichtbaren Abstand zwischen die Note 5 und "Nicht beurteilt". */
+  .rate__control {
+    grid-template-columns: minmax(0, 430px) auto;
+    justify-content: space-between;
+    column-gap: 32px; align-items: center;
+  }
+  .rate__options { grid-column: 1; grid-row: 1; }
+  .rate__anchors { grid-column: 1; grid-row: 2; }
+  .rate__na { grid-column: 2; grid-row: 1 / span 2; align-self: center; margin-top: 0; }
+  .rate__comment { max-width: 660px; }
 }
 
 /* --------------------------------------------------------------------- Inseln */
@@ -532,13 +693,16 @@ input[type="text"]:focus, textarea:focus {
 
 .isle__box {
   position: relative;
-  display: grid; grid-template-columns: 62px 1fr auto;
-  align-items: center; gap: 13px;
-  min-height: 80px; padding: 11px 14px 11px 46px;
+  display: grid; grid-template-columns: 62px minmax(0, 1fr) auto;
+  align-items: center; gap: 14px;
+  min-height: 80px; padding: 12px 14px 12px 46px;
   border: 1.5px solid var(--line);
   border-radius: var(--r-control);
   background: var(--white);
-  transition: border-color .15s ease, box-shadow .15s ease, opacity .15s ease;
+  transition: border-color var(--t-fast) var(--ease-out),
+              box-shadow var(--t-fast) var(--ease-out),
+              opacity var(--t-fast) var(--ease-out),
+              transform var(--t-tap) var(--ease-out);
 }
 .isle__box::before {
   content: "";
@@ -566,16 +730,45 @@ input[type="text"]:focus, textarea:focus {
 .isle input:disabled + .isle__box::before { border-color: #C3CAD2; }
 .isle:has(input:disabled) { cursor: not-allowed; }
 
-/* Rang-Marke: zeigt die Reihenfolge der Auswahl als Top 1 bis 3. */
+/* Rang-Marke: zeigt die Reihenfolge der Auswahl als Platz 1 bis 3.
+   Sie sitzt rechts, wo vorher die laufende Nummer der Insel stand. Zwei
+   Zahlensysteme nebeneinander waren die eigentliche Schwaeche dieser Liste:
+   die feste Nummer 1 bis 8 sah aus wie eine Platzierung, ohne eine zu sein.
+   Jetzt bedeutet eine Zahl an dieser Stelle immer den eigenen Rang. Die
+   Spalte behaelt ihre Breite, damit beim Auswaehlen nichts springt. */
+.isle__slot {
+  display: grid; place-items: center;
+  min-width: 68px; min-height: 26px;
+}
+/* Auf dem Smartphone kostet das ausgeschriebene "Platz" zu viel Breite: die
+   Beschreibungen brachen sonst auf drei Zeilen um. Dort bleibt die Ziffer
+   sichtbar, das Wort nur noch fuer Vorlesesoftware. Eine limefarbene 1 an
+   einer ausgewaehlten Zeile ist unter der Ueberschrift "Ihre Top 3" eindeutig. */
+@media (max-width: 559px) {
+  .isle__slot { min-width: 38px; }
+  .isle__rankWord {
+    position: absolute; width: 1px; height: 1px;
+    padding: 0; margin: -1px; overflow: hidden;
+    clip-path: inset(50%); white-space: nowrap; border: 0;
+  }
+  .isle__rank { padding: 4px 9px; }
+  .isle__box { grid-template-columns: 54px minmax(0, 1fr) auto; gap: 12px; }
+  .isle__thumb { width: 54px; height: 52px; }
+  .isle__thumb img { max-width: 50px; max-height: 46px; }
+}
 .isle__rank {
-  position: absolute; left: 8px; top: 8px;
   display: none; place-items: center;
-  min-width: 34px; height: 21px; padding: 0 7px;
+  padding: 4px 10px;
   border-radius: var(--r-pill);
   background: var(--lime); color: var(--ink);
-  font-size: .64rem; font-weight: 900; letter-spacing: .04em;
+  font-size: .66rem; font-weight: 900; letter-spacing: .05em;
+  text-transform: uppercase; white-space: nowrap;
 }
-.isle input:checked + .isle__box .isle__rank { display: grid; }
+.isle input:checked + .isle__box .isle__rank { display: grid; animation: rankIn 200ms var(--ease-out) backwards; }
+@keyframes rankIn {
+  from { opacity: 0; transform: scale(.82); }
+  to { opacity: 1; transform: none; }
+}
 
 .isle__thumb {
   display: grid; place-items: center;
@@ -592,16 +785,8 @@ input[type="text"]:focus, textarea:focus {
 }
 
 .isle__text { min-width: 0; }
-.isle__text strong { display: block; color: var(--blue); font-size: 1rem; }
-.isle__text small { display: block; color: var(--muted); font-size: .8rem; line-height: 1.35; }
-
-.isle__no {
-  display: grid; place-items: center;
-  width: 25px; height: 25px; flex: none;
-  border-radius: 50%;
-  background: var(--gray-soft); color: var(--muted);
-  font-size: .74rem; font-weight: 800; font-variant-numeric: tabular-nums;
-}
+.isle__text strong { display: block; color: var(--blue); font-size: 1rem; line-height: 1.3; }
+.isle__text small { display: block; margin-top: 2px; color: var(--muted); font-size: .8rem; line-height: 1.35; }
 
 .isles__poster {
   margin: 0; overflow: hidden;
@@ -609,6 +794,14 @@ input[type="text"]:focus, textarea:focus {
   border: 1px solid var(--line-soft);
 }
 .isles__poster img { width: 100%; height: auto; }
+
+/* Das Plakat ist Beiwerk und stand auf dem Smartphone mit rund 500 px Hoehe
+   unter einer ohnehin langen Liste. Schmaler statt beschnitten: die Karte
+   bleibt als Erinnerungsstuetze vollstaendig lesbar, verdoppelt den Schritt
+   aber nicht mehr. Ein angeschnittenes Plakat saehe nach Fehler aus. */
+@media (max-width: 999px) {
+  .isles__poster { max-width: min(320px, 100%); margin-inline: auto; }
+}
 
 @media (min-width: 1000px) {
   .isles { grid-template-columns: minmax(0, 1fr) minmax(340px, 440px); gap: 32px; align-items: start; }
@@ -660,7 +853,10 @@ input[type="text"]:focus, textarea:focus {
   min-height: 54px; padding: 13px 22px;
   border-radius: var(--r-pill);
   font-weight: 800; white-space: nowrap;
-  transition: background .15s ease, transform .12s ease, color .15s ease, border-color .15s ease;
+  transition: background var(--t-fast) var(--ease-out),
+              color var(--t-fast) var(--ease-out),
+              border-color var(--t-fast) var(--ease-out),
+              transform var(--t-tap) var(--ease-out);
 }
 .stepbar__back {
   flex: 0 0 auto;
@@ -679,7 +875,17 @@ input[type="text"]:focus, textarea:focus {
 }
 .stepbar__next:hover { background: var(--blue-hover); }
 .stepbar__next:disabled { opacity: .7; cursor: progress; }
-.stepbar__back:active, .stepbar__next:active { transform: scale(.985); }
+.stepbar__back:active, .stepbar__next:active { transform: scale(.975); }
+
+/* Auf 320 px trugen "Zurueck" und "Feedback absenden" zusammen mehr Polsterung,
+   als die Zeile hergibt: der Absenden-Knopf lief 27 px ueber den Rand hinaus
+   und war rechts angeschnitten. Schmalere Polsterung loest das, ohne dass die
+   Trefferflaeche unter 54 px Hoehe faellt. */
+@media (max-width: 430px) {
+  .stepbar__inner { gap: 10px; }
+  .stepbar__back { padding-inline: 15px; }
+  .stepbar__next { padding-inline: 14px; font-size: 1rem; }
+}
 
 /* Ladezustand: ohne sichtbare Rueckmeldung tippen Leute auf schlechtem Netz
    ein zweites Mal. */
@@ -726,7 +932,7 @@ input[type="text"]:focus, textarea:focus {
   opacity: .28;
   pointer-events: none;
 }
-.done__inner { position: relative; width: min(660px, 100%); text-align: center; }
+.done__inner { position: relative; z-index: 3; width: min(660px, 100%); text-align: center; }
 .done__logo { width: min(260px, 58vw); height: auto; margin: 0 auto 30px; }
 .done__check {
   display: grid; place-items: center;
@@ -750,6 +956,24 @@ input[type="text"]:focus, textarea:focus {
 
 body.is-done { overflow: hidden; }
 
+/* ------------------------------------------------------------- Vorschau */
+
+/* Der Hinweis lag fest auf 96 px ueber dem unteren Rand und deckte damit auf
+   dem Startbildschirm die Fusszeile zu, wo gar keine Schrittleiste steht.
+   Jetzt richtet er sich danach, ob gerade ausgefuellt wird. */
+.demo {
+  position: fixed; z-index: 3000;
+  left: 12px; bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+  margin: 0; padding: 8px 14px;
+  border: 1px solid #EFC3CA; border-radius: var(--r-pill);
+  background: var(--white); color: var(--red-deep);
+  font-size: .74rem; font-weight: 800;
+  box-shadow: 0 8px 24px rgba(29, 54, 97, .22);
+  pointer-events: none;
+}
+body.is-stepping .demo { bottom: calc(92px + env(safe-area-inset-bottom, 0px)); }
+body.is-done .demo { display: none; }
+
 /* ---------------------------------------------------- Reduzierte Bewegung */
 
 @media (prefers-reduced-motion: reduce) {
@@ -765,4 +989,7 @@ body.is-done { overflow: hidden; }
 @media (max-width: 360px) {
   .card, .intro__copy { padding-left: 15px; padding-right: 15px; }
   .rate__options { gap: 5px; }
+  .isle__box { grid-template-columns: 48px minmax(0, 1fr) auto; gap: 10px; padding-left: 42px; }
+  .isle__thumb { width: 48px; height: 46px; }
+  .isle__thumb img { max-width: 44px; max-height: 42px; }
 }

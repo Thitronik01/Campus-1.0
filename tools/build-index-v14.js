@@ -1,4 +1,9 @@
-/* Erzeugt index-v13.html. Einzige Wahrheitsquelle fuer Bewertungszeilen und Inseln. */
+/* Erzeugt index-v14.html. Einzige Wahrheitsquelle fuer Bewertungszeilen und Inseln.
+
+   Gegenueber v13 geaendert:
+   - Skala umgedreht: 5 ist die beste Note, 1 die schlechteste.
+   - Neues Pflichtfeld Haendlernummer, genau fuenf Ziffern.
+   - Vejroe heisst jetzt "Premiumpartner und Produktschulung". */
 const fs = require('fs');
 const P = require('path').resolve(__dirname, '..');
 
@@ -20,7 +25,7 @@ const SCHULUNG = [
   ['betreuung_thitronik', 'Betreuung durch THITRONIK'],
 ];
 const ISLANDS = [
-  ['1', 'vejro', 'Vejr&oslash;', 'Premiumpartner-Konzept &amp; Produktschulung'],
+  ['1', 'vejro', 'Vejr&oslash;', 'Premiumpartner und Produktschulung'],
   ['2', 'hiddensee', 'Hiddensee', 'Funk-Magnetkontakte &amp; Abzweigverbinder'],
   ['3', 'fehmarn', 'Fehmarn', 'Wichtige Supportthemen'],
   ['4', 'poel', 'Poel', 'H&auml;ndlerbereich'],
@@ -34,10 +39,14 @@ const CATERING_SVG =
   '<svg viewBox="0 0 64 64" focusable="false" aria-hidden="true">' +
   '<path d="M12 42h40M18 39a14 14 0 0 1 28 0M32 24v-5M28 18h8M9 47h46"/></svg>';
 
+/* Skalenrichtung seit v14: 5 ist die beste Note. Die Ziffern stehen weiter
+   aufsteigend von links nach rechts, es wandert nur die Bedeutung mit den
+   Ankern. Eine absteigende Reihe 5-4-3-2-1 waere die zweite Umgewoehnung in
+   derselben Aenderung. */
 function rate(key, label, naLabel) {
   const na = naLabel || 'Nicht beurteilt';
   const opts = [1, 2, 3, 4, 5].map((n) => {
-    const aria = n === 1 ? '1 (sehr gut)' : n === 5 ? '5 (verbesserungsw&uuml;rdig)' : String(n);
+    const aria = n === 5 ? '5 (sehr gut)' : n === 1 ? '1 (verbesserungsw&uuml;rdig)' : String(n);
     return `            <label class="rate__opt"><input type="radio" name="${key}" value="${n}" aria-label="${aria}"><span>${n}</span></label>`;
   }).join('\n');
 
@@ -47,7 +56,7 @@ function rate(key, label, naLabel) {
             <div class="rate__options">
 ${opts}
             </div>
-            <p class="rate__anchors" aria-hidden="true"><span>sehr gut</span><span>verbesserungsw&uuml;rdig</span></p>
+            <p class="rate__anchors" aria-hidden="true"><span>verbesserungsw&uuml;rdig</span><span>sehr gut</span></p>
             <label class="rate__na"><input type="radio" name="${key}" value="na"><span>${na}</span></label>
           </div>
           <div class="rate__comment" data-comment hidden>
@@ -102,9 +111,9 @@ const html = `<!doctype html>
   <link rel="preload" as="image" href="assets/v12/hero-1024.webp"
     imagesrcset="assets/v12/hero-640.webp 640w, assets/v12/hero-1024.webp 1024w, assets/v12/hero-1600.webp 1600w"
     imagesizes="(max-width: 1228px) calc(100vw - 28px), 1200px" fetchpriority="high">
-  <link rel="stylesheet" href="styles-v13.css">
+  <link rel="stylesheet" href="styles-v14.css">
 </head>
-<body data-build="v13">
+<body data-build="v14">
   <a class="skip" href="#panel-1">Direkt zum Feedbackbogen</a>
 
   <noscript>
@@ -126,7 +135,7 @@ const html = `<!doctype html>
           <span class="rail__step">Schritt <span id="railStep">1</span> von 6</span>
           <strong id="railName">Angaben</strong>
         </p>
-        <p class="rail__count" id="railCount">0 von 17 beantwortet</p>
+        <p class="rail__count" id="railCount">0 von 18 beantwortet</p>
       </div>
       <ol class="steps" id="steps" aria-label="Fortschritt">
 ${stepList}
@@ -154,7 +163,7 @@ ${stepList}
 
         <ul class="intro__facts">
           <li><b>6</b> kurze Schritte</li>
-          <li><b>2</b> Pflichtangaben</li>
+          <li><b>3</b> Pflichtangaben</li>
           <li><b>&#8617;</b> jederzeit zur&uuml;ck</li>
         </ul>
 
@@ -167,7 +176,7 @@ ${stepList}
       </div>
     </section>
 
-    <form id="feedbackForm" class="form" autocomplete="on" data-form-version="campus-2026-haendler-v11" novalidate>
+    <form id="feedbackForm" class="form" autocomplete="on" data-form-version="campus-2026-haendler-v14" novalidate>
       <div class="hp" aria-hidden="true">
         <label for="website">Website</label>
         <input id="website" name="website" type="text" autocomplete="off" tabindex="-1">
@@ -178,16 +187,38 @@ ${stepList}
           <span class="card__no" aria-hidden="true">1</span>
           <h2 id="section-1-title">Angaben zum H&auml;ndlerbetrieb</h2>
         </div>
-        <p class="card__note">Damit wir R&uuml;ckmeldungen mehrerer Teilnehmender eines Betriebs zuordnen k&ouml;nnen.</p>
+        <p class="card__note">Damit wir R&uuml;ckmeldungen mehrerer Teilnehmender eines Betriebs zuordnen k&ouml;nnen.
+          Die H&auml;ndlernummer finden Sie auf Ihren Rechnungen und Lieferscheinen.</p>
 
-        <div class="grid grid--2">
+        <div class="grid grid--angaben">
           <div class="field">
             <label for="dealer_name">H&auml;ndlerbetrieb <span class="req" aria-hidden="true">Pflicht</span></label>
             <input id="dealer_name" name="dealer_name" type="text" autocomplete="organization"
               enterkeyhint="next" minlength="2" maxlength="160" required aria-describedby="dealer_err">
             <p class="field__err" id="dealer_err" data-err hidden></p>
           </div>
-          <div class="field">
+          <!-- type="text" statt type="number": eine Haendlernummer ist eine
+               Ziffernfolge, keine Rechengroesse. type="number" wuerde eine
+               fuehrende Null verschlucken (03451 wird 3451), blendet Drehpfeile
+               ein und laesst sich versehentlich mit dem Mausrad verstellen.
+               inputmode holt auf dem Smartphone trotzdem den Ziffernblock.
+
+               BEWUSST OHNE maxlength: das Attribut kappt schon beim Einfuegen
+               auf fuenf ZEICHEN, bevor der Ziffernfilter in app-v14.js die
+               Nicht-Ziffern entfernen kann. Aus eingefuegtem " 34512" wurde so
+               " 3451" und daraus "3451" - eine Ziffer weg, und der Teilnehmer
+               liest "genau fuenf Ziffern", obwohl er fuenf eingefuegt hat.
+               Die Begrenzung auf fuenf macht der Filter, in der richtigen
+               Reihenfolge: erst putzen, dann kappen. -->
+          <div class="field field--num">
+            <label for="dealer_number">H&auml;ndlernummer <span class="req" aria-hidden="true">Pflicht</span></label>
+            <input id="dealer_number" name="dealer_number" type="text" inputmode="numeric"
+              autocomplete="off" enterkeyhint="next" pattern="[0-9]{5}"
+              placeholder="34512" required aria-describedby="dealer_number_hint dealer_number_err">
+            <p class="field__hint" id="dealer_number_hint">F&uuml;nf Ziffern</p>
+            <p class="field__err" id="dealer_number_err" data-err hidden></p>
+          </div>
+          <div class="field field--wide">
             <label for="name">Ihr Name <span class="req" aria-hidden="true">Pflicht</span></label>
             <input id="name" name="name" type="text" autocomplete="name"
               enterkeyhint="done" minlength="2" maxlength="120" required aria-describedby="name_err">
@@ -231,7 +262,7 @@ ${stepList}
           <h2 id="section-3-title">Organisation &amp; Ablauf</h2>
           <p class="card__tally" data-tally="3" role="status" aria-live="polite">0 von 7</p>
         </div>
-        <p class="card__note">1 ist die beste Bewertung. Bei einer 5 bitten wir um einen kurzen Hinweis.</p>
+        <p class="card__note">5 ist die beste Bewertung. Bei einer 1 bitten wir um einen kurzen Hinweis.</p>
         <div class="rates">
 ${ORGA.map((r) => rate(r[0], r[1], r[2])).join('\n\n')}
         </div>
@@ -355,13 +386,13 @@ ${cateringMarkup}
     </div>
   </div>
 
-  <script src="app-v13.js" defer></script>
+  <script src="app-v14.js" defer></script>
   <!-- Dekoration, bewusst nach dem Formular: der Bogen soll bedienbar sein,
        bevor der Hintergrund kommt. Faellt er aus, aendert sich sonst nichts. -->
-  <script src="rays-v13.js" defer></script>
+  <script src="rays-v14.js" defer></script>
 </body>
 </html>
 `;
 
-fs.writeFileSync(`${P}/index-v13.html`, html, 'utf8');
-console.log('index-v13.html:', html.length, 'Zeichen');
+fs.writeFileSync(`${P}/index-v14.html`, html, 'utf8');
+console.log('index-v14.html:', html.length, 'Zeichen');

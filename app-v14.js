@@ -1,9 +1,21 @@
 /* ============================================================================
-   THITRONIK Campus 2026 Feedbackbogen - v13 (Schritt fuer Schritt)
+   THITRONIK Campus 2026 Feedbackbogen - v14 (Schritt fuer Schritt)
 
-   Ein Abschnitt pro Bildschirm. Der RPC-Payload ist gegenueber v11/v12
-   unveraendert (gleiche Feldnamen, gleiche itemLabel-Strings, gleiches
-   source/formVersion), damit Auswertung und Insel-Contest weiterlaufen.
+   Ein Abschnitt pro Bildschirm.
+
+   ACHTUNG, hier bricht v14 bewusst mit v11 bis v13:
+
+   1. Die Notenskala ist umgedreht. 5 ist ab jetzt die beste Note, 1 die
+      schlechteste. Die Zahl wird SO gespeichert, wie sie angekreuzt wurde -
+      es wird nichts zurueckgerechnet.
+   2. Deshalb tragen formVersion und source neue Werte. Die Auswertungs-Views
+      gruppieren nach form_version; nur so stehen die alten Einsendungen mit
+      "1 = beste" nicht in derselben Durchschnittsrechnung wie die neuen.
+      Wer diese Strings zurueckdreht, mischt zwei Bedeutungen in einer Spalte.
+   3. Neues Pflichtfeld dealerNumber, genau fuenf Ziffern.
+
+   Die itemLabel-Strings und Feldnamen bleiben unveraendert, damit sich
+   dieselbe Frage ueber alle Jahrgaenge hinweg wiederfinden laesst.
    ========================================================================== */
 (() => {
   'use strict';
@@ -32,7 +44,12 @@
   const SUPABASE_URL = 'https://mhzlayhnyqlxdyiceyqz.supabase.co';
   const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_bJN8jgtj-Lx6mRyE2hWBgQ_8alccYFG';
   const SUPABASE_RPC = 'submit_campus_feedback';
-  const DRAFT_KEY = 'thitronik-campus-2026-feedback-draft-v13';
+  /* Eigener Schluessel fuer v14, und das ist kein Schoenheitsfehler: ein
+     liegengebliebener v13-Entwurf enthaelt Noten der alten Richtung. Unter
+     demselben Schluessel wiederhergestellt wuerde aus einer 1 ("war sehr gut")
+     stillschweigend die schlechteste Bewertung. Lieber faengt so jemand neu an,
+     als dass sein Urteil unbemerkt kippt. */
+  const DRAFT_KEY = 'thitronik-campus-2026-feedback-draft-v14';
 
   const demoMode = new URLSearchParams(window.location.search).get('demo') === '1';
 
@@ -67,6 +84,10 @@
 
   const RATING_KEYS = ratingDefinitions.map((definition) => definition[1]);
   const SECTION_NAMES = ['Angaben', 'Eindruck', 'Organisation', 'Schulung', 'Inseln', 'Ausblick'];
+
+  /* Genau fuenf Ziffern. Fuehrende Nullen bleiben erhalten, die Nummer wird
+     als Zeichenkette gefuehrt und nirgends in eine Zahl umgewandelt. */
+  const DEALER_NUMBER = /^\d{5}$/;
 
   const panels = [...document.querySelectorAll('[data-panel]')]
     .sort((a, b) => Number(a.dataset.panel) - Number(b.dataset.panel));
@@ -146,8 +167,9 @@
   }
 
   /* ----------------------------------------------------------- Bewertungszeilen
-     Kommentar ist NUR bei 5 verpflichtend. Eine Pflichtbegruendung fuer die
-     Bestnote treibt Teilnehmende systematisch auf die 2 aus. */
+     Kommentar ist NUR bei der schlechtesten Note verpflichtend, seit v14 also
+     bei der 1. Eine Pflichtbegruendung fuer die Bestnote treibt Teilnehmende
+     systematisch auf die zweitbeste Note aus. */
 
   /* refreshRatingRow ist absichtlich von der Verdrahtung getrennt. Vorher rief
      das Wiederherstellen eines Entwurfs die komplette Einrichtung ein zweites
@@ -163,10 +185,12 @@
     const value = selected ? selected.value : '';
     const wasHidden = box.hidden;
 
+    /* Beide Enden der Skala oeffnen ein Feld, nur mit vertauschten Rollen:
+       die 1 verlangt eine Begruendung, die 5 laedt zu einer ein. */
     box.hidden = value !== '1' && value !== '5';
-    box.classList.toggle('rate__comment--must', value === '5');
-    box.classList.toggle('rate__comment--good', value === '1');
-    textarea.dataset.required = value === '5' ? 'true' : 'false';
+    box.classList.toggle('rate__comment--must', value === '1');
+    box.classList.toggle('rate__comment--good', value === '5');
+    textarea.dataset.required = value === '1' ? 'true' : 'false';
 
     if (fromUser && wasHidden && !box.hidden) {
       /* Nur das Aufblenden erklaert, dass dieses Feld eine Folge der eigenen
@@ -179,15 +203,15 @@
     }
     if (box.hidden) box.classList.remove('is-revealed');
 
-    if (value === '5') {
+    if (value === '1') {
       label.textContent = 'Was sollten wir hier verbessern?';
       help.textContent = 'Kurz genügt. Diese Angabe brauchen wir.';
-    } else if (value === '1') {
+    } else if (value === '5') {
       label.textContent = 'Was hat hier besonders gut funktioniert?';
       help.textContent = 'Freiwillig. Hilft uns aber sehr, das beizubehalten.';
     }
 
-    if (value !== '5') clearFieldError(textarea);
+    if (value !== '1') clearFieldError(textarea);
   }
 
   function setupRatingRow(row) {
@@ -234,6 +258,23 @@
         clearFieldError(el);
       }
     });
+
+    /* Zwei Meldungen statt einer: "fehlt" und "hat das falsche Format" sind
+       verschiedene Lagen, und wer 3451 getippt hat, sucht sonst den Fehler an
+       der falschen Stelle. */
+    const nummer = document.getElementById('dealer_number');
+    if (nummer && inScope(nummer)) {
+      const wert = nummer.value.trim();
+      if (!wert) {
+        showFieldError(nummer, 'Bitte tragen Sie Ihre Händlernummer ein.');
+        problems.push({ el: nummer, label: 'Händlernummer', panel: panelOf(nummer) });
+      } else if (!DEALER_NUMBER.test(wert)) {
+        showFieldError(nummer, 'Die Händlernummer besteht aus genau fünf Ziffern, zum Beispiel 34512.');
+        problems.push({ el: nummer, label: 'Händlernummer', panel: panelOf(nummer) });
+      } else {
+        clearFieldError(nummer);
+      }
+    }
 
     rows.forEach((row) => {
       const textarea = row.querySelector('[data-comment] textarea');
@@ -282,9 +323,31 @@
     missingBox.hidden = false;
   }
 
+  /* --------------------------------------------------------- Haendlernummer
+     Alles, was keine Ziffer ist, faellt schon beim Tippen weg: Leerzeichen aus
+     "34 512", Punkte, ein vorangestelltes "Nr.". Sonst scheitert die Pruefung
+     an einer Eingabe, die der Teilnehmer fuer richtig haelt - und er sieht
+     nicht, woran. Der Wert wird nur zurueckgeschrieben, wenn wirklich etwas
+     entfernt wurde, sonst springt die Schreibmarke bei jedem Zeichen ans Ende. */
+
+  const dealerNumberInput = document.getElementById('dealer_number');
+  if (dealerNumberInput) {
+    dealerNumberInput.addEventListener('input', () => {
+      const nurZiffern = dealerNumberInput.value.replace(/\D/g, '').slice(0, 5);
+      if (nurZiffern !== dealerNumberInput.value) dealerNumberInput.value = nurZiffern;
+      clearFieldError(dealerNumberInput);
+    });
+  }
+
   /* ------------------------------------------------------------- Fortschritt */
 
-  const TRACKED = ['dealer_name', 'name', 'overall', ...RATING_KEYS, 'weiterempfehlung'];
+  const TRACKED = ['dealer_name', 'dealer_number', 'name', 'overall', ...RATING_KEYS, 'weiterempfehlung'];
+
+  /* Zwei Zeichen genuegen sonst, um ein Textfeld als beantwortet zu zaehlen.
+     Bei der Haendlernummer waere "34" damit erledigt, obwohl die Pruefung sie
+     zurueckweist: der Zaehler im Kopf verspraeche einen Fortschritt, den der
+     Weiter-Knopf gleich wieder einkassiert. */
+  const ANSWERED_MIN = { dealer_number: 5 };
 
   const TALLIES = [
     ['3', 'organisation_ablauf'],
@@ -377,7 +440,7 @@
       if (nodes instanceof RadioNodeList) {
         if (nodes.value) count += 1;
       } else if (typeof nodes.value === 'string') {
-        if (nodes.value.trim().length >= 2) count += 1;
+        if (nodes.value.trim().length >= (ANSWERED_MIN[key] || 2)) count += 1;
       }
     }
     return count;
@@ -681,9 +744,15 @@
     }
 
     /* islandChoices steht in der Reihenfolge der Auswahl, also Platz 1 bis 3.
-       Die Rating-Eintraege bleiben ALLE bei 1: der bestehende Contest zaehlt
-       ueber anzahl_note_1, eine Gewichtung nach Platz wuerde ihn still
-       veraendern. Die Rangfolge steckt in islandChoices und im raw_payload. */
+       Die Rating-Eintraege tragen ALLE dieselbe Zahl - eine Gewichtung nach
+       Platz wuerde den Contest still veraendern. Die Rangfolge steckt in
+       islandChoices und im raw_payload.
+
+       Diese Zahl ist seit v14 die 5 statt der 1: es ist die Bestnote, und eine
+       Lieblingsinsel mit der schlechtesten Note zu markieren waere im Bestand
+       nicht mehr lesbar. Der Contest zaehlt fuer v14-Zeilen entsprechend ueber
+       anzahl_note_5, nicht mehr ueber anzahl_note_1 (siehe
+       supabase_v14_migration.sql). */
     const islandChoices = [];
     const gewaehlt = islandOrder.length
       ? islandOrder
@@ -694,15 +763,20 @@
       if (!definition) continue;
       const [itemKey, itemLabel] = definition;
       islandChoices.push(itemLabel);
-      ratings.push({ sectionKey: 'schulungsinseln', itemKey, itemLabel, rating: 1, comment: null });
+      ratings.push({ sectionKey: 'schulungsinseln', itemKey, itemLabel, rating: 5, comment: null });
     }
 
     return {
       submissionId: submissionId(),
       createdClientAt: new Date().toISOString(),
       eventSlug: 'campus-2026',
-      formVersion: form.dataset.formVersion || 'campus-2026-haendler-v11',
+      formVersion: form.dataset.formVersion || 'campus-2026-haendler-v14',
       dealerName: String(data.get('dealer_name') || '').trim(),
+      /* Zeichenkette, nicht Number: 03451 ist eine gueltige Haendlernummer und
+         wuerde als Zahl zu 3451 zusammenfallen. Bis die Migration eingespielt
+         ist, landet der Wert ausschliesslich im raw_payload - der Bogen
+         funktioniert dadurch schon vorher vollstaendig. */
+      dealerNumber: String(data.get('dealer_number') || '').trim(),
       participantName: String(data.get('name') || '').trim(),
       participantAreas: data.getAll('bereich').map(String),
       overallRating: data.get('overall') || null,
@@ -714,7 +788,7 @@
       positiveAspects: String(data.get('positive_aspekte') || '').trim() || null,
       additionalNotes: String(data.get('weitere_anmerkungen') || '').trim() || null,
       islandChoices,
-      source: 'thitronik-campus-feedback-v11',
+      source: 'thitronik-campus-feedback-v14',
       ratings
     };
   }

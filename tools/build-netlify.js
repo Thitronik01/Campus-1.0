@@ -1,31 +1,38 @@
-/* Baut netlify-v13/ aus den tatsaechlichen Referenzen von v13. */
+/* Baut netlify-<version>/ aus den tatsaechlichen Referenzen einer Version.
+
+   Version als Argument, sonst die aktuelle:  node tools/build-netlify.js v13
+   Die Datei ist bewusst nicht pro Version kopiert - hier steckt keine
+   Version-spezifische Logik, nur Dateinamen. */
 const fs = require('fs');
 const path = require('path');
 
 const SRC = require('path').resolve(__dirname, '..');
-const OUT = path.join(SRC, 'netlify-v13');
+const V = process.argv[2] || 'v14';
+const OUT = path.join(SRC, `netlify-${V}`);
 
 fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(OUT, { recursive: true });
 
-const html = fs.readFileSync(path.join(SRC, 'index-v13.html'), 'utf8');
-const css = fs.readFileSync(path.join(SRC, 'styles-v13.css'), 'utf8');
-const js = fs.readFileSync(path.join(SRC, 'app-v13.js'), 'utf8');
+const html = fs.readFileSync(path.join(SRC, `index-${V}.html`), 'utf8');
+const css = fs.readFileSync(path.join(SRC, `styles-${V}.css`), 'utf8');
+const js = fs.readFileSync(path.join(SRC, `app-${V}.js`), 'utf8');
+const rays = fs.readFileSync(path.join(SRC, `rays-${V}.js`), 'utf8');
 
 /* Alle assets/... Pfade aus HTML und CSS einsammeln. */
 const refs = new Set();
-for (const text of [html, css, js]) {
+for (const text of [html, css, js, rays]) {
   const matches = text.match(/assets\/[A-Za-z0-9._/-]+\.(webp|png|jpg|jpeg|svg|ico)/g) || [];
   matches.forEach((m) => refs.add(m));
 }
 
-/* Einstiegsdateien. index-v13.html wird zu index.html, weil Netlify das
+/* Einstiegsdateien. index-<version>.html wird zu index.html, weil Netlify das
    am Wurzelpfad ausliefert. CSS und JS behalten die Versionsnamen als
    Cache-Schutz (gleiche Begruendung wie im bestehenden README). */
 const entries = [
-  ['index-v13.html', 'index.html'],
-  ['styles-v13.css', 'styles-v13.css'],
-  ['app-v13.js', 'app-v13.js'],
+  [`index-${V}.html`, 'index.html'],
+  [`styles-${V}.css`, `styles-${V}.css`],
+  [`app-${V}.js`, `app-${V}.js`],
+  [`rays-${V}.js`, `rays-${V}.js`],
 ];
 
 const fehlend = [];
@@ -59,15 +66,39 @@ fs.writeFileSync(path.join(OUT, '_headers'), `/*
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
 
-/styles-v13.css
+/styles-${V}.css
   Cache-Control: public, max-age=31536000, immutable
 
-/app-v13.js
+/app-${V}.js
+  Cache-Control: public, max-age=31536000, immutable
+
+/rays-${V}.js
   Cache-Control: public, max-age=31536000, immutable
 `, 'utf8');
 
-const readme = `THITRONIK Campus 2026 Feedbackbogen - Netlify-Paket (v13)
-=========================================================
+/* Skalenumkehr und Haendlernummer gibt es erst ab v14. Dieselbe Datei baut
+   auch aeltere Pakete; ohne diese Weiche behauptete ein v13-README Regeln,
+   die fuer v13 nicht gelten. */
+const versionsNummer = Number(String(V).replace(/^v/, '')) || 0;
+
+const skalaAbschnitt = versionsNummer >= 14 ? `
+Notenskala
+----------
+Ab v14 ist 5 die BESTE und 1 die schlechteste Note. Bis v13 war es umgekehrt.
+Die Zahl wird so gespeichert, wie sie angekreuzt wurde. Damit die Auswertung
+beides nicht vermischt, tragen v14-Einsendungen form_version
+"campus-2026-haendler-v14"; die Views gruppieren danach.
+` : '';
+
+const nummerAbschnitt = versionsNummer >= 14 ? `
+Die Haendlernummer braucht supabase_v14_migration.sql, um eine eigene Spalte
+zu bekommen. Ohne die Migration wird sie trotzdem gespeichert, aber nur
+innerhalb von raw_payload. Der Bogen funktioniert in beiden Faellen.
+` : '';
+
+const titel = `THITRONIK Campus 2026 Feedbackbogen - Netlify-Paket (${V})`;
+const readme = `${titel}
+${'='.repeat(titel.length)}
 
 Hochladen
 ---------
@@ -77,23 +108,26 @@ NICHT nur index.html hochladen, sonst fehlen Bilder und Stile.
 
 Inhalt
 ------
-index.html        Der Feedbackbogen (aus index-v13.html)
-styles-v13.css    Stile
-app-v13.js        Logik und Anbindung an Supabase
+index.html        Der Feedbackbogen (aus index-${V}.html)
+styles-${V}.css    Stile
+app-${V}.js        Logik und Anbindung an Supabase
+rays-${V}.js       Lichtstrahlen im Kopfbereich und in der Danke-Ansicht.
+                  Reine Dekoration. Faellt die Datei weg oder kann der Browser
+                  kein WebGL, bleibt es beim bisherigen Hintergrund.
 assets/           Logo und optimierte Bilder
 _headers          Caching und Sicherheitsheader fuer Netlify
 
 Der Ordner assets/v12 heisst absichtlich so. Die Bilder wurden fuer v12
-optimiert und werden von v13 unveraendert mitgenutzt. Ein Umbenennen wuerde
-die Pfade in HTML und CSS auseinanderlaufen lassen.
-
+optimiert und werden unveraendert mitgenutzt. Ein Umbenennen wuerde die
+Pfade in HTML und CSS auseinanderlaufen lassen.
+${skalaAbschnitt}
 Backend
 -------
 Gespeichert wird ueber die bestehende RPC public.submit_campus_feedback(jsonb)
 im Supabase-Projekt mhzlayhnyqlxdyiceyqz. Der Publishable Key steht im
 Browser-Code, das ist beabsichtigt: die Tabellen bleiben per Row Level
 Security gesperrt.
-
+${nummerAbschnitt}
 Test ohne Speichern
 -------------------
 index.html?demo=1 prueft alles durch und zeigt die Danke-Ansicht,

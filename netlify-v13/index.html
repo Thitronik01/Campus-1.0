@@ -434,73 +434,65 @@
           <label class="isle">
             <input type="checkbox" name="inseln" value="1">
             <span class="isle__box">
-              <span class="isle__rank" data-rank aria-hidden="true"></span>
               <span class="isle__thumb"><img src="assets/v12/islands/vejro.webp" alt="" width="90" height="76" loading="lazy" decoding="async"></span>
               <span class="isle__text"><strong>Vejr&oslash;</strong><small>Premiumpartner-Konzept &amp; Produktschulung</small></span>
-              <span class="isle__no" aria-hidden="true">1</span>
+              <span class="isle__slot"><span class="isle__rank" data-rank></span></span>
             </span>
           </label>
           <label class="isle">
             <input type="checkbox" name="inseln" value="2">
             <span class="isle__box">
-              <span class="isle__rank" data-rank aria-hidden="true"></span>
               <span class="isle__thumb"><img src="assets/v12/islands/hiddensee.webp" alt="" width="90" height="76" loading="lazy" decoding="async"></span>
               <span class="isle__text"><strong>Hiddensee</strong><small>Funk-Magnetkontakte &amp; Abzweigverbinder</small></span>
-              <span class="isle__no" aria-hidden="true">2</span>
+              <span class="isle__slot"><span class="isle__rank" data-rank></span></span>
             </span>
           </label>
           <label class="isle">
             <input type="checkbox" name="inseln" value="3">
             <span class="isle__box">
-              <span class="isle__rank" data-rank aria-hidden="true"></span>
               <span class="isle__thumb"><img src="assets/v12/islands/fehmarn.webp" alt="" width="90" height="76" loading="lazy" decoding="async"></span>
               <span class="isle__text"><strong>Fehmarn</strong><small>Wichtige Supportthemen</small></span>
-              <span class="isle__no" aria-hidden="true">3</span>
+              <span class="isle__slot"><span class="isle__rank" data-rank></span></span>
             </span>
           </label>
           <label class="isle">
             <input type="checkbox" name="inseln" value="4">
             <span class="isle__box">
-              <span class="isle__rank" data-rank aria-hidden="true"></span>
               <span class="isle__thumb"><img src="assets/v12/islands/poel.webp" alt="" width="90" height="76" loading="lazy" decoding="async"></span>
               <span class="isle__text"><strong>Poel</strong><small>H&auml;ndlerbereich</small></span>
-              <span class="isle__no" aria-hidden="true">4</span>
+              <span class="isle__slot"><span class="isle__rank" data-rank></span></span>
             </span>
           </label>
           <label class="isle">
             <input type="checkbox" name="inseln" value="5">
             <span class="isle__box">
-              <span class="isle__rank" data-rank aria-hidden="true"></span>
               <span class="isle__thumb"><img src="assets/v12/islands/usedom.webp" alt="" width="90" height="76" loading="lazy" decoding="async"></span>
               <span class="isle__text"><strong>Usedom</strong><small>Verkaufsdisplay &amp; Konfigurator</small></span>
-              <span class="isle__no" aria-hidden="true">5</span>
+              <span class="isle__slot"><span class="isle__rank" data-rank></span></span>
             </span>
           </label>
           <label class="isle">
             <input type="checkbox" name="inseln" value="6">
             <span class="isle__box">
-              <span class="isle__rank" data-rank aria-hidden="true"></span>
               <span class="isle__thumb"><img src="assets/v12/islands/langeland.webp" alt="" width="90" height="76" loading="lazy" decoding="async"></span>
               <span class="isle__text"><strong>Langeland</strong><small>Fahrzeugannahme &amp; &Uuml;bergabe</small></span>
-              <span class="isle__no" aria-hidden="true">6</span>
+              <span class="isle__slot"><span class="isle__rank" data-rank></span></span>
             </span>
           </label>
           <label class="isle">
             <input type="checkbox" name="inseln" value="7">
             <span class="isle__box">
-              <span class="isle__rank" data-rank aria-hidden="true"></span>
               <span class="isle__thumb"><img src="assets/v12/islands/samsoe.webp" alt="" width="90" height="76" loading="lazy" decoding="async"></span>
               <span class="isle__text"><strong>Sams&oslash;</strong><small>Basisfahrzeuge, Gaswarner &amp; Einbaupraxis</small></span>
-              <span class="isle__no" aria-hidden="true">7</span>
+              <span class="isle__slot"><span class="isle__rank" data-rank></span></span>
             </span>
           </label>
           <label class="isle">
             <input type="checkbox" name="inseln" value="8">
             <span class="isle__box">
-              <span class="isle__rank" data-rank aria-hidden="true"></span>
               <span class="isle__thumb isle__thumb--icon"><svg viewBox="0 0 64 64" focusable="false" aria-hidden="true"><path d="M12 42h40M18 39a14 14 0 0 1 28 0M32 24v-5M28 18h8M9 47h46"/></svg></span>
               <span class="isle__text"><strong>R&uuml;gen</strong><small>Catering</small></span>
-              <span class="isle__no" aria-hidden="true">8</span>
+              <span class="isle__slot"><span class="isle__rank" data-rank></span></span>
             </span>
           </label>
           </fieldset>
@@ -596,5 +588,8 @@
   </div>
 
   <script src="app-v13.js" defer></script>
+  <!-- Dekoration, bewusst nach dem Formular: der Bogen soll bedienbar sein,
+       bevor der Hintergrund kommt. Faellt er aus, aendert sich sonst nichts. -->
+  <script src="rays-v13.js" defer></script>
 </body>
 </html>

@@ -9,11 +9,11 @@
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
 
-/styles-v13.css
+/styles-v14.css
   Cache-Control: public, max-age=31536000, immutable
 
-/app-v13.js
+/app-v14.js
   Cache-Control: public, max-age=31536000, immutable
 
-/rays-v13.js
+/rays-v14.js
   Cache-Control: public, max-age=31536000, immutable
