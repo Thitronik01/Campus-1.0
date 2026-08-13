@@ -29,6 +29,7 @@ gebaut wurde.
 | `tools/test-function.js` | Testet die Bewertungslogik der Quelle ohne Datenbank |
 | `tools/test-paket.js` | Testet die Function eines **erzeugten** Pakets |
 | `tools/dev-server.js` | Lokaler Server, bildet die Netlify-Redirects nach |
+| `tools/bilder-aus-bestandsquiz.js` | Löst die eingebetteten Bilder aus einem alten Quiz heraus |
 
 **Inhalt steht in den JSON-Dateien, nicht im Code.** Eine Frage zu ändern heißt,
 eine JSON-Datei zu ändern — sonst nichts.
@@ -462,9 +463,18 @@ anspruchsvollere zweite Ebene, kein Ersatz — beide können nebeneinander
 bestehen.
 
 Eine Migration bedeutet vor allem, 3,0 MB Base64-Bilder aus einer einzigen
-HTML-Zeile zu lösen und als Dateien abzulegen. Das ist machbar — beim
-Analysieren wurden alle 25 Bilder sauber extrahiert. Vorher müssten aber die
-beiden Befunde unter 5a geklärt sein, sonst wandern sie mit.
+HTML-Zeile zu lösen und als Dateien abzulegen. Dafür gibt es ein Werkzeug:
+
+```bash
+node tools/bilder-aus-bestandsquiz.js "../FehlerQuiz/index.html" public/media/fehmarn
+```
+
+Es benennt die Bilder nach der Frage, zu der sie gehören (`Q02-1.webp`), damit
+die Zuordnung beim Übertragen ins JSON-Schema nicht verlorengeht — 28 Bilder,
+2,8 MB. Danach durch `bilder-aufbereiten.js` schicken.
+
+Vorher müssten aber die beiden Befunde unter 5a geklärt sein, sonst wandern
+sie mit.
 
 > **Der Ordner war ohnehin nie deploybar:** seine `netlify.toml` deklariert
 > `publish = "public"` und `functions = "netlify/functions"` — beide
