@@ -1,0 +1,250 @@
+/* ============================================================================
+   THITRONIK — Design Tokens
+   ----------------------------------------------------------------------------
+   Extrahiert aus app/globals.css der Campus-Plattform (Stand: 2026-08-13).
+   Dies ist die IMPLEMENTIERTE Wahrheit, nicht die Spezifikation.
+   Bei Abweichungen zwischen Dokumentation und diesen Werten gilt diese Datei.
+
+   Enthalten: Farb-Tokens (Light + Dark), Typografie, Spacing, Radien,
+   Schatten, Motion, Layout, z-Index, Quiz-Tokens sowie die Kernkomponenten
+   (Buttons, Cards, Inputs, Badges, Fokus-Ring).
+
+   Nicht enthalten: die ~9.400 Zeilen seitenspezifisches CSS aus globals.css.
+   ========================================================================== */
+
+:root {
+  /* ---- Marken-Farben (Light Mode) ---- */
+  --th-blue-primary: #1D3661;      /* CI-Navy — Flächen, primäre Buttons */
+  --th-blue-primary-rgb: 29, 54, 97;
+  --th-blue-secondary: #3BA9D3;    /* CI-Cyan — Überschriften, Fokus, technische Highlights */
+  --th-accent-lime: #AFCA05;       /* CI-Lime — Status, Erfolg, aktive Zustände */
+  --th-lime-text: #6b7d00;         /* AA-tauglicher Lime NUR für Text auf hellem Grund (~4.6:1) */
+  --th-red-brand: #CE132D;         /* CI-Rot — Logo-Akzent, Warnungen, Zurück-Buttons */
+  --th-purple-accent: #7C3AED;
+
+  /* ---- Neutrale Töne (Slate) ---- */
+  --bg-page: #f8fafc;
+  --bg-card: #ffffff;
+  --bg-card-rgb: 255, 255, 255;
+  --border-color: #e2e8f0;
+  --text-primary: #020617;
+  --text-secondary: #334155;
+  --text-tertiary: #64748b;
+  --gray-soft: #f1f5f9;
+
+  /* ---- Semantische Farben ---- */
+  --color-success: #16a34a;
+  --color-success-bg: #dcfce7;
+  --color-warning: #d97706;
+  --color-warning-bg: #fef3c7;
+  --color-error: #dc2626;
+  --color-error-bg: #fee2e2;
+  --color-danger: var(--color-error);   /* Alias — folgt dem Dark-Mode-Override automatisch */
+  --color-info: #0284c7;
+  --color-info-bg: #e0f2fe;
+
+  /* ---- Typografie ---- */
+  --font-primary: 'Inter', system-ui, -apple-system, sans-serif;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+  --fs-h1: 36px;
+  --fs-h2: 30px;
+  --fs-h3: 24px;
+  --fs-body-lg: 18px;
+  --fs-body: 16px;
+  --fs-body-sm: 14px;
+  --fs-caption: 12px;
+
+  /* ---- Spacing (4px-Raster) ---- */
+  --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px; --sp-5: 20px;
+  --sp-6: 24px; --sp-7: 28px; --sp-8: 32px; --sp-12: 48px; --sp-16: 64px;
+
+  /* ---- Radien & Schatten ---- */
+  --radius-sm: 6px; --radius-md: 8px; --radius-lg: 12px; --radius-xl: 16px; --radius-full: 9999px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+  --shadow-card: 0 4px 12px rgba(29,54,97,0.05);
+  --shadow-card-hover: 0 12px 24px rgba(29,54,97,0.08);
+
+  /* Aliase auf theme-aware Tokens — korrekte Auflösung in Light & Dark ohne Doppeldefinition */
+  --bg-elevated: var(--bg-card);
+  --border-subtle: var(--border-color);
+  --text-muted: var(--text-tertiary);
+  --shadow-lg: var(--shadow-card-hover);
+
+  /* ---- Motion — bewusst knapp gehalten für eine hochfrequente B2B-App ---- */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --duration-press: 140ms;
+  --duration-fast: 150ms;
+  --duration-normal: 200ms;
+  --duration-drawer: 240ms;
+  --transition-fast: var(--duration-fast) var(--ease-out);
+  --transition-normal: var(--duration-normal) var(--ease-out);
+
+  /* ---- Layout ---- */
+  --max-content: 1280px;
+  --sidebar-width: 260px;
+  --header-height: 64px;
+
+  /* ---- z-Index-Skala: Sidebar < Header < Dropdown < Popover < Modal < Toast < Skip-Link ---- */
+  --z-sticky: 100;
+  --z-sidebar: 200;
+  --z-modal-backdrop: 300;
+  --z-dropdown: 1000;
+  --z-popover: 1100;
+  --z-modal: 1200;
+  --z-toast: 1300;
+  --z-skip-link: 1500;
+
+  /* ---- Live-Quiz (Kahoot-Stil) ---- */
+  --quiz-answer-red: #E21B3C;
+  --quiz-answer-blue: #1368CE;
+  --quiz-answer-yellow: #D89E00;
+  --quiz-on-yellow: #1D3661;       /* fester Navy-Wert: Text auf Gelb, themenunabhängig (5,0:1) */
+  --quiz-answer-green: #26890C;
+  --quiz-bg-dark: #46178F;
+  --quiz-bg-question: #1D3661;
+  --quiz-score-text: #5F7A00;
+  --quiz-timer-green: #4ade80;
+  --quiz-timer-yellow: #fbbf24;
+  --quiz-timer-red: #f87171;
+  --quiz-medal-gold: #D89E00;
+  --quiz-medal-silver: #C0C0C0;
+  --quiz-medal-bronze: #CD7F32;
+
+  /* ---- Glas / Wiki ---- */
+  --th-accent-lime-subtle: rgba(175, 202, 5, 0.08);
+  --th-glass-bg: rgba(255, 255, 255, 0.72);
+}
+
+[data-theme='dark'] {
+  /* Navy wird aufgehellt, damit er auf dunklem Grund noch als Fläche wirkt */
+  --th-blue-primary: #2a4a80;
+  --th-blue-primary-rgb: 42, 74, 128;
+  --th-accent-lime: #c4de1a;
+  --th-lime-text: #c4de1a;         /* helles Lime auf dunklem Grund ist kontraststark */
+  --th-red-brand: #e8304a;
+  --th-purple-accent: #A855F7;
+
+  --bg-page: #020617;
+  --bg-card: #0f172a;
+  --bg-card-rgb: 15, 23, 42;
+  --border-color: #334155;
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-tertiary: #94a3b8;
+  --gray-soft: #1e293b;
+
+  --color-success: #4ade80;
+  --color-warning: #fbbf24;
+  --color-error: #f87171;
+  --color-info: #38bdf8;
+  --color-success-bg: rgba(22,163,74,0.2);
+  --color-warning-bg: rgba(217,119,6,0.2);
+  --color-error-bg: rgba(220,38,38,0.2);
+  --color-info-bg: rgba(2,132,199,0.2);
+
+  --shadow-card: 0 4px 12px rgba(0,0,0,0.4);
+  --shadow-card-hover: 0 12px 24px rgba(0,0,0,0.6);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.45);  /* der Light-Wert (0.1) ist auf #020617 unsichtbar */
+
+  /* Quiz-Farben bleiben identisch — bewusst kräftig in beiden Modi */
+  --quiz-score-text: var(--th-accent-lime);
+  --quiz-medal-silver: #B8B8B8;    /* für Kontrast minimal abgedunkelt */
+  --quiz-medal-bronze: #B87333;
+
+  --th-accent-lime-subtle: rgba(196, 222, 26, 0.12);
+  --th-glass-bg: rgba(15, 23, 42, 0.72);
+}
+
+/* ============================================================================
+   KERNKOMPONENTEN
+   ========================================================================== */
+
+/* ---- Fokus-Indikator: CYAN, nicht Lime ---- */
+:focus-visible {
+  outline: 2px solid var(--th-blue-secondary);
+  outline-offset: 2px;
+}
+/* Auf dunklen Flächen verschwindet Cyan — dort Weiß */
+.sidebar :focus-visible { outline-color: #fff; }
+[data-theme='dark'] .sidebar :focus-visible { outline-color: var(--th-blue-secondary); }
+/* Farbige Quiz-Bühnen: weißer Ring, Cyan verschwindet auf Blau/Bunt */
+.quiz-fullscreen :focus-visible,
+.quiz-solo :focus-visible { outline-color: #fff; }
+
+/* ---- Buttons ---- */
+.btn-primary   { background: var(--th-blue-primary); color: #fff; }
+.btn-primary:hover { background: #142847; }
+.btn-secondary { background: transparent; border: 1px solid var(--border-color); color: var(--text-primary); }
+.btn-secondary:hover { background: var(--gray-soft); }
+.btn-success   { background: var(--th-accent-lime); color: #020617; }
+.btn-success:hover { background: #8FA404; color: #020617; }
+.btn-danger    { background: var(--th-red-brand); color: #fff; }
+.btn-danger:hover:not(:disabled) { filter: brightness(1.1); }
+
+/* Zurück-Buttons sind CI-Rot und als Outline ausgeführt — feste Konvention */
+.btn-back {
+  background: transparent;
+  border: 2px solid var(--th-red-brand);
+  color: var(--th-red-brand);
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-body);
+  padding: var(--sp-2) var(--sp-4);
+}
+.btn-back:hover { background: var(--th-red-brand); color: #fff; }
+[data-theme='dark'] .btn-back { color: #ff6675; border-color: #ff6675; }
+[data-theme='dark'] .btn-back:hover { color: #fff; background: var(--th-red-brand); border-color: var(--th-red-brand); }
+
+/* ---- Cards ---- */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  overflow: hidden;
+}
+/* ACHTUNG: backdrop-filter erzeugt einen neuen Stacking-Context und fängt
+   position:fixed-Kinder ein. Modals deshalb immer per createPortal an document.body. */
+[data-theme='dark'] .card {
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-color: rgba(59, 169, 211, 0.12);
+}
+.card-hover:hover { transform: translateY(-2px); box-shadow: var(--shadow-card-hover); }
+[data-theme='dark'] .card-hover:hover { box-shadow: 0 12px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(59,169,211,0.15); }
+.card-body { padding: var(--sp-6); }
+
+/* ---- Formularelemente ---- */
+.input {
+  width: 100%;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--sp-3) var(--sp-4);
+  font-size: var(--fs-body);
+  color: var(--text-primary);
+  transition: border-color var(--transition-fast);
+}
+.input:focus { outline: none; border-color: var(--th-blue-secondary); box-shadow: 0 0 0 2px rgba(59,169,211,0.2); }
+.label { display: block; font-size: var(--fs-body-sm); font-weight: var(--fw-medium); margin-bottom: var(--sp-2); color: var(--text-secondary); }
+
+/* ---- Badges ---- */
+.badge { font-size: var(--fs-caption); padding: 4px 8px; border-radius: 4px; font-weight: var(--fw-bold); line-height: 1; }
+.badge--success { background: var(--color-success-bg); color: var(--color-success); }
+.badge--warning { background: var(--color-warning-bg); color: var(--color-warning); }
+.badge--neutral { background: var(--bg-page); color: var(--text-tertiary); border: 1px solid var(--border-color); }
+
+/* ---- Basis ---- */
+body {
+  font-family: var(--font-primary);
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  line-height: 1.6;
+  transition: background-color var(--transition-normal), color var(--transition-normal);
+}

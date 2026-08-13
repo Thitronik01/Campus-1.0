@@ -1,0 +1,2313 @@
+{
+  "erstellt": "Campus 1.0 Wissenspaket",
+  "quelle": "Thitronik Online",
+  "dateien": 282,
+  "inventar": [
+    {
+      "datei": "abschalteinrichtung.md",
+      "ordner": "referenz",
+      "title": "Abschalteinrichtung — Fahrzeugstilllegung über Pro-Finder",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "reference",
+      "upd": "2026-07-14",
+      "conf": "high",
+      "route": "/de/abschalteinrichtung"
+    },
+    {
+      "datei": "anlernvorgang.md",
+      "ordner": "referenz",
+      "title": "Anlernvorgang — Funk-Zubehör an WiPro III anlernen",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "reference",
+      "upd": "2026-07-14",
+      "conf": "high",
+      "route": "/de/anlernvorgang"
+    },
+    {
+      "datei": "app-befehle.md",
+      "ordner": "referenz",
+      "title": "THITRONIK® App — Befehle, Einrichtung und Fehlerbehebung",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "reference",
+      "upd": "2026-07-14",
+      "conf": "high",
+      "route": "/de/app-befehle"
+    },
+    {
+      "datei": "artikelnummern.md",
+      "ordner": "referenz",
+      "title": "Artikelnummern-Register — Dokumentierte THITRONIK-Produkte und Zubehör",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "reference",
+      "upd": "2026-07-15",
+      "conf": "high",
+      "route": "/de/artikelnummern"
+    },
+    {
+      "datei": "bt-connect.md",
+      "ordner": "produkte",
+      "title": "BT-connect — Bluetooth-Modul für WiPro III",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "product",
+      "upd": "2026-07-15",
+      "conf": "high",
+      "route": "/de/bt-connect"
+    },
+    {
+      "datei": "camplock-fingerprint.md",
+      "ordner": "produkte",
+      "title": "CampLock Fingerprint - biometrischer Zugang",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "product",
+      "upd": "2026-07-07",
+      "conf": "high",
+      "route": "/de/camplock-fingerprint"
+    },
+    {
+      "datei": "co-sensor.md",
+      "ordner": "referenz",
+      "title": "CO-Sensor — Kohlenmonoxid-Zusatzsensor",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "reference",
+      "upd": "2026-07-16",
+      "conf": "high",
+      "route": "/de/co-sensor"
+    },
+    {
+      "datei": "adria-coral-matrix.md",
+      "ordner": "fahrzeuge",
+      "title": "Adria Coral / Matrix (ab Modelljahr 2021) — Wohnmobil-Aufbauhinweis",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "vehicle",
+      "upd": "2026-07-19",
+      "conf": "high",
+      "route": "/de/fahrzeuge/adria-coral-matrix"
+    },
+    {
+      "datei": "fiat-ducato-2012-2021.md",
+      "ordner": "fahrzeuge",
+      "title": "Fiat Ducato / Citroën Jumper / Peugeot Boxer / Toyota Proace Max / Opel Movano (2012–2021)",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "vehicle",
+      "upd": "2026-07-19",
+      "conf": "high",
+      "route": "/de/fahrzeuge/fiat-ducato-2012-2021"
+    },
+    {
+      "datei": "fiat-ducato-2022-2024.md",
+      "ordner": "fahrzeuge",
+      "title": "Fiat Ducato 8/9 / Citroën Jumper / Peugeot Boxer / Opel Movano (2022–2024)",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "vehicle",
+      "upd": "2026-07-19",
+      "conf": "high",
+      "route": "/de/fahrzeuge/fiat-ducato-2022-2024"
+    },
+    {
+      "datei": "fiat-ducato-2024plus.md",
+      "ordner": "fahrzeuge",
+      "title": "Fiat Ducato Facelift / Citroën Jumper / Peugeot Boxer / Opel Movano (2024+)",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "vehicle",
+      "upd": "2026-07-19",
+      "conf": "high",
+      "route": "/de/fahrzeuge/fiat-ducato-2024plus"
+    },
+    {
+      "datei": "fiat-ducato-244.md",
+      "ordner": "fahrzeuge",
+      "title": "Fiat Ducato 244 / Peugeot Boxer / Citroën Jumper (bis 2006)",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "vehicle",
+      "upd": "2026-07-19",
+      "conf": "high",
+      "route": "/de/fahrzeuge/fiat-ducato-244"
+    },
+    {
+      "datei": "fiat-ducato-x250.md",
+      "ordner": "fahrzeuge",
+      "title": "Fiat Ducato X250 / Peugeot Boxer / Citroën Jumper (Euro 4, 2006–2011)",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "vehicle",
+      "upd": "2026-07-19",
+      "conf": "high",
+      "route": "/de/fahrzeuge/fiat-ducato-x250"
+    },
+    {
+      "datei": "fiat-talento.md",
+      "ordner": "fahrzeuge",
+      "title": "Fiat Talento / Renault Trafic III / Opel Vivaro B / Nissan NV300 (2014–2021)",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "vehicle",
+      "upd": "2026-07-22",
+      "conf": "high",
+      "route": "/de/fahrzeuge/fiat-talento"
+    },
+    {
+      "datei": "ford-transit-2024plus.md",
+      "ordner": "fahrzeuge",
+      "title": "Ford Transit / Tourneo Custom / Transit Custom (2024+)",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "vehicle",
+      "upd": "2026-07-19",
+      "conf": "medium",
+      "route": "/de/fahrzeuge/ford-transit-2024plus"
+    },
+    {
+      "datei": "ford-transit-6g.md",
+      "ordner": "fahrzeuge",
+      "title": "Ford Transit 6. Generation (2006–2013)",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "vehicle",
+      "upd": "2026-07-19",
+      "conf": "high",
+      "route": "/de/fahrzeuge/ford-transit-6g"
+    },
+    {
+      "datei": "ford-transit-7g-2014.md",
+      "ordner": "fahrzeuge",
+      "title": "Ford Transit 7. Generation früh (2014–2015)",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "vehicle",
+      "upd": "2026-07-19",
+      "conf": "high",
+      "route": "/de/fahrzeuge/ford-transit-7g-2014"
+    },
+    {
+      "datei": "ford-transit-7g-2016.md",
+      "ordner": "fahrzeuge",
+      "title": "Ford Transit 7. Generation (2016–2019)",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "vehicle",
+      "upd": "2026-07-19",
+      "conf": "high",
+      "route": "/de/fahrzeuge/ford-transit-7g-2016"
+    },
+    {
+      "datei": "ford-transit-7g-facelift.md",
+      "ordner": "fahrzeuge",
+      "title": "Ford Transit 7. Generation Facelift (2019–07/2024)",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "vehicle",
+      "upd": "2026-07-20",
+      "conf": "high",
+      "route": "/de/fahrzeuge/ford-transit-7g-facelift"
+    },
+    {
+      "datei": "iveco-daily-euro4.md",
+      "ordner": "fahrzeuge",
+      "title": "Iveco Daily Euro 4 (2006–2011)",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "vehicle",
+      "upd": "2026-07-20",
+      "conf": "high",
+      "route": "/de/fahrzeuge/iveco-daily-euro4"
+    },
+    {
+      "datei": "iveco-daily-euro5.md",
+      "ordner": "fahrzeuge",
+      "title": "Iveco Daily Euro 5 und neuer (2011–2024)",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "vehicle",
+      "upd": "2026-07-20",
+      "conf": "high",
+      "route": "/de/fahrzeuge/iveco-daily-euro5"
+    },
+    {
+      "datei": "mercedes-sprinter-ncv3.md",
+      "ordner": "fahrzeuge",
+      "title": "Mercedes Sprinter NCV3 / VW Crafter (BR906, 2006–2018)",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "vehicle",
+      "upd": "2026-07-20",
+      "conf": "high",
+      "route": "/de/fahrzeuge/mercedes-sprinter-ncv3"
+    },
+    {
+      "datei": "mercedes-sprinter-t1n.md",
+      "ordner": "fahrzeuge",
+      "title": "Mercedes Sprinter T1N (2000–2006)",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "vehicle",
+      "upd": "2026-07-20",
+      "conf": "high",
+      "route": "/de/fahrzeuge/mercedes-sprinter-t1n"
+    },
+    {
+      "datei": "mercedes-sprinter-vs30.md",
+      "ordner": "fahrzeuge",
+      "title": "Mercedes Sprinter VS30 (BR907/910, ab 2018)",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "vehicle",
+      "upd": "2026-07-20",
+      "conf": "high",
+      "route": "/de/fahrzeuge/mercedes-sprinter-vs30"
+    },
+    {
+      "datei": "mercedes-vito-w447.md",
+      "ordner": "fahrzeuge",
+      "title": "Mercedes Benz Vito W447 (2014–06/2023)",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "vehicle",
+      "upd": "2026-07-20",
+      "conf": "high",
+      "route": "/de/fahrzeuge/mercedes-vito-w447"
+    },
+    {
+      "datei": "renault-master-2019.md",
+      "ordner": "fahrzeuge",
+      "title": "Renault Master (2019–2024) — safe.lock",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "vehicle",
+      "upd": "2026-07-21",
+      "conf": "high",
+      "route": "/de/fahrzeuge/renault-master-2019"
+    },
+    {
+      "datei": "renault-master-ii.md",
+      "ordner": "fahrzeuge",
+      "title": "Renault Master II / Opel Movano A / Nissan Interstar (1998–2010)",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "vehicle",
+      "upd": "2026-07-21",
+      "conf": "high",
+      "route": "/de/fahrzeuge/renault-master-ii"
+    },
+    {
+      "datei": "renault-master-iii.md",
+      "ordner": "fahrzeuge",
+      "title": "Renault Master III / Opel Movano B / Nissan NV400 (ab 2011)",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "vehicle",
+      "upd": "2026-07-21",
+      "conf": "high",
+      "route": "/de/fahrzeuge/renault-master-iii"
+    },
+    {
+      "datei": "renault-trafic-iii-2014.md",
+      "ordner": "fahrzeuge",
+      "title": "Renault Trafic III / Opel Vivaro B / Nissan NV300 / Fiat Talento (2014–2021)",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "vehicle",
+      "upd": "2026-07-22",
+      "conf": "high",
+      "route": "/de/fahrzeuge/renault-trafic-iii-2014"
+    },
+    {
+      "datei": "renault-trafic-iii-2022.md",
+      "ordner": "fahrzeuge",
+      "title": "Renault Trafic III / Nissan Primastar (ab 2022)",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "vehicle",
+      "upd": "2026-07-22",
+      "conf": "high",
+      "route": "/de/fahrzeuge/renault-trafic-iii-2022"
+    },
+    {
+      "datei": "universalanschluss.md",
+      "ordner": "fahrzeuge",
+      "title": "Universalanschluss (ältere / nicht gelistete Fahrzeuge)",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "vehicle",
+      "upd": "2026-07-22",
+      "conf": "high",
+      "route": "/de/fahrzeuge/universalanschluss"
+    },
+    {
+      "datei": "vw-crafter-man-tge-2017.md",
+      "ordner": "fahrzeuge",
+      "title": "VW Crafter / MAN TGE (2017–2024, ohne Startknopf)",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "vehicle",
+      "upd": "2026-07-22",
+      "conf": "high",
+      "route": "/de/fahrzeuge/vw-crafter-man-tge-2017"
+    },
+    {
+      "datei": "vw-crafter-man-tge-2025.md",
+      "ordner": "fahrzeuge",
+      "title": "VW Crafter / MAN TGE (2025+, mit Startknopf)",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "vehicle",
+      "upd": "2026-07-22",
+      "conf": "medium",
+      "route": "/de/fahrzeuge/vw-crafter-man-tge-2025"
+    },
+    {
+      "datei": "vw-t5-facelift.md",
+      "ordner": "fahrzeuge",
+      "title": "VW T5 Facelift (ab MJ 2010)",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "vehicle",
+      "upd": "2026-07-22",
+      "conf": "high",
+      "route": "/de/fahrzeuge/vw-t5-facelift"
+    },
+    {
+      "datei": "vw-t5.md",
+      "ordner": "fahrzeuge",
+      "title": "VW T5 (2006–2009)",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "vehicle",
+      "upd": "2026-07-22",
+      "conf": "high",
+      "route": "/de/fahrzeuge/vw-t5"
+    },
+    {
+      "datei": "vw-t6-1.md",
+      "ordner": "fahrzeuge",
+      "title": "VW T6.1 (ab 2019)",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "vehicle",
+      "upd": "2026-07-22",
+      "conf": "high",
+      "route": "/de/fahrzeuge/vw-t6-1"
+    },
+    {
+      "datei": "vw-t6.md",
+      "ordner": "fahrzeuge",
+      "title": "VW T6 (2015–2019)",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "vehicle",
+      "upd": "2026-07-22",
+      "conf": "high",
+      "route": "/de/fahrzeuge/vw-t6"
+    },
+    {
+      "datei": "fahrzeugkompatibilitaet.md",
+      "ordner": "referenz",
+      "title": "Fahrzeugkompatibilität — Übersichtsmatrix & DIP-Grundlagen",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "reference",
+      "upd": "2026-07-22",
+      "conf": "high",
+      "route": "/de/fahrzeugkompatibilitaet"
+    },
+    {
+      "datei": "faq-master.md",
+      "ordner": "referenz",
+      "title": "FAQ Master — Alle häufigen Fragen auf einen Blick",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "faq",
+      "upd": "2026-07-15",
+      "conf": "high",
+      "route": "/de/faq-master"
+    },
+    {
+      "datei": "funk-handsender.md",
+      "ordner": "produkte",
+      "title": "Funk-Handsender 868 — Fernbedienung für WiPro III",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "accessory",
+      "upd": "2026-07-18",
+      "conf": "high",
+      "route": "/de/funk-handsender"
+    },
+    {
+      "datei": "funk-kabelschleife.md",
+      "ordner": "produkte",
+      "title": "Funk-Kabelschleife 868 — Außensicherung für mobile Güter",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "accessory",
+      "upd": "2026-07-18",
+      "conf": "high",
+      "route": "/de/funk-kabelschleife"
+    },
+    {
+      "datei": "funk-magnetkontakt.md",
+      "ordner": "produkte",
+      "title": "Funk-Magnetkontakt 868 — Montage und Betrieb",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "accessory",
+      "upd": "2026-07-18",
+      "conf": "high",
+      "route": "/de/funk-magnetkontakt"
+    },
+    {
+      "datei": "funk-rauchmelder.md",
+      "ordner": "produkte",
+      "title": "T.S.A. — Funk-Rauchmelder für WiPro III",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "accessory",
+      "upd": "2026-07-19",
+      "conf": "high",
+      "route": "/de/funk-rauchmelder"
+    },
+    {
+      "datei": "funk-wassermelder.md",
+      "ordner": "produkte",
+      "title": "Funk-Wassermelder 868 — Kabelloser Wassermelder",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "accessory",
+      "upd": "2026-07-19",
+      "conf": "high",
+      "route": "/de/funk-wassermelder"
+    },
+    {
+      "datei": "gas-connect.md",
+      "ordner": "produkte",
+      "title": "G.A.S.-connect — Funk-Gaswarner für WiPro III",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "product",
+      "upd": "2026-07-16",
+      "conf": "high",
+      "route": "/de/gas-connect"
+    },
+    {
+      "datei": "gas-plug.md",
+      "ordner": "produkte",
+      "title": "G.A.S.-plug „all in one\" — Mobiler Gaswarner",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "product",
+      "upd": "2026-07-16",
+      "conf": "high",
+      "route": "/de/gas-plug"
+    },
+    {
+      "datei": "gas-pro-iii.md",
+      "ordner": "produkte",
+      "title": "G.A.S.-pro III — Gaswarner für Freizeitfahrzeuge",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "product",
+      "upd": "2026-07-17",
+      "conf": "high",
+      "route": "/de/gas-pro-iii"
+    },
+    {
+      "datei": "gas-pro.md",
+      "ordner": "produkte",
+      "title": "G.A.S.-pro (ältere Serie) — Gas- und CO-Alarm",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "product",
+      "upd": "2026-07-17",
+      "conf": "high",
+      "route": "/de/gas-pro"
+    },
+    {
+      "datei": "gas.md",
+      "ordner": "referenz",
+      "title": "G.A.S. — Standalone-Gaswarner mit interner Sirene",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "reference",
+      "upd": "2026-07-16",
+      "conf": "high",
+      "route": "/de/gas"
+    },
+    {
+      "datei": "glossar.md",
+      "ordner": "referenz",
+      "title": "Glossar — Fachbegriffe im THITRONIK-System",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "reference",
+      "upd": "2026-07-14",
+      "conf": "high",
+      "route": "/de/glossar"
+    },
+    {
+      "datei": "rag-funkzubehoer-sicherheit.md",
+      "ordner": "_intern",
+      "title": "RAG-Audit: Funkzubehör und Sicherheit — Derivatquellen",
+      "vis": "internal",
+      "ds": "internal_only",
+      "type": "internal",
+      "upd": "2026-07-22",
+      "conf": "high",
+      "route": "/de/intern/rag-funkzubehoer-sicherheit"
+    },
+    {
+      "datei": "rag-gas-und-sensorik.md",
+      "ordner": "_intern",
+      "title": "RAG-Audit: Gas und Sensorik — Derivatquellen",
+      "vis": "internal",
+      "ds": "internal_only",
+      "type": "internal",
+      "upd": "2026-07-22",
+      "conf": "high",
+      "route": "/de/intern/rag-gas-und-sensorik"
+    },
+    {
+      "datei": "rag-konnektivitaet-und-abschaltung.md",
+      "ordner": "_intern",
+      "title": "RAG-Audit: Konnektivität und Abschaltung — Derivatquellen",
+      "vis": "internal",
+      "ds": "internal_only",
+      "type": "internal",
+      "upd": "2026-07-22",
+      "conf": "high",
+      "route": "/de/intern/rag-konnektivitaet-und-abschaltung"
+    },
+    {
+      "datei": "rag-pro-finder-app.md",
+      "ordner": "_intern",
+      "title": "RAG-Audit: Pro-Finder und App — Derivatquellen",
+      "vis": "internal",
+      "ds": "internal_only",
+      "type": "internal",
+      "upd": "2026-07-22",
+      "conf": "high",
+      "route": "/de/intern/rag-pro-finder-app"
+    },
+    {
+      "datei": "rag-service-faq-und-reisefuehrer.md",
+      "ordner": "_intern",
+      "title": "RAG-Audit: Service, FAQ und Reiseführer — Derivatquellen",
+      "vis": "internal",
+      "ds": "internal_only",
+      "type": "internal",
+      "upd": "2026-07-22",
+      "conf": "high",
+      "route": "/de/intern/rag-service-faq-und-reisefuehrer"
+    },
+    {
+      "datei": "rag-wipro-safe-lock.md",
+      "ordner": "_intern",
+      "title": "RAG-Audit: WiPro und safe.lock — Derivatquellen",
+      "vis": "internal",
+      "ds": "internal_only",
+      "type": "internal",
+      "upd": "2026-07-22",
+      "conf": "high",
+      "route": "/de/intern/rag-wipro-safe-lock"
+    },
+    {
+      "datei": "keycard.md",
+      "ordner": "produkte",
+      "title": "KeyCard - NFC-Zugangsmedium",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "accessory",
+      "upd": "2026-07-07",
+      "conf": "high",
+      "route": "/de/keycard"
+    },
+    {
+      "datei": "keystrap.md",
+      "ordner": "produkte",
+      "title": "KeyStrap - NFC-Zugangsmedium",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "accessory",
+      "upd": "2026-07-07",
+      "conf": "high",
+      "route": "/de/keystrap"
+    },
+    {
+      "datei": "keytag.md",
+      "ordner": "produkte",
+      "title": "KeyTag - NFC-Zugangsmedium",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "accessory",
+      "upd": "2026-07-07",
+      "conf": "high",
+      "route": "/de/keytag"
+    },
+    {
+      "datei": "lernen-und-wissenschecks.md",
+      "ordner": "referenz",
+      "title": "Lernen und Wissenschecks — Händlerleitfaden",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "reference",
+      "upd": "2026-07-23",
+      "conf": "high",
+      "route": "/de/lernen-und-wissenschecks"
+    },
+    {
+      "datei": "mobilfunk-sim.md",
+      "ordner": "referenz",
+      "title": "Mobilfunk und SIM-Karten — Pro-Finder sicher in Betrieb nehmen",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "reference",
+      "upd": "2026-07-15",
+      "conf": "high",
+      "route": "/de/mobilfunk-sim"
+    },
+    {
+      "datei": "nfc-modul.md",
+      "ordner": "produkte",
+      "title": "NFC Modul — Steuerung der WiPro via NFC",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "product",
+      "upd": "2026-07-16",
+      "conf": "high",
+      "route": "/de/nfc-modul"
+    },
+    {
+      "datei": "pro-finder.md",
+      "ordner": "produkte",
+      "title": "Pro-Finder — GSM/GPS Telemetriemodul",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "product",
+      "upd": "2026-07-15",
+      "conf": "high",
+      "route": "/de/pro-finder"
+    },
+    {
+      "datei": "quellen-matrix.md",
+      "ordner": "_intern",
+      "title": "Quellenmatrix — Bestand, Belegstärke und Pflege",
+      "vis": "internal",
+      "ds": "internal_only",
+      "type": "internal",
+      "upd": "2026-07-22",
+      "conf": "high",
+      "route": "/de/quellen-matrix"
+    },
+    {
+      "datei": "safe-lock-umruestplatine.md",
+      "ordner": "referenz",
+      "title": "safe.lock Umrüstplatine — Schlüsselsicherheit für Ducato/Boxer/Jumper",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "reference",
+      "upd": "2026-07-15",
+      "conf": "high",
+      "route": "/de/safe-lock-umruestplatine"
+    },
+    {
+      "datei": "seriennummern-softwarestaende.md",
+      "ordner": "referenz",
+      "title": "Seriennummern und Softwarestände — Präfixe, Schwellen und Meilensteine",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "reference",
+      "upd": "2026-07-15",
+      "conf": "high",
+      "route": "/de/seriennummern-softwarestaende"
+    },
+    {
+      "datei": "sirenen-hupen.md",
+      "ordner": "referenz",
+      "title": "Sirenen und Hupen — Akustische Alarmmittel",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "reference",
+      "upd": "2026-07-15",
+      "conf": "high",
+      "route": "/de/sirenen-hupen"
+    },
+    {
+      "datei": "stoerungsbeseitigung.md",
+      "ordner": "referenz",
+      "title": "Störungsbeseitigung — Sichere Diagnose häufiger Probleme",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "troubleshooting",
+      "upd": "2026-07-15",
+      "conf": "high",
+      "route": "/de/stoerungsbeseitigung"
+    },
+    {
+      "datei": "stromversorgung-standzeiten.md",
+      "ordner": "referenz",
+      "title": "Stromversorgung & Standzeiten — Ruhestrom, Unterspannung und Ladepraxis",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "reference",
+      "upd": "2026-07-15",
+      "conf": "high",
+      "route": "/de/stromversorgung-standzeiten"
+    },
+    {
+      "datei": "support-fallaufnahme.md",
+      "ordner": "_intern",
+      "title": "Support-Fallaufnahme — Pflichtangaben und Eskalationsprüfung",
+      "vis": "internal",
+      "ds": "internal_only",
+      "type": "internal",
+      "upd": "2026-07-15",
+      "conf": "high",
+      "route": "/de/support-fallaufnahme"
+    },
+    {
+      "datei": "systemueberblick.md",
+      "ordner": "referenz",
+      "title": "Systemüberblick — THITRONIK-Produktwelt",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "reference",
+      "upd": "2026-07-13",
+      "conf": "high",
+      "route": "/de/systemueberblick"
+    },
+    {
+      "datei": "funkstandards-und-schnittstellen.md",
+      "ordner": "_ohne-metadaten"
+    },
+    {
+      "datei": "normen-und-richtlinien.md",
+      "ordner": "_ohne-metadaten"
+    },
+    {
+      "datei": "uebersicht.md",
+      "ordner": "_ohne-metadaten"
+    },
+    {
+      "datei": "terminologie-und-schreibweisen.md",
+      "ordner": "_intern",
+      "title": "Terminologie & Schreibweisen — Kanonische Begriffe für Menschen und KI",
+      "vis": "internal",
+      "ds": "internal_only",
+      "type": "internal",
+      "upd": "2026-07-13",
+      "conf": "high",
+      "route": "/de/terminologie-und-schreibweisen"
+    },
+    {
+      "datei": "uebersetzungs-glossar.md",
+      "ordner": "_intern",
+      "title": "Übersetzungs-Glossar - Mehrsprachige Spezialbegriffe",
+      "vis": "internal",
+      "ds": "internal_only",
+      "type": "internal",
+      "upd": "2026-07-13",
+      "conf": "high",
+      "route": "/de/uebersetzungs-glossar"
+    },
+    {
+      "datei": "vanlock-fingerprint.md",
+      "ordner": "produkte",
+      "title": "VanLock Fingerprint - biometrischer Zugang",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "product",
+      "upd": "2026-07-07",
+      "conf": "high",
+      "route": "/de/vanlock-fingerprint"
+    },
+    {
+      "datei": "vernetzungsmodul.md",
+      "ordner": "referenz",
+      "title": "Bluetooth-Vernetzungsmodul — Smartphone-Steuerung via Bluetooth",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "reference",
+      "upd": "2026-07-16",
+      "conf": "high",
+      "route": "/de/vernetzungsmodul"
+    },
+    {
+      "datei": "werkseinbau-eckernfoerde.md",
+      "ordner": "_intern",
+      "title": "Werkseinbau & Besuch in Eckernfoerde",
+      "vis": "internal",
+      "ds": "internal_only",
+      "type": "internal",
+      "upd": "2026-07-15",
+      "conf": "high",
+      "route": "/de/werkseinbau-eckernfoerde"
+    },
+    {
+      "datei": "wipro-iii.md",
+      "ordner": "produkte",
+      "title": "WiPro III — Funk-Alarmsystem für Freizeitfahrzeuge",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "product",
+      "upd": "2026-07-14",
+      "conf": "high",
+      "route": "/de/wipro-iii"
+    },
+    {
+      "datei": "zugang-bedienung.md",
+      "ordner": "referenz",
+      "title": "Zugangsmedien & Bedienung — Zutrittswege im THITRONIK-System",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "reference",
+      "upd": "2026-07-15",
+      "conf": "high",
+      "route": "/de/zugang-bedienung"
+    },
+    {
+      "datei": "zusatzsensor-gas-pro-iii.md",
+      "ordner": "referenz",
+      "title": "Zusatzsensor G.A.S.-pro III — Externer Gassensor",
+      "vis": "standard",
+      "ds": "approved",
+      "type": "reference",
+      "upd": "2026-07-17",
+      "conf": "high",
+      "route": "/de/zusatzsensor-gas-pro-iii"
+    },
+    {
+      "datei": "_index.md",
+      "ordner": "_ohne-metadaten"
+    }
+  ],
+  "medien": {
+    "produkte": 34,
+    "fahrzeuge": 11,
+    "ci": 23,
+    "firma": 5,
+    "marken": 8,
+    "themen": 13,
+    "toene": 11
+  },
+  "log": [
+    {
+      "from": "Thitronik Online\\wiki\\de\\abschalteinrichtung.md",
+      "to": "01_Produktwissen\\referenz\\abschalteinrichtung.md",
+      "bytes": 8402
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\anlernvorgang.md",
+      "to": "01_Produktwissen\\referenz\\anlernvorgang.md",
+      "bytes": 10872
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\app-befehle.md",
+      "to": "01_Produktwissen\\referenz\\app-befehle.md",
+      "bytes": 12911
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\artikelnummern.md",
+      "to": "01_Produktwissen\\referenz\\artikelnummern.md",
+      "bytes": 14022
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\bt-connect.md",
+      "to": "01_Produktwissen\\produkte\\bt-connect.md",
+      "bytes": 14151
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\camplock-fingerprint.md",
+      "to": "01_Produktwissen\\produkte\\camplock-fingerprint.md",
+      "bytes": 3523
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\co-sensor.md",
+      "to": "01_Produktwissen\\referenz\\co-sensor.md",
+      "bytes": 16222
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\fahrzeuge\\adria-coral-matrix.md",
+      "to": "01_Produktwissen\\fahrzeuge\\adria-coral-matrix.md",
+      "bytes": 7654
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\fahrzeuge\\fiat-ducato-2012-2021.md",
+      "to": "01_Produktwissen\\fahrzeuge\\fiat-ducato-2012-2021.md",
+      "bytes": 14324
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\fahrzeuge\\fiat-ducato-2022-2024.md",
+      "to": "01_Produktwissen\\fahrzeuge\\fiat-ducato-2022-2024.md",
+      "bytes": 12795
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\fahrzeuge\\fiat-ducato-2024plus.md",
+      "to": "01_Produktwissen\\fahrzeuge\\fiat-ducato-2024plus.md",
+      "bytes": 11684
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\fahrzeuge\\fiat-ducato-244.md",
+      "to": "01_Produktwissen\\fahrzeuge\\fiat-ducato-244.md",
+      "bytes": 13598
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\fahrzeuge\\fiat-ducato-x250.md",
+      "to": "01_Produktwissen\\fahrzeuge\\fiat-ducato-x250.md",
+      "bytes": 14843
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\fahrzeuge\\fiat-talento.md",
+      "to": "01_Produktwissen\\fahrzeuge\\fiat-talento.md",
+      "bytes": 14956
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\fahrzeuge\\ford-transit-2024plus.md",
+      "to": "01_Produktwissen\\fahrzeuge\\ford-transit-2024plus.md",
+      "bytes": 16812
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\fahrzeuge\\ford-transit-6g.md",
+      "to": "01_Produktwissen\\fahrzeuge\\ford-transit-6g.md",
+      "bytes": 18727
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\fahrzeuge\\ford-transit-7g-2014.md",
+      "to": "01_Produktwissen\\fahrzeuge\\ford-transit-7g-2014.md",
+      "bytes": 19648
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\fahrzeuge\\ford-transit-7g-2016.md",
+      "to": "01_Produktwissen\\fahrzeuge\\ford-transit-7g-2016.md",
+      "bytes": 16248
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\fahrzeuge\\ford-transit-7g-facelift.md",
+      "to": "01_Produktwissen\\fahrzeuge\\ford-transit-7g-facelift.md",
+      "bytes": 21275
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\fahrzeuge\\iveco-daily-euro4.md",
+      "to": "01_Produktwissen\\fahrzeuge\\iveco-daily-euro4.md",
+      "bytes": 12286
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\fahrzeuge\\iveco-daily-euro5.md",
+      "to": "01_Produktwissen\\fahrzeuge\\iveco-daily-euro5.md",
+      "bytes": 17682
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\fahrzeuge\\mercedes-sprinter-ncv3.md",
+      "to": "01_Produktwissen\\fahrzeuge\\mercedes-sprinter-ncv3.md",
+      "bytes": 17492
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\fahrzeuge\\mercedes-sprinter-t1n.md",
+      "to": "01_Produktwissen\\fahrzeuge\\mercedes-sprinter-t1n.md",
+      "bytes": 14566
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\fahrzeuge\\mercedes-sprinter-vs30.md",
+      "to": "01_Produktwissen\\fahrzeuge\\mercedes-sprinter-vs30.md",
+      "bytes": 24179
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\fahrzeuge\\mercedes-vito-w447.md",
+      "to": "01_Produktwissen\\fahrzeuge\\mercedes-vito-w447.md",
+      "bytes": 22074
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\fahrzeuge\\renault-master-2019.md",
+      "to": "01_Produktwissen\\fahrzeuge\\renault-master-2019.md",
+      "bytes": 14071
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\fahrzeuge\\renault-master-ii.md",
+      "to": "01_Produktwissen\\fahrzeuge\\renault-master-ii.md",
+      "bytes": 16687
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\fahrzeuge\\renault-master-iii.md",
+      "to": "01_Produktwissen\\fahrzeuge\\renault-master-iii.md",
+      "bytes": 22609
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\fahrzeuge\\renault-trafic-iii-2014.md",
+      "to": "01_Produktwissen\\fahrzeuge\\renault-trafic-iii-2014.md",
+      "bytes": 14911
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\fahrzeuge\\renault-trafic-iii-2022.md",
+      "to": "01_Produktwissen\\fahrzeuge\\renault-trafic-iii-2022.md",
+      "bytes": 16807
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\fahrzeuge\\universalanschluss.md",
+      "to": "01_Produktwissen\\fahrzeuge\\universalanschluss.md",
+      "bytes": 14368
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\fahrzeuge\\vw-crafter-man-tge-2017.md",
+      "to": "01_Produktwissen\\fahrzeuge\\vw-crafter-man-tge-2017.md",
+      "bytes": 18822
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\fahrzeuge\\vw-crafter-man-tge-2025.md",
+      "to": "01_Produktwissen\\fahrzeuge\\vw-crafter-man-tge-2025.md",
+      "bytes": 11325
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\fahrzeuge\\vw-t5-facelift.md",
+      "to": "01_Produktwissen\\fahrzeuge\\vw-t5-facelift.md",
+      "bytes": 13471
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\fahrzeuge\\vw-t5.md",
+      "to": "01_Produktwissen\\fahrzeuge\\vw-t5.md",
+      "bytes": 14020
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\fahrzeuge\\vw-t6-1.md",
+      "to": "01_Produktwissen\\fahrzeuge\\vw-t6-1.md",
+      "bytes": 15390
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\fahrzeuge\\vw-t6.md",
+      "to": "01_Produktwissen\\fahrzeuge\\vw-t6.md",
+      "bytes": 15408
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\fahrzeugkompatibilitaet.md",
+      "to": "01_Produktwissen\\referenz\\fahrzeugkompatibilitaet.md",
+      "bytes": 16371
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\faq-master.md",
+      "to": "01_Produktwissen\\referenz\\faq-master.md",
+      "bytes": 18773
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\funk-handsender.md",
+      "to": "01_Produktwissen\\produkte\\funk-handsender.md",
+      "bytes": 9091
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\funk-kabelschleife.md",
+      "to": "01_Produktwissen\\produkte\\funk-kabelschleife.md",
+      "bytes": 11604
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\funk-magnetkontakt.md",
+      "to": "01_Produktwissen\\produkte\\funk-magnetkontakt.md",
+      "bytes": 17297
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\funk-rauchmelder.md",
+      "to": "01_Produktwissen\\produkte\\funk-rauchmelder.md",
+      "bytes": 17941
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\funk-wassermelder.md",
+      "to": "01_Produktwissen\\produkte\\funk-wassermelder.md",
+      "bytes": 18957
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\gas-connect.md",
+      "to": "01_Produktwissen\\produkte\\gas-connect.md",
+      "bytes": 20876
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\gas-plug.md",
+      "to": "01_Produktwissen\\produkte\\gas-plug.md",
+      "bytes": 15359
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\gas-pro-iii.md",
+      "to": "01_Produktwissen\\produkte\\gas-pro-iii.md",
+      "bytes": 27954
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\gas-pro.md",
+      "to": "01_Produktwissen\\produkte\\gas-pro.md",
+      "bytes": 20772
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\gas.md",
+      "to": "01_Produktwissen\\referenz\\gas.md",
+      "bytes": 15011
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\glossar.md",
+      "to": "01_Produktwissen\\referenz\\glossar.md",
+      "bytes": 21072
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\intern\\rag-funkzubehoer-sicherheit.md",
+      "to": "01_Produktwissen\\_intern\\rag-funkzubehoer-sicherheit.md",
+      "bytes": 29927
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\intern\\rag-gas-und-sensorik.md",
+      "to": "01_Produktwissen\\_intern\\rag-gas-und-sensorik.md",
+      "bytes": 26092
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\intern\\rag-konnektivitaet-und-abschaltung.md",
+      "to": "01_Produktwissen\\_intern\\rag-konnektivitaet-und-abschaltung.md",
+      "bytes": 16532
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\intern\\rag-pro-finder-app.md",
+      "to": "01_Produktwissen\\_intern\\rag-pro-finder-app.md",
+      "bytes": 17500
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\intern\\rag-service-faq-und-reisefuehrer.md",
+      "to": "01_Produktwissen\\_intern\\rag-service-faq-und-reisefuehrer.md",
+      "bytes": 11853
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\intern\\rag-wipro-safe-lock.md",
+      "to": "01_Produktwissen\\_intern\\rag-wipro-safe-lock.md",
+      "bytes": 18200
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\keycard.md",
+      "to": "01_Produktwissen\\produkte\\keycard.md",
+      "bytes": 2908
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\keystrap.md",
+      "to": "01_Produktwissen\\produkte\\keystrap.md",
+      "bytes": 3015
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\keytag.md",
+      "to": "01_Produktwissen\\produkte\\keytag.md",
+      "bytes": 2894
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\lernen-und-wissenschecks.md",
+      "to": "01_Produktwissen\\referenz\\lernen-und-wissenschecks.md",
+      "bytes": 3549
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\mobilfunk-sim.md",
+      "to": "01_Produktwissen\\referenz\\mobilfunk-sim.md",
+      "bytes": 8938
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\nfc-modul.md",
+      "to": "01_Produktwissen\\produkte\\nfc-modul.md",
+      "bytes": 17570
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\pro-finder.md",
+      "to": "01_Produktwissen\\produkte\\pro-finder.md",
+      "bytes": 22186
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\quellen-matrix.md",
+      "to": "01_Produktwissen\\_intern\\quellen-matrix.md",
+      "bytes": 10640
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\safe-lock-umruestplatine.md",
+      "to": "01_Produktwissen\\referenz\\safe-lock-umruestplatine.md",
+      "bytes": 5785
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\seriennummern-softwarestaende.md",
+      "to": "01_Produktwissen\\referenz\\seriennummern-softwarestaende.md",
+      "bytes": 20983
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\sirenen-hupen.md",
+      "to": "01_Produktwissen\\referenz\\sirenen-hupen.md",
+      "bytes": 7186
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\stoerungsbeseitigung.md",
+      "to": "01_Produktwissen\\referenz\\stoerungsbeseitigung.md",
+      "bytes": 16777
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\stromversorgung-standzeiten.md",
+      "to": "01_Produktwissen\\referenz\\stromversorgung-standzeiten.md",
+      "bytes": 3605
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\support-fallaufnahme.md",
+      "to": "01_Produktwissen\\_intern\\support-fallaufnahme.md",
+      "bytes": 7357
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\systemueberblick.md",
+      "to": "01_Produktwissen\\referenz\\systemueberblick.md",
+      "bytes": 9081
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\Tech. Doku\\funkstandards-und-schnittstellen.md",
+      "to": "01_Produktwissen\\_ohne-metadaten\\funkstandards-und-schnittstellen.md",
+      "bytes": 4423
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\Tech. Doku\\normen-und-richtlinien.md",
+      "to": "01_Produktwissen\\_ohne-metadaten\\normen-und-richtlinien.md",
+      "bytes": 5577
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\Tech. Doku\\uebersicht.md",
+      "to": "01_Produktwissen\\_ohne-metadaten\\uebersicht.md",
+      "bytes": 3297
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\terminologie-und-schreibweisen.md",
+      "to": "01_Produktwissen\\_intern\\terminologie-und-schreibweisen.md",
+      "bytes": 10779
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\uebersetzungs-glossar.md",
+      "to": "01_Produktwissen\\_intern\\uebersetzungs-glossar.md",
+      "bytes": 17086
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\vanlock-fingerprint.md",
+      "to": "01_Produktwissen\\produkte\\vanlock-fingerprint.md",
+      "bytes": 3563
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\vernetzungsmodul.md",
+      "to": "01_Produktwissen\\referenz\\vernetzungsmodul.md",
+      "bytes": 18405
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\werkseinbau-eckernfoerde.md",
+      "to": "01_Produktwissen\\_intern\\werkseinbau-eckernfoerde.md",
+      "bytes": 5135
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\wipro-iii.md",
+      "to": "01_Produktwissen\\produkte\\wipro-iii.md",
+      "bytes": 28112
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\zugang-bedienung.md",
+      "to": "01_Produktwissen\\referenz\\zugang-bedienung.md",
+      "bytes": 12823
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\zusatzsensor-gas-pro-iii.md",
+      "to": "01_Produktwissen\\referenz\\zusatzsensor-gas-pro-iii.md",
+      "bytes": 16437
+    },
+    {
+      "from": "Thitronik Online\\wiki\\de\\_index.md",
+      "to": "01_Produktwissen\\_ohne-metadaten\\_index.md",
+      "bytes": 6489
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\abschalteinrichtung.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\abschalteinrichtung.json",
+      "bytes": 26733
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\anlernvorgang.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\anlernvorgang.json",
+      "bytes": 34349
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\app-befehle.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\app-befehle.json",
+      "bytes": 45678
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\artikelnummern.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\artikelnummern.json",
+      "bytes": 53797
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\bt-connect.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\bt-connect.json",
+      "bytes": 42238
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\camplock-fingerprint.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\camplock-fingerprint.json",
+      "bytes": 13136
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\co-sensor.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\co-sensor.json",
+      "bytes": 47923
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\fahrzeugkompatibilitaet.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\fahrzeugkompatibilitaet.json",
+      "bytes": 50004
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\faq-master.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\faq-master.json",
+      "bytes": 58280
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\funk-handsender.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\funk-handsender.json",
+      "bytes": 27097
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\funk-kabelschleife.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\funk-kabelschleife.json",
+      "bytes": 32300
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\funk-magnetkontakt.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\funk-magnetkontakt.json",
+      "bytes": 46947
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\funk-rauchmelder.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\funk-rauchmelder.json",
+      "bytes": 48793
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\funk-wassermelder.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\funk-wassermelder.json",
+      "bytes": 49715
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\gas-connect.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\gas-connect.json",
+      "bytes": 60716
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\gas-plug.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\gas-plug.json",
+      "bytes": 44902
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\gas-pro-iii.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\gas-pro-iii.json",
+      "bytes": 81840
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\gas-pro.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\gas-pro.json",
+      "bytes": 61826
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\gas.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\gas.json",
+      "bytes": 44926
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\glossar.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\glossar.json",
+      "bytes": 68931
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\keycard.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\keycard.json",
+      "bytes": 11447
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\keystrap.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\keystrap.json",
+      "bytes": 11559
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\keytag.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\keytag.json",
+      "bytes": 11561
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\lernen-und-wissenschecks.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\lernen-und-wissenschecks.json",
+      "bytes": 10837
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\mobilfunk-sim.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\mobilfunk-sim.json",
+      "bytes": 25180
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\nfc-modul.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\nfc-modul.json",
+      "bytes": 52296
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\pro-finder.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\pro-finder.json",
+      "bytes": 66869
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\quellen-matrix.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\quellen-matrix.json",
+      "bytes": 41936
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\safe-lock-umruestplatine.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\safe-lock-umruestplatine.json",
+      "bytes": 19698
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\seriennummern-softwarestaende.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\seriennummern-softwarestaende.json",
+      "bytes": 75636
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\sirenen-hupen.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\sirenen-hupen.json",
+      "bytes": 26197
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\stoerungsbeseitigung.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\stoerungsbeseitigung.json",
+      "bytes": 52613
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\stromversorgung-standzeiten.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\stromversorgung-standzeiten.json",
+      "bytes": 13531
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\support-fallaufnahme.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\support-fallaufnahme.json",
+      "bytes": 14040
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\systemueberblick.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\systemueberblick.json",
+      "bytes": 35526
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\terminologie-und-schreibweisen.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\terminologie-und-schreibweisen.json",
+      "bytes": 21569
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\uebersetzungs-glossar.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\uebersetzungs-glossar.json",
+      "bytes": 35270
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\vanlock-fingerprint.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\vanlock-fingerprint.json",
+      "bytes": 13369
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\vernetzungsmodul.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\vernetzungsmodul.json",
+      "bytes": 55275
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\werkseinbau-eckernfoerde.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\werkseinbau-eckernfoerde.json",
+      "bytes": 10006
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\wipro-iii.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\wipro-iii.json",
+      "bytes": 86043
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\zugang-bedienung.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\zugang-bedienung.json",
+      "bytes": 43835
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\zusatzsensor-gas-pro-iii.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\zusatzsensor-gas-pro-iii.json",
+      "bytes": 48944
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\fahrzeuge\\adria-coral-matrix.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\fahrzeuge\\adria-coral-matrix.json",
+      "bytes": 22391
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\fahrzeuge\\fiat-ducato-2012-2021.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\fahrzeuge\\fiat-ducato-2012-2021.json",
+      "bytes": 40003
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\fahrzeuge\\fiat-ducato-2022-2024.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\fahrzeuge\\fiat-ducato-2022-2024.json",
+      "bytes": 37677
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\fahrzeuge\\fiat-ducato-2024plus.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\fahrzeuge\\fiat-ducato-2024plus.json",
+      "bytes": 35221
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\fahrzeuge\\fiat-ducato-244.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\fahrzeuge\\fiat-ducato-244.json",
+      "bytes": 37913
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\fahrzeuge\\fiat-ducato-x250.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\fahrzeuge\\fiat-ducato-x250.json",
+      "bytes": 40694
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\fahrzeuge\\fiat-talento.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\fahrzeuge\\fiat-talento.json",
+      "bytes": 42454
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\fahrzeuge\\ford-transit-2024plus.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\fahrzeuge\\ford-transit-2024plus.json",
+      "bytes": 46343
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\fahrzeuge\\ford-transit-6g.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\fahrzeuge\\ford-transit-6g.json",
+      "bytes": 52733
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\fahrzeuge\\ford-transit-7g-2014.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\fahrzeuge\\ford-transit-7g-2014.json",
+      "bytes": 55263
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\fahrzeuge\\ford-transit-7g-2016.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\fahrzeuge\\ford-transit-7g-2016.json",
+      "bytes": 47523
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\fahrzeuge\\ford-transit-7g-facelift.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\fahrzeuge\\ford-transit-7g-facelift.json",
+      "bytes": 61068
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\fahrzeuge\\iveco-daily-euro4.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\fahrzeuge\\iveco-daily-euro4.json",
+      "bytes": 34155
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\fahrzeuge\\iveco-daily-euro5.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\fahrzeuge\\iveco-daily-euro5.json",
+      "bytes": 51071
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\fahrzeuge\\mercedes-sprinter-ncv3.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\fahrzeuge\\mercedes-sprinter-ncv3.json",
+      "bytes": 48705
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\fahrzeuge\\mercedes-sprinter-t1n.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\fahrzeuge\\mercedes-sprinter-t1n.json",
+      "bytes": 40855
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\fahrzeuge\\mercedes-sprinter-vs30.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\fahrzeuge\\mercedes-sprinter-vs30.json",
+      "bytes": 68382
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\fahrzeuge\\mercedes-vito-w447.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\fahrzeuge\\mercedes-vito-w447.json",
+      "bytes": 61174
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\fahrzeuge\\renault-master-2019.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\fahrzeuge\\renault-master-2019.json",
+      "bytes": 39618
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\fahrzeuge\\renault-master-ii.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\fahrzeuge\\renault-master-ii.json",
+      "bytes": 46282
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\fahrzeuge\\renault-master-iii.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\fahrzeuge\\renault-master-iii.json",
+      "bytes": 60905
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\fahrzeuge\\renault-trafic-iii-2014.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\fahrzeuge\\renault-trafic-iii-2014.json",
+      "bytes": 42315
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\fahrzeuge\\renault-trafic-iii-2022.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\fahrzeuge\\renault-trafic-iii-2022.json",
+      "bytes": 47134
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\fahrzeuge\\universalanschluss.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\fahrzeuge\\universalanschluss.json",
+      "bytes": 41011
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\fahrzeuge\\vw-crafter-man-tge-2017.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\fahrzeuge\\vw-crafter-man-tge-2017.json",
+      "bytes": 52756
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\fahrzeuge\\vw-crafter-man-tge-2025.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\fahrzeuge\\vw-crafter-man-tge-2025.json",
+      "bytes": 34244
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\fahrzeuge\\vw-t5-facelift.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\fahrzeuge\\vw-t5-facelift.json",
+      "bytes": 40433
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\fahrzeuge\\vw-t5.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\fahrzeuge\\vw-t5.json",
+      "bytes": 41488
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\fahrzeuge\\vw-t6-1.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\fahrzeuge\\vw-t6-1.json",
+      "bytes": 45739
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\fahrzeuge\\vw-t6.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\fahrzeuge\\vw-t6.json",
+      "bytes": 45943
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\tech-doku\\funkstandards-und-schnittstellen.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\tech-doku\\funkstandards-und-schnittstellen.json",
+      "bytes": 15974
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\tech-doku\\normen-und-richtlinien.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\tech-doku\\normen-und-richtlinien.json",
+      "bytes": 20488
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\tech-doku\\uebersicht.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\tech-doku\\uebersicht.json",
+      "bytes": 11960
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\intern\\rag-funkzubehoer-sicherheit.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\intern\\rag-funkzubehoer-sicherheit.json",
+      "bytes": 84964
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\intern\\rag-gas-und-sensorik.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\intern\\rag-gas-und-sensorik.json",
+      "bytes": 73048
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\intern\\rag-konnektivitaet-und-abschaltung.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\intern\\rag-konnektivitaet-und-abschaltung.json",
+      "bytes": 39414
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\intern\\rag-pro-finder-app.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\intern\\rag-pro-finder-app.json",
+      "bytes": 39009
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\intern\\rag-service-faq-und-reisefuehrer.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\intern\\rag-service-faq-und-reisefuehrer.json",
+      "bytes": 30248
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-articles\\de\\intern\\rag-wipro-safe-lock.json",
+      "to": "01_Produktwissen\\daten\\artikel-html\\intern\\rag-wipro-safe-lock.json",
+      "bytes": 56011
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\glossary.json",
+      "to": "01_Produktwissen\\daten\\glossary.json",
+      "bytes": 499307
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\wiki-index.json",
+      "to": "01_Produktwissen\\daten\\wiki-index.json",
+      "bytes": 383568
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\dealer-quizzes.de.json",
+      "to": "01_Produktwissen\\daten\\dealer-quizzes.de.json",
+      "bytes": 216177
+    },
+    {
+      "from": "Thitronik Online\\project-data\\runtime\\wiki\\anleitungen-index.json",
+      "to": "01_Produktwissen\\daten\\anleitungen-index.json",
+      "bytes": 19444
+    },
+    {
+      "from": "Thitronik Online\\docs\\DESIGN_UX_CONTRACT.md",
+      "to": "02_Design-System\\quellen\\DESIGN_UX_CONTRACT.md",
+      "bytes": 4304
+    },
+    {
+      "from": "Thitronik Online\\docs\\VISUAL_REFERENCE_LOCK.md",
+      "to": "02_Design-System\\quellen\\VISUAL_REFERENCE_LOCK.md",
+      "bytes": 2470
+    },
+    {
+      "from": "Thitronik Online\\docs\\ASSET_MAPPING_GUIDE.md",
+      "to": "02_Design-System\\quellen\\ASSET_MAPPING_GUIDE.md",
+      "bytes": 3997
+    },
+    {
+      "from": "Thitronik Online\\Design_Thitronik_Wiki.md",
+      "to": "02_Design-System\\quellen\\Design_Thitronik_Wiki.md",
+      "bytes": 7174
+    },
+    {
+      "from": "Thitronik Online\\Produkte\\Abschalteinrichtungen (ein- und mehrpolig).png",
+      "to": "03_Medien\\produkte\\Abschalteinrichtungen (ein- und mehrpolig).png",
+      "bytes": 2423250
+    },
+    {
+      "from": "Thitronik Online\\Produkte\\APP.png",
+      "to": "03_Medien\\produkte\\APP.png",
+      "bytes": 1373772
+    },
+    {
+      "from": "Thitronik Online\\Produkte\\Backup-Sirene.png",
+      "to": "03_Medien\\produkte\\Backup-Sirene.png",
+      "bytes": 1690596
+    },
+    {
+      "from": "Thitronik Online\\Produkte\\BT-connect.png",
+      "to": "03_Medien\\produkte\\BT-connect.png",
+      "bytes": 1975605
+    },
+    {
+      "from": "Thitronik Online\\Produkte\\CampLock Fingerprint.png",
+      "to": "03_Medien\\produkte\\CampLock Fingerprint.png",
+      "bytes": 2155857
+    },
+    {
+      "from": "Thitronik Online\\Produkte\\CO-Sensor für G.A.S.-pro und G.A.S.-pro III.png",
+      "to": "03_Medien\\produkte\\CO-Sensor für G.A.S.-pro und G.A.S.-pro III.png",
+      "bytes": 1744662
+    },
+    {
+      "from": "Thitronik Online\\Produkte\\Externe GSM-Antenne 2G,3G,4G.png",
+      "to": "03_Medien\\produkte\\Externe GSM-Antenne 2G,3G,4G.png",
+      "bytes": 1561020
+    },
+    {
+      "from": "Thitronik Online\\Produkte\\Funk-Handsender 868.png",
+      "to": "03_Medien\\produkte\\Funk-Handsender 868.png",
+      "bytes": 1751580
+    },
+    {
+      "from": "Thitronik Online\\Produkte\\Funk-Kabelschleife 868.png",
+      "to": "03_Medien\\produkte\\Funk-Kabelschleife 868.png",
+      "bytes": 2293413
+    },
+    {
+      "from": "Thitronik Online\\Produkte\\Funk-Magnetkontakt 868 wasserdicht.png",
+      "to": "03_Medien\\produkte\\Funk-Magnetkontakt 868 wasserdicht.png",
+      "bytes": 2306689
+    },
+    {
+      "from": "Thitronik Online\\Produkte\\Funk-Magnetkontakt 868.png",
+      "to": "03_Medien\\produkte\\Funk-Magnetkontakt 868.png",
+      "bytes": 2449496
+    },
+    {
+      "from": "Thitronik Online\\Produkte\\Funk-Wassermelder 868.png",
+      "to": "03_Medien\\produkte\\Funk-Wassermelder 868.png",
+      "bytes": 2132435
+    },
+    {
+      "from": "Thitronik Online\\Produkte\\G.A.S.-connect.png",
+      "to": "03_Medien\\produkte\\G.A.S.-connect.png",
+      "bytes": 2260478
+    },
+    {
+      "from": "Thitronik Online\\Produkte\\G.A.S.-plug „all in one“.png",
+      "to": "03_Medien\\produkte\\G.A.S.-plug „all in one“.png",
+      "bytes": 2360592
+    },
+    {
+      "from": "Thitronik Online\\Produkte\\G.A.S.-pro.png",
+      "to": "03_Medien\\produkte\\G.A.S.-pro.png",
+      "bytes": 2420145
+    },
+    {
+      "from": "Thitronik Online\\Produkte\\G.A.S.png",
+      "to": "03_Medien\\produkte\\G.A.S.png",
+      "bytes": 2354397
+    },
+    {
+      "from": "Thitronik Online\\Produkte\\Gas.pro III.png",
+      "to": "03_Medien\\produkte\\Gas.pro III.png",
+      "bytes": 2344343
+    },
+    {
+      "from": "Thitronik Online\\Produkte\\GPS-pro.png",
+      "to": "03_Medien\\produkte\\GPS-pro.png",
+      "bytes": 2343401
+    },
+    {
+      "from": "Thitronik Online\\Produkte\\KeyCard.png",
+      "to": "03_Medien\\produkte\\KeyCard.png",
+      "bytes": 1480724
+    },
+    {
+      "from": "Thitronik Online\\Produkte\\KeyStrap.png",
+      "to": "03_Medien\\produkte\\KeyStrap.png",
+      "bytes": 2278081
+    },
+    {
+      "from": "Thitronik Online\\Produkte\\KeyTag.png",
+      "to": "03_Medien\\produkte\\KeyTag.png",
+      "bytes": 2370188
+    },
+    {
+      "from": "Thitronik Online\\Produkte\\Montageadapter für T.S.A..png",
+      "to": "03_Medien\\produkte\\Montageadapter für T.S.A..png",
+      "bytes": 2267514
+    },
+    {
+      "from": "Thitronik Online\\Produkte\\Montageadapter.png",
+      "to": "03_Medien\\produkte\\Montageadapter.png",
+      "bytes": 2589047
+    },
+    {
+      "from": "Thitronik Online\\Produkte\\NFC Modul.png",
+      "to": "03_Medien\\produkte\\NFC Modul.png",
+      "bytes": 2232689
+    },
+    {
+      "from": "Thitronik Online\\Produkte\\profinder.png",
+      "to": "03_Medien\\produkte\\profinder.png",
+      "bytes": 2260299
+    },
+    {
+      "from": "Thitronik Online\\Produkte\\safe.lock Umrüstplatine.png",
+      "to": "03_Medien\\produkte\\safe.lock Umrüstplatine.png",
+      "bytes": 2650788
+    },
+    {
+      "from": "Thitronik Online\\Produkte\\T.S.A. Funk-Rauchmelder.png",
+      "to": "03_Medien\\produkte\\T.S.A. Funk-Rauchmelder.png",
+      "bytes": 1519654
+    },
+    {
+      "from": "Thitronik Online\\Produkte\\VanLock Fingerprint.png",
+      "to": "03_Medien\\produkte\\VanLock Fingerprint.png",
+      "bytes": 2169000
+    },
+    {
+      "from": "Thitronik Online\\Produkte\\wipro III. safelock.png",
+      "to": "03_Medien\\produkte\\wipro III. safelock.png",
+      "bytes": 1426298
+    },
+    {
+      "from": "Thitronik Online\\Produkte\\Wipro III.png",
+      "to": "03_Medien\\produkte\\Wipro III.png",
+      "bytes": 2334474
+    },
+    {
+      "from": "Thitronik Online\\Produkte\\Zusatzhupe.png",
+      "to": "03_Medien\\produkte\\Zusatzhupe.png",
+      "bytes": 1742901
+    },
+    {
+      "from": "Thitronik Online\\Produkte\\Zusatzsensor für G.A.S.-pro III.png",
+      "to": "03_Medien\\produkte\\Zusatzsensor für G.A.S.-pro III.png",
+      "bytes": 1318973
+    },
+    {
+      "from": "Thitronik Online\\Produkte\\Zusatzsensor für G.A.S.-pro.png",
+      "to": "03_Medien\\produkte\\Zusatzsensor für G.A.S.-pro.png",
+      "bytes": 1512663
+    },
+    {
+      "from": "Thitronik Online\\Produkte\\Zusatzsirene.png",
+      "to": "03_Medien\\produkte\\Zusatzsirene.png",
+      "bytes": 1553795
+    },
+    {
+      "from": "Thitronik Online\\Fahrzeuge\\Fiat Ducato.jpg",
+      "to": "03_Medien\\fahrzeuge\\Fiat Ducato.jpg",
+      "bytes": 205583
+    },
+    {
+      "from": "Thitronik Online\\Fahrzeuge\\Ford transit.png",
+      "to": "03_Medien\\fahrzeuge\\Ford transit.png",
+      "bytes": 2062876
+    },
+    {
+      "from": "Thitronik Online\\Fahrzeuge\\iveco daily.webp",
+      "to": "03_Medien\\fahrzeuge\\iveco daily.webp",
+      "bytes": 103188
+    },
+    {
+      "from": "Thitronik Online\\Fahrzeuge\\mercedes Benz Vito.avif",
+      "to": "03_Medien\\fahrzeuge\\mercedes Benz Vito.avif",
+      "bytes": 44004
+    },
+    {
+      "from": "Thitronik Online\\Fahrzeuge\\Mercedes Benz.avif",
+      "to": "03_Medien\\fahrzeuge\\Mercedes Benz.avif",
+      "bytes": 58086
+    },
+    {
+      "from": "Thitronik Online\\Fahrzeuge\\opel movano.jpg",
+      "to": "03_Medien\\fahrzeuge\\opel movano.jpg",
+      "bytes": 161246
+    },
+    {
+      "from": "Thitronik Online\\Fahrzeuge\\renault master.webp",
+      "to": "03_Medien\\fahrzeuge\\renault master.webp",
+      "bytes": 94068
+    },
+    {
+      "from": "Thitronik Online\\Fahrzeuge\\vw crafter.jpg",
+      "to": "03_Medien\\fahrzeuge\\vw crafter.jpg",
+      "bytes": 187506
+    },
+    {
+      "from": "Thitronik Online\\Fahrzeuge\\vw crafter.png",
+      "to": "03_Medien\\fahrzeuge\\vw crafter.png",
+      "bytes": 2153935
+    },
+    {
+      "from": "Thitronik Online\\Fahrzeuge\\vw t5.jpg",
+      "to": "03_Medien\\fahrzeuge\\vw t5.jpg",
+      "bytes": 152312
+    },
+    {
+      "from": "Thitronik Online\\Fahrzeuge\\vw t6.webp",
+      "to": "03_Medien\\fahrzeuge\\vw t6.webp",
+      "bytes": 83060
+    },
+    {
+      "from": "Thitronik Online\\CI\\Alarm lautstärke.png",
+      "to": "03_Medien\\ci\\Alarm lautstärke.png",
+      "bytes": 2581
+    },
+    {
+      "from": "Thitronik Online\\CI\\App Logo.jpg",
+      "to": "03_Medien\\ci\\App Logo.jpg",
+      "bytes": 6604
+    },
+    {
+      "from": "Thitronik Online\\CI\\Aufkleber.png",
+      "to": "03_Medien\\ci\\Aufkleber.png",
+      "bytes": 719715
+    },
+    {
+      "from": "Thitronik Online\\CI\\easy add.png",
+      "to": "03_Medien\\ci\\easy add.png",
+      "bytes": 2246
+    },
+    {
+      "from": "Thitronik Online\\CI\\Icon 2g,3g,4g.png",
+      "to": "03_Medien\\ci\\Icon 2g,3g,4g.png",
+      "bytes": 1877
+    },
+    {
+      "from": "Thitronik Online\\CI\\Icon App Control.png",
+      "to": "03_Medien\\ci\\Icon App Control.png",
+      "bytes": 2221
+    },
+    {
+      "from": "Thitronik Online\\CI\\icon Batterie.png",
+      "to": "03_Medien\\ci\\icon Batterie.png",
+      "bytes": 1861
+    },
+    {
+      "from": "Thitronik Online\\CI\\icon Butangas.png",
+      "to": "03_Medien\\ci\\icon Butangas.png",
+      "bytes": 2187
+    },
+    {
+      "from": "Thitronik Online\\CI\\icon Can-Bus.png",
+      "to": "03_Medien\\ci\\icon Can-Bus.png",
+      "bytes": 2240
+    },
+    {
+      "from": "Thitronik Online\\CI\\Icon ECE R10.png",
+      "to": "03_Medien\\ci\\Icon ECE R10.png",
+      "bytes": 2401
+    },
+    {
+      "from": "Thitronik Online\\CI\\icon Fahrzeugortung.png",
+      "to": "03_Medien\\ci\\icon Fahrzeugortung.png",
+      "bytes": 2951
+    },
+    {
+      "from": "Thitronik Online\\CI\\Icon Fahrzeugstilllegen.png",
+      "to": "03_Medien\\ci\\Icon Fahrzeugstilllegen.png",
+      "bytes": 2419
+    },
+    {
+      "from": "Thitronik Online\\CI\\icon Funk.png",
+      "to": "03_Medien\\ci\\icon Funk.png",
+      "bytes": 2585
+    },
+    {
+      "from": "Thitronik Online\\CI\\Icon Geofencing.png",
+      "to": "03_Medien\\ci\\Icon Geofencing.png",
+      "bytes": 2918
+    },
+    {
+      "from": "Thitronik Online\\CI\\Icon GPS.png",
+      "to": "03_Medien\\ci\\Icon GPS.png",
+      "bytes": 2514
+    },
+    {
+      "from": "Thitronik Online\\CI\\icon KO-Gas.png",
+      "to": "03_Medien\\ci\\icon KO-Gas.png",
+      "bytes": 2123
+    },
+    {
+      "from": "Thitronik Online\\CI\\icon Kohlenmonoxid.png",
+      "to": "03_Medien\\ci\\icon Kohlenmonoxid.png",
+      "bytes": 2227
+    },
+    {
+      "from": "Thitronik Online\\CI\\icon Propangas.png",
+      "to": "03_Medien\\ci\\icon Propangas.png",
+      "bytes": 2147
+    },
+    {
+      "from": "Thitronik Online\\CI\\icon.safe.lock.png",
+      "to": "03_Medien\\ci\\icon.safe.lock.png",
+      "bytes": 57882
+    },
+    {
+      "from": "Thitronik Online\\CI\\Logo Classic.png",
+      "to": "03_Medien\\ci\\Logo Classic.png",
+      "bytes": 165378
+    },
+    {
+      "from": "Thitronik Online\\CI\\Logo White.png",
+      "to": "03_Medien\\ci\\Logo White.png",
+      "bytes": 104935
+    },
+    {
+      "from": "Thitronik Online\\CI\\thitronik_Wallpaper.jpg",
+      "to": "03_Medien\\ci\\thitronik_Wallpaper.jpg",
+      "bytes": 59446
+    },
+    {
+      "from": "Thitronik Online\\CI\\Wallpaper.webp",
+      "to": "03_Medien\\ci\\Wallpaper.webp",
+      "bytes": 91206
+    },
+    {
+      "from": "Thitronik Online\\Firma\\Eckernförde Wallpaper.jpg",
+      "to": "03_Medien\\firma\\Eckernförde Wallpaper.jpg",
+      "bytes": 486381
+    },
+    {
+      "from": "Thitronik Online\\Firma\\Firmen Gelände Thitronik.webp",
+      "to": "03_Medien\\firma\\Firmen Gelände Thitronik.webp",
+      "bytes": 4272720
+    },
+    {
+      "from": "Thitronik Online\\Firma\\philospohie-heimatverbunden.webp",
+      "to": "03_Medien\\firma\\philospohie-heimatverbunden.webp",
+      "bytes": 179012
+    },
+    {
+      "from": "Thitronik Online\\Firma\\Wir sind Kompromislos.jpg",
+      "to": "03_Medien\\firma\\Wir sind Kompromislos.jpg",
+      "bytes": 202385
+    },
+    {
+      "from": "Thitronik Online\\Firma\\Wir sind Techies.jpg",
+      "to": "03_Medien\\firma\\Wir sind Techies.jpg",
+      "bytes": 95506
+    },
+    {
+      "from": "Thitronik Online\\Bilder und mehr\\Logo Wohnmobil Marken\\carado.jpg",
+      "to": "03_Medien\\wohnmobil-marken\\carado.jpg",
+      "bytes": 36920
+    },
+    {
+      "from": "Thitronik Online\\Bilder und mehr\\Logo Wohnmobil Marken\\concorde.JPG",
+      "to": "03_Medien\\wohnmobil-marken\\concorde.JPG",
+      "bytes": 73227
+    },
+    {
+      "from": "Thitronik Online\\Bilder und mehr\\Logo Wohnmobil Marken\\dethleffs.jpg",
+      "to": "03_Medien\\wohnmobil-marken\\dethleffs.jpg",
+      "bytes": 12317
+    },
+    {
+      "from": "Thitronik Online\\Bilder und mehr\\Logo Wohnmobil Marken\\hobby.jpg",
+      "to": "03_Medien\\wohnmobil-marken\\hobby.jpg",
+      "bytes": 84877
+    },
+    {
+      "from": "Thitronik Online\\Bilder und mehr\\Logo Wohnmobil Marken\\Kompanja Logo.avif",
+      "to": "03_Medien\\wohnmobil-marken\\Kompanja Logo.avif",
+      "bytes": 2871
+    },
+    {
+      "from": "Thitronik Online\\Bilder und mehr\\Logo Wohnmobil Marken\\la-strada_logo.jpeg",
+      "to": "03_Medien\\wohnmobil-marken\\la-strada_logo.jpeg",
+      "bytes": 44503
+    },
+    {
+      "from": "Thitronik Online\\Bilder und mehr\\Logo Wohnmobil Marken\\robeta.webp",
+      "to": "03_Medien\\wohnmobil-marken\\robeta.webp",
+      "bytes": 80236
+    },
+    {
+      "from": "Thitronik Online\\Bilder und mehr\\Logo Wohnmobil Marken\\wohnmobil-aufkleber-hymer.jpg",
+      "to": "03_Medien\\wohnmobil-marken\\wohnmobil-aufkleber-hymer.jpg",
+      "bytes": 8624
+    },
+    {
+      "from": "Thitronik Online\\Bilder und mehr\\Bilder\\Allgemeine Fragen.jpg",
+      "to": "03_Medien\\themenbilder\\Allgemeine Fragen.jpg",
+      "bytes": 241941
+    },
+    {
+      "from": "Thitronik Online\\Bilder und mehr\\Bilder\\Anlernen.jpg",
+      "to": "03_Medien\\themenbilder\\Anlernen.jpg",
+      "bytes": 169998
+    },
+    {
+      "from": "Thitronik Online\\Bilder und mehr\\Bilder\\Canbus.jpg",
+      "to": "03_Medien\\themenbilder\\Canbus.jpg",
+      "bytes": 145651
+    },
+    {
+      "from": "Thitronik Online\\Bilder und mehr\\Bilder\\fahrzeugübergabe.jpg",
+      "to": "03_Medien\\themenbilder\\fahrzeugübergabe.jpg",
+      "bytes": 168717
+    },
+    {
+      "from": "Thitronik Online\\Bilder und mehr\\Bilder\\fehlersuche.jpg",
+      "to": "03_Medien\\themenbilder\\fehlersuche.jpg",
+      "bytes": 218137
+    },
+    {
+      "from": "Thitronik Online\\Bilder und mehr\\Bilder\\fehlersuche1.jpg",
+      "to": "03_Medien\\themenbilder\\fehlersuche1.jpg",
+      "bytes": 101189
+    },
+    {
+      "from": "Thitronik Online\\Bilder und mehr\\Bilder\\Funkstandards.webp",
+      "to": "03_Medien\\themenbilder\\Funkstandards.webp",
+      "bytes": 145140
+    },
+    {
+      "from": "Thitronik Online\\Bilder und mehr\\Bilder\\Gelverbinder.jpg",
+      "to": "03_Medien\\themenbilder\\Gelverbinder.jpg",
+      "bytes": 169470
+    },
+    {
+      "from": "Thitronik Online\\Bilder und mehr\\Bilder\\Grundlagen.jpg",
+      "to": "03_Medien\\themenbilder\\Grundlagen.jpg",
+      "bytes": 142329
+    },
+    {
+      "from": "Thitronik Online\\Bilder und mehr\\Bilder\\hintergrund lightmode.png",
+      "to": "03_Medien\\themenbilder\\hintergrund lightmode.png",
+      "bytes": 4552581
+    },
+    {
+      "from": "Thitronik Online\\Bilder und mehr\\Bilder\\Konfigurator.png",
+      "to": "03_Medien\\themenbilder\\Konfigurator.png",
+      "bytes": 84731
+    },
+    {
+      "from": "Thitronik Online\\Bilder und mehr\\Bilder\\Systemübersicht.webp",
+      "to": "03_Medien\\themenbilder\\Systemübersicht.webp",
+      "bytes": 128790
+    },
+    {
+      "from": "Thitronik Online\\Bilder und mehr\\Bilder\\Testfragen.jpg",
+      "to": "03_Medien\\themenbilder\\Testfragen.jpg",
+      "bytes": 78768
+    },
+    {
+      "from": "Thitronik Online\\Alarmtöne\\alarm.mp3",
+      "to": "03_Medien\\alarmtoene\\alarm.mp3",
+      "bytes": 99954
+    },
+    {
+      "from": "Thitronik Online\\Alarmtöne\\anlernmodus.mp3",
+      "to": "03_Medien\\alarmtoene\\anlernmodus.mp3",
+      "bytes": 95572
+    },
+    {
+      "from": "Thitronik Online\\Alarmtöne\\anlernvorgang-aus.mp3",
+      "to": "03_Medien\\alarmtoene\\anlernvorgang-aus.mp3",
+      "bytes": 99954
+    },
+    {
+      "from": "Thitronik Online\\Alarmtöne\\batterie-leer.mp3",
+      "to": "03_Medien\\alarmtoene\\batterie-leer.mp3",
+      "bytes": 95572
+    },
+    {
+      "from": "Thitronik Online\\Alarmtöne\\gas-alarm.mp3",
+      "to": "03_Medien\\alarmtoene\\gas-alarm.mp3",
+      "bytes": 99954
+    },
+    {
+      "from": "Thitronik Online\\Alarmtöne\\nicht-anlernen.mp3",
+      "to": "03_Medien\\alarmtoene\\nicht-anlernen.mp3",
+      "bytes": 95572
+    },
+    {
+      "from": "Thitronik Online\\Alarmtöne\\offen-meldung.mp3",
+      "to": "03_Medien\\alarmtoene\\offen-meldung.mp3",
+      "bytes": 99954
+    },
+    {
+      "from": "Thitronik Online\\Alarmtöne\\scharf.mp3",
+      "to": "03_Medien\\alarmtoene\\scharf.mp3",
+      "bytes": 95572
+    },
+    {
+      "from": "Thitronik Online\\Alarmtöne\\unscharf.mp3",
+      "to": "03_Medien\\alarmtoene\\unscharf.mp3",
+      "bytes": 95572
+    },
+    {
+      "from": "Thitronik Online\\Alarmtöne\\vent-check_kontakt_offen_unscharf.mp3",
+      "to": "03_Medien\\alarmtoene\\vent-check_kontakt_offen_unscharf.mp3",
+      "bytes": 85556
+    },
+    {
+      "from": "Thitronik Online\\Alarmtöne\\verriegeln_nicht_ausgefuehrt_aussperrgefahr.mp3",
+      "to": "03_Medien\\alarmtoene\\verriegeln_nicht_ausgefuehrt_aussperrgefahr.mp3",
+      "bytes": 38077
+    },
+    {
+      "from": "Thitronik Online\\docs\\QUIZ_SYSTEMS.md",
+      "to": "04_Campus-Konzept\\quellen\\QUIZ_SYSTEMS.md",
+      "bytes": 6389
+    },
+    {
+      "from": "Thitronik Online\\docs\\DEALER_TRAINING_QUIZ_BLUEPRINT.md",
+      "to": "04_Campus-Konzept\\quellen\\DEALER_TRAINING_QUIZ_BLUEPRINT.md",
+      "bytes": 2941
+    },
+    {
+      "from": "Thitronik Online\\docs\\CONTENT_MODEL.md",
+      "to": "04_Campus-Konzept\\quellen\\CONTENT_MODEL.md",
+      "bytes": 9282
+    },
+    {
+      "from": "Thitronik Online\\docs\\HYPERLINKING_STRATEGY.md",
+      "to": "04_Campus-Konzept\\quellen\\HYPERLINKING_STRATEGY.md",
+      "bytes": 4030
+    }
+  ]
+}

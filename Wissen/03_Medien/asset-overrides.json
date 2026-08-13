@@ -1,0 +1,253 @@
+{
+  "wiki/de/wipro-iii.md": {
+    "primaryImage": "Produkte/Wipro III.png",
+    "relatedAssets": [
+      "Produkte/wipro III. safelock.png",
+      "CI/icon Can-Bus.png",
+      "CI/icon Funk.png",
+      "Alarmtöne/alarm.mp3",
+      "Alarmtöne/scharf.mp3",
+      "Alarmtöne/unscharf.mp3"
+    ]
+  },
+  "wiki/de/pro-finder.md": {
+    "primaryImage": "Produkte/profinder.png",
+    "relatedAssets": [
+      "Produkte/GPS-pro.png",
+      "Produkte/Externe GSM-Antenne 2G,3G,4G.png",
+      "CI/Icon GPS.png",
+      "CI/Icon Geofencing.png",
+      "CI/Icon Fahrzeugortung.png",
+      "CI/Icon Fahrzeugstilllegen.png"
+    ]
+  },
+  "wiki/de/gas-pro-iii.md": {
+    "primaryImage": "Produkte/Gas.pro III.png",
+    "relatedAssets": [
+      "Produkte/Zusatzsensor für G.A.S.-pro III.png",
+      "Produkte/CO-Sensor für G.A.S.-pro und G.A.S.-pro III.png",
+      "CI/icon Propangas.png",
+      "CI/icon Butangas.png",
+      "CI/icon Kohlenmonoxid.png",
+      "Alarmtöne/gas-alarm.mp3"
+    ]
+  },
+  "wiki/de/gas-pro.md": {
+    "primaryImage": "Produkte/G.A.S.-pro.png",
+    "relatedAssets": [
+      "Produkte/G.A.S.png",
+      "Produkte/Zusatzsensor für G.A.S.-pro.png",
+      "CI/icon Propangas.png",
+      "CI/icon Butangas.png",
+      "Alarmtöne/gas-alarm.mp3"
+    ]
+  },
+  "wiki/de/gas-plug.md": {
+    "primaryImage": "Produkte/G.A.S.-plug „all in one“.png",
+    "relatedAssets": [
+      "CI/icon Propangas.png",
+      "CI/icon Butangas.png",
+      "Alarmtöne/gas-alarm.mp3"
+    ]
+  },
+  "wiki/de/gas-connect.md": {
+    "primaryImage": "Produkte/G.A.S.-connect.png",
+    "relatedAssets": [
+      "CI/icon Funk.png",
+      "CI/icon Propangas.png",
+      "CI/icon Butangas.png",
+      "Alarmtöne/gas-alarm.mp3"
+    ]
+  },
+  "wiki/de/bt-connect.md": {
+    "primaryImage": "Produkte/BT-connect.png",
+    "relatedAssets": [
+      "CI/Icon App Control.png",
+      "Produkte/APP.png"
+    ]
+  },
+  "wiki/de/vernetzungsmodul.md": {
+    "primaryImage": "Produkte/BT-connect.png",
+    "relatedAssets": [
+      "Produkte/APP.png",
+      "CI/Icon App Control.png"
+    ]
+  },
+  "wiki/de/nfc-modul.md": {
+    "primaryImage": "Produkte/NFC Modul.png",
+    "relatedAssets": [
+      "Produkte/KeyCard.png",
+      "Produkte/KeyStrap.png",
+      "Produkte/KeyTag.png"
+    ]
+  },
+  "wiki/de/funk-magnetkontakt.md": {
+    "primaryImage": "Produkte/Funk-Magnetkontakt 868.png",
+    "relatedAssets": [
+      "Produkte/Funk-Magnetkontakt 868 wasserdicht.png",
+      "CI/icon Funk.png",
+      "Alarmtöne/batterie-leer.mp3",
+      "Produkte/Montageadapter.png"
+    ]
+  },
+  "wiki/de/funk-handsender.md": {
+    "primaryImage": "Produkte/Funk-Handsender 868.png",
+    "relatedAssets": [
+      "CI/icon Funk.png",
+      "Alarmtöne/scharf.mp3",
+      "Alarmtöne/unscharf.mp3"
+    ]
+  },
+  "wiki/de/funk-kabelschleife.md": {
+    "primaryImage": "Produkte/Funk-Kabelschleife 868.png",
+    "relatedAssets": [
+      "CI/icon Funk.png"
+    ]
+  },
+  "wiki/de/funk-rauchmelder.md": {
+    "primaryImage": "Produkte/T.S.A. Funk-Rauchmelder.png",
+    "relatedAssets": [
+      "Produkte/Montageadapter für T.S.A..png",
+      "CI/icon Funk.png",
+      "Alarmtöne/alarm.mp3"
+    ]
+  },
+  "wiki/de/funk-wassermelder.md": {
+    "primaryImage": "Produkte/Funk-Wassermelder 868.png",
+    "relatedAssets": [
+      "CI/icon Funk.png"
+    ]
+  },
+  "wiki/de/safe-lock-umruestplatine.md": {
+    "primaryImage": "Produkte/safe.lock Umrüstplatine.png",
+    "relatedAssets": [
+      "CI/icon.safe.lock.png",
+      "Produkte/wipro III. safelock.png"
+    ]
+  },
+  "wiki/de/abschalteinrichtung.md": {
+    "primaryImage": "Produkte/Abschalteinrichtungen (ein- und mehrpolig).png",
+    "relatedAssets": [
+      "CI/Icon Fahrzeugstilllegen.png",
+      "Produkte/profinder.png"
+    ]
+  },
+  "wiki/de/sirenen-hupen.md": {
+    "primaryImage": "Produkte/Backup-Sirene.png",
+    "relatedAssets": [
+      "Produkte/Zusatzsirene.png",
+      "Produkte/Zusatzhupe.png",
+      "Alarmtöne/alarm.mp3",
+      "Alarmtöne/gas-alarm.mp3"
+    ]
+  },
+  "wiki/de/anlernvorgang.md": {
+    "primaryImage": "Bilder und mehr/Bilder/Anlernen.jpg",
+    "relatedAssets": [
+      "Alarmtöne/anlernmodus.mp3",
+      "Alarmtöne/anlernvorgang-aus.mp3",
+      "Alarmtöne/nicht-anlernen.mp3"
+    ]
+  },
+  "wiki/de/stoerungsbeseitigung.md": {
+    "primaryImage": "Bilder und mehr/Bilder/fehlersuche.jpg",
+    "relatedAssets": [
+      "Bilder und mehr/Bilder/fehlersuche1.jpg",
+      "Bilder und mehr/Bilder/Gelverbinder.jpg"
+    ]
+  },
+  "wiki/de/systemueberblick.md": {
+    "primaryImage": "Bilder und mehr/Bilder/Systemübersicht.webp",
+    "relatedAssets": [
+      "CI/Logo Classic.png",
+      "CI/Logo White.png"
+    ]
+  },
+  "wiki/de/Tech. Doku/funkstandards-und-schnittstellen.md": {
+    "primaryImage": "Bilder und mehr/Bilder/Funkstandards.webp"
+  },
+  "wiki/de/fahrzeuge/universalanschluss.md": {
+    "primaryImage": "Bilder und mehr/Bilder/Canbus.jpg",
+    "relatedAssets": [
+      "CI/icon Can-Bus.png"
+    ]
+  },
+  "wiki/de/fahrzeuge/adria-coral-matrix.md": {
+    "primaryImage": "Fahrzeuge/Fiat Ducato.jpg",
+    "relatedAssets": [
+      "Bilder und mehr/Logo Wohnmobil Marken/dethleffs.jpg",
+      "Bilder und mehr/Logo Wohnmobil Marken/hobby.jpg"
+    ]
+  },
+  "wiki/de/fahrzeuge/fiat-ducato-2022-2024.md": {
+    "primaryImage": "Fahrzeuge/Fiat Ducato.jpg"
+  },
+  "wiki/de/fahrzeuge/ford-transit-7g-facelift.md": {
+    "primaryImage": "Fahrzeuge/Ford transit.png"
+  },
+  "wiki/de/fahrzeuge/mercedes-sprinter-vs30.md": {
+    "primaryImage": "Fahrzeuge/Mercedes Benz.avif"
+  },
+  "wiki/de/fahrzeuge/mercedes-vito-w447.md": {
+    "primaryImage": "Fahrzeuge/mercedes Benz Vito.avif"
+  },
+  "wiki/de/fahrzeuge/iveco-daily-euro5.md": {
+    "primaryImage": "Fahrzeuge/iveco daily.webp"
+  },
+  "wiki/de/fahrzeuge/renault-master-iii.md": {
+    "primaryImage": "Fahrzeuge/renault master.webp"
+  },
+  "wiki/de/fahrzeuge/vw-crafter-man-tge-2017.md": {
+    "primaryImage": "Fahrzeuge/vw crafter.png"
+  },
+  "wiki/de/fahrzeuge/vw-t5.md": {
+    "primaryImage": "Fahrzeuge/vw t5.jpg"
+  },
+  "wiki/de/fahrzeuge/vw-t6.md": {
+    "primaryImage": "Fahrzeuge/vw t6.webp"
+  },
+  "wiki/de/co-sensor.md": {
+    "primaryImage": "Produkte/GPS-pro.png"
+  },
+  "wiki/de/zusatzsensor-gas-pro-iii.md": {
+    "primaryImage": "Produkte/Zusatzsensor für G.A.S.-pro.png"
+  },
+  "wiki/de/keycard.md": {
+    "primaryImage": "Produkte/KeyCard.png",
+    "relatedAssets": [
+      "Produkte/NFC Modul.png",
+      "Produkte/KeyTag.png",
+      "Produkte/KeyStrap.png"
+    ]
+  },
+  "wiki/de/keytag.md": {
+    "primaryImage": "Produkte/KeyTag.png",
+    "relatedAssets": [
+      "Produkte/NFC Modul.png",
+      "Produkte/KeyCard.png",
+      "Produkte/KeyStrap.png"
+    ]
+  },
+  "wiki/de/keystrap.md": {
+    "primaryImage": "Produkte/KeyStrap.png",
+    "relatedAssets": [
+      "Produkte/NFC Modul.png",
+      "Produkte/KeyCard.png",
+      "Produkte/KeyTag.png"
+    ]
+  },
+  "wiki/de/camplock-fingerprint.md": {
+    "primaryImage": "Produkte/CampLock Fingerprint.png",
+    "relatedAssets": [
+      "Produkte/Wipro III.png",
+      "Produkte/wipro III. safelock.png"
+    ]
+  },
+  "wiki/de/vanlock-fingerprint.md": {
+    "primaryImage": "Produkte/VanLock Fingerprint.png",
+    "relatedAssets": [
+      "Produkte/Wipro III.png",
+      "Produkte/wipro III. safelock.png"
+    ]
+  }
+}
