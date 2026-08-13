@@ -1,0 +1,349 @@
+"use strict";
+
+/* ==========================================================================
+   Baut aus der gemeinsamen Quelle einen fertigen, eigenständigen
+   Netlify-Ordner für eine Insel.
+
+     node tools/build-insel.js samsoe
+     node tools/build-insel.js alle
+
+   Warum erzeugt statt von Hand kopiert:
+   Sieben Kopien der Engine wären sieben Stellen, an denen dieselbe Änderung
+   nachgezogen werden muss — genau das Problem, das dieses Projekt ablösen
+   soll. Hier bleibt die Wahrheit in Campus Quiz/, die Insel-Ordner sind
+   Ausgabe. Wer in einem Insel-Ordner etwas ändert, verliert es beim nächsten
+   Bau; die Datei ZIEL-ORDNER-WIRD-ERZEUGT.txt sagt das auch dort.
+
+   Die Ordner der Bestandsquizze (Fehmarn, Vejrø) werden NICHT überschrieben —
+   dort liegen die laufenden Quizze mit eigener Geschichte.
+   ========================================================================== */
+
+const fs = require("fs");
+const path = require("path");
+
+const WURZEL = path.join(__dirname, "..");
+const PROJEKT = path.join(WURZEL, "..");            // "Campus 1.0"
+const MARKER = "ZIEL-ORDNER-WIRD-ERZEUGT.txt";
+
+/** Ordnername je Insel. Bewusst wie die bestehenden Ordner benannt. */
+const ORDNER = {
+  vejro: "Vejrø Quiz",
+  poel: "Poel Quiz",
+  hiddensee: "Hiddensee Quiz",
+  samsoe: "Samsø Quiz",
+  fehmarn: "Fehmarn Quiz",
+  usedom: "Usedom Quiz",
+  langeland: "Langeland Quiz"
+};
+
+/* Ein Schutz gegen versehentliches Überschreiben ist unten eingebaut: ein
+   Zielordner, der Inhalt hat und keinen MARKER trägt, wurde nicht von diesem
+   Werkzeug erzeugt und wird übersprungen. Damit ist keine gepflegte Liste
+   nötig — "Fehmarn Quiz" etwa schützt sich dadurch von selbst. */
+
+// ------------------------------------------------------------------ Helfer --
+
+function lies(...teile) {
+  return fs.readFileSync(path.join(WURZEL, ...teile), "utf8");
+}
+
+function schreib(ziel, inhalt) {
+  fs.mkdirSync(path.dirname(ziel), { recursive: true });
+  fs.writeFileSync(ziel, inhalt, "utf8");
+}
+
+function kopiere(von, nach) {
+  fs.mkdirSync(path.dirname(nach), { recursive: true });
+  fs.copyFileSync(von, nach);
+}
+
+/** Leert einen Ordner, ohne ihn selbst zu entfernen.
+ *
+ *  Unter Windows scheitert das Löschen des Ordners mit EPERM, sobald irgendwer
+ *  ihn offen hält — ein Explorer-Fenster genügt, der Virenscanner auch. Der
+ *  Ordner selbst muss aber gar nicht weg: nur sein Inhalt. Das ist zugleich
+ *  freundlicher, weil ein geöffnetes Explorer-Fenster bestehen bleibt. */
+function leeren(ordner) {
+  for (const eintrag of fs.readdirSync(ordner)) {
+    const pfad = path.join(ordner, eintrag);
+    for (let versuch = 1; ; versuch++) {
+      try {
+        fs.rmSync(pfad, { recursive: true, force: true });
+        break;
+      } catch (error) {
+        // Kurz warten und erneut versuchen — Virenscanner geben die Datei
+        // meist nach Millisekunden wieder frei.
+        if (versuch >= 3) {
+          throw new Error(
+            `${eintrag} lässt sich nicht ersetzen (${error.code}). ` +
+            `Offene Programme auf dem Ordner schließen und erneut bauen.`);
+        }
+        Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 150);
+      }
+    }
+  }
+}
+
+// ------------------------------------------------------------------- Bauen --
+
+function baue(slug) {
+  const katalog = JSON.parse(lies("public", "data", "inseln.json"));
+  const insel = katalog.inseln.find((i) => i.slug === slug);
+  if (!insel) throw new Error(`Unbekannte Insel: ${slug}`);
+
+  const satzDatei = path.join(WURZEL, "public", "data", "inseln", `${slug}.json`);
+  const satz = JSON.parse(fs.readFileSync(satzDatei, "utf8"));
+
+  const ordnerName = ORDNER[slug];
+  if (!ordnerName) throw new Error(`Kein Ordnername für ${slug} hinterlegt.`);
+
+  const ziel = path.join(PROJEKT, ordnerName);
+
+  // Nur den Marker prüfen, wenn der Ordner Inhalt hat: ein bestehender,
+  // nicht von uns erzeugter Ordner soll nicht stillschweigend verschwinden.
+  if (fs.existsSync(ziel)) {
+    const inhalt = fs.readdirSync(ziel);
+    if (inhalt.length && !inhalt.includes(MARKER)) {
+      console.error(`  ÜBERSPRUNGEN  ${ordnerName} — nicht leer und nicht von diesem Werkzeug erzeugt.`);
+      console.error(`                Vorhandenes erst wegräumen, dann erneut bauen.`);
+      return null;
+    }
+    leeren(ziel);
+  }
+
+  const oeff = path.join(ziel, "public");
+
+  // --- index.html: nur der Titel wird angepasst --------------------------
+  let html = lies("public", "index.html");
+  html = html
+    .replace(/<title>.*?<\/title>/,
+      `<title>${satz.code} — ${satz.title} · THITRONIK Campus</title>`)
+    .replace(/<meta name="description" content=".*?">/,
+      `<meta name="description" content="THITRONIK Campus — Wissenscheck ${satz.code}: ${satz.title}.">`);
+  schreib(path.join(oeff, "index.html"), html);
+
+  // --- Engine und Stile unverändert --------------------------------------
+  kopiere(path.join(WURZEL, "public", "assets", "engine.js"), path.join(oeff, "assets", "engine.js"));
+  kopiere(path.join(WURZEL, "public", "assets", "styles.css"), path.join(oeff, "assets", "styles.css"));
+  kopiere(path.join(WURZEL, "public", "assets", "thitronik-logo.png"), path.join(oeff, "assets", "thitronik-logo.png"));
+
+  // --- Daten: Katalog auf genau diese eine Insel eindampfen ---------------
+  // Die Engine erkennt daran den Einzelbetrieb und überspringt die Übersicht.
+  schreib(path.join(oeff, "data", "inseln.json"),
+    JSON.stringify({ event: katalog.event, titel: katalog.titel, inseln: [insel] }, null, 2) + "\n");
+  kopiere(satzDatei, path.join(oeff, "data", "inseln", `${slug}.json`));
+
+  // --- Bilder -------------------------------------------------------------
+  const bildQuelle = path.join(WURZEL, "public", "media", slug);
+  let bilder = 0;
+  if (fs.existsSync(bildQuelle)) {
+    for (const datei of fs.readdirSync(bildQuelle)) {
+      kopiere(path.join(bildQuelle, datei), path.join(oeff, "media", slug, datei));
+      bilder++;
+    }
+  }
+
+  // --- Function: nur diese eine Insel einbinden ---------------------------
+  let fn = lies("netlify", "functions", "submit-quiz.js");
+  fn = fn.replace(
+    /const ISLANDS = \{[\s\S]*?\};/,
+    `const ISLANDS = {\n  ${slug}: require("../../public/data/inseln/${slug}.json")\n};`
+  );
+  schreib(path.join(ziel, "netlify", "functions", "submit-quiz.js"), fn);
+
+  // --- netlify.toml -------------------------------------------------------
+  schreib(path.join(ziel, "netlify.toml"), `[build]
+  publish = "public"
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+# Einzel-Insel-Paket: jede Adresse liefert dieselbe Seite, die Engine geht
+# direkt in ${satz.code}.
+[[redirects]]
+  from = "/quiz/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/quiz"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/data/*"
+  [headers.values]
+    Cache-Control = "public, max-age=300, must-revalidate"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/media/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/.netlify/functions/*"
+  [headers.values]
+    Cache-Control = "no-store"
+`);
+
+  // --- Marker und Anleitung ----------------------------------------------
+  schreib(path.join(ziel, MARKER),
+`Dieser Ordner wird erzeugt und bei jedem Bau vollständig ersetzt.
+
+Änderungen gehören nach:
+  Campus 1.0/Campus Quiz/
+
+Neu bauen:
+  cd "Campus 1.0/Campus Quiz"
+  node tools/build-insel.js ${slug}
+
+Erzeugt am: (siehe Dateidatum)
+`);
+
+  schreib(path.join(ziel, "ANLEITUNG.md"), anleitung(satz, insel, bilder));
+
+  return { ordnerName, ziel, bilder, fragen: satz.questions.length, version: satz.version };
+}
+
+// -------------------------------------------------------------- Anleitung --
+
+function anleitung(satz, insel, bilder) {
+  return `# ${satz.code} — ${satz.title}
+
+Fertiges Netlify-Paket für die Schulungsinsel ${satz.code}.
+**Wird erzeugt** — Änderungen gehören nach \`Campus 1.0/Campus Quiz/\`.
+
+| | |
+|---|---|
+| Fragen | ${satz.questions.length} |
+| Fragensatz-Version | ${satz.version} |
+| Bilder | ${bilder || "keine"} |
+
+---
+
+## Hochladen
+
+1. Auf [app.netlify.com](https://app.netlify.com) einloggen
+2. **Add new site → Deploy manually**
+3. **Diesen kompletten Ordner** ins Feld ziehen — nicht nur \`public/\`.
+   Sonst fehlt die Function und es wird nichts gespeichert.
+
+### Danach zwingend: die zwei Umgebungsvariablen
+
+**Site configuration → Environment variables → Add a variable**
+
+| Name | Wert |
+|---|---|
+| \`SUPABASE_URL\` | \`https://mhzlayhnyqlxdyiceyqz.supabase.co\` |
+| \`SUPABASE_SECRET_KEY\` | Der Secret Key aus den Supabase-Projekteinstellungen |
+
+Danach **einmal neu deployen** — Umgebungsvariablen greifen erst beim nächsten
+Bau.
+
+> Der Secret Key gehört ausschließlich hierhin, nie in den Browser-Code. Er
+> umgeht Row Level Security.
+
+---
+
+## Prüfen, ob es wirklich läuft
+
+Erst mit \`?demo=1\` durchspielen — das speichert absichtlich nichts:
+
+    https://<deine-adresse>.netlify.app/?demo=1
+
+Dann **einmal ohne** \`?demo=1\`. Unter dem Ergebnis muss stehen:
+
+> Ergebnis gespeichert. Danke!
+
+Steht dort etwas anderes, ist es eine dieser drei Ursachen:
+
+| Meldung | Ursache |
+|---|---|
+| „Backend ist noch nicht vollständig konfiguriert" | Umgebungsvariablen fehlen oder es wurde danach nicht neu deployt |
+| „Die Datenbank hat die Speicherung abgelehnt" | Die Tabelle \`campus_quiz_submissions\` fehlt — Migration einspielen |
+| „Keine Verbindung" | Die Function wurde nicht mitdeployt: der komplette Ordner muss hoch, nicht nur \`public/\` |
+
+Zum Nachsehen in Supabase:
+
+\`\`\`sql
+select created_at, participant, dealer, dealer_number, percent, duration_seconds
+  from public.campus_quiz_submissions
+ where island = '${satz.island}'
+ order by created_at desc
+ limit 10;
+\`\`\`
+
+---
+
+## QR-Code für die Station
+
+Auf die nackte Adresse zeigen lassen:
+
+    https://<deine-adresse>.netlify.app/
+
+Die Engine geht direkt in ${satz.code} — es gibt in diesem Paket keine
+Inselauswahl.
+
+---
+
+## Was hier drin liegt
+
+    netlify.toml                  Netlify-Konfiguration
+    netlify/functions/            Nimmt Ergebnisse an und bewertet serverseitig
+    public/index.html             Die Seite
+    public/assets/                Engine, Stile, Logo
+    public/data/                  Der Fragensatz
+    public/media/                 Die Bilder${bilder ? "" : " (in diesem Paket keine)"}
+
+Der Browser bekommt nie zu sehen, welche Antwort richtig gewertet wird — er
+sendet nur, **was** gewählt wurde. Bewertet wird in der Function.
+`;
+}
+
+// ---------------------------------------------------------------- Aufruf ----
+
+const arg = process.argv[2];
+if (!arg) {
+  console.error("Aufruf: node tools/build-insel.js <insel|alle>\n");
+  console.error("Inseln: " + Object.keys(ORDNER).join(", "));
+  process.exit(1);
+}
+
+const slugs = arg === "alle" ? Object.keys(ORDNER) : [arg];
+const gebaut = [];
+
+for (const slug of slugs) {
+  try {
+    const r = baue(slug);
+    if (r) {
+      gebaut.push(r);
+      console.log(`  gebaut  ${r.ordnerName.padEnd(18)} ${r.fragen} Fragen, v${r.version}, ${r.bilder} Bilder`);
+    }
+  } catch (error) {
+    console.error(`  FEHLER  ${slug}: ${error.message}`);
+    process.exitCode = 1;
+  }
+}
+
+if (gebaut.length) {
+  console.log(`\n${gebaut.length} Paket(e) erzeugt. Jeder Ordner ist einzeln bei Netlify hochladbar.`);
+}

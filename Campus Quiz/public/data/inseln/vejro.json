@@ -1,0 +1,130 @@
+{
+  "island": "vejro",
+  "code": "VEJRØ",
+  "title": "CampLock & VanLock Fingerprint",
+  "subtitle": "Produktschulung",
+  "version": "1",
+  "lernziel": "Produktabgrenzung, Funktionsgrenzen, ehrliche Verkaufsargumentation.",
+  "quellen": [
+    "produkte/camplock-fingerprint.md",
+    "produkte/vanlock-fingerprint.md",
+    "referenz/zugang-bedienung.md"
+  ],
+  "internerHinweis": "Vor dem Einsatz prüfen: Diese Fragen gehen davon aus, dass VEJRØ die Produkte CampLock Fingerprint und VanLock Fingerprint vorstellt. Zeigt die Insel ein neueres, noch nicht dokumentiertes Produkt, muss der Fragensatz neu gebaut werden.",
+  "questions": [
+    {
+      "id": "VEJ-01",
+      "type": "single",
+      "category": "Kundensituation",
+      "prompt": "Ein Kunde hat einen Kastenwagen ohne Hartal-Aufbautür und möchte biometrischen Zugang. Was empfiehlst du?",
+      "options": [
+        { "id": "a", "text": "CampLock Fingerprint — das passt an jede Tür" },
+        { "id": "b", "text": "VanLock Fingerprint" },
+        { "id": "c", "text": "Beide sind identisch, egal welches" },
+        { "id": "d", "text": "Fingerprint ist hier technisch nicht möglich" }
+      ],
+      "correct": ["b"],
+      "feedback": "CampLock ist speziell für Hartal-Aufbautüren mit Zentralverriegelung beschrieben. VanLock ist für Reisemobile und Kastenwagen vorgesehen."
+    },
+    {
+      "id": "VEJ-02",
+      "type": "single",
+      "category": "Systemgrenze",
+      "prompt": "Der Kunde hat eine WiPro III ohne safe.lock. Was leistet CampLock nach der Installation?",
+      "options": [
+        { "id": "a", "text": "Tür ver- und entriegeln und Alarm mitführen" },
+        { "id": "b", "text": "Alarmanlage scharf/unscharf — die Zentralverriegelung wird nicht als Gesamtfahrzeug-Zugang mitgeführt" },
+        { "id": "c", "text": "Nur Tür auf und zu, kein Alarm" },
+        { "id": "d", "text": "Nichts — CampLock braucht zwingend safe.lock" }
+      ],
+      "correct": ["b"],
+      "feedback": "Ver- und Entriegeln setzt WiPro III safe.lock plus passende ZV-Anbindung voraus. Scharf/Unscharf geht auch mit der Standard-WiPro III. Das ist die wichtigste Abgrenzung dieser Insel."
+    },
+    {
+      "id": "VEJ-03",
+      "type": "truefalse",
+      "category": "Richtig oder falsch",
+      "prompt": "„VanLock ist nur der neue Name für CampLock.“",
+      "correct": ["falsch"],
+      "feedback": "Falsch. Eigene Artikelnummern, andere Sensormaße (Ø 50 × 13 mm statt Ø 41 × 53 mm) und ein anderer Einsatzbereich."
+    },
+    {
+      "id": "VEJ-04",
+      "type": "order",
+      "category": "Reihenfolge",
+      "prompt": "Bringe die Inbetriebnahme in die richtige Reihenfolge.",
+      "items": [
+        { "id": "o1", "text": "Fahrzeug- und Türkompatibilität klären" },
+        { "id": "o2", "text": "Steuergerät und Sensor montieren, mit 12/24 V versorgen" },
+        { "id": "o3", "text": "Mit der WiPro koppeln" },
+        { "id": "o4", "text": "Zwei Master-Finger einlernen" },
+        { "id": "o5", "text": "Nutzerfinger einlernen" },
+        { "id": "o6", "text": "Funktionstest" }
+      ],
+      "correct": ["o1", "o2", "o3", "o4", "o5", "o6"],
+      "feedback": "Kompatibilität → Montage und Versorgung → Kopplung → Master-Finger → Nutzerfinger → Funktionstest. Die Master-Finger kommen immer zuerst."
+    },
+    {
+      "id": "VEJ-05",
+      "type": "single",
+      "category": "Zahl",
+      "prompt": "Wie viele Master-Finger sind vorgesehen?",
+      "options": [
+        { "id": "a", "text": "1" },
+        { "id": "b", "text": "2" },
+        { "id": "c", "text": "4" },
+        { "id": "d", "text": "Beliebig viele" }
+      ],
+      "correct": ["b"],
+      "feedback": "Zwei Master-Finger, insgesamt bis zu 16 anlernbare Finger."
+    },
+    {
+      "id": "VEJ-06",
+      "type": "single",
+      "category": "Verkaufsgespräch",
+      "prompt": "Kunde: „Super, dann kann ich den Fahrzeugschlüssel ja zu Hause lassen.“ Deine beste Antwort?",
+      "options": [
+        { "id": "a", "text": "Ja, der Fingerprint ersetzt den Schlüssel vollständig" },
+        { "id": "b", "text": "Der Fingerprint ist der Komfortweg — ein zweiter, unabhängiger Zugang (Funk-Handsender, NFC oder Originalschlüssel) sollte immer verfügbar bleiben" },
+        { "id": "c", "text": "Nur wenn er zusätzlich einen Pro-finder kauft" },
+        { "id": "d", "text": "Nur bei Fahrzeugen mit safe.lock" }
+      ],
+      "correct": ["b"],
+      "feedback": "Ein einziger Bedienweg ist immer ein Risiko. Nasse Finger, ein leerer Akku oder eine verlorene Kopplung dürfen nicht dazu führen, dass der Kunde vor dem Fahrzeug steht."
+    },
+    {
+      "id": "VEJ-07",
+      "type": "single",
+      "category": "Reklamationsfall",
+      "prompt": "Ein Kunde meldet: „Morgens am Meer erkennt das Gerät meinen Finger oft nicht.“ Wahrscheinlichste Ursache?",
+      "options": [
+        { "id": "a", "text": "Nasse, verschmutzte oder verletzte Finger erschweren die Erkennung" },
+        { "id": "b", "text": "Zu niedrige Bordspannung" },
+        { "id": "c", "text": "Der Sensor ist defekt und muss getauscht werden" },
+        { "id": "d", "text": "Zu viele angelernte Finger im Speicher" }
+      ],
+      "correct": ["a"],
+      "feedback": "Feuchtigkeit und Salz auf der Fingerkuppe sind der häufigste Grund. Vor jedem Austausch erst die einfachen Ursachen prüfen."
+    },
+    {
+      "id": "VEJ-08",
+      "type": "match",
+      "category": "Zuordnung",
+      "prompt": "Ordne die Artikelnummern den Ausführungen zu.",
+      "left": [
+        { "id": "l1", "text": "106111" },
+        { "id": "l2", "text": "106144" },
+        { "id": "l3", "text": "106260" },
+        { "id": "l4", "text": "106259" }
+      ],
+      "right": [
+        { "id": "r1", "text": "CampLock silber" },
+        { "id": "r2", "text": "CampLock schwarz" },
+        { "id": "r3", "text": "VanLock silber" },
+        { "id": "r4", "text": "VanLock schwarz" }
+      ],
+      "correct": { "l1": "r1", "l2": "r2", "l3": "r3", "l4": "r4" },
+      "feedback": "106111 CampLock silber · 106144 CampLock schwarz · 106260 VanLock silber · 106259 VanLock schwarz."
+    }
+  ]
+}

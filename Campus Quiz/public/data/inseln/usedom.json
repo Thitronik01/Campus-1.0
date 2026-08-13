@@ -1,0 +1,157 @@
+{
+  "island": "usedom",
+  "code": "USEDOM",
+  "title": "Verkaufsdisplay & Konfigurator",
+  "subtitle": "Vom Einzelprodukt zum System",
+  "version": "1",
+  "lernziel": "Vom Einzelprodukt zum System — und ehrliche Grenzen kennen.",
+  "quellen": [
+    "referenz/systemueberblick.md",
+    "produkte/bt-connect.md",
+    "produkte/nfc-modul.md",
+    "referenz/zugang-bedienung.md"
+  ],
+  "internerHinweis": "Produktbilder für die Displayfragen liegen bereits in Wissen/03_Medien/produkte/. Frage 4 ist als Bildfrage vorbereitet.",
+  "questions": [
+    {
+      "id": "USE-01",
+      "type": "single",
+      "category": "Bedarfsanalyse",
+      "prompt": "Kunde: „Ich will eine Alarmanlage, Ortung bei Diebstahl und bequem ohne Schlüssel öffnen.“ Welche Kombination zeigst du am Display?",
+      "options": [
+        { "id": "a", "text": "WiPro III (safe.lock je nach Fahrzeug) + Pro-finder + NFC Modul + KeyCard/KeyTag/KeyStrap" },
+        { "id": "b", "text": "Nur Pro-finder und NFC Modul" },
+        { "id": "c", "text": "BT-connect und KeyCard" },
+        { "id": "d", "text": "G.A.S.-pro III und Funk-Handsender" }
+      ],
+      "correct": ["a"],
+      "feedback": "Drei Kundenwünsche, drei Bausteine — plus das Zugangsmedium. Wer einen davon weglässt, erfüllt den Wunsch nicht vollständig."
+    },
+    {
+      "id": "USE-02",
+      "type": "single",
+      "category": "Abhängigkeit",
+      "prompt": "Kunde: „Ich nehme nur das BT-connect, eine Alarmanlage brauche ich nicht.“",
+      "options": [
+        { "id": "a", "text": "Geht, BT-connect funktioniert eigenständig" },
+        { "id": "b", "text": "Geht nicht — BT-connect ist ein Bedienweg und setzt eine WiPro III bzw. WiPro III safe.lock voraus" },
+        { "id": "c", "text": "Geht nur mit Pro-finder" },
+        { "id": "d", "text": "Geht nur mit NFC Modul" }
+      ],
+      "correct": ["b"],
+      "feedback": "BT-connect bedient etwas — es ersetzt nichts. Ohne WiPro III gibt es nichts zu bedienen."
+    },
+    {
+      "id": "USE-03",
+      "type": "single",
+      "category": "Reichweiten-Falle",
+      "prompt": "Kunde: „Mit BT-connect kann ich also aus dem Restaurant am Hafen mein Wohnmobil scharfschalten?“",
+      "options": [
+        { "id": "a", "text": "Ja, bis 50 m immer" },
+        { "id": "b", "text": "Nein — BT-connect ist ein lokaler Bluetooth-Nahbereichsweg ohne Mobilfunk und GPS. Für die Bedienung aus der Ferne ist der Pro-finder da" },
+        { "id": "c", "text": "Ja, wenn das Handy im WLAN ist" },
+        { "id": "d", "text": "Nur mit safe.lock" }
+      ],
+      "correct": ["b"],
+      "feedback": "Diese Erwartung entsteht im Verkaufsgespräch schnell und fällt beim Kunden im Urlaub auf. Besser jetzt klarstellen."
+    },
+    {
+      "id": "USE-04",
+      "type": "single",
+      "category": "Displayzuordnung",
+      "prompt": "Welche Komponente auf dem Display übernimmt die Fahrzeugortung?",
+      "options": [
+        { "id": "a", "text": "Pro-finder (mit Pro-finder Antenne bei ungünstigem Empfang)" },
+        { "id": "b", "text": "BT-connect" },
+        { "id": "c", "text": "NFC Modul" },
+        { "id": "d", "text": "WiPro III" }
+      ],
+      "correct": ["a"],
+      "feedback": "Der Pro-finder ist das Ortungsgerät. Die Antenne ist Zubehör für ungünstige Einbaulagen, kein eigenes Produkt."
+    },
+    {
+      "id": "USE-05",
+      "type": "single",
+      "category": "Die wichtigste Abgrenzung",
+      "prompt": "Kunde: „Mit der KeyCard schließe ich mein Fahrzeug auf und zu, oder?“",
+      "options": [
+        { "id": "a", "text": "Ja, immer" },
+        { "id": "b", "text": "Scharf- und Unscharfschalten ja. Ver- und Entriegeln der Zentralverriegelung nur mit WiPro III safe.lock, passender Fahrzeuganbindung und geeignetem Softwarestand" },
+        { "id": "c", "text": "Nein, die KeyCard kann nur entriegeln" },
+        { "id": "d", "text": "Nur mit zusätzlichem BT-connect" }
+      ],
+      "correct": ["b"],
+      "feedback": "Scharf/Unscharf und Ver-/Entriegeln sind technisch zwei verschiedene Vorgänge. Das ist der häufigste Beratungsfehler überhaupt — er zieht sich durch das gesamte Sortiment."
+    },
+    {
+      "id": "USE-06",
+      "type": "single",
+      "category": "Gaswarnung ohne Alarmanlage",
+      "prompt": "Ein Kunde hat keine WiPro und will nur Gaswarnung. Was zeigst du?",
+      "options": [
+        { "id": "a", "text": "G.A.S.-pro III (eigenständig, eigene 94-dB-Sirene) oder G.A.S. bzw. G.A.S.-plug" },
+        { "id": "b", "text": "G.A.S.-connect — das ist die günstigste Lösung" },
+        { "id": "c", "text": "Gaswarnung ist ohne WiPro nicht möglich" },
+        { "id": "d", "text": "Nur den externen Zusatzsensor" }
+      ],
+      "correct": ["a"],
+      "feedback": "G.A.S.-connect hat keine eigene Sirene und ist Funkzubehör für die WiPro III. Als Standalone-Lösung verkauft, warnt es niemanden."
+    },
+    {
+      "id": "USE-07",
+      "type": "single",
+      "category": "CO-Falle",
+      "prompt": "Kunde: „Der Gaswarner erkennt dann auch Kohlenmonoxid von meiner Heizung?“",
+      "options": [
+        { "id": "a", "text": "Ja, alle G.A.S.-Geräte erkennen CO" },
+        { "id": "b", "text": "Nein — G.A.S.-pro III (101286) und G.A.S.-pro III CO (101287) sind getrennte Geräte. Ohne geeigneten externen CO-Sensor erkennt die Standardausführung kein CO" },
+        { "id": "c", "text": "Ja, aber nur mit WiPro-Anbindung" },
+        { "id": "d", "text": "CO wird vom Rauchmelder abgedeckt" }
+      ],
+      "correct": ["b"],
+      "feedback": "Eine falsche Zusage an dieser Stelle ist sicherheitsrelevant. Der Kunde verlässt sich auf einen Schutz, den das Gerät nicht bietet."
+    },
+    {
+      "id": "USE-08",
+      "type": "single",
+      "category": "Zahlen am Display",
+      "prompt": "Wie viele NFC-Medien lassen sich pro NFC Modul insgesamt speichern?",
+      "options": [
+        { "id": "a", "text": "8" },
+        { "id": "b", "text": "9" },
+        { "id": "c", "text": "14" },
+        { "id": "d", "text": "100" }
+      ],
+      "correct": ["c"],
+      "feedback": "14 insgesamt — die mitgelieferte KeyCard zählt mit. Einzelne Medien lassen sich nicht selektiv löschen: bei Verlust kompletter Tag-Reset und alle Medien neu anlernen."
+    },
+    {
+      "id": "USE-09",
+      "type": "single",
+      "category": "Verkaufsargument",
+      "prompt": "Warum arbeitet die WiPro III bewusst ohne Bewegungsmelder? Bestes Argument gegenüber dem Kunden?",
+      "options": [
+        { "id": "a", "text": "Bewegungsmelder reagieren in Freizeitfahrzeugen auf Gardinen, Erschütterungen, Insekten und Haustiere. Über definierte Öffnungen kann die Anlage auch scharf bleiben, während Personen im Fahrzeug sind" },
+        { "id": "b", "text": "Bewegungsmelder sind zu teuer" },
+        { "id": "c", "text": "Sie sind gesetzlich nicht zugelassen" },
+        { "id": "d", "text": "Die Anlage ist dadurch komplett fehlalarmfrei" }
+      ],
+      "correct": ["a"],
+      "feedback": "Das ist ein echtes Konstruktionsargument, kein Sparargument. Vorsicht bei Antwort D: „völlig fehlalarmfrei“ ist keine zulässige Zusage."
+    },
+    {
+      "id": "USE-10",
+      "type": "single",
+      "category": "Konfigurator",
+      "prompt": "Was machst du mit dem Konfigurator-Ergebnis?",
+      "options": [
+        { "id": "a", "text": "Auf Plausibilität prüfen und mit Fahrzeug- und Einbauwissen abgleichen, dann als PDF für Angebot oder Einbautermin-Anfrage nutzen" },
+        { "id": "b", "text": "Ungeprüft als verbindliche Zusage verkaufen" },
+        { "id": "c", "text": "Nur intern verwenden" },
+        { "id": "d", "text": "Dem Kunden die internen Einbauunterlagen mitgeben" }
+      ],
+      "correct": ["a"],
+      "feedback": "Der Konfigurator ist ein Werkzeug, keine Freigabe. Dein Fahrzeugwissen entscheidet, ob das Ergebnis am konkreten Fahrzeug trägt."
+    }
+  ]
+}

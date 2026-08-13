@@ -1,0 +1,48 @@
+[build]
+  publish = "public"
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+# Eine Engine, sieben Inseln. Jede Insel-Route liefert dieselbe index.html;
+# die Engine liest den Insel-Schlüssel aus dem Pfad.
+[[redirects]]
+  from = "/quiz/:insel"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/quiz"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+# index.html immer frisch prüfen, damit ein Fragen-Update sofort greift.
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+# Fragensätze ändern sich zwischen Schulungen — nicht lange cachen.
+[[headers]]
+  for = "/data/*"
+  [headers.values]
+    Cache-Control = "public, max-age=300, must-revalidate"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/.netlify/functions/*"
+  [headers.values]
+    Cache-Control = "no-store"
