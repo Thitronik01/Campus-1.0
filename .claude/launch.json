@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "campus-quiz",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["Campus Quiz/tools/dev-server.js"],
+      "port": 8788
+    },
+    {
+      "name": "samsoe-paket",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["Campus Quiz/tools/dev-server.js", "Samsø Quiz/public"],
+      "port": 8789
+    }
+  ]
+}
