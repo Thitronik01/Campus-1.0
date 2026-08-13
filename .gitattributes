@@ -1,0 +1,33 @@
+# Zeilenenden im Repository immer LF, in der Arbeitskopie nach Plattform.
+# Ohne diese Regel meldet Git unter Windows bei jeder Datei eine
+# CRLF-Umwandlung und Diffs zwischen Windows und macOS werden unlesbar.
+* text=auto eol=lf
+
+# Windows-eigene Dateien behalten CRLF.
+*.bat  text eol=crlf
+*.cmd  text eol=crlf
+*.ps1  text eol=crlf
+
+# Binärdateien nie anfassen.
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.webp binary
+*.gif  binary
+*.ico  binary
+*.mp3  binary
+*.pdf  binary
+*.woff binary
+*.woff2 binary
+
+# Erzeugte Insel-Pakete in Diffs zusammenklappen — sie sind Ausgabe,
+# geaendert wird in "Campus Quiz/". Pfade mit Leerzeichen gehoeren in
+# doppelte Anfuehrungszeichen; ein maskiertes Leerzeichen versteht Git hier
+# nicht und meldet "is not a valid attribute name".
+"Vejrø Quiz/**"      linguist-generated=true
+"Poel Quiz/**"       linguist-generated=true
+"Hiddensee Quiz/**"  linguist-generated=true
+"Samsø Quiz/**"      linguist-generated=true
+"Fehmarn Quiz/**"    linguist-generated=true
+"Usedom Quiz/**"     linguist-generated=true
+"Langeland Quiz/**"  linguist-generated=true
