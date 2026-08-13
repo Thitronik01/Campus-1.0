@@ -17,8 +17,10 @@ const jobs = [
   { in: 'campus-feedback-inselhopping.png', out: 'inselhopping-1100.webp', width: 1100, q: 74 },
   { in: 'campus-feedback-inselhopping.png', out: 'inselhopping-700.webp', width: 700, q: 72 },
 
-  // Seitenhintergrund
-  { in: 'campus-background.webp', out: 'background-1600.webp', width: 1600, q: 68 },
+  /* Seitenhintergrund. Nur noch die 800er Fassung: das Motiv liegt bei 34 bzw.
+     28 Prozent Deckkraft hinter Kopfbereich und Danke-Ansicht und wird nie
+     scharf gelesen. Die 1600er Variante gab es fuer v12, die sie per Media
+     Query nachgeladen hat; seit v13 referenziert sie niemand mehr. */
   { in: 'campus-background.webp', out: 'background-800.webp', width: 800, q: 66 },
 ];
 
