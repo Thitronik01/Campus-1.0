@@ -1,0 +1,175 @@
+{
+  "island": "samsoe",
+  "code": "SAMSØ",
+  "title": "Einbauorte im Fahrzeug",
+  "subtitle": "Wo kommt was hin?",
+  "version": "2",
+  "lernziel": "Geeignete und ungeeignete Einbauorte, Unterschiede zwischen Fahrzeugtypen, typische Einbaufehler.",
+  "quellen": [
+    "produkte/pro-finder.md",
+    "produkte/gas-pro-iii.md",
+    "produkte/nfc-modul.md",
+    "produkte/funk-rauchmelder.md",
+    "produkte/wipro-iii.md",
+    "fahrzeuge/*"
+  ],
+  "internerHinweis": "Die Fragen 2 und 3 nutzen echte Einbaufotos, gehoben aus dem bestehenden FehlerQuiz. Die Alt-Texte wurden dabei neu geschrieben — im Bestandsquiz sind die Beschreibungen der Gaswarner-Bilder um eine Position verrutscht.",
+  "questions": [
+    {
+      "id": "SAM-01",
+      "type": "match",
+      "category": "Höhenzuordnung",
+      "prompt": "Ordne jedem Gerät die vorgesehene Montagehöhe zu.",
+      "left": [
+        { "id": "l1", "text": "G.A.S.-pro III (Propan, Butan, KO-Gase)" },
+        { "id": "l2", "text": "G.A.S.-pro III CO" }
+      ],
+      "right": [
+        { "id": "r1", "text": "Senkrecht, ca. 10–20 cm über dem Boden" },
+        { "id": "r2", "text": "Senkrecht, ca. 10–20 cm unter der Decke" },
+        { "id": "r3", "text": "Waagerecht direkt an der Decke" },
+        { "id": "r4", "text": "Im Bodenstauraum außerhalb des Wohnraums" }
+      ],
+      "correct": { "l1": "r1", "l2": "r2" },
+      "feedback": "Gas ist schwerer als Luft, CO verteilt sich anders. Ein tief montierter Gassensor ersetzt keinen deckennahen CO-Sensor — und umgekehrt."
+    },
+    {
+      "id": "SAM-02",
+      "type": "single",
+      "category": "Einbauort Gaswarner",
+      "layout": "portrait",
+      "prompt": "Welches Bild zeigt den vorgesehenen Einbauort des Gaswarners?",
+      "hint": "Denk daran, wo sich Flüssiggas sammelt.",
+      "options": [
+        { "id": "a", "image": "/media/samsoe/sam-gas-a.webp", "imageAlt": "Gaswarner an einer senkrechten Fläche neben einer runden Öffnung, auf einer schwarzen Montageplatte" },
+        { "id": "b", "image": "/media/samsoe/sam-gas-b.webp", "imageAlt": "Gaswarner im Inneren eines Kleiderschranks, darüber hängen Kleiderbügel" },
+        { "id": "c", "image": "/media/samsoe/sam-gas-c.webp", "imageAlt": "Gaswarner oben an der Bedienkonsole über der Fahrerhaustür" },
+        { "id": "d", "image": "/media/samsoe/sam-gas-d.webp", "imageAlt": "Gaswarner bodennah an der Verkleidung eines Sitzkastens" }
+      ],
+      "correct": ["d"],
+      "feedback": "Flüssiggas ist schwerer als Luft. Das Hauptgerät gehört an eine senkrechte Fläche, etwa 10–20 cm über dem Boden — nicht in den Schrank und nicht direkt gegenüber einem Heizungsausströmer. Ebenfalls nicht neben einer AGM-Blei-Aufbaubatterie: Die kann beim Laden ausgasen und Fehlalarme auslösen. Mindestens 1 m Abstand zu Batterien und Nasszelle."
+    },
+    {
+      "id": "SAM-03",
+      "type": "single",
+      "category": "Einbauort Pro-finder",
+      "layout": "portrait",
+      "prompt": "Auf welchem Bild ist der Pro-finder korrekt montiert?",
+      "hint": "Prüfe Gehäuselage, Anschlüsse und Gerätekennzeichnung.",
+      "options": [
+        { "id": "a", "image": "/media/samsoe/sam-finder-a.webp", "imageAlt": "Modul mit Antennenanschluss, hochkant hinter einer Verkleidung" },
+        { "id": "b", "image": "/media/samsoe/sam-finder-b.webp", "imageAlt": "Unbeschriftetes Modul mit rotem Klebepad" },
+        { "id": "c", "image": "/media/samsoe/sam-finder-c.webp", "imageAlt": "Modul mit zwei weißen Steckverbindern" },
+        { "id": "d", "image": "/media/samsoe/sam-finder-d.webp", "imageAlt": "Modul mit blauem Aufkleber und mehrfarbigem Kabelsatz, flach liegend" }
+      ],
+      "correct": ["d"],
+      "feedback": "Der Pro-finder wird versteckt und möglichst flach montiert. Die integrierte GPS-Antenne zeigt Richtung Himmel und darf nicht von Metall verdeckt werden — der Aufkleber „GPS inside“ muss dabei nach oben zeigen. Trockener Innenraum, gegen Zugriff gesichert, für den Service aber erreichbar.",
+      "feedbackMedia": {
+        "src": "/media/samsoe/sam-finder-loesung.webp",
+        "alt": "Aufkleber „GPS inside“",
+        "caption": "Der Aufkleber muss bei der Montage nach oben zeigen."
+      }
+    },
+    {
+      "id": "SAM-04",
+      "type": "single",
+      "category": "GPS-Antenne",
+      "prompt": "Wie wird eine externe GPS-Antenne ausgerichtet?",
+      "options": [
+        { "id": "a", "text": "Empfangsseite waagerecht nach oben" },
+        { "id": "b", "text": "Senkrecht zur Fahrtrichtung" },
+        { "id": "c", "text": "Nach unten, um Wasser abzuleiten" },
+        { "id": "d", "text": "Egal, sie empfängt kugelförmig" }
+      ],
+      "correct": ["a"],
+      "feedback": "Die Satelliten stehen oben. Eine falsch ausgerichtete Antenne kostet Empfang, ohne dass es beim Einbau auffällt."
+    },
+    {
+      "id": "SAM-05",
+      "type": "single",
+      "category": "Falle",
+      "prompt": "Die Antennenleitung der WiPro III (Pin 10, weiß) ist deutlich zu lang für den gewählten Einbauort.",
+      "options": [
+        { "id": "a", "text": "Auf 20 cm kürzen" },
+        { "id": "b", "text": "Sauber aufwickeln und mit Kabelbinder fixieren" },
+        { "id": "c", "text": "Weder kürzen noch aufwickeln — Verlegung anpassen bzw. Montageort so wählen, dass die Leitung gestreckt geführt werden kann" },
+        { "id": "d", "text": "Verlängern mit Lautsprecherkabel" }
+      ],
+      "correct": ["c"],
+      "feedback": "Die Leitung ist die Antenne. Kürzen und Aufwickeln verändern beide das Sendeverhalten — die Anlage arbeitet dann mit verringerter Reichweite, ohne einen Fehler zu melden."
+    },
+    {
+      "id": "SAM-06",
+      "type": "single",
+      "category": "NFC Modul",
+      "prompt": "Wo wird das NFC Modul montiert — und welchen Nebeneffekt musst du dem Kunden nennen?",
+      "options": [
+        { "id": "a", "text": "Innenseite einer geeigneten Scheibe, von außen gut erreichbar. Bei beheizbaren Frontscheiben ist mit höherem Verbrauch und kürzerer Batterielebensdauer zu rechnen" },
+        { "id": "b", "text": "Außen an der Karosserie, IP-geschützt" },
+        { "id": "c", "text": "Neben der WiPro-Zentrale im Schrank" },
+        { "id": "d", "text": "Im Fahrerhaus unter dem Armaturenbrett" }
+      ],
+      "correct": ["a"],
+      "feedback": "Den Nebeneffekt bei beheizbaren Frontscheiben von sich aus ansprechen. Erfährt der Kunde ihn erst bei der ersten leeren Batterie, ist es ein Reklamationsfall."
+    },
+    {
+      "id": "SAM-07",
+      "type": "single",
+      "category": "Rauchmelder",
+      "prompt": "Das Fahrzeug hat eine Stoffdecke. Wie montierst du den T.S.A.?",
+      "options": [
+        { "id": "a", "text": "Klebepad direkt auf den Stoff drücken, 60 s halten" },
+        { "id": "b", "text": "Nicht auf den Stoff kleben — Montageadapter (105755 weiß / 105756 grau) verwenden und an einem seitlichen Kunststoffelement nahe der Decke befestigen" },
+        { "id": "c", "text": "Schrauben durch die Stoffdecke" },
+        { "id": "d", "text": "In eine Fahrzeugecke setzen" }
+      ],
+      "correct": ["b"],
+      "feedback": "Auf Stoff hält kein Klebepad dauerhaft. Der Melder fällt irgendwann herunter — im schlechtesten Fall unbemerkt."
+    },
+    {
+      "id": "SAM-08",
+      "type": "single",
+      "category": "Fahrzeuggröße",
+      "prompt": "Ein Liner hat 7,4 m Innenlänge mit Schiebetür zum Schlafbereich. Was folgt daraus für die Gaswarnung?",
+      "options": [
+        { "id": "a", "text": "Zusätzlichen passenden Sensor vorsehen — über 6,5 m Innenlänge bzw. bei räumlicher Trennung braucht es einen zweiten Detektionspunkt. Zusatzsensorkabel konservativ auf max. 7 m Gesamtlänge auslegen" },
+        { "id": "b", "text": "Ein Hauptgerät reicht immer" },
+        { "id": "c", "text": "Zwei Hauptgeräte sind zwingend" },
+        { "id": "d", "text": "Nur ein CO-Sensor ist nötig" }
+      ],
+      "correct": ["a"],
+      "feedback": "Eine geschlossene Schiebetür trennt den Luftraum. Hinter ihr wird ohne zweiten Detektionspunkt nichts erkannt."
+    },
+    {
+      "id": "SAM-09",
+      "type": "single",
+      "category": "Verdrahtung",
+      "prompt": "WiPro III und Pro-finder werden eingebaut. Was gilt für die Versorgung?",
+      "options": [
+        { "id": "a", "text": "Beide an dieselbe Fahrzeugbatterie. Verbindung untereinander über das dafür vorgesehene Verbindungskabel (RJ11)" },
+        { "id": "b", "text": "WiPro an Starter-, Pro-finder an Aufbaubatterie" },
+        { "id": "c", "text": "Beide direkt an die Solaranlage" },
+        { "id": "d", "text": "Pro-finder über Klemme 15" }
+      ],
+      "correct": ["a"],
+      "feedback": "Getrennte Batterien führen zu unterschiedlichen Bezugspotenzialen und schwer auffindbaren Störungen. Klemme 15 fällt aus, sobald die Zündung aus ist — genau dann soll das Gerät arbeiten."
+    },
+    {
+      "id": "SAM-10",
+      "type": "multi",
+      "category": "Zuordnung",
+      "prompt": "Welche Komponenten haben keinen festen Einbauort im Fahrzeug? Wähle alle zutreffenden.",
+      "options": [
+        { "id": "a", "text": "Funk-Handsender" },
+        { "id": "b", "text": "KeyCard" },
+        { "id": "c", "text": "KeyTag" },
+        { "id": "d", "text": "KeyStrap" },
+        { "id": "e", "text": "NFC Modul" },
+        { "id": "f", "text": "Pro-finder" },
+        { "id": "g", "text": "G.A.S.-pro III" }
+      ],
+      "correct": ["a", "b", "c", "d"],
+      "feedback": "Funk-Handsender, KeyCard, KeyTag und KeyStrap sind persönliche Zugangsmedien, keine Einbauteile. NFC Modul, Pro-finder und G.A.S.-pro III haben feste, jeweils genau vorgegebene Einbauorte."
+    }
+  ]
+}

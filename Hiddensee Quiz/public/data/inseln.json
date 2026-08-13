@@ -1,0 +1,13 @@
+{
+  "event": "campus-2026",
+  "titel": "THITRONIK Campus",
+  "inseln": [
+    {
+      "slug": "hiddensee",
+      "code": "HIDDENSEE",
+      "title": "Funkkomponenten",
+      "thema": "Magnetkontakt & Adapter",
+      "beschreibung": "Aufbau, Positionierung, Montage, Abstände, typische Fehler."
+    }
+  ]
+}

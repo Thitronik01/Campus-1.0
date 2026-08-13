@@ -1,0 +1,10 @@
+Dieser Ordner wird erzeugt und bei jedem Bau vollständig ersetzt.
+
+Änderungen gehören nach:
+  Campus 1.0/Campus Quiz/
+
+Neu bauen:
+  cd "Campus 1.0/Campus Quiz"
+  node tools/build-insel.js poel
+
+Erzeugt am: (siehe Dateidatum)

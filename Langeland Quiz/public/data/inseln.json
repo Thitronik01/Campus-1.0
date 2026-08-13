@@ -1,0 +1,13 @@
+{
+  "event": "campus-2026",
+  "titel": "THITRONIK Campus",
+  "inseln": [
+    {
+      "slug": "langeland",
+      "code": "LANGELAND",
+      "title": "Annahme & Übergabe",
+      "thema": "Der Kundenprozess",
+      "beschreibung": "Der gesamte Ablauf mit dem Kunden, nicht nur die Technik."
+    }
+  ]
+}

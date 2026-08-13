@@ -1,0 +1,13 @@
+{
+  "event": "campus-2026",
+  "titel": "THITRONIK Campus",
+  "inseln": [
+    {
+      "slug": "poel",
+      "code": "POEL",
+      "title": "Händlerbereich",
+      "thema": "Was finde ich wo?",
+      "beschreibung": "Informationen selbstständig auf der THITRONIK-Website finden."
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "event": "campus-2026",
+  "titel": "THITRONIK Campus",
+  "inseln": [
+    {
+      "slug": "samsoe",
+      "code": "SAMSØ",
+      "title": "Einbauorte",
+      "thema": "Wo kommt was hin?",
+      "beschreibung": "Geeignete und ungeeignete Einbauorte je nach Basisfahrzeug."
+    }
+  ]
+}

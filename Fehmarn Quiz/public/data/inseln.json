@@ -1,0 +1,13 @@
+{
+  "event": "campus-2026",
+  "titel": "THITRONIK Campus",
+  "inseln": [
+    {
+      "slug": "fehmarn",
+      "code": "FEHMARN",
+      "title": "Fehlersuche & Support",
+      "thema": "Diagnose",
+      "beschreibung": "Fehler erkennen, analysieren, Ursache bestimmen, Lösung wählen."
+    }
+  ]
+}

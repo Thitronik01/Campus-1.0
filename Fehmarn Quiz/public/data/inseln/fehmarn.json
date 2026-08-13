@@ -1,0 +1,158 @@
+{
+  "island": "fehmarn",
+  "code": "FEHMARN",
+  "title": "Fehlersuche & Support",
+  "subtitle": "Fehler erkennen, Ursache bestimmen, Lösung wählen",
+  "version": "1",
+  "lernziel": "Fehler erkennen, analysieren, Ursache bestimmen, Lösung auswählen, typische Supportfälle.",
+  "quellen": [
+    "referenz/stoerungsbeseitigung.md",
+    "_intern/support-fallaufnahme.md",
+    "produkte/wipro-iii.md",
+    "produkte/pro-finder.md"
+  ],
+  "internerHinweis": "Das bestehende FehlerQuiz (quiz_id fehlerquiz-de, 6 Bildfragen) läuft weiterhin separat und ist noch nicht in dieses System migriert. Dieser Fragensatz ist die anspruchsvollere zweite Ebene und ersetzt es nicht.",
+  "questions": [
+    {
+      "id": "FEH-01",
+      "type": "single",
+      "category": "Alarmspeicher lesen",
+      "prompt": "Nach dem Unscharfschalten blinkt die Status-LED wiederholt 9× mit 5 s Pause. Was war los und was tust du?",
+      "options": [
+        { "id": "a", "text": "Panikalarm — Handsender prüfen" },
+        { "id": "b", "text": "Störsender bzw. Anti-Jamming-Ereignis — Ort und Zeitpunkt dokumentieren, mögliche Funkstörquellen prüfen. Anti-Jamming (DIP 7) nicht pauschal abschalten" },
+        { "id": "c", "text": "Funk-Kabelschleife — Kabel prüfen" },
+        { "id": "d", "text": "Innenbeleuchtungseingang" }
+      ],
+      "correct": ["b"],
+      "feedback": "Der Blinkcode ist die einzige Quelle dafür, was tatsächlich ausgelöst hat. Anti-Jamming abzuschalten macht das Symptom weg, nicht die Ursache."
+    },
+    {
+      "id": "FEH-02",
+      "type": "single",
+      "category": "Kundenanruf",
+      "prompt": "„Seit dem Einbau schaltet mein Original-Fahrzeugschlüssel die Alarmanlage nicht mehr scharf — die Zentralverriegelung geht aber normal.“ Was prüfst du zuerst?",
+      "options": [
+        { "id": "a", "text": "CAN-High und CAN-Low vertauscht" },
+        { "id": "b", "text": "Ob DIP 5 bewusst auf ON steht — dann ist der Replay-Schutz aktiv und dieses Verhalten ist erwartungsgemäß" },
+        { "id": "c", "text": "Batterie des Fahrzeugschlüssels" },
+        { "id": "d", "text": "WiPro-Zentrale defekt, Austausch veranlassen" }
+      ],
+      "correct": ["b"],
+      "feedback": "Erst wenn DIP 5 auf OFF steht, geht es an Fahrzeugprofil, DIP-Stellung und CAN-Anschluss. Ein Austausch ohne diese Prüfung kostet Zeit und löst nichts."
+    },
+    {
+      "id": "FEH-03",
+      "type": "single",
+      "category": "Diagnose-Voraussetzung",
+      "prompt": "Ein Kunde meldet: „Die LED am Pro-finder blinkt gelb.“ Was fehlt dir für eine belastbare Aussage?",
+      "options": [
+        { "id": "a", "text": "Die vollständige Seriennummer mit Präfix 0699 — gelbes Blinken bedeutet vor und ab 0699-045 etwas Verschiedenes" },
+        { "id": "b", "text": "Die Farbe der Fahrzeuglackierung" },
+        { "id": "c", "text": "Der Mobilfunkanbieter reicht aus" },
+        { "id": "d", "text": "Nichts, gelbes Blinken heißt immer „Zielrufnummernspeicher leer“" }
+      ],
+      "correct": ["a"],
+      "feedback": "Derselbe Blinkcode bedeutet je nach Serienstand etwas anderes. Ohne vollständige Seriennummer ist jede Diagnose geraten."
+    },
+    {
+      "id": "FEH-04",
+      "type": "single",
+      "category": "Spannung",
+      "prompt": "Ein Pro-finder sendet eine Spannungswarnung und reagiert danach auf keine SMS mehr. Einordnung?",
+      "options": [
+        { "id": "a", "text": "Bei 11,2 V Warnung, danach Standby zum Tiefentladeschutz. Nach Laden und Versorgung über 12,5 V Rückkehr in den Normalbetrieb. Nicht automatisch defekt" },
+        { "id": "b", "text": "Modem defekt, Gerät einsenden" },
+        { "id": "c", "text": "SIM-Karte ist abgelaufen" },
+        { "id": "d", "text": "Sicherung mehrfach ziehen und wieder stecken" }
+      ],
+      "correct": ["a"],
+      "feedback": "Das Gerät schützt die Batterie — es ist heil. Ein Einsenden an dieser Stelle ist der teuerste mögliche Weg zum selben Ergebnis."
+    },
+    {
+      "id": "FEH-05",
+      "type": "single",
+      "category": "Sicherheitsgrenze",
+      "prompt": "Ein Kollege will die G.A.S.-pro III „mal eben mit dem Feuerzeug testen“.",
+      "options": [
+        { "id": "a", "text": "Kurz und aus 1 m Abstand ist ok" },
+        { "id": "b", "text": "Nicht durchführen — laut Kurzanleitung ist ein Anwendertest mit Feuerzeuggas wegen des Auswertungsalgorithmus nicht vorgesehen. Das Gerät hat einen automatischen Sensorselbsttest" },
+        { "id": "c", "text": "Nur bei der CO-Variante erlaubt" },
+        { "id": "d", "text": "Nur mit geöffnetem Fenster" }
+      ],
+      "correct": ["b"],
+      "feedback": "Der Selbsttest des Geräts ist die vorgesehene Prüfung. Ein Feuerzeugtest kann den Sensor beeinflussen und sagt über die tatsächliche Funktion nichts Belastbares aus."
+    },
+    {
+      "id": "FEH-06",
+      "type": "single",
+      "category": "Zustand richtig lesen",
+      "prompt": "Eine frisch angeschlossene G.A.S.-pro III pulsiert ca. 4 Minuten blau. Was heißt das?",
+      "options": [
+        { "id": "a", "text": "Sensorfehler" },
+        { "id": "b", "text": "Normale Vorheizphase — noch keine bestätigte Betriebsbereitschaft. Erst der grüne Normalzustand bestätigt sie" },
+        { "id": "c", "text": "Unterspannung" },
+        { "id": "d", "text": "Funkverbindung wird aufgebaut" }
+      ],
+      "correct": ["b"],
+      "feedback": "Wer die Werkstatt vor dem grünen Zustand verlässt, weiß nicht, ob das Gerät betriebsbereit geworden ist."
+    },
+    {
+      "id": "FEH-07",
+      "type": "single",
+      "category": "Nach Spannungsunterbrechung",
+      "prompt": "Nach einem Sicherungswechsel meldet die WiPro einen offenen Magnetkontakt, obwohl alle Klappen zu sind.",
+      "options": [
+        { "id": "a", "text": "Alle betroffenen Kontakte mehrmals vollständig öffnen und schließen — der Zustand wird dann neu eingelesen" },
+        { "id": "b", "text": "Alle Kontakte löschen und neu anlernen" },
+        { "id": "c", "text": "Zentrale zurücksetzen" },
+        { "id": "d", "text": "Batterien aller Kontakte tauschen" }
+      ],
+      "correct": ["a"],
+      "feedback": "Die Zentrale kennt den Zustand erst wieder, wenn jeder Kontakt einmal gesendet hat. Löschen und Neuanlernen erzeugt dasselbe Ergebnis mit erheblich mehr Aufwand."
+    },
+    {
+      "id": "FEH-08",
+      "type": "single",
+      "category": "Höchste Sicherheitsstufe",
+      "prompt": "Ein Fahrzeug wurde gestohlen, eine Abschalteinrichtung ist verbaut. Welcher Befehl ist zulässig?",
+      "options": [
+        { "id": "a", "text": "a an" },
+        { "id": "b", "text": "a 30" },
+        { "id": "c", "text": "kill — wartet, bis die GPS-Geschwindigkeit mindestens 5 Sekunden durchgehend 0 km/h beträgt, und schaltet erst dann Ausgang A" },
+        { "id": "d", "text": "status genügt" }
+      ],
+      "correct": ["c"],
+      "feedback": "„a an“ und „a N“ schalten ohne Geschwindigkeitsprüfung und sind zur Fahrzeugstilllegung unzulässig. Und ebenso wichtig: nicht selbst zum Fahrzeug fahren."
+    },
+    {
+      "id": "FEH-09",
+      "type": "single",
+      "category": "Alarmweiterleitung",
+      "prompt": "„Meine Frau bekommt die Alarm-SMS, ich nie.“ Was erklärst du?",
+      "options": [
+        { "id": "a", "text": "Alarm-SMS werden nacheinander versendet. Wird ein Testalarm sofort beendet, bleiben spätere Zielrufnummern unbenachrichtigt — einen kontrollierten Test nicht abbrechen" },
+        { "id": "b", "text": "Nur die Masternummer bekommt SMS" },
+        { "id": "c", "text": "Die zweite Nummer muss als Smartphone gekennzeichnet sein" },
+        { "id": "d", "text": "Maximal eine Zielrufnummer ist möglich" }
+      ],
+      "correct": ["a"],
+      "feedback": "Der vermeintliche Fehler entsteht meist beim Testen selbst. Den Test vollständig durchlaufen lassen, dann kommen alle Nummern dran."
+    },
+    {
+      "id": "FEH-10",
+      "type": "multi",
+      "category": "Support-Fallaufnahme",
+      "prompt": "Welche Angaben sind vor der Eskalation an THITRONIK Pflicht? Wähle alle zutreffenden.",
+      "options": [
+        { "id": "a", "text": "Vollständige Seriennummern aller beteiligten Komponenten" },
+        { "id": "b", "text": "Fahrzeug, Modelljahr, Aufbauart" },
+        { "id": "c", "text": "Erwartetes und tatsächliches Verhalten sowie die Bedienreihenfolge" },
+        { "id": "d", "text": "LED- und Blinkcode, Signalton, SMS-Wortlaut möglichst wörtlich" },
+        { "id": "e", "text": "SIM-PIN und Kundenpasswörter" }
+      ],
+      "correct": ["a", "b", "c", "d"],
+      "feedback": "Die ersten vier Angaben sind Pflicht. SIM-PIN und Kundenpasswörter gehören ausdrücklich nicht ins Ticket — sie werden für die Diagnose nicht gebraucht."
+    }
+  ]
+}

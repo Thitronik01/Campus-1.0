@@ -1,0 +1,13 @@
+{
+  "event": "campus-2026",
+  "titel": "THITRONIK Campus",
+  "inseln": [
+    {
+      "slug": "usedom",
+      "code": "USEDOM",
+      "title": "Verkaufsdisplay & Konfigurator",
+      "thema": "Vom Produkt zum System",
+      "beschreibung": "Produkte erklären, kombinieren, Kundenbedarf erkennen."
+    }
+  ]
+}

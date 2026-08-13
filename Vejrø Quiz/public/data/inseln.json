@@ -1,0 +1,13 @@
+{
+  "event": "campus-2026",
+  "titel": "THITRONIK Campus",
+  "inseln": [
+    {
+      "slug": "vejro",
+      "code": "VEJRØ",
+      "title": "CampLock & VanLock",
+      "thema": "Produktschulung",
+      "beschreibung": "Neue Produkte: Problem, Aufbau, Funktion, Verkaufsargumentation, Abgrenzung."
+    }
+  ]
+}
