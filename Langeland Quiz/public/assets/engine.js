@@ -688,6 +688,14 @@
     draft = { pairs: {} };
     q.left.forEach((item) => { draft.pairs[item.id] = ""; });
 
+    // Die Auswahlliste wird einmal je Frage gemischt, nicht je Zeile: alle
+    // Zeilen zeigen dieselbe Reihenfolge, sonst müsste man in jeder Zeile
+    // neu suchen. Vorher stand sie unverändert in der Reihenfolge der
+    // Quelldatei — und dort steht die Lösung meist der Reihe nach (erster
+    // linker Eintrag zum ersten rechten). Wer die Frage ein zweites Mal
+    // sah, konnte sich das Muster merken, ohne die Sache zu kennen.
+    const auswahl = shuffled(q.right);
+
     const list = document.createElement("div");
     list.className = "match-list";
 
@@ -704,7 +712,7 @@
       const select = document.createElement("select");
       select.id = `m-${item.id}`;
       select.innerHTML = `<option value="">Bitte wählen</option>` +
-        q.right.map((r) => `<option value="${escapeHtml(r.id)}">${escapeHtml(r.text)}</option>`).join("");
+        auswahl.map((r) => `<option value="${escapeHtml(r.id)}">${escapeHtml(r.text)}</option>`).join("");
       select.addEventListener("change", () => {
         if (state.revealed) return;
         draft.pairs[item.id] = select.value;
