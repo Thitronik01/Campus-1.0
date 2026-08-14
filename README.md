@@ -11,7 +11,7 @@
 
 <p align="center">
   <img alt="Inseln" src="https://img.shields.io/badge/Inseln-7-1D3661?style=flat-square">
-  <img alt="Fragen" src="https://img.shields.io/badge/Fragen-67-1D3661?style=flat-square">
+  <img alt="Fragen" src="https://img.shields.io/badge/Fragen-70-1D3661?style=flat-square">
   <img alt="Stack" src="https://img.shields.io/badge/Stack-Netlify%20%2B%20Supabase-3BA9D3?style=flat-square">
   <img alt="Framework" src="https://img.shields.io/badge/Framework-keins-AFCA05?style=flat-square">
   <img alt="Stand" src="https://img.shields.io/badge/Stand-vor%20dem%20ersten%20Deploy-CE132D?style=flat-square">
@@ -42,8 +42,8 @@ Praxis-Halbwahrheiten — Annahmen, die im Support später Zeit kosten.
 
 | Insel | Thema | Fragen |
 |---|---|---|
-| **VEJRØ** | CampLock & VanLock Fingerprint | 8 |
-| **POEL** | Händlerbereich — was finde ich wo | 9 |
+| **VEJRØ** | CampLock & VanLock Fingerprint | 10 |
+| **POEL** | Händlerbereich — was finde ich wo | 10 |
 | **HIDDENSEE** | Funk-Magnetkontakt & Adapter | 10 |
 | **SAMSØ** | Einbauorte im Fahrzeug | 10 |
 | **FEHMARN** | Fehlersuche & Support | 10 |
@@ -54,6 +54,19 @@ Fünf Fragetypen: Einfachauswahl, Mehrfachauswahl, Richtig/Falsch, Reihenfolge
 (antippen statt ziehen — mit Werkstatthandschuhen bedienbar) und Zuordnung.
 Bildfragen mit Großansicht sind gebaut; SAMSØ nutzt sie bereits mit echten
 Einbaufotos.
+
+**Nach jeder Antwort stehen drei Dinge da**, nicht mehr nur eines:
+
+```
+Richtig, weil …   →   Falsch gewählt?   →   Mitnehmen
+```
+
+„Falsch gewählt?" nennt die verbreiteten Fehlannahmen beim Namen — und zwar
+alle, nicht nur die eigene. Wer sich für die falsche Option entschieden hat,
+sieht seine hervorgehoben; wer richtig lag, erkennt in den übrigen die Sätze
+seiner Kunden wieder. „Mitnehmen" ist ein Satz zum Weitersagen: eine
+Faustregel, ein Handgriff oder eine Formulierung fürs Kundengespräch. Verkäufer
+merken sich keine Datenblätter, sie merken sich Sätze.
 
 ---
 
@@ -142,8 +155,8 @@ nicht in der Datenbank.
 **Fertig und geprüft**
 
 - Sieben Insel-Pakete, jedes einzeln bei Netlify hochladbar
-- 67 Fragen, alle fünf Fragetypen, aus dem Produktwissen mit Quellenangabe
-- 99 automatische Prüfungen über alle Pakete, dazu 26 der Bewertungslogik
+- 70 Fragen, alle fünf Fragetypen, aus dem Produktwissen mit Quellenangabe
+- 104 automatische Prüfungen über alle Pakete, dazu 26 der Bewertungslogik
 - Mobil geprüft bei 375 px: kein horizontaler Scroll, alle Trefferflächen ≥ 44 px
 - Farbkontraste am gerenderten Bild gemessen, alle über WCAG AA
 

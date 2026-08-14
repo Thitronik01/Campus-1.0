@@ -91,13 +91,13 @@ bestanden.**
 
 | Ordner | Insel | Fragen | Größe |
 |---|---|---|---|
-| `Vejrø Quiz` | VEJRØ | 8 | 184 KB |
-| `Poel Quiz` | POEL | 9 | 184 KB |
-| `Hiddensee Quiz` | HIDDENSEE | 10 | 185 KB |
-| `Samsø Quiz` | SAMSØ | 10 · 2 Bildfragen | 595 KB |
-| `Fehmarn Quiz` | FEHMARN | 10 | 187 KB |
-| `Usedom Quiz` | USEDOM | 10 | 186 KB |
-| `Langeland Quiz` | LANGELAND | 10 | 187 KB |
+| `Vejrø Quiz` | VEJRØ | 10 | 226 KB |
+| `Poel Quiz` | POEL | 10 | 226 KB |
+| `Hiddensee Quiz` | HIDDENSEE | 10 | 226 KB |
+| `Samsø Quiz` | SAMSØ | 10 · 2 Bildfragen | 658 KB |
+| `Fehmarn Quiz` | FEHMARN | 10 | 226 KB |
+| `Usedom Quiz` | USEDOM | 10 | 226 KB |
+| `Langeland Quiz` | LANGELAND | 10 | 226 KB |
 
 Zwei Bestandsquizze liegen daneben und sind **nicht** Teil dieses Systems:
 `FehlerQuiz/` (`fehlerquiz-de` v4, das laufende Bildquiz, 15 Einsendungen) und
@@ -198,6 +198,48 @@ Antippen nimmt sie zurück.
 **Warum Auswahlfelder bei `match`:** Vier Zeilen mal vier Optionen wären 16
 Schaltflächen auf einem 375-Pixel-Bildschirm. Das native Auswahlfeld bringt
 auf iOS und Android den systemeigenen Auswähler mit.
+
+> **Beim Formulieren: nie auf Positionen verweisen.** Die Engine mischt sowohl
+> die Fragen einer Insel als auch die Optionen einer Frage. Die Buchstaben
+> A–D vergibt sie erst nach dem Mischen, nach Anzeigeposition — nicht nach
+> `id`. Damit zeigen „die ersten drei", „Bild B" oder „der Klassiker aus
+> Frage 1" bei jedem Durchlauf woanders hin. Stattdessen den Inhalt benennen:
+> „der Kleiderschrank", „die Frage mit der falsch herum liegenden Platine".
+> Das gilt für `prompt`, `feedback`, `mitnehmen` und die Irrtumstexte
+> gleichermaßen — kein Werkzeug kann es prüfen.
+
+### Die Auflösung: drei Felder statt einem
+
+Seit Fragenkatalog v3 besteht die Auflösung aus drei Teilen. `feedback` sagt,
+**warum** die richtige Antwort richtig ist — das gab es vorher schon. Dazu
+kommen zwei optionale Felder:
+
+| Feld | Typ | Was es leistet |
+|---|---|---|
+| `irrtum` | Liste von `{ titel, text, fuer? }` | Rubrik „Falsch gewählt?" — je ein Absatz pro verbreiteter Fehlannahme |
+| `mitnehmen` | Text | Ein Satz: Faustregel, Handgriff oder Formulierung für das Kundengespräch |
+
+Beide sind optional, ältere Fragensätze laufen unverändert weiter.
+
+**Es erscheinen immer alle Irrtümer, nicht nur der eigene.** Wer richtig
+geklickt hat, erkennt in den übrigen die Sätze seiner Kunden wieder — das ist
+der eigentliche Zweck der Rubrik.
+
+`fuer` nennt die Optionen, um die es dem Absatz geht. Was daraus ein Treffer
+wird, leitet die Engine aus der Frage ab und muss nicht doppelt gepflegt
+werden: Eine **falsche** Option trifft zu, wenn sie angekreuzt wurde
+(„das hast du gewählt"), eine **richtige**, wenn sie fehlt („das hast du
+übersehen"). Der eigene Irrtum wird dadurch benannt und nicht nur eingefärbt —
+sonst käme die Markierung bei Farbenblindheit und im Vorlesemodus nicht an.
+
+Bei `order` und `match` gibt es keine Optionen, auf die sich `fuer` beziehen
+könnte. Dort bleiben die Absätze unmarkiert; `check-fragen.js` meldet ein
+gesetztes `fuer` bei diesen Typen als Hinweis.
+
+In `feedback`, `mitnehmen` und den Irrtumstexten macht `**Wort**` eine
+Hervorhebung. Escapt wird **vor** der Ersetzung — umgekehrt wäre es eine
+Lücke. Ein einzelnes `**` ohne Partner bleibt als Sternchen stehen und wird
+deshalb von `check-fragen.js` gemeldet.
 
 ### Bildfragen
 
@@ -449,9 +491,11 @@ Produktbilder für USEDOM und zwei Hiddensee-Fragen liegen bereits in
 `tools/bilder-aufbereiten.js` schicken.
 
 **3. POEL ist inhaltlich unbestätigt.** Die Menüpfade stammen aus dem
-öffentlichen Teil der Website. Der Händlerbereich ist login-geschützt; die
-Fragen 2, 3 und 6 müssen nach dem Login gegengeprüft werden. Der Hinweis steht
-in der JSON-Datei und erscheint auf dem Startbildschirm.
+öffentlichen Teil der Website. Der Händlerbereich ist login-geschützt;
+`POE-02`, `POE-03` und `POE-06` müssen nach dem Login gegengeprüft werden. Der
+Hinweis steht als `internerHinweis` in der JSON-Datei — er erscheint bewusst
+**nicht** im Quiz, sondern in der Ausgabe von `tools/check-fragen.js` und im
+erzeugten `FRAGENKATALOG.md`.
 
 **4. VEJRØ setzt CampLock/VanLock voraus.** Falls die Insel 2026 ein neueres,
 noch nicht dokumentiertes Produkt zeigt, muss der Fragensatz neu gebaut werden.
@@ -530,10 +574,24 @@ Antwortliste in anderer Form. Bei den heutigen Fragensätzen ist das durchgehend
 der Fall, weil die Kategorien Einzeletiketten sind („Der Klassiker", „Die
 Falle"). Die Auswertung je Frage passiert ohnehin in `campus_quiz_fragen`.
 
-**7. Die Fragen sind fachlich nicht gegengelesen.** Sie stammen aus
-`Wissen/04_Campus-Konzept/Insel-Quizfragen.md` und sind dort mit Quellenangabe
-belegt, aber niemand aus Technik oder Support hat sie freigegeben. Vor dem
-Campus einmal durchgehen — besonders die Zahlenwerte.
+**7. Die Fragen sind fachlich nicht gegengelesen.** Der Bestand entspricht
+Fragenkatalog v3: 70 Fragen, je zehn pro Insel, mit den Rubriken „Falsch
+gewählt?" und „Mitnehmen". Die Quellen stehen je Insel im Feld `quellen`, aber
+niemand aus Technik oder Support hat freigegeben.
+
+Zehn Angaben ließen sich im Wiki-Bestand **nicht** verifizieren und stehen
+namentlich im `internerHinweis` der betroffenen Insel: die VanLock-Angaben
+(`VEJ-01`, `VEJ-03`, `VEJ-08`), die Auslöseschwelle über 30 mm (`HID-03`), der
+Blinkcode 9× = Anti-Jamming (`FEH-01`, belegt ist nur 11× = Innenbeleuchtung),
+die Schwellen 11,2 V / 12,5 V (`FEH-04`), die 5 Sekunden Stillstand beim
+`kill`-Befehl (`FEH-08`), der Rückruf-Serienbereich 1286-008 bis 1286-012
+(`POE-05`), die 60 Sekunden bis zum Testalarm (`LAN-04`), die max. 7 m
+Zusatzsensorkabel (`SAM-08`), die Artikelnummern 101286 / 101287 (`USE-07`) und
+die 94 dB interne Sirene (`USE-06`).
+
+Zum Gegenlesen dient [`FRAGENKATALOG.md`](FRAGENKATALOG.md) — erzeugt mit
+`node tools/fragenkatalog.js`, nennt alle Lösungen und gehört nicht in
+Teilnehmerhand.
 
 **8. Der Abbrechen-Knopf nutzt `confirm()`.** Funktioniert, sieht aber nicht
 nach dem übrigen Bogen aus. Falls es stört, ist es ein kleiner Umbau auf einen
