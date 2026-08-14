@@ -75,14 +75,15 @@ merken sich keine Datenblätter, sie merken sich Sätze.
 ```
 Campus 1.0/
 ├── Campus Quiz/          ← die Quelle: Engine, Fragensätze, Werkzeuge
-├── <Insel> Quiz/         ← erzeugte Netlify-Pakete, direkt hochladbar
+├── Campus Gesamtpaket/   ← erzeugt: alle sieben Inseln auf einer Site
+├── <Insel> Quiz/         ← erzeugt: eine Insel je Site
 ├── Wissen/               ← 82 Wiki-Artikel, Design-System, 107 Mediendateien
 ├── FehlerQuiz/           ← Bestandsquiz, läuft getrennt weiter
 └── Pro-finder Quiz/      ← Bestandsquiz, läuft getrennt weiter
 ```
 
 **Eine Engine, sieben Fragensätze.** Geändert wird ausschließlich in
-[`Campus Quiz/`](Campus%20Quiz/). Die Insel-Ordner sind **erzeugt** — jeder
+[`Campus Quiz/`](Campus%20Quiz/). Alle Paket-Ordner sind **erzeugt** — jeder
 enthält einen `ZIEL-ORDNER-WIRD-ERZEUGT.txt`, und wer dort hineinbearbeitet,
 verliert es beim nächsten Bau.
 
@@ -90,7 +91,12 @@ verliert es beim nächsten Bau.
 |---|---|
 | [`Campus Quiz/`](Campus%20Quiz/) | Engine, die sieben Fragensätze, Netlify-Function, Werkzeuge, [ausführliche Doku](Campus%20Quiz/README.md) |
 | [`Wissen/`](Wissen/) | Produktwissen, Design-System, Medien, Campus-Konzept — [Einstieg](Wissen/README.md) |
+| `Campus Gesamtpaket/` | Alle sieben Inseln auf **einer** Site, mit eigener `ANLEITUNG.md` |
 | `<Insel> Quiz/` | Fertiges Netlify-Paket je Insel, mit eigener `ANLEITUNG.md` |
+
+**Für den Deploy: `Campus Gesamtpaket/`, nicht `Campus Quiz/`.** Die Quelle
+wäre technisch auch lauffähig, enthält aber den Fragenkatalog mit sämtlichen
+Lösungen. Das erzeugte Paket enthält nur, was ausgeliefert werden soll.
 
 Der **Feedbackbogen** liegt in einem eigenen Repository:
 [Thitronik-Campus-Feedbackbogen](https://github.com/Thitronik01/Thitronik-Campus-Feedbackbogen).
@@ -121,13 +127,19 @@ node tools/check-fragen.js
 node tools/test-function.js
 ```
 
+Das Paket für den Deploy bauen — alle sieben Inseln auf einer Site:
+
+```bash
+node tools/build-insel.js gesamt
+```
+
 Ein einzelnes Insel-Paket bauen:
 
 ```bash
 node tools/build-insel.js samsoe
 ```
 
-Alle sieben auf einmal: `node tools/build-insel.js alle`
+Alle sieben Einzelpakete auf einmal: `node tools/build-insel.js alle`
 
 ---
 
@@ -154,16 +166,16 @@ nicht in der Datenbank.
 
 **Fertig und geprüft**
 
-- Sieben Insel-Pakete, jedes einzeln bei Netlify hochladbar
+- Ein Gesamtpaket (alle Inseln, eine Site) **und** sieben Einzelpakete, alle direkt hochladbar
 - 70 Fragen, alle fünf Fragetypen, aus dem Produktwissen mit Quellenangabe
-- 104 automatische Prüfungen über alle Pakete, dazu 26 der Bewertungslogik
+- 104 automatische Prüfungen je Paketform, dazu 26 der Bewertungslogik
 - Mobil geprüft bei 375 px: kein horizontaler Scroll, alle Trefferflächen ≥ 44 px
 - Farbkontraste am gerenderten Bild gemessen, alle über WCAG AA
 
 **Noch offen**
 
 - ⛔ **Die Datenbank-Migration ist nicht eingespielt** — bis dahin speichert kein Paket etwas
-- Entscheidung: sieben getrennte Netlify-Sites oder eine mit sieben Routen
+- Entscheidung: sieben getrennte Netlify-Sites oder eine mit sieben Routen. Beide Wege sind gebaut, die Empfehlung steht in [`Campus Quiz/README.md`](Campus%20Quiz/README.md)
 - Bilder für vier Inseln, siehe [Wunschliste](Campus%20Quiz/BILDER-WUNSCHLISTE.md)
 - Fachliche Freigabe der Fragen
 

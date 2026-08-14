@@ -84,10 +84,21 @@ node tools/test-paket.js "../Samsø Quiz" samsoe
 
 Prüft die Function des Pakets ohne Datenbank: Bewertung aller vorkommenden
 Fragetypen, und ob ein manipuliertes Ergebnis abgewiesen wird. Je nach
-Fragetypen 13 bis 15 Prüfungen. Über alle sieben Pakete: **99 Prüfungen, alle
+Fragetypen 14 bis 16 Prüfungen. Über alle sieben Pakete: **104 Prüfungen, alle
 bestanden.**
 
-### Die sieben Pakete
+Das Gesamtpaket wird mit demselben Werkzeug geprüft, einmal je Insel:
+
+```bash
+node tools/test-paket.js "../Campus Gesamtpaket" hiddensee
+```
+
+Eine Probe darin passt sich der Paketform an: „eine fremde Insel wird
+abgewiesen" braucht im Einzelpaket nur irgendeine andere Insel, im Gesamtpaket
+sind alle sieben gültig — dort nimmt der Test einen Namen, den es nirgends
+gibt.
+
+### Die Pakete
 
 | Ordner | Insel | Fragen | Größe |
 |---|---|---|---|
@@ -98,6 +109,31 @@ bestanden.**
 | `Fehmarn Quiz` | FEHMARN | 10 | 226 KB |
 | `Usedom Quiz` | USEDOM | 10 | 226 KB |
 | `Langeland Quiz` | LANGELAND | 10 | 226 KB |
+| `Campus Gesamtpaket` | **alle sieben** | 70 · 2 Bildfragen | 765 KB |
+
+### Das Gesamtpaket
+
+```bash
+node tools/build-insel.js gesamt
+```
+
+Erzeugt `Campus Gesamtpaket/`: alle sieben Inseln auf einer Site, Übersicht
+unter `/quiz`, jede Insel unter `/quiz/<slug>`.
+
+Der Unterschied zum Einzelpaket liegt fast ganz in den Daten. Der Katalog
+bleibt vollständig — daran erkennt die Engine, dass sie die Übersicht zeigen
+soll statt direkt in eine Insel zu springen. Die Function wird **unverändert**
+kopiert: Sie bindet ohnehin alle sieben ein, und ihre `require`-Pfade sind
+relativ zu `netlify/functions/`, im Paket also dieselben wie hier.
+
+> **Warum es dieses Paket überhaupt gibt.** `Campus Quiz/` wäre für sich schon
+> eine lauffähige Site — `netlify.toml`, Function und Katalog sind vollständig.
+> Nur liegen daneben `FRAGENKATALOG.md` mit sämtlichen Lösungen, die Werkzeuge
+> und das Migrations-SQL. Ausgeliefert würde davon nichts, weil `publish` auf
+> `public` zeigt. Aber das hängt dann an einer einzigen Zeile, und bei einem
+> Quiz ist ein öffentlicher Lösungsschlüssel der eine Fehler, der alles davor
+> wertlos macht. Das Gesamtpaket enthält von vornherein nur, was ausgeliefert
+> werden soll.
 
 Zwei Bestandsquizze liegen daneben und sind **nicht** Teil dieses Systems:
 `FehlerQuiz/` (`fehlerquiz-de` v4, das laufende Bildquiz, 15 Einsendungen) und
@@ -111,10 +147,15 @@ besser vorher trifft als am Schulungstag:
 
 | | Sieben eigene Sites | Eine Site, sieben Routen |
 |---|---|---|
-| Was hochgeladen wird | die sieben Insel-Ordner | nur `Campus Quiz/` |
+| Was hochgeladen wird | die sieben Insel-Ordner | `Campus Gesamtpaket/` |
 | Adresse je Station | eigene Domain | `…/quiz/hiddensee` |
 | Teilnehmerdaten | **an jeder Insel neu eintippen** | einmal am Tag |
+| Fortschritt über die Inseln | nicht sichtbar | Übersicht zeigt „Abgeschlossen · 90 %" |
+| Umgebungsvariablen | 7 × 2 setzen | 2 setzen |
 | Insel unabhängig ändern | ja, nur diese neu hochladen | nein, alles zusammen |
+
+> **Nicht `Campus Quiz/` hochladen.** Das ist die Quelle mit dem
+> Lösungsschlüssel darin — für den Deploy ist `Campus Gesamtpaket/` gebaut.
 
 Bei sieben Sites tippt jeder Teilnehmer Name, Betrieb, Händlernummer und
 Tätigkeitsbereich **siebenmal** — bei zwanzig Teilnehmern sind das 560
