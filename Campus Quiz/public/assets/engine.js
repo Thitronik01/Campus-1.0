@@ -23,6 +23,13 @@
    *  Gleiche Konvention wie im Feedbackbogen — für Tests immer verwenden. */
   const DEMO = new URLSearchParams(location.search).get("demo") === "1";
 
+  /** Wer Bewegung abbestellt hat, bekommt auch keine weichen Sprünge. */
+  const REDUZIERT = window.matchMedia
+    ? window.matchMedia("(prefers-reduced-motion: reduce)")
+    : { matches: false };
+
+  const scrollArt = () => (REDUZIERT.matches ? "auto" : "smooth");
+
   // ------------------------------------------------------------------ DOM ---
 
   const $ = (id) => document.getElementById(id);
@@ -117,7 +124,8 @@
     questionStartedAt: null,
     revealed: false,
     lastPayload: null,
-    isRepeatRound: false
+    isRepeatRound: false,
+    weiterFrei: 0       // Zeitpunkt, ab dem "Nächste Frage" wieder zählt
   };
 
   // ------------------------------------------------------------- Helfer ----
@@ -356,15 +364,27 @@
 
   function setFieldError(input, errorNode, message) {
     const field = input.closest(".field");
+
+    // Die Meldung wird an das Feld gebunden. Ohne das meldet ein Screenreader
+    // beim Sprung ins Feld nur "ungültig" und verschweigt den Grund — die
+    // Meldung steht zwar daneben, gehört aber zu nichts. Ein vorhandener
+    // Hilfetext ("Genau fünf Ziffern") bleibt dabei erhalten.
+    const beschreibungen = (input.getAttribute("aria-describedby") || "")
+      .split(/\s+/)
+      .filter((id) => id && id !== errorNode.id);
+
     if (message) {
       field.classList.add("has-error");
       errorNode.textContent = message;
       errorNode.hidden = false;
       input.setAttribute("aria-invalid", "true");
+      input.setAttribute("aria-describedby", beschreibungen.concat(errorNode.id).join(" "));
     } else {
       field.classList.remove("has-error");
       errorNode.hidden = true;
       input.removeAttribute("aria-invalid");
+      if (beschreibungen.length) input.setAttribute("aria-describedby", beschreibungen.join(" "));
+      else input.removeAttribute("aria-describedby");
     }
   }
 
@@ -454,7 +474,13 @@
     el.btnCheck.disabled = true;
 
     renderInput(q);
-    el.qTitle.focus();
+
+    // preventScroll, weil der Browser sonst nur so weit scrollt, bis die
+    // Überschrift eben im Bild ist — bei einer langen Frage steht man dann
+    // mitten im Text. Der Blick gehört an den Anfang der Frage.
+    el.qTitle.focus({ preventScroll: true });
+    el.screens.quiz.scrollIntoView({ block: "start", behavior: scrollArt() });
+
     preloadNext();
   }
 
@@ -783,10 +809,24 @@
 
     el.qFeedback.hidden = false;
 
+    // Der Balken zählt beantwortete Fragen, nicht aufgerufene. Vorher rührte
+    // er sich nach der ersten Antwort nicht: er stand auf null, obwohl gerade
+    // eine Frage fertig war.
+    const beantwortet = Math.round(((state.index + 1) / state.questions.length) * 100);
+    el.qProgressFill.style.width = `${beantwortet}%`;
+    el.qProgress.setAttribute("aria-valuenow", String(beantwortet));
+
     const last = state.index === state.questions.length - 1;
     el.btnCheck.textContent = last ? "Auswertung ansehen" : "Nächste Frage";
     el.btnCheck.disabled = false;
     el.qStatus.textContent = "";
+
+    // Auflösung in den Blick holen, Nachtippen kurz verschlucken. Der Knopf
+    // wechselt an derselben Stelle von "Antwort prüfen" auf "Nächste Frage" —
+    // ein zweiter Tipp aus Gewohnheit übersprang bisher genau das, wofür der
+    // Check gemacht ist.
+    state.weiterFrei = Date.now() + 450;
+    el.qFeedback.scrollIntoView({ block: "nearest", behavior: scrollArt() });
   }
 
   function paintReveal(q, answer) {
@@ -815,7 +855,22 @@
         const id = node.dataset.id;
         const select = node.querySelector("select");
         select.disabled = true;
-        node.classList.add((answer.pairs || {})[id] === q.correct[id] ? "is-correct" : "is-wrong");
+        const richtig = (answer.pairs || {})[id] === q.correct[id];
+        node.classList.add(richtig ? "is-correct" : "is-wrong");
+
+        // Bei einer falschen Zuordnung genügt Rot nicht. Die Gesamtauflösung
+        // nennt alle Paare in einer einzigen Zeile ("A → 1 · B → 2 · C → 3");
+        // welches davon zu dieser Zeile gehört, muss man sich heraussuchen.
+        // Also steht es an der Zeile, um die es geht.
+        if (!richtig) {
+          const ziel = (q.right.find((r) => r.id === q.correct[id]) || {}).text;
+          if (ziel) {
+            const loesung = document.createElement("p");
+            loesung.className = "match-solution";
+            loesung.textContent = `Richtig wäre: ${ziel}`;
+            node.appendChild(loesung);
+          }
+        }
       });
     }
   }
@@ -841,7 +896,7 @@
     el.qProgressFill.style.width = "100%";
     el.rPercent.textContent = `${percent} %`;
     el.rFraction.textContent = `${score} von ${total} richtig`;
-    el.rRing.style.setProperty("--pct", String(percent));
+    el.rRing.style.setProperty("--pct", "0");
     el.rDuration.textContent = formatDuration(seconds);
     el.rIsland.textContent = state.island.code;
 
@@ -867,6 +922,16 @@
     }
 
     show("result");
+
+    // Der Ring steht erst auf 0, ein erzwungener Reflow macht diesen Stand
+    // zum Ausgangswert, dann folgt der Zielwert — der Übergang läuft.
+    // Bewusst synchron statt in requestAnimationFrame: rAF ruht in einem
+    // Tab, das gerade nicht im Vordergrund ist. Wer beim Absenden kurz die
+    // App wechselt, käme sonst auf einen Ring zurück, der auf null steht,
+    // während daneben "80 %" steht. Hier hängt nur die Bewegung am Übergang,
+    // nie der Endstand.
+    void el.rRing.offsetWidth;
+    el.rRing.style.setProperty("--pct", String(percent));
   }
 
   function renderTopics() {
@@ -1055,8 +1120,12 @@
   });
 
   el.btnCheck.addEventListener("click", () => {
-    if (state.revealed) advance();
-    else reveal();
+    if (!state.revealed) { reveal(); return; }
+    // Der Knopf bleibt bedienbar und behält den Fokus, nur der zu frühe
+    // zweite Tipp zählt nicht. Ein disabled hätte Tastaturnutzern den Fokus
+    // aus der Hand genommen.
+    if (Date.now() < state.weiterFrei) return;
+    advance();
   });
 
   el.btnAbort.addEventListener("click", () => {

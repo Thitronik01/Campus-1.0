@@ -69,8 +69,8 @@
 
             <div class="field">
               <label for="f-number">Händlernummer</label>
-              <input id="f-number" name="dealerNumber" type="text" inputmode="numeric" autocomplete="off" enterkeyhint="next" required>
-              <small>Genau fünf Ziffern</small>
+              <input id="f-number" name="dealerNumber" type="text" inputmode="numeric" autocomplete="off" enterkeyhint="next" required aria-describedby="h-number">
+              <small id="h-number">Genau fünf Ziffern</small>
               <p class="field-error" id="e-number" hidden></p>
             </div>
 
@@ -131,7 +131,7 @@
           </div>
 
           <div class="quiz-actions">
-            <p class="selection-status" id="q-status"></p>
+            <p class="selection-status" id="q-status" role="status" aria-live="polite"></p>
             <button class="btn btn-primary" id="btn-check" type="button" disabled>Antwort prüfen</button>
           </div>
         </div>
