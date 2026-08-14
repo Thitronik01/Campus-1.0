@@ -117,6 +117,33 @@ function antworten(frage) {
   return "";
 }
 
+/** Die Rubrik „Falsch gewählt?".
+ *
+ *  Jeder Absatz nennt hinter `fuer` die Optionen, auf die er sich bezieht —
+ *  daraus entscheidet die Engine, wessen eigener Irrtum hervorgehoben wird.
+ *  Dass diese Zuordnung stimmt, kann kein Werkzeug prüfen: Ein Absatz, der
+ *  auf die falsche Option zeigt, ist gültiges JSON und trotzdem falsch. Also
+ *  steht die Zuordnung im Klartext hier, wo sie gegengelesen wird. */
+function irrtuemer(frage) {
+  if (!Array.isArray(frage.irrtum) || !frage.irrtum.length) return "";
+
+  const benennung = (id) => {
+    if (frage.type === "truefalse") return id === "richtig" ? "Richtig" : "Falsch";
+    const option = (frage.options || []).find((o) => o.id === id);
+    if (!option) return id;
+    return option.text || option.imageAlt || id;
+  };
+
+  const zeilen = ["**Falsch gewählt?**", ""];
+  frage.irrtum.forEach((eintrag) => {
+    zeilen.push(`- *${eintrag.titel}:* ${eintrag.text}`);
+    if (Array.isArray(eintrag.fuer) && eintrag.fuer.length) {
+      zeilen.push(`  <br>↳ bezogen auf: ${eintrag.fuer.map((id) => `„${benennung(id)}“`).join(" · ")}`);
+    }
+  });
+  return zeilen.join("\n");
+}
+
 function frageBlock(frage, nummer) {
   const teile = [];
   teile.push(`#### ${nummer}. ${frage.prompt}`);
@@ -143,6 +170,20 @@ function frageBlock(frage, nummer) {
   if (frage.feedbackMedia && frage.feedbackMedia.src) {
     const bu = frage.feedbackMedia.caption || frage.feedbackMedia.alt || "";
     teile.push(`**Bild zur Auflösung:** \`${frage.feedbackMedia.src}\`${bu ? ` — ${bu}` : ""}`);
+    teile.push("");
+  }
+
+  // Reihenfolge wie im Quiz: erst die Auflösung, dann die Irrtümer, zuletzt
+  // der Merksatz. Wer hier gegenliest, sieht dieselbe Abfolge wie der
+  // Teilnehmer auf dem Telefon.
+  const irr = irrtuemer(frage);
+  if (irr) {
+    teile.push(irr);
+    teile.push("");
+  }
+
+  if (frage.mitnehmen) {
+    teile.push(`**Mitnehmen:** ${frage.mitnehmen}`);
     teile.push("");
   }
 

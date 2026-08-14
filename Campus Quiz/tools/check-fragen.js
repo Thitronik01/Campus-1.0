@@ -96,6 +96,67 @@ for (const island of catalog.inseln) {
     if (!q.feedback) warn(where(q.id), "Kein Feedback-Text — die Sofortauflösung bleibt dann leer.");
     if (!q.category) warn(where(q.id), "Keine category — fehlt später in der Themenauswertung.");
 
+    // --- „Falsch gewählt?" und „Mitnehmen" ---------------------------------
+    // Beide Felder sind optional, damit ältere Fragensätze weiterlaufen.
+    // Sobald sie da sind, muss die Form stimmen: Ein "fuer" auf eine Option,
+    // die es nicht gibt, bleibt sonst still unmarkiert — die Frage sieht
+    // richtig aus, und der Teilnehmer bekommt ausgerechnet seinen eigenen
+    // Irrtum nie angestrichen.
+    const irrtumTexte = [];
+
+    if (q.irrtum === undefined) {
+      warn(where(q.id), 'Kein irrtum — die Rubrik "Falsch gewählt?" bleibt bei dieser Frage leer.');
+    } else if (!Array.isArray(q.irrtum) || !q.irrtum.length) {
+      fail(where(q.id), "irrtum muss eine nicht leere Liste sein.");
+    } else {
+      const irrtumIds = q.type === "truefalse"
+        ? ["richtig", "falsch"]
+        : (q.options || []).map((o) => o.id);
+
+      q.irrtum.forEach((eintrag, i) => {
+        const stelle = `irrtum[${i}]`;
+        if (!eintrag || typeof eintrag !== "object" || Array.isArray(eintrag)) {
+          fail(where(q.id), `${stelle} ist kein Objekt.`);
+          return;
+        }
+        if (!eintrag.titel) fail(where(q.id), `${stelle}: titel fehlt.`);
+        if (!eintrag.text) fail(where(q.id), `${stelle}: text fehlt.`);
+        irrtumTexte.push([`${stelle}.titel`, eintrag.titel], [`${stelle}.text`, eintrag.text]);
+
+        if (eintrag.fuer === undefined) return;
+        if (!Array.isArray(eintrag.fuer) || !eintrag.fuer.length) {
+          fail(where(q.id), `${stelle}: fuer muss eine nicht leere Liste sein — oder ganz entfallen.`);
+          return;
+        }
+        if (!["single", "multi", "truefalse"].includes(q.type)) {
+          warn(where(q.id), `${stelle}: fuer wird bei Typ "${q.type}" nicht ausgewertet — der Absatz bleibt unmarkiert.`);
+          return;
+        }
+        eintrag.fuer.forEach((id) => {
+          if (!irrtumIds.includes(id)) {
+            fail(where(q.id), `${stelle}: fuer verweist auf unbekannte Option "${id}".`);
+          }
+        });
+      });
+    }
+
+    if (q.mitnehmen === undefined) {
+      warn(where(q.id), "Kein mitnehmen — der Merksatz fehlt bei dieser Frage.");
+    } else if (typeof q.mitnehmen !== "string" || !q.mitnehmen.trim()) {
+      fail(where(q.id), "mitnehmen muss ein nicht leerer Text sein.");
+    }
+
+    // Die Engine macht aus **Wort** eine Hervorhebung. Ein einzelnes **
+    // findet keinen Partner und bleibt als Sternchen im Text stehen — das
+    // sieht auf dem Telefon nach einem Tippfehler aus und ist einer.
+    [["feedback", q.feedback], ["mitnehmen", q.mitnehmen], ...irrtumTexte]
+      .forEach(([feld, text]) => {
+        if (typeof text !== "string") return;
+        if ((text.match(/\*\*/g) || []).length % 2) {
+          warn(where(q.id), `${feld}: ungerade Anzahl **, die Hervorhebung bleibt als Sternchen stehen.`);
+        }
+      });
+
     // --- Bilder: Pfad muss existieren, Alt-Text ist Pflicht -----------------
     const bilder = [];
     if (q.media && q.media.src) bilder.push({ src: q.media.src, alt: q.media.alt, feld: "media" });
