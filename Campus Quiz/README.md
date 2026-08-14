@@ -464,10 +464,19 @@ Verbindlich ist die Markenpalette, nicht die Empfehlung eines Design-Skills.
 | Navy | `#1D3661` | Flächen, primäre Buttons, Überschriften |
 | Cyan | `#3BA9D3` | Akzente, Fokus-Ring, Fortschritt |
 | Lime | `#AFCA05` | Richtig-Zustand, Bestwert. Nie als Textfarbe auf Hell. |
-| Rot | `#CE132D` | Falsch-Zustand und Fehler. Sonst nicht. |
+| Rot | `#CE132D` | Falsch-Zustand, Fehler — und der Abbrechen-Knopf. Sonst nicht. |
 
 Für Text auf hellem Grund gibt es `--th-lime-text` (`#6B7D00`), weil `#AFCA05`
 auf Weiß keinen AA-Kontrast erreicht.
+
+**Warum „Abbrechen" rot sein darf.** Die Regel lautete ursprünglich „Falsch-
+Zustand und Fehler, sonst nicht". Rot am Abbrechen-Knopf ist trotzdem kein
+neuer Bruch: Der Knopf war schon vorher rot spezifiziert — nur ausschließlich
+im `:hover`. Genau die Rückmeldung erreicht das Telefon in der Werkstatt nie,
+dort wird getippt. Im Ruhezustand blieb ein Rahmen in `--th-line` (`#DDE2E7`),
+der auf Weiß auf **1,2 : 1** kommt und praktisch unsichtbar ist. Die Farbe ist
+jetzt dort, wo sie ankommt. Inhaltlich passt sie: Abbrechen verwirft alle
+bisherigen Antworten.
 
 **Logo:** `assets/thitronik-logo.png` — die Navy-Wortmarke mit rotem Segel und
 „Alarmtechnik made in Germany", dieselbe, die das Fehmarn-Quiz im Kopf trägt.
@@ -485,7 +494,14 @@ Bild nachgemessen: Kachelbuchstaben 11,98 / 7,02 / 10,14 / 5,59 zu 1,
 Antworttext 18,88 zu 1. Alle über AA.
 
 Alle Trefferflächen liegen bei mindestens 44 × 44 px, auch die Nebenbuttons.
-WCAG 2.5.8 verlangt weniger, aber die Bedienung findet am Fahrzeug statt.
+WCAG 2.5.8 verlangt weniger, aber die Bedienung findet am Fahrzeug statt. Der
+Abbrechen-Knopf misst 120 × 44 px, Schrift und Rahmen kommen auf 5,59 : 1 —
+über AA für Text und über den 3 : 1, die WCAG 1.4.11 für Bedienelemente
+verlangt.
+
+Sein `×` steht als eigenes `<span aria-hidden="true">` im Markup, nicht als
+`::before`. Erzeugte Inhalte liest ein Screenreader je nach Programm mit —
+daraus würde „Multiplikationszeichen Abbrechen".
 
 Light Mode ist verbindlich: Der Campus findet in hellen Räumen und draußen
 statt. Ein Dark Mode ist bewusst nicht gebaut.
