@@ -365,8 +365,27 @@ main { flex: 1 0 auto; }
 
 .btn-tertiary { background: transparent; color: var(--th-navy); text-decoration: underline; text-underline-offset: 3px; }
 
-.btn-ghost { border-color: var(--th-line); background: #fff; color: var(--th-muted); }
-.btn-ghost:hover:not(:disabled) { border-color: var(--th-red); color: var(--th-red); }
+/* Abbrechen. Der Knopf trug seine Bedeutung bisher nur im :hover — rote
+   Schrift, roter Rand. Genau die Rückmeldung erreicht das Telefon in der
+   Werkstatt nie: dort wird getippt, nicht gehovert. Im Ruhezustand blieb
+   damit ein Rahmen in --th-line (#DDE2E7), der auf Weiß auf 1,2:1 kommt und
+   praktisch unsichtbar ist.
+
+   Deshalb steht die Bedeutung jetzt im Ruhezustand: rote Schrift, roter Rand,
+   dazu ein × als Piktogramm. Bewusst nur umrandet und klein — der Knopf soll
+   auffindbar sein, aber nicht mit "Antwort prüfen" um Aufmerksamkeit
+   konkurrieren. Er verwirft schließlich alle bisherigen Antworten. */
+.btn-ghost {
+  border-color: var(--th-red);
+  background: #fff;
+  color: var(--th-red);
+}
+/* Das × steht als aria-hidden im Markup, nicht als ::before. Erzeugte Inhalte
+   liest ein Screenreader je nach Programm mit — daraus würde "Multiplikations-
+   zeichen Abbrechen". */
+.btn-ghost .btn-zeichen { margin-right: -2px; font-size: 1.25em; line-height: 1; }
+.btn-ghost:hover:not(:disabled) { background: var(--error-bg); }
+.btn-ghost:focus-visible { outline-color: var(--th-red); }
 
 /* Auch die Nebenbuttons bleiben auf 44 px. Das Design-System schreibt für den
    Campus-Kontext 44×44 vor — WCAG 2.5.8 verlangt weniger, aber die Bedienung
