@@ -11,7 +11,11 @@
   --th-navy-deep: #0A2747;
   --th-blue: #3BA9D3;
   --th-lime: #AFCA05;
-  --th-lime-text: #6B7D00;   /* AA-tauglich für Text auf hell */
+  /* Zwei eigene Tokens für Text auf hellem Grund. Die Markenfarben selbst
+     sind dafür zu hell: Cyan erreicht auf Weiß 2,69:1 und Lime noch weniger.
+     Für Flächen, Ränder und Akzente weiterhin --th-blue und --th-lime. */
+  --th-blue-text: #1B7699;   /* 5,15:1 auf Weiß */
+  --th-lime-text: #5F7000;   /* 5,47:1 auf Weiß, 5,02:1 auf --success-bg */
   --th-red: #CE132D;
   --th-white: #FFFFFF;
   --th-soft: #F0F0F0;
@@ -145,7 +149,7 @@ h2 { font-size: clamp(1.15rem, 1.05rem + .4vw, 1.5rem); letter-spacing: -.015em;
 .brand-copy { min-width: 0; padding-left: 14px; border-left: 1px solid var(--th-line); }
 .brand-copy small {
   display: block;
-  color: var(--th-blue);
+  color: var(--th-blue-text);
   font-size: .72rem;
   font-weight: 800;
   letter-spacing: .1em;
@@ -250,7 +254,7 @@ main { flex: 1 0 auto; }
   transform: translateY(-2px);
 }
 .island-card .i-code {
-  color: var(--th-blue);
+  color: var(--th-blue-text);
   font-size: .74rem;
   font-weight: 800;
   letter-spacing: .12em;
