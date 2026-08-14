@@ -46,6 +46,14 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+/* Schriftkette bewusst ohne Panton und ohne schmallaufende Fallbacks.
+   Panton liegt in keinem Paket bei — die Kette fiel deshalb auf dem iPhone auf
+   "Arial Narrow" und auf Android auf "Roboto Condensed" durch: ausgerechnet auf
+   den Geräten, auf denen der Campus stattfindet, lief das Quiz kondensiert.
+   Das Design-System nennt Inter mit System-Fallback (DESIGN_SYSTEM.md, 3).
+   Eine Schriftdatei mitzuliefern hieße rund 100 KB extra im Hallen-WLAN für
+   einen Unterschied, den das Logo ohnehin trägt — also die Systemschrift:
+   San Francisco auf iOS, Roboto auf Android, Segoe UI auf Windows. */
 body {
   min-height: 100%;
   margin: 0;
@@ -53,10 +61,10 @@ body {
   background:
     radial-gradient(circle at 88% 6%, rgba(59, 169, 211, .16), transparent 26rem),
     linear-gradient(180deg, #E7F0F7 0%, #F7F8FA 46%, #EEF1F4 100%);
-  background-attachment: fixed;
-  font-family: Panton, "Arial Narrow", "Roboto Condensed", Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  background-repeat: no-repeat;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   font-size: 16px;
-  line-height: 1.5;
+  line-height: 1.55;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -64,7 +72,12 @@ button, input, select, textarea { font: inherit; color: inherit; }
 button { -webkit-tap-highlight-color: transparent; cursor: pointer; }
 img { display: block; max-width: 100%; }
 [hidden] { display: none !important; }
-:focus-visible { outline: 3px solid var(--th-blue); outline-offset: 3px; }
+/* Der Ring ist Navy, nicht Cyan. Das Design-System nennt Cyan und erlaubt
+   Abweichung, "wo Cyan verschwindet" — auf Weiß tut es das messbar: #3BA9D3
+   erreicht gegen #FFFFFF nur 2,69:1 und verfehlt die 3:1 aus WCAG 2.4.11.
+   Navy liegt bei 12:1. Auf der dunklen Ergebniskarte kehrt sich das um. */
+:focus-visible { outline: 3px solid var(--th-navy); outline-offset: 3px; }
+.score-card :focus-visible { outline-color: var(--th-white); }
 
 h1, h2, h3, p, ul, ol, dl, figure { margin-top: 0; }
 h1, h2, h3 { color: var(--th-navy); line-height: 1.15; }
@@ -86,13 +99,20 @@ h2 { font-size: clamp(1.15rem, 1.05rem + .4vw, 1.5rem); letter-spacing: -.015em;
 }
 .skip-link:focus { transform: none; }
 
+/* dvh statt vh: mit 100vh springt das Layout auf dem iPhone jedes Mal, wenn
+   Safari die Adressleiste ein- und ausblendet. Die Seitenränder halten
+   Abstand zu den Displayecken — index.html setzt viewport-fit=cover, ohne
+   env() läuft der Inhalt im Querformat sonst unter die Rundung. */
 .shell {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  min-height: 100dvh;
   width: min(calc(100% - 24px), var(--content));
   margin: 0 auto;
   padding: 16px 0 28px;
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
 }
 
 /* ---------------------------------------------------------------- Kopf --- */
@@ -160,8 +180,12 @@ h2 { font-size: clamp(1.15rem, 1.05rem + .4vw, 1.5rem); letter-spacing: -.015em;
 
 main { flex: 1 0 auto; }
 
+/* clip statt hidden, mit hidden als Rückfall für alte Browser: beide
+   beschneiden die runden Ecken gleich, aber hidden macht die Karte zum
+   Scroll-Container und setzt damit die klebende Aktionsleiste außer Kraft. */
 .screen {
   overflow: hidden;
+  overflow: clip;
   border: 1px solid var(--th-line);
   border-radius: var(--radius-xl);
   background: #fff;
@@ -243,6 +267,9 @@ main { flex: 1 0 auto; }
 }
 .island-card.is-done { border-color: var(--success-line); background: var(--success-bg); }
 .island-card.is-done .i-state { color: var(--th-lime-text); }
+/* Erledigt ist aus dem Augenwinkel zu erkennen, nicht erst nach dem Lesen —
+   die Übersicht wird zwischen zwei Stationen im Vorbeigehen aufgerufen. */
+.island-card.is-done .i-state::before { content: "\2713\00a0"; font-weight: 900; }
 
 /* ------------------------------------------------------------- Startbild --- */
 
@@ -321,6 +348,9 @@ main { flex: 1 0 auto; }
   transition: transform .14s, box-shadow .15s, background-color .15s, border-color .15s;
 }
 .btn:hover:not(:disabled) { transform: translateY(-1px); }
+/* Am Fahrzeug wird getippt, nicht gehovert — ohne :active gäbe es auf dem
+   Telefon überhaupt keine Rückmeldung, dass der Knopf getroffen wurde. */
+.btn:active:not(:disabled) { transform: scale(.985); box-shadow: none; }
 .btn:disabled { cursor: not-allowed; opacity: .45; transform: none; }
 
 .btn-primary { background: var(--th-navy); color: #fff; box-shadow: 0 10px 22px rgba(29, 54, 97, .22); }
@@ -422,10 +452,13 @@ main { flex: 1 0 auto; }
 .answer:active:not(:disabled) { transform: scale(.992); }
 .answer:disabled { cursor: default; }
 
+/* Der Ring ist voll deckend, nicht lasiert. Ein 20-prozentiger Schleier ist
+   im Hallenlicht und erst recht draußen am Fahrzeug kaum von "nicht gewählt"
+   zu unterscheiden. */
 .answer.is-selected {
   border-color: var(--opt);
-  background: rgba(var(--opt-rgb), .09);
-  box-shadow: 0 0 0 3px rgba(var(--opt-rgb), .2);
+  background: rgba(var(--opt-rgb), .14);
+  box-shadow: 0 0 0 3px var(--opt), 0 8px 20px rgba(var(--opt-rgb), .24);
 }
 .answer.is-correct {
   border-color: #8FA600;
@@ -527,6 +560,7 @@ main { flex: 1 0 auto; }
   width: min(94vw, 900px);
   max-width: none;
   max-height: 92vh;
+  max-height: 92dvh;
   padding: 16px;
   border: none;
   border-radius: var(--radius-lg);
@@ -537,6 +571,7 @@ main { flex: 1 0 auto; }
 .lightbox-image {
   width: 100%;
   max-height: 72vh;
+  max-height: 72dvh;
   object-fit: contain;
   border-radius: var(--radius-md);
   background: var(--th-soft);
@@ -603,7 +638,9 @@ main { flex: 1 0 auto; }
 .match-row.is-wrong { border-color: var(--th-red); background: var(--error-bg); }
 .match-label { font-weight: 700; line-height: 1.35; }
 .match-row select { min-height: var(--tap); width: 100%; padding: 10px 12px; border: 1px solid var(--th-line-strong); border-radius: 12px; background: #fff; }
-.match-solution { grid-column: 1 / -1; margin: 0; color: var(--th-lime-text); font-size: .86rem; font-weight: 700; }
+/* Navy statt Lime-Text: die Zeile steht auf dem roten Fehlergrund, dort
+   erreicht #6B7D00 nur 4,07:1 und bleibt unter den 4,5:1 für Fließtext. */
+.match-solution { grid-column: 1 / -1; margin: 4px 0 0; color: var(--th-navy); font-size: .86rem; font-weight: 700; }
 
 /* --- Feedback --- */
 
@@ -620,13 +657,23 @@ main { flex: 1 0 auto; }
 .feedback-copy { margin: 0; line-height: 1.5; }
 .feedback-solution { margin: 8px 0 0; color: var(--th-navy); font-weight: 700; }
 
+/* Die Aktionsleiste klebt am unteren Rand. Vorher stand sie unter der
+   Auflösung: wer bei einer Bildfrage antwortete, sah das Feedback über sich
+   einschieben, während der Knopf unter dem Daumen von "Antwort prüfen" auf
+   "Nächste Frage" wechselte. Ein zweiter Tipp sprang dann über die Auflösung
+   hinweg — also über genau den Teil, für den der Check gemacht ist. */
 .quiz-actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
   margin-top: 22px;
+  padding: 14px 0 max(6px, env(safe-area-inset-bottom));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #fff 20%);
 }
 .selection-status { margin: 0; color: var(--th-muted); font-size: .86rem; }
 
@@ -651,7 +698,19 @@ main { flex: 1 0 auto; }
   text-align: center;
 }
 .score-label { margin: 0; color: rgba(255, 255, 255, .74); font-size: .74rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+
+/* Registriert macht --pct animierbar, und der Ring baut sich einmal auf,
+   statt fertig dazustehen. Das ist die einzige Bewegung im Projekt, die
+   nicht bloß ein Übergang ist — sie zeigt das Ergebnis entstehen. Ohne
+   @property (ältere Browser) springt der Wert einfach: gleicher Endstand. */
+@property --pct {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0;
+}
+
 .score-ring {
+  transition: --pct 900ms cubic-bezier(.23, 1, .32, 1);
   display: grid;
   place-content: center;
   width: 148px;
