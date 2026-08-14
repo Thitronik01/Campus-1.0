@@ -28,6 +28,18 @@ if (!paketArg || !slug) {
 const paket = path.resolve(paketArg);
 const insel = require(path.join(paket, "public", "data", "inseln", `${slug}.json`));
 
+/** Eine Insel, die dieses Paket NICHT ausliefert — für die Probe, dass eine
+ *  fremde Einsendung abgewiesen wird.
+ *
+ *  Im Einzelpaket ist das jede andere Insel. Im Gesamtpaket sind alle sieben
+ *  bekannt und damit gültig; dort muss ein Name her, den es nirgends gibt.
+ *  Ohne diese Unterscheidung schlüge die Probe im Gesamtpaket fehl, obwohl
+ *  die Function genau das Richtige tut. */
+const katalog = require(path.join(paket, "public", "data", "inseln.json"));
+const bekannt = new Set(katalog.inseln.map((i) => i.slug));
+const fremdeInsel = ["vejro", "poel", "hiddensee", "samsoe", "fehmarn",
+  "usedom", "langeland", "nordstrand"].find((s) => !bekannt.has(s));
+
 let cap = null;
 global.fetch = async (url, opt) => {
   cap = JSON.parse(opt.body);
@@ -128,8 +140,9 @@ async function ruf(payload) {
   r = await ruf(mitFlag);
   pruefe("Gefälschtes is_correct wird ignoriert", r.gespeichert?.answers.every((a) => !a.is_correct));
 
-  r = await ruf(bauen("richtig", { island: slug === "vejro" ? "poel" : "vejro" }));
-  pruefe("Fremde Insel → 400", r.status === 400 && /Unbekannte Insel/.test(r.body.error), r.body.error);
+  r = await ruf(bauen("richtig", { island: fremdeInsel }));
+  pruefe(`Fremde Insel (${fremdeInsel}) → 400`,
+    r.status === 400 && /Unbekannte Insel/.test(r.body.error), r.body.error);
 
   r = await ruf(bauen("richtig", { quiz_version: "999" }));
   pruefe("Falsche Fragensatz-Version → 400", r.status === 400, r.body.error);

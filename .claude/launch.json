@@ -14,6 +14,13 @@
       "runtimeArgs": ["Campus Quiz/tools/dev-server.js", "Samsø Quiz/public"],
       "autoPort": true,
       "port": 8789
+    },
+    {
+      "name": "gesamtpaket",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["Campus Quiz/tools/dev-server.js", "Campus Gesamtpaket/public"],
+      "autoPort": true,
+      "port": 8790
     }
   ]
 }
