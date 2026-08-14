@@ -3,14 +3,14 @@
   "code": "POEL",
   "title": "Händlerbereich",
   "subtitle": "Was finde ich wo?",
-  "version": "1",
-  "lernziel": "Sich selbstständig auf der Website zurechtfinden.",
+  "version": "3",
+  "lernziel": "Sich selbst helfen, statt anzurufen. Jede Information hat genau einen richtigen Ort — öffentlich, geschützt oder gar nicht für Kundenhand.",
   "quellen": [
     "Öffentliche Website-Struktur (Stand 13.08.2026)",
     "_intern/werkseinbau-eckernfoerde.md",
     "produkte/gas-pro-iii.md"
   ],
-  "internerHinweis": "Vor dem Einsatz prüfen: Der Händlerbereich ist login-geschützt. Bestätigt sind nur die öffentlichen Rubriken. Die konkreten Menüpfade nach dem Login gegenprüfen — das betrifft besonders die Fragen 2, 3 und 6.",
+  "internerHinweis": "Fragenkatalog v3. Vor dem Einsatz prüfen: Der Händlerbereich ist login-geschützt. Bestätigt sind nur die öffentlichen Rubriken. Die konkreten Menüpfade nach dem Login gegenprüfen — das betrifft POE-02, POE-03 und POE-06. Ebenfalls fachlich zu bestätigen: der Serienbereich 1286-008 bis 1286-012 der Rückrufaktion in POE-05.",
   "questions": [
     {
       "id": "POE-01",
@@ -19,12 +19,20 @@
       "prompt": "Ein Kunde braucht die Konformitätserklärung nach 2014/53/EU für seinen Funk-Magnetkontakt. Wo findest du sie?",
       "options": [
         { "id": "a", "text": "Im Konfigurator" },
-        { "id": "b", "text": "Im Supportbereich (thitronik.de/support)" },
-        { "id": "c", "text": "Nur telefonisch beim Werkskundendienst" },
+        { "id": "b", "text": "Im öffentlichen Supportbereich" },
+        { "id": "c", "text": "Beim Werkskundendienst anfordern" },
         { "id": "d", "text": "Im Händlerfinder" }
       ],
       "correct": ["b"],
-      "feedback": "Konformitätserklärungen liegen öffentlich im Supportbereich. Dafür braucht es keinen Anruf."
+      "feedback": "Konformitätserklärungen liegen öffentlich unter thitronik.de/support. Weder Login noch Anruf nötig.",
+      "irrtum": [
+        {
+          "fuer": ["c"],
+          "titel": "Werkskundendienst",
+          "text": "Genau der Reflex, den diese Insel abgewöhnen soll. Es ist eine der häufigsten telefonischen Anfragen — und sie ist zwei Klicks entfernt."
+        }
+      ],
+      "mitnehmen": "Alles, was ein Kunde bekommen darf, ist öffentlich. Wenn du es nicht findest, suchst du an der falschen Stelle — nicht im falschen Bereich."
     },
     {
       "id": "POE-02",
@@ -38,7 +46,15 @@
         { "id": "d", "text": "Sonstiges (produktübergreifend)" }
       ],
       "correct": ["b"],
-      "feedback": "Der Pro-finder gehört zur Ortung, nicht zur Alarmanlage — auch wenn er mit der WiPro zusammenarbeitet."
+      "feedback": "Sortiert wird nach Produktfamilie, nicht nach Zubehörbeziehung.",
+      "irrtum": [
+        {
+          "fuer": ["a"],
+          "titel": "Alarmanlagen",
+          "text": "Vollkommen nachvollziehbar — der Pro-finder arbeitet mit der WiPro zusammen und wird meist gemeinsam verkauft. Aber er ist ein Ortungsgerät mit eigener SIM, eigener Firmware und eigenen Befehlen."
+        }
+      ],
+      "mitnehmen": "Sortiert wird danach, **was ein Gerät ist**, nicht danach, womit es zusammenarbeitet."
     },
     {
       "id": "POE-03",
@@ -46,13 +62,21 @@
       "category": "Grenzfall",
       "prompt": "Du brauchst die fahrzeugspezifische Einbauunterlage mit Steckerbelegung für einen Sprinter VS30. Wo bekommst du sie?",
       "options": [
-        { "id": "a", "text": "Öffentlicher Downloadbereich, Rubrik Alarmanlagen → Anleitungen" },
-        { "id": "b", "text": "Nicht öffentlich — fahrzeugspezifische Einbauunterlagen erhalten Fachhändler über THITRONIK bzw. den geschützten Händlerbereich" },
+        { "id": "a", "text": "Öffentlicher Downloadbereich, Rubrik Alarmanlagen" },
+        { "id": "b", "text": "Über den geschützten Händlerbereich bzw. THITRONIK direkt" },
         { "id": "c", "text": "In der FAQ Allgemein" },
         { "id": "d", "text": "Im Konfigurator-PDF" }
       ],
       "correct": ["b"],
-      "feedback": "Fahrzeugspezifische Einbauunterlagen sind bewusst nicht öffentlich. Wer sie im offenen Downloadbereich sucht, sucht vergeblich."
+      "feedback": "CAN-Anschlusspläne, Steckerbelegungen und Bauteillagen sind bewusst nicht öffentlich. Für Fachhändler: thitronik.de/haendler-bereich, technischer Support +49 4351 76744-112.",
+      "irrtum": [
+        {
+          "fuer": ["a"],
+          "titel": "Öffentlicher Downloadbereich",
+          "text": "Wer dort sucht, sucht vergeblich — und das fühlt sich an wie ein Fehler der Website. Es ist Absicht: Diese Unterlagen gehören in Fachhand, nicht in die Hände dessen, der am Samstag selbst schrauben will."
+        }
+      ],
+      "mitnehmen": "Nicht auffindbar heißt hier nicht „gibt es nicht“, sondern „nicht für alle“. Der Anruf unter -112 ist an dieser Stelle der richtige Weg, nicht der faule."
     },
     {
       "id": "POE-04",
@@ -66,21 +90,15 @@
         { "id": "d", "text": "Werkskundendienst" }
       ],
       "correct": ["b"],
-      "feedback": "Es gibt drei getrennte FAQ-Rubriken. App-Fragen stehen in der FAQ App."
-    },
-    {
-      "id": "POE-05",
-      "type": "single",
-      "category": "Sicherheitsrelevant",
-      "prompt": "Ein Kunde bringt eine G.A.S.-pro III mit Seriennummer 1286-010 in die Werkstatt. Was machst du?",
-      "options": [
-        { "id": "a", "text": "Rückrufseite prüfen — dieser Serienbereich (1286-008 bis 1286-012) ist in Kombination mit Zusatzsensor 101289 von der freiwilligen Rückrufaktion betroffen. Gerät anmelden, kostenloses Softwareupdate" },
-        { "id": "b", "text": "Gerät normal einbauen, der Rückruf betraf nur CO-Geräte" },
-        { "id": "c", "text": "Sensor tauschen und weiterverkaufen" },
-        { "id": "d", "text": "Gerät entsorgen" }
+      "feedback": "Es gibt drei getrennte FAQ-Rubriken. App-Fragen stehen in der FAQ App — auch dann, wenn sie sich auf ein Hardwareprodukt beziehen.",
+      "irrtum": [
+        {
+          "fuer": ["a"],
+          "titel": "FAQ Produkte",
+          "text": "Der Kunde beschreibt ja ein Produktverhalten. Die Rubrik richtet sich aber danach, **wo der Kunde steht**, wenn er das Problem sieht — und er steht in der App."
+        }
       ],
-      "correct": ["a"],
-      "feedback": "Bei Seriennummern im Rückrufbereich immer erst die Rückrufseite prüfen. Das Update ist kostenlos — der Einbau eines betroffenen Geräts ohne Prüfung ist es später nicht."
+      "mitnehmen": "Rubrik nach dem Ort des Symptoms, nicht nach dem Ort der Ursache."
     },
     {
       "id": "POE-06",
@@ -88,49 +106,142 @@
       "category": "Werkstattbedarf",
       "prompt": "Wo findest du Werbemittel und Displaymaterial für dein Sortiment?",
       "options": [
-        { "id": "a", "text": "Öffentlicher Downloadbereich" },
-        { "id": "b", "text": "Im eingeloggten Händlerbereich (News, Termine, Werkstattunterlagen, Werbemittel)" },
+        { "id": "a", "text": "Im öffentlichen Downloadbereich" },
+        { "id": "b", "text": "Im eingeloggten Händlerbereich" },
         { "id": "c", "text": "Nur über den Außendienst" },
         { "id": "d", "text": "Im Händlerfinder" }
       ],
       "correct": ["b"],
-      "feedback": "Werbemittel liegen im geschützten Bereich. Der Login lohnt sich — vieles, was Händler telefonisch anfragen, steht dort bereits."
+      "feedback": "Der Händlerbereich enthält News, Termine, Werkstattunterlagen und Werbemittel.",
+      "irrtum": [
+        {
+          "fuer": ["c"],
+          "titel": "Nur über den Außendienst",
+          "text": "Funktioniert auch — dauert aber Tage statt Minuten und bindet jemanden, der besser verkauft."
+        }
+      ],
+      "mitnehmen": "Der Login lohnt sich einmalig und spart dauerhaft. Vieles, was Händler telefonisch anfragen, liegt dort bereits fertig."
+    },
+    {
+      "id": "POE-05",
+      "type": "single",
+      "category": "Sicherheitsrelevant",
+      "prompt": "Ein Kunde bringt eine G.A.S.-pro III mit Seriennummer 1286-010 in die Werkstatt. Was tust du?",
+      "options": [
+        { "id": "a", "text": "Normal einbauen — der Rückruf betraf nur CO-Geräte" },
+        { "id": "b", "text": "Rückrufseite prüfen, Gerät anmelden, kostenloses Update" },
+        { "id": "c", "text": "Sensor tauschen und Gerät weiterverkaufen" },
+        { "id": "d", "text": "Gerät entsorgen und Ersatz berechnen" }
+      ],
+      "correct": ["b"],
+      "feedback": "Der Serienbereich **1286-008 bis 1286-012** ist in Kombination mit dem Zusatzsensor **101289** von der freiwilligen Rückrufaktion betroffen. Das Update ist kostenlos.",
+      "irrtum": [
+        {
+          "fuer": ["a"],
+          "titel": "Normal einbauen",
+          "text": "Der Gedanke „das betraf doch die anderen Geräte“ ist genau die Lücke, die eine Rückrufaktion aufspüren soll. Bei sicherheitsrelevanten Geräten wird nicht aus dem Gedächtnis entschieden."
+        },
+        {
+          "fuer": ["d"],
+          "titel": "Entsorgen",
+          "text": "Übervorsichtig und teuer. Das Gerät ist reparabel, das Update kostenlos — der Kunde verliert nichts außer ein paar Tagen."
+        }
+      ],
+      "mitnehmen": "Bei jeder Seriennummer im Rückrufbereich gilt: erst Rückrufseite, dann Schraubendreher. Kostenlos ist nur das Update — der Einbau eines betroffenen Geräts ohne Prüfung ist es später nicht."
     },
     {
       "id": "POE-07",
       "type": "single",
       "category": "Kunde am Telefon",
-      "prompt": "Ein Endkunde aus Bayern fragt, wo er den Einbau machen lassen kann. Was nennst du ihm?",
+      "prompt": "Ein Endkunde aus Bayern fragt, wo er den Einbau machen lassen kann. Worauf verweist du?",
       "options": [
         { "id": "a", "text": "Den Händlerfinder auf der THITRONIK-Website" },
         { "id": "b", "text": "Die Support-Hotline" },
         { "id": "c", "text": "Den Konfigurator" },
-        { "id": "d", "text": "Den Werkseinbau in Eckernförde als einzige Option" }
+        { "id": "d", "text": "Den Werkseinbau in Eckernförde" }
       ],
       "correct": ["a"],
-      "feedback": "Der Händlerfinder ist genau dafür da. Eckernförde ist eine Möglichkeit, nicht die einzige."
+      "feedback": "Der Händlerfinder ist genau dafür gebaut.",
+      "irrtum": [
+        {
+          "fuer": ["d"],
+          "titel": "Werkseinbau Eckernförde",
+          "text": "Eine Möglichkeit, aber für einen Kunden aus Bayern selten die naheliegende — und wer sie als einzige nennt, verschenkt einen Auftrag an einen Kollegen in der Nähe des Kunden."
+        }
+      ],
+      "mitnehmen": "Der Händlerfinder ist auch dein eigener Vertriebskanal. Wer ihn kennt, wird über ihn gefunden."
     },
     {
       "id": "POE-08",
-      "type": "single",
+      "type": "multi",
       "category": "Werkseinbau",
-      "prompt": "Ein Kunde will in Eckernförde einbauen lassen. Was ist der saubere Weg?",
+      "prompt": "Was gehört in eine Terminanfrage für den Werkseinbau in Eckernförde? Wähle alle zutreffenden.",
       "options": [
-        { "id": "a", "text": "Terminanfrage über thitronik.de/einbautermin, Konfiguration als PDF aus dem Konfigurator hochladen, Fahrzeugdaten und vorhandene Geräte angeben" },
-        { "id": "b", "text": "Einfach hinfahren, es gibt Werkstatt-Kapazität" },
-        { "id": "c", "text": "Über den Händlerfinder buchen" },
-        { "id": "d", "text": "Per Kontaktformular ohne Fahrzeugdaten" }
+        { "id": "a", "text": "Fahrzeugdaten (Modell, Modelljahr, Aufbauart)" },
+        { "id": "b", "text": "Bereits vorhandene THITRONIK-Geräte" },
+        { "id": "c", "text": "Die Konfiguration als PDF aus dem Konfigurator" },
+        { "id": "d", "text": "Wunschzeitraum" },
+        { "id": "e", "text": "Kilometerstand und Tankfüllung" },
+        { "id": "f", "text": "Kopie des Kaufvertrags" }
+      ],
+      "correct": ["a", "b", "c", "d"],
+      "feedback": "Ohne Fahrzeugdaten und Konfiguration lässt sich der Termin nicht planen — die Anfrage bleibt liegen, und der Kunde wartet auf eine Antwort, die niemand geben kann. Anfrage über thitronik.de/einbautermin.",
+      "irrtum": [
+        {
+          "fuer": ["b"],
+          "titel": "Vorhandene Geräte vergessen",
+          "text": "Der häufigste Fehler. Ohne diese Angabe kann niemand einschätzen, ob es eine Erweiterung oder ein Neueinbau wird — und die beiden unterscheiden sich in der Einbauzeit erheblich."
+        },
+        {
+          "fuer": ["e"],
+          "titel": "Kilometerstand angekreuzt",
+          "text": "Aus der Kfz-Werkstatt-Routine übernommen; hier ohne Bedeutung."
+        }
+      ],
+      "mitnehmen": "Für den Kunden nützlich zu wissen: Am Standort stehen kostenloser Stellplatz, Strom und WLAN bereit — eine Ver- und Entsorgung gibt es dort allerdings nicht."
+    },
+    {
+      "id": "POE-10",
+      "type": "single",
+      "category": "Bezugsweg",
+      "prompt": "Ein Endkunde möchte direkt bei THITRONIK bestellen, weil du das Gerät nicht vorrätig hast. Was gilt?",
+      "options": [
+        { "id": "a", "text": "THITRONIK liefert nicht an Endkunden — Bezug läuft über den Fachhandel" },
+        { "id": "b", "text": "THITRONIK liefert direkt, du erhältst eine Provision" },
+        { "id": "c", "text": "Direktbestellung ist ab zwei Geräten möglich" },
+        { "id": "d", "text": "Nur Ersatzteile gehen direkt an Endkunden" }
       ],
       "correct": ["a"],
-      "feedback": "Ohne Fahrzeugdaten und Konfiguration kann der Termin nicht sinnvoll geplant werden — die Anfrage bleibt dann liegen."
+      "feedback": "Der Bezug läuft ausschließlich über den Fachhandel — Caravaning, Car-HiFi, Bosch-Dienste. Einzige Ausnahme: Direktverkauf im Rahmen des Werkseinbauservice in Eckernförde.",
+      "irrtum": [
+        {
+          "fuer": ["b"],
+          "titel": "Provision",
+          "text": "Klingt nach einer eleganten Lösung für einen unangenehmen Moment. Sie existiert nicht — und die Frage kommt meist genau dann, wenn du gerade nicht liefern kannst und dich schwach fühlst."
+        },
+        {
+          "fuer": ["d"],
+          "titel": "Ersatzteile direkt",
+          "text": "Verlockend, weil es harmlos wirkt. Es würde aber die Kette aufbrechen, an der auch dein Servicegeschäft hängt."
+        }
+      ],
+      "mitnehmen": "Der Fachhandelsweg ist keine Formalie — er ist der Grund, warum Beratung, Einbau und Support beim Fachbetrieb zusammenbleiben. Also bei dir."
     },
     {
       "id": "POE-09",
       "type": "truefalse",
-      "category": "Richtig oder falsch",
-      "prompt": "„Eine Anfrage über das Terminformular ist bereits eine Terminbestätigung.“",
-      "correct": ["falsch"],
-      "feedback": "Falsch. Eine Anfrage ist keine Zusage zu Termin, Preis, Dauer oder Leihfahrzeug. Diese Erwartung beim Kunden früh geradezurücken erspart Ärger."
+      "category": "Erwartungsmanagement",
+      "prompt": "„Ein Termin für den Werkseinbau steht erst mit der Rückmeldung von THITRONIK fest — die Anfrage über das Formular ist noch keine Zusage.“",
+      "correct": ["richtig"],
+      "feedback": "Eine Anfrage ist keine Zusage zu Termin, Preis, Dauer oder Leihfahrzeug.",
+      "irrtum": [
+        {
+          "fuer": ["falsch"],
+          "titel": "Falsch",
+          "text": "Der Irrtum entsteht aus Alltagserfahrung — die meisten Online-Formulare bestätigen sofort. Hier plant ein Mensch einen Werkstattplatz, und das braucht eine Rückmeldung."
+        }
+      ],
+      "mitnehmen": "Diese Insel dreht sich um Informationen — und die wichtigste Information gibst du selbst weiter. Satz für den Kunden: „Ich melde die Anfrage an, den Termin bestätigt Ihnen THITRONIK. Bitte planen Sie die Anreise erst danach.“"
     }
   ]
 }

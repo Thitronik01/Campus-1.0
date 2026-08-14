@@ -6,7 +6,7 @@ Fertiges Netlify-Paket für die Schulungsinsel HIDDENSEE.
 | | |
 |---|---|
 | Fragen | 10 |
-| Fragensatz-Version | 1 |
+| Fragensatz-Version | 3 |
 | Bilder | keine |
 
 ---

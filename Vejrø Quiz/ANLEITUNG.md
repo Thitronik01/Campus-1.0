@@ -5,8 +5,8 @@ Fertiges Netlify-Paket für die Schulungsinsel VEJRØ.
 
 | | |
 |---|---|
-| Fragen | 8 |
-| Fragensatz-Version | 1 |
+| Fragen | 10 |
+| Fragensatz-Version | 3 |
 | Bilder | keine |
 
 ---

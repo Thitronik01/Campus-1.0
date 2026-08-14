@@ -80,6 +80,10 @@
     qFeedbackMedia: $("q-feedback-media"),
     qFeedbackMediaImg: $("q-feedback-media-img"),
     qFeedbackMediaCaption: $("q-feedback-media-caption"),
+    qFeedbackIrrtum: $("q-feedback-irrtum"),
+    qFeedbackIrrtumList: $("q-feedback-irrtum-list"),
+    qFeedbackMitnehmen: $("q-feedback-mitnehmen"),
+    qFeedbackMitnehmenText: $("q-feedback-mitnehmen-text"),
 
     lightbox: $("lightbox"),
     lightboxImage: $("lightbox-image"),
@@ -182,6 +186,19 @@
     return String(value).replace(/[&<>"']/g, (c) => ({
       "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
     }[c]));
+  }
+
+  /** Erst escapen, dann **fett** zulassen.
+   *
+   *  Der Fragenkatalog hebt in den Auflösungen einzelne Wörter hervor — die
+   *  Trennung „Aufbautür" gegen „Fahrzeug-Zentralverriegelung" etwa lebt
+   *  davon. Als reiner Text stünden dort sichtbare Sternchen.
+   *
+   *  Die Reihenfolge ist die Sicherung: Nach dem Escapen enthält die
+   *  Zeichenkette kein < und kein > mehr, aus dem noch Markup werden könnte.
+   *  Umgekehrt wäre es eine Lücke. */
+  function richText(value) {
+    return escapeHtml(value).replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
   }
 
   /** Großansicht. Bei einer Bildfrage ist das kein Extra: auf einem
@@ -470,6 +487,8 @@
     el.qFeedback.hidden = true;
     el.qFeedback.className = "feedback";
     el.qFeedbackMedia.hidden = true;
+    el.qFeedbackIrrtum.hidden = true;
+    el.qFeedbackMitnehmen.hidden = true;
     el.btnCheck.textContent = "Antwort prüfen";
     el.btnCheck.disabled = true;
 
@@ -776,6 +795,64 @@
     return "";
   }
 
+  // --- „Falsch gewählt?" ---------------------------------------------------
+
+  /** Betrifft dieser Irrtum die Antwort, die gerade gegeben wurde? Und wenn
+   *  ja: auf welche Art?
+   *
+   *  Ein Irrtums-Absatz nennt in `fuer` die Optionen, um die es ihm geht. Ob
+   *  daraus ein Treffer wird, leitet sich aus der Frage selbst ab und muss
+   *  nicht zusätzlich gepflegt werden: Eine falsche Option trifft zu, wenn sie
+   *  angekreuzt wurde — eine richtige, wenn sie fehlt. Genau so sind die
+   *  Absätze geschrieben: „Sensor defekt" (gewählt) steht neben „Blinkcode
+   *  weggelassen" (nicht gewählt).
+   *
+   *  Reihenfolge- und Zuordnungsfragen haben keine Optionen, auf die sich das
+   *  beziehen ließe. Dort bleiben die Absätze unmarkiert — sie gelten ohnehin
+   *  allen. */
+  function irrtumMarke(eintrag, q, answer) {
+    if (!Array.isArray(eintrag.fuer) || !eintrag.fuer.length) return "";
+    if (!["single", "multi", "truefalse"].includes(q.type)) return "";
+
+    const gewaehlt = answer.selected || [];
+    const richtige = Array.isArray(q.correct) ? q.correct : [];
+    let falschGewaehlt = false;
+    let uebersehen = false;
+
+    eintrag.fuer.forEach((id) => {
+      if (richtige.includes(id)) { if (!gewaehlt.includes(id)) uebersehen = true; }
+      else if (gewaehlt.includes(id)) falschGewaehlt = true;
+    });
+
+    if (falschGewaehlt && uebersehen) return "betrifft deine Antwort";
+    if (falschGewaehlt) return "das hast du gewählt";
+    if (uebersehen) return "das hast du übersehen";
+    return "";
+  }
+
+  /** Alle Irrtümer erscheinen, nicht nur der eigene: Wer richtig geklickt hat,
+   *  erkennt in den anderen die Sätze seiner Kunden wieder. Der eigene wird
+   *  hervorgehoben — und zwar benannt, nicht nur eingefärbt, damit die
+   *  Markierung auch bei Farbenblindheit und im Vorlesemodus ankommt. */
+  function renderIrrtum(q, answer) {
+    const eintraege = Array.isArray(q.irrtum) ? q.irrtum : [];
+    if (!eintraege.length) {
+      el.qFeedbackIrrtum.hidden = true;
+      return;
+    }
+
+    el.qFeedbackIrrtumList.innerHTML = "";
+    eintraege.forEach((eintrag) => {
+      const marke = irrtumMarke(eintrag, q, answer);
+      const li = document.createElement("li");
+      li.className = "irrtum-item" + (marke ? " is-mine" : "");
+      li.innerHTML = `<b>${richText(eintrag.titel)}${marke ? ` — ${marke}` : ""}:</b> ` +
+        richText(eintrag.text);
+      el.qFeedbackIrrtumList.appendChild(li);
+    });
+    el.qFeedbackIrrtum.hidden = false;
+  }
+
   function reveal() {
     const q = currentQuestion();
     const answer = q.type === "order" ? { order: draft.order.slice() }
@@ -793,7 +870,7 @@
 
     el.qFeedback.className = "feedback " + (isCorrect ? "is-correct" : "is-wrong");
     el.qFeedbackTitle.textContent = isCorrect ? "Richtig" : "Noch nicht richtig";
-    el.qFeedbackCopy.textContent = q.feedback || "";
+    el.qFeedbackCopy.innerHTML = q.feedback ? richText(q.feedback) : "";
     el.qFeedbackCopy.hidden = !q.feedback;
 
     if (isCorrect) {
@@ -813,6 +890,19 @@
       el.qFeedbackMedia.hidden = false;
     } else {
       el.qFeedbackMedia.hidden = true;
+    }
+
+    renderIrrtum(q, answer);
+
+    // Der Mitnehmen-Satz steht zuletzt, nach Auflösung, Bild und Irrtümern:
+    // Er ist das, was nach der Frage übrig bleiben soll — eine Faustregel oder
+    // ein Satz für das Kundengespräch. Am Ende der Insel steht er noch einmal
+    // in der Ergebnisliste.
+    if (q.mitnehmen) {
+      el.qFeedbackMitnehmenText.innerHTML = richText(q.mitnehmen);
+      el.qFeedbackMitnehmen.hidden = false;
+    } else {
+      el.qFeedbackMitnehmen.hidden = true;
     }
 
     el.qFeedback.hidden = false;
@@ -1020,7 +1110,8 @@
         <p class="review-q">${escapeHtml(r.question.prompt)}</p>
         <p class="review-a"><strong>Deine Antwort:</strong> ${escapeHtml(givenText(r.question, r.answer))}</p>
         ${r.isCorrect ? "" : `<p class="review-a"><strong>${escapeHtml(solutionText(r.question))}</strong></p>`}
-        ${r.question.feedback ? `<p class="review-a">${escapeHtml(r.question.feedback)}</p>` : ""}`;
+        ${r.question.feedback ? `<p class="review-a">${richText(r.question.feedback)}</p>` : ""}
+        ${r.question.mitnehmen ? `<p class="review-mitnehmen"><b>Mitnehmen:</b> ${richText(r.question.mitnehmen)}</p>` : ""}`;
       el.rReview.appendChild(item);
     });
   }
