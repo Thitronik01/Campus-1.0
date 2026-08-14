@@ -1,0 +1,932 @@
+/* ==========================================================================
+   THITRONIK Campus — Wissenscheck
+   Tokens und Interaktionsmuster übernommen aus den bestehenden Quizzen
+   (Fehmarn/Vejrø), damit das neue System sichtbar dieselbe Familie bleibt.
+   Light Mode ist verbindlich: der Campus findet in hellen Räumen und
+   draußen am Fahrzeug statt (DESIGN_SYSTEM.md, Abschnitt 7).
+   ========================================================================== */
+
+:root {
+  --th-navy: #1D3661;
+  --th-navy-deep: #0A2747;
+  --th-blue: #3BA9D3;
+  --th-lime: #AFCA05;
+  /* Zwei eigene Tokens für Text auf hellem Grund. Die Markenfarben selbst
+     sind dafür zu hell: Cyan erreicht auf Weiß 2,69:1 und Lime noch weniger.
+     Für Flächen, Ränder und Akzente weiterhin --th-blue und --th-lime. */
+  --th-blue-text: #1B7699;   /* 5,15:1 auf Weiß */
+  --th-lime-text: #5F7000;   /* 5,47:1 auf Weiß, 5,02:1 auf --success-bg */
+  --th-red: #CE132D;
+  --th-white: #FFFFFF;
+  --th-soft: #F0F0F0;
+  --th-page: #EAF1F7;
+  --th-ink: #111111;
+  --th-muted: #5E6672;
+  --th-line: #DDE2E7;
+  --th-line-strong: #B7C2CF;
+
+  --success-bg: #F3F8DD;
+  --success-line: #A9BB3A;
+  --error-bg: #FCEDEF;
+  --error-line: #E4A2AA;
+  --info-bg: #EDF7FB;
+
+  --shadow-sm: 0 8px 24px rgba(29, 54, 97, .08);
+  --shadow-md: 0 22px 60px rgba(29, 54, 97, .14);
+
+  --radius-xl: 28px;
+  --radius-lg: 20px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+
+  --content: 1180px;
+  --tap: 44px;   /* Mindest-Trefferfläche, WCAG 2.5.8 */
+}
+
+* { box-sizing: border-box; }
+
+html {
+  min-height: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Schriftkette bewusst ohne Panton und ohne schmallaufende Fallbacks.
+   Panton liegt in keinem Paket bei — die Kette fiel deshalb auf dem iPhone auf
+   "Arial Narrow" und auf Android auf "Roboto Condensed" durch: ausgerechnet auf
+   den Geräten, auf denen der Campus stattfindet, lief das Quiz kondensiert.
+   Das Design-System nennt Inter mit System-Fallback (DESIGN_SYSTEM.md, 3).
+   Eine Schriftdatei mitzuliefern hieße rund 100 KB extra im Hallen-WLAN für
+   einen Unterschied, den das Logo ohnehin trägt — also die Systemschrift:
+   San Francisco auf iOS, Roboto auf Android, Segoe UI auf Windows. */
+body {
+  min-height: 100%;
+  margin: 0;
+  color: var(--th-ink);
+  background:
+    radial-gradient(circle at 88% 6%, rgba(59, 169, 211, .16), transparent 26rem),
+    linear-gradient(180deg, #E7F0F7 0%, #F7F8FA 46%, #EEF1F4 100%);
+  background-repeat: no-repeat;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+button, input, select, textarea { font: inherit; color: inherit; }
+button { -webkit-tap-highlight-color: transparent; cursor: pointer; }
+img { display: block; max-width: 100%; }
+[hidden] { display: none !important; }
+/* Der Ring ist Navy, nicht Cyan. Das Design-System nennt Cyan und erlaubt
+   Abweichung, "wo Cyan verschwindet" — auf Weiß tut es das messbar: #3BA9D3
+   erreicht gegen #FFFFFF nur 2,69:1 und verfehlt die 3:1 aus WCAG 2.4.11.
+   Navy liegt bei 12:1. Auf der dunklen Ergebniskarte kehrt sich das um. */
+:focus-visible { outline: 3px solid var(--th-navy); outline-offset: 3px; }
+.score-card :focus-visible { outline-color: var(--th-white); }
+
+h1, h2, h3, p, ul, ol, dl, figure { margin-top: 0; }
+h1, h2, h3 { color: var(--th-navy); line-height: 1.15; }
+h1 { font-size: clamp(1.65rem, 1.3rem + 1.5vw, 2.5rem); letter-spacing: -.025em; margin-bottom: 14px; }
+h2 { font-size: clamp(1.15rem, 1.05rem + .4vw, 1.5rem); letter-spacing: -.015em; margin-bottom: 12px; }
+
+.skip-link {
+  position: fixed;
+  z-index: 1500;
+  left: 16px;
+  top: 12px;
+  transform: translateY(-200%);
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--th-navy);
+  color: #fff;
+  font-weight: 800;
+  text-decoration: none;
+}
+.skip-link:focus { transform: none; }
+
+/* dvh statt vh: mit 100vh springt das Layout auf dem iPhone jedes Mal, wenn
+   Safari die Adressleiste ein- und ausblendet. Die Seitenränder halten
+   Abstand zu den Displayecken — index.html setzt viewport-fit=cover, ohne
+   env() läuft der Inhalt im Querformat sonst unter die Rundung. */
+.shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+  width: min(calc(100% - 24px), var(--content));
+  margin: 0 auto;
+  padding: 16px 0 28px;
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+/* ---------------------------------------------------------------- Kopf --- */
+
+.masthead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(183, 194, 207, .72);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, .94);
+  box-shadow: var(--shadow-sm);
+}
+
+.brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+
+/* Die Navy-Wortmarke auf transparent — dieselbe, die das Fehmarn-Quiz im Kopf
+   trägt. Als Datei statt als Base64: 88 KB werden einmal geladen und gecacht,
+   statt in jedem Dokument mitzureisen. */
+.brand-logo {
+  width: clamp(150px, 20vw, 210px);
+  height: auto;
+  flex: 0 0 auto;
+}
+
+.brand-copy { min-width: 0; padding-left: 14px; border-left: 1px solid var(--th-line); }
+.brand-copy small {
+  display: block;
+  color: var(--th-blue-text);
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.brand-copy strong {
+  display: block;
+  overflow: hidden;
+  color: var(--th-navy);
+  font-size: 1.02rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.masthead-meta { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 5px 11px;
+  border: 1px solid var(--th-line-strong);
+  border-radius: 999px;
+  background: var(--th-white);
+  color: var(--th-navy);
+  font-size: .8rem;
+  font-weight: 700;
+}
+.chip-quiet { color: var(--th-muted); font-weight: 600; }
+
+/* --------------------------------------------------------------- Schirm --- */
+
+main { flex: 1 0 auto; }
+
+/* clip statt hidden, mit hidden als Rückfall für alte Browser: beide
+   beschneiden die runden Ecken gleich, aber hidden macht die Karte zum
+   Scroll-Container und setzt damit die klebende Aktionsleiste außer Kraft. */
+.screen {
+  overflow: hidden;
+  overflow: clip;
+  border: 1px solid var(--th-line);
+  border-radius: var(--radius-xl);
+  background: #fff;
+  box-shadow: var(--shadow-md);
+  animation: enter .22s ease-out both;
+}
+.screen-narrow { padding: clamp(24px, 5vw, 48px); }
+
+@keyframes enter {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+.screen-head { padding: clamp(24px, 4vw, 44px) clamp(20px, 4vw, 44px) 0; }
+
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  margin: 0 0 12px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--info-bg);
+  color: var(--th-navy);
+  font-size: .76rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.lead { max-width: 62ch; color: var(--th-muted); font-size: 1.02rem; }
+
+
+/* --------------------------------------------------------- Inselauswahl --- */
+
+.island-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(248px, 1fr));
+  gap: 14px;
+  margin: 0;
+  padding: clamp(20px, 4vw, 44px);
+  list-style: none;
+}
+
+.island-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  min-height: 132px;
+  padding: 18px;
+  border: 1px solid var(--th-line);
+  border-radius: var(--radius-lg);
+  background: var(--th-white);
+  text-align: left;
+  box-shadow: 0 6px 18px rgba(29, 54, 97, .06);
+  transition: border-color .15s, box-shadow .15s, transform .14s;
+}
+.island-card:hover {
+  border-color: var(--th-blue);
+  box-shadow: 0 12px 26px rgba(59, 169, 211, .16);
+  transform: translateY(-2px);
+}
+.island-card .i-code {
+  color: var(--th-blue-text);
+  font-size: .74rem;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.island-card .i-title { color: var(--th-navy); font-size: 1.12rem; font-weight: 800; }
+.island-card .i-desc { color: var(--th-muted); font-size: .88rem; line-height: 1.4; }
+.island-card .i-state {
+  margin-top: auto;
+  padding-top: 10px;
+  color: var(--th-muted);
+  font-size: .8rem;
+  font-weight: 700;
+}
+.island-card.is-done { border-color: var(--success-line); background: var(--success-bg); }
+.island-card.is-done .i-state { color: var(--th-lime-text); }
+/* Erledigt ist aus dem Augenwinkel zu erkennen, nicht erst nach dem Lesen —
+   die Übersicht wird zwischen zwei Stationen im Vorbeigehen aufgerufen. */
+.island-card.is-done .i-state::before { content: "\2713\00a0"; font-weight: 900; }
+
+/* ------------------------------------------------------------- Startbild --- */
+
+.start-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, .82fr);
+}
+
+.start-intro {
+  padding: clamp(26px, 4vw, 52px);
+  color: #fff;
+  background: linear-gradient(150deg, var(--th-navy) 0%, var(--th-navy-deep) 100%);
+}
+.start-intro .kicker { background: rgba(255, 255, 255, .16); color: #fff; }
+.start-intro h1 { color: #fff; }
+.start-intro .lead { color: rgba(255, 255, 255, .88); }
+
+.facts { display: grid; gap: 10px; margin: 22px 0 0; padding: 0; list-style: none; }
+.facts li {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  gap: 10px;
+  align-items: start;
+  color: rgba(255, 255, 255, .94);
+  font-size: .95rem;
+}
+.facts li::before {
+  content: "";
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--th-lime);
+  background-image: linear-gradient(transparent, transparent);
+  box-shadow: inset 0 0 0 6px var(--th-lime), inset 0 0 0 7px rgba(17, 17, 17, .3);
+}
+
+.start-form { display: grid; align-content: start; gap: 14px; padding: clamp(24px, 4vw, 46px); }
+.form-title { margin-bottom: 2px; }
+.form-intro { margin: 0 0 4px; color: var(--th-muted); font-size: .9rem; }
+
+.field { display: grid; gap: 5px; }
+.field label { color: var(--th-navy); font-size: .9rem; font-weight: 800; }
+.field input,
+.field select {
+  width: 100%;
+  min-height: var(--tap);
+  padding: 11px 13px;
+  border: 1px solid var(--th-line-strong);
+  border-radius: 12px;
+  background: #fff;
+  transition: border-color .15s, box-shadow .15s;
+}
+.field input:hover, .field select:hover { border-color: var(--th-blue); }
+.field input:focus-visible, .field select:focus-visible { border-color: var(--th-blue); }
+.field small { color: var(--th-muted); font-size: .8rem; }
+.field.has-error input, .field.has-error select { border-color: var(--th-red); background: var(--error-bg); }
+.field-error { margin: 0; color: #A81024; font-size: .84rem; font-weight: 700; }
+
+.privacy { margin: 4px 0 0; color: var(--th-muted); font-size: .8rem; line-height: 1.45; }
+
+.start-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+
+/* -------------------------------------------------------------- Buttons --- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 12px 20px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  font-weight: 800;
+  text-decoration: none;
+  transition: transform .14s, box-shadow .15s, background-color .15s, border-color .15s;
+}
+.btn:hover:not(:disabled) { transform: translateY(-1px); }
+/* Am Fahrzeug wird getippt, nicht gehovert — ohne :active gäbe es auf dem
+   Telefon überhaupt keine Rückmeldung, dass der Knopf getroffen wurde. */
+.btn:active:not(:disabled) { transform: scale(.985); box-shadow: none; }
+.btn:disabled { cursor: not-allowed; opacity: .45; transform: none; }
+
+.btn-primary { background: var(--th-navy); color: #fff; box-shadow: 0 10px 22px rgba(29, 54, 97, .22); }
+.btn-primary:hover:not(:disabled) { background: #172C50; }
+
+.btn-secondary { border-color: var(--th-line-strong); background: #fff; color: var(--th-navy); }
+.btn-secondary:hover:not(:disabled) { border-color: var(--th-blue); }
+
+.btn-tertiary { background: transparent; color: var(--th-navy); text-decoration: underline; text-underline-offset: 3px; }
+
+.btn-ghost { border-color: var(--th-line); background: #fff; color: var(--th-muted); }
+.btn-ghost:hover:not(:disabled) { border-color: var(--th-red); color: var(--th-red); }
+
+/* Auch die Nebenbuttons bleiben auf 44 px. Das Design-System schreibt für den
+   Campus-Kontext 44×44 vor — WCAG 2.5.8 verlangt weniger, aber die Bedienung
+   findet am Fahrzeug statt, nicht am Schreibtisch. */
+.btn-small { min-height: var(--tap); padding: 9px 14px; font-size: .86rem; }
+
+/* ----------------------------------------------------------------- Quiz --- */
+
+.quiz-head { padding: 16px clamp(18px, 4vw, 42px) 0; }
+.quiz-head-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+.quiz-counter { margin: 0; color: var(--th-muted); font-size: .88rem; font-weight: 800; letter-spacing: .04em; }
+
+.progress-track { height: 8px; border-radius: 999px; background: var(--th-soft); overflow: hidden; }
+.progress-fill {
+  width: 0%;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--th-blue), var(--th-lime));
+  transition: width .28s cubic-bezier(.23, 1, .32, 1);
+}
+
+.quiz-body { padding: 18px clamp(18px, 4vw, 42px) clamp(22px, 4vw, 38px); }
+
+.q-category {
+  display: inline-flex;
+  min-height: 28px;
+  align-items: center;
+  margin: 0 0 10px;
+  padding: 3px 11px;
+  border-radius: 999px;
+  background: var(--info-bg);
+  color: var(--th-navy);
+  font-size: .74rem;
+  font-weight: 800;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+.q-title { font-size: clamp(1.2rem, 1.05rem + .8vw, 1.75rem); margin-bottom: 8px; }
+.q-title:focus { outline: none; }
+.q-hint { color: var(--th-muted); font-size: .94rem; }
+
+.q-media { margin: 0 0 18px; }
+.q-media img {
+  width: 100%;
+  border: 1px solid var(--th-line);
+  border-radius: var(--radius-lg);
+  cursor: zoom-in;
+}
+.q-media figcaption { margin-top: 8px; color: var(--th-muted); font-size: .84rem; }
+.feedback-media img { cursor: zoom-in; }
+
+/* --- Antwortkacheln (single / multi / truefalse) --- */
+
+.answers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.answers.answers-narrow { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+
+.answer {
+  position: relative;
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  align-items: center;
+  gap: 13px;
+  min-height: 92px;
+  padding: 15px;
+  border: 1px solid var(--th-line);
+  border-radius: 18px;
+  background: var(--th-white);
+  color: var(--th-ink);
+  text-align: left;
+  box-shadow: 0 6px 18px rgba(29, 54, 97, .06);
+  transition: border-color .15s, box-shadow .15s, background-color .15s, transform .1s;
+}
+
+/* Vier kräftige Kachelfarben, aus Entfernung unterscheidbar.
+   Bewusst über feste Klassen statt :nth-child — bei Bildfragen liegt die
+   Kachel in einem Wrapper (wegen der Lupe), und die Position im DOM stimmt
+   dann nicht mehr mit der Antwortnummer überein. */
+.answer.opt-1 { --opt: #1D3661; --opt-rgb: 29, 54, 97;  --opt-text: #FFFFFF; }
+.answer.opt-2 { --opt: #3BA9D3; --opt-rgb: 59, 169, 211; --opt-text: #111111; }
+.answer.opt-3 { --opt: #AFCA05; --opt-rgb: 175, 202, 5;  --opt-text: #111111; }
+.answer.opt-4 { --opt: #CE132D; --opt-rgb: 206, 19, 45;  --opt-text: #FFFFFF; }
+
+.answer:hover:not(:disabled) {
+  border-color: var(--opt);
+  box-shadow: 0 10px 24px rgba(var(--opt-rgb), .14);
+}
+.answer:active:not(:disabled) { transform: scale(.992); }
+.answer:disabled { cursor: default; }
+
+/* Der Ring ist voll deckend, nicht lasiert. Ein 20-prozentiger Schleier ist
+   im Hallenlicht und erst recht draußen am Fahrzeug kaum von "nicht gewählt"
+   zu unterscheiden. */
+.answer.is-selected {
+  border-color: var(--opt);
+  background: rgba(var(--opt-rgb), .14);
+  box-shadow: 0 0 0 3px var(--opt), 0 8px 20px rgba(var(--opt-rgb), .24);
+}
+.answer.is-correct {
+  border-color: #8FA600;
+  background: var(--success-bg);
+  box-shadow: 0 0 0 3px rgba(175, 202, 5, .2);
+}
+.answer.is-wrong {
+  border-color: var(--th-red);
+  background: var(--error-bg);
+  box-shadow: 0 0 0 3px rgba(206, 19, 45, .14);
+}
+.answer.is-missed { border-color: var(--success-line); border-style: dashed; background: var(--success-bg); }
+
+.answer-letter {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--opt);
+  color: var(--opt-text);
+  font-weight: 800;
+  box-shadow: 0 5px 12px rgba(var(--opt-rgb), .2);
+}
+.answer.is-correct .answer-letter { background: var(--th-lime); color: var(--th-ink); }
+.answer.is-wrong .answer-letter { background: var(--th-red); color: #fff; }
+
+.answer-text { font-weight: 600; line-height: 1.4; }
+
+/* --- Bildkacheln (Fehmarn-Muster: vier Fotos als Antwort) ---------------- */
+
+.answers-bild { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+/* Kachel und Lupe sind Geschwister, kein Button im Button — verschachtelte
+   Buttons sind ungültiges HTML und für Screenreader nicht bedienbar. */
+.answer-wrap { position: relative; display: block; }
+
+.answer-bild {
+  display: block;
+  width: 100%;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+}
+.answer-media {
+  width: 100%;
+  aspect-ratio: 3 / 4;              /* portrait, der Normalfall in der Werkstatt */
+  object-fit: cover;
+  background: var(--th-soft);
+}
+.answers-bild[data-layout="square"] .answer-media { aspect-ratio: 1 / 1; }
+.answers-bild[data-layout="landscape"] .answer-media { aspect-ratio: 4 / 3; }
+
+/* Buchstabe und Lupe liegen auf dem Bild — beide mit eigener Fläche, damit
+   sie auch auf einem hellen Foto lesbar bleiben. */
+.answer-bild .answer-letter {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .35);
+}
+.answer-zoom {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  display: grid;
+  place-items: center;
+  width: var(--tap);
+  height: var(--tap);
+  border: 1px solid rgba(255, 255, 255, .5);
+  border-radius: 12px;
+  background: rgba(10, 39, 71, .82);
+  color: #fff;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+.answer-zoom:hover { background: var(--th-navy); }
+
+.answer-bild-text {
+  display: block;
+  padding: 11px 13px;
+  border-top: 1px solid var(--th-line);
+  font-size: .9rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+/* --- Bild an der Frage und am Feedback ---------------------------------- */
+
+.q-media img[data-layout="portrait"] { max-height: 60vh; width: auto; margin: 0 auto; }
+
+.feedback-media { margin: 12px 0 0; }
+.feedback-media img { width: 100%; max-width: 420px; border: 1px solid var(--th-line); border-radius: 14px; }
+.feedback-media figcaption { margin-top: 6px; color: var(--th-muted); font-size: .84rem; }
+
+/* --- Großansicht -------------------------------------------------------- */
+
+.lightbox {
+  width: min(94vw, 900px);
+  max-width: none;
+  max-height: 92vh;
+  max-height: 92dvh;
+  padding: 16px;
+  border: none;
+  border-radius: var(--radius-lg);
+  background: var(--th-white);
+  box-shadow: var(--shadow-md);
+}
+.lightbox::backdrop { background: rgba(10, 39, 71, .74); }
+.lightbox-image {
+  width: 100%;
+  max-height: 72vh;
+  max-height: 72dvh;
+  object-fit: contain;
+  border-radius: var(--radius-md);
+  background: var(--th-soft);
+}
+.lightbox-caption { margin: 10px 0 0; color: var(--th-muted); font-size: .88rem; }
+.lightbox-close { width: 100%; margin-top: 12px; }
+
+/* --- Reihenfolge (order) --- */
+
+.order-list { display: grid; gap: 10px; }
+.order-item {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  align-items: center;
+  gap: 13px;
+  width: 100%;
+  min-height: var(--tap);
+  padding: 13px 15px;
+  border: 1px solid var(--th-line);
+  border-radius: 16px;
+  background: #fff;
+  text-align: left;
+  box-shadow: 0 6px 18px rgba(29, 54, 97, .06);
+  transition: border-color .15s, background-color .15s, box-shadow .15s;
+}
+.order-item:hover:not(:disabled) { border-color: var(--th-blue); }
+.order-item:disabled { cursor: default; }
+.order-item.is-picked { border-color: var(--th-navy); background: var(--info-bg); }
+.order-item.is-correct { border-color: #8FA600; background: var(--success-bg); }
+.order-item.is-wrong { border-color: var(--th-red); background: var(--error-bg); }
+
+.order-rank {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--th-soft);
+  color: var(--th-muted);
+  font-weight: 800;
+}
+.order-item.is-picked .order-rank { background: var(--th-navy); color: #fff; }
+.order-item.is-correct .order-rank { background: var(--th-lime); color: var(--th-ink); }
+.order-item.is-wrong .order-rank { background: var(--th-red); color: #fff; }
+.order-text { font-weight: 600; line-height: 1.4; }
+
+.order-reset { margin-top: 12px; }
+
+/* --- Zuordnung (match) --- */
+
+.match-list { display: grid; gap: 12px; }
+.match-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  padding: 13px 15px;
+  border: 1px solid var(--th-line);
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(29, 54, 97, .06);
+}
+.match-row.is-correct { border-color: #8FA600; background: var(--success-bg); }
+.match-row.is-wrong { border-color: var(--th-red); background: var(--error-bg); }
+.match-label { font-weight: 700; line-height: 1.35; }
+.match-row select { min-height: var(--tap); width: 100%; padding: 10px 12px; border: 1px solid var(--th-line-strong); border-radius: 12px; background: #fff; }
+/* Navy statt Lime-Text: die Zeile steht auf dem roten Fehlergrund, dort
+   erreicht #6B7D00 nur 4,07:1 und bleibt unter den 4,5:1 für Fließtext. */
+.match-solution { grid-column: 1 / -1; margin: 4px 0 0; color: var(--th-navy); font-size: .86rem; font-weight: 700; }
+
+/* --- Feedback --- */
+
+.feedback {
+  margin-top: 18px;
+  padding: 16px 18px;
+  border: 1px solid var(--th-line);
+  border-radius: 18px;
+  animation: enter .2s ease-out both;
+}
+.feedback.is-correct { border-color: var(--success-line); background: var(--success-bg); }
+.feedback.is-wrong { border-color: var(--error-line); background: var(--error-bg); }
+.feedback-title { margin: 0 0 6px; color: var(--th-navy); font-size: 1.06rem; font-weight: 800; }
+.feedback-copy { margin: 0; line-height: 1.5; }
+.feedback-solution { margin: 8px 0 0; color: var(--th-navy); font-weight: 700; }
+
+/* --- „Falsch gewählt?" und „Mitnehmen" ---
+   Beide Blöcke liegen INNERHALB der Auflösung und damit mal auf grünem, mal
+   auf rotem Grund. Deshalb keine eigene Flächenfarbe für den Fließtext,
+   sondern die geerbte Textfarbe (--th-ink): sie trägt auf beiden Gründen.
+   Nur der Mitnehmen-Kasten setzt sich bewusst weiß ab — er ist der Satz, den
+   der Händler mitnehmen soll, und darf nicht wie eine Fußnote aussehen. */
+
+.irrtum { margin: 14px 0 0; padding-top: 12px; border-top: 1px solid var(--th-line-strong); }
+.irrtum-label,
+.mitnehmen-label {
+  margin: 0 0 8px;
+  font-size: .78rem;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.irrtum-label { color: var(--th-navy); }
+
+.irrtum-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.irrtum-item { padding-left: 12px; border-left: 3px solid var(--th-line-strong); font-size: .9rem; line-height: 1.45; }
+.irrtum-item b { color: var(--th-navy); font-weight: 700; }
+
+/* Der Irrtum, in den der Teilnehmer selbst getappt ist. Die Markierung ist
+   nicht nur Farbe: das vorangestellte Wort benennt sie, sonst käme sie bei
+   Farbenblindheit und im Vorlesemodus gar nicht an (WCAG 1.4.1). */
+.irrtum-item.is-mine { border-left-color: var(--th-red); }
+.irrtum-item.is-mine b { color: var(--th-red); }
+
+.mitnehmen {
+  margin: 14px 0 0;
+  padding: 12px 14px;
+  border: 1px solid var(--th-line);
+  border-left: 4px solid var(--th-blue);
+  border-radius: var(--radius-md);
+  background: var(--th-white);
+}
+.mitnehmen-label { color: var(--th-blue-text); }
+.mitnehmen-text { margin: 0; line-height: 1.5; font-weight: 600; }
+.mitnehmen-text b { color: var(--th-navy); font-weight: 800; }
+
+.review-mitnehmen {
+  margin: 8px 0 0;
+  padding-left: 10px;
+  border-left: 3px solid var(--th-blue);
+  color: var(--th-ink);
+  font-size: .88rem;
+  line-height: 1.45;
+}
+.review-mitnehmen b { font-weight: 800; }
+
+/* Die Aktionsleiste klebt am unteren Rand. Vorher stand sie unter der
+   Auflösung: wer bei einer Bildfrage antwortete, sah das Feedback über sich
+   einschieben, während der Knopf unter dem Daumen von "Antwort prüfen" auf
+   "Nächste Frage" wechselte. Ein zweiter Tipp sprang dann über die Auflösung
+   hinweg — also über genau den Teil, für den der Check gemacht ist. */
+.quiz-actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 22px;
+  padding: 14px 0 max(6px, env(safe-area-inset-bottom));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #fff 20%);
+}
+.selection-status { margin: 0; color: var(--th-muted); font-size: .86rem; }
+
+/* -------------------------------------------------------------- Ergebnis --- */
+
+.result-layout {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+  padding: clamp(22px, 4vw, 44px);
+}
+
+.score-card {
+  position: sticky;
+  top: 16px;
+  padding: 22px;
+  border: 1px solid var(--th-line);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(160deg, var(--th-navy) 0%, var(--th-navy-deep) 100%);
+  color: #fff;
+  text-align: center;
+}
+.score-label { margin: 0; color: rgba(255, 255, 255, .74); font-size: .74rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+
+/* Registriert macht --pct animierbar, und der Ring baut sich einmal auf,
+   statt fertig dazustehen. Das ist die einzige Bewegung im Projekt, die
+   nicht bloß ein Übergang ist — sie zeigt das Ergebnis entstehen. Ohne
+   @property (ältere Browser) springt der Wert einfach: gleicher Endstand. */
+@property --pct {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0;
+}
+
+.score-ring {
+  transition: --pct 900ms cubic-bezier(.23, 1, .32, 1);
+  display: grid;
+  place-content: center;
+  width: 148px;
+  height: 148px;
+  margin: 16px auto 12px;
+  border-radius: 50%;
+  background: conic-gradient(var(--th-lime) calc(var(--pct, 0) * 1%), rgba(255, 255, 255, .16) 0);
+  position: relative;
+}
+.score-ring::before {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  border-radius: 50%;
+  background: var(--th-navy-deep);
+}
+.score-value { position: relative; color: #fff; font-size: 2.3rem; font-weight: 800; line-height: 1; }
+.score-fraction { position: relative; margin-top: 6px; color: rgba(255, 255, 255, .82); font-size: .88rem; font-weight: 700; }
+.score-rating { margin: 0 0 14px; color: rgba(255, 255, 255, .94); font-weight: 700; }
+
+.score-meta { display: grid; gap: 8px; margin: 0; padding-top: 14px; border-top: 1px solid rgba(255, 255, 255, .18); text-align: left; }
+.score-meta > div { display: flex; justify-content: space-between; gap: 10px; }
+.score-meta dt { color: rgba(255, 255, 255, .7); font-size: .84rem; }
+.score-meta dd { margin: 0; font-size: .84rem; font-weight: 700; }
+
+.save-state { margin: 14px 0 0; color: rgba(255, 255, 255, .88); font-size: .82rem; line-height: 1.4; }
+
+.result-block { margin-bottom: 26px; }
+
+.topic-list { display: grid; gap: 10px; }
+.topic-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 96px 62px;
+  gap: 12px;
+  align-items: center;
+  padding: 11px 14px;
+  border: 1px solid var(--th-line);
+  border-radius: 12px;
+  background: #fff;
+}
+.topic-name { font-weight: 700; font-size: .92rem; }
+.topic-bar { height: 8px; border-radius: 999px; background: var(--th-soft); overflow: hidden; }
+.topic-bar span { display: block; height: 100%; border-radius: 999px; background: var(--th-lime); }
+.topic-bar.is-weak span { background: var(--th-red); }
+.topic-score { color: var(--th-muted); font-size: .86rem; font-weight: 800; text-align: right; }
+
+.review-list { display: grid; gap: 10px; }
+.review-item {
+  padding: 14px 16px;
+  border: 1px solid var(--th-line);
+  border-left-width: 4px;
+  border-radius: 12px;
+  background: #fff;
+}
+.review-item.is-correct { border-left-color: var(--th-lime); }
+.review-item.is-wrong { border-left-color: var(--th-red); }
+.review-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+.review-index { color: var(--th-muted); font-size: .8rem; font-weight: 800; }
+.review-verdict { font-size: .8rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+.review-item.is-correct .review-verdict { color: var(--th-lime-text); }
+.review-item.is-wrong .review-verdict { color: var(--th-red); }
+.review-q { margin: 0 0 6px; font-weight: 700; line-height: 1.4; }
+.review-a { margin: 0; color: var(--th-muted); font-size: .88rem; line-height: 1.45; }
+.review-a strong { color: var(--th-navy); }
+
+.result-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+
+/* ------------------------------------------------------------- Fußzeile --- */
+
+.colophon {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 18px;
+  padding: 0 6px;
+  color: var(--th-muted);
+  font-size: .78rem;
+}
+
+/* ---------------------------------------------------------------- Toast --- */
+
+.toast {
+  position: fixed;
+  z-index: 1300;
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%);
+  max-width: min(92vw, 460px);
+  padding: 13px 18px;
+  border-radius: 14px;
+  background: var(--th-navy);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: var(--shadow-md);
+  animation: enter .2s ease-out both;
+}
+
+/* --------------------------------------------------------------- Mobile --- */
+
+@media (max-width: 900px) {
+  .start-layout { grid-template-columns: 1fr; }
+  .result-layout { grid-template-columns: 1fr; }
+  .score-card { position: static; }
+}
+
+@media (max-width: 640px) {
+  .shell { width: calc(100% - 20px); padding: 12px 0 22px; }
+  .masthead { padding: 10px 13px; border-radius: 16px; }
+  .brand { gap: 10px; }
+  .brand-logo { width: 128px; }
+  .brand-copy { padding-left: 10px; }
+  .screen { border-radius: var(--radius-lg); }
+
+  .answers { grid-template-columns: 1fr; gap: 10px; }
+  .answer { min-height: var(--tap); padding: 13px; grid-template-columns: 40px 1fr; gap: 11px; }
+  .answer-letter { width: 40px; height: 40px; border-radius: 11px; }
+
+  /* Bildkacheln bleiben auch auf dem Telefon zweispaltig — vier Fotos
+     untereinander wären nicht vergleichbar, und Vergleichen ist die Aufgabe. */
+  .answers-bild { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .answer-bild { padding: 0; }
+  .answer-bild .answer-letter { top: 7px; left: 7px; width: 34px; height: 34px; border-radius: 10px; }
+  /* Die Lupe bleibt auf 44 px — sie liegt auf einer 155-px-Kachel, und wer
+     mit Handschuhen danebengreift, wählt versehentlich die Antwort aus. */
+  .answer-zoom { right: 7px; bottom: 7px; }
+  .answer-bild-text { padding: 9px 10px; font-size: .82rem; }
+
+  .match-row { grid-template-columns: 1fr; gap: 8px; }
+  .topic-row { grid-template-columns: minmax(0, 1fr) 56px; }
+  .topic-bar { display: none; }
+
+  .quiz-actions { flex-direction: column-reverse; align-items: stretch; }
+  .quiz-actions .btn { width: 100%; }
+  .start-actions .btn, .result-actions .btn { flex: 1 1 auto; }
+}
+
+/* ------------------------------------------------------- Reduced Motion --- */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .btn:hover:not(:disabled), .island-card:hover { transform: none; }
+}
+
+/* ------------------------------------------------------------- Kontrast --- */
+
+@media (prefers-contrast: more) {
+  .answer, .order-item, .match-row, .review-item, .topic-row { border-width: 2px; }
+  .lead, .field small, .privacy, .review-a { color: #3F464F; }
+  .irrtum-item, .review-mitnehmen { border-left-width: 4px; }
+}
+
+/* ---------------------------------------------------------------- Druck --- */
+
+@media print {
+  body { background: #fff; }
+  .masthead-meta, .quiz-actions, .result-actions, .toast, .skip-link { display: none !important; }
+  .screen { box-shadow: none; border-color: #999; }
+  .score-card { background: #fff; color: #000; border: 1px solid #999; }
+  .score-card * { color: #000 !important; }
+}

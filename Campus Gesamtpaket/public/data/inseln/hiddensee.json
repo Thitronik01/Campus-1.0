@@ -1,0 +1,264 @@
+{
+  "island": "hiddensee",
+  "code": "HIDDENSEE",
+  "title": "Funk-Magnetkontakt & Adapter",
+  "subtitle": "Funkkomponenten",
+  "version": "3",
+  "lernziel": "Das billigste Bauteil im Sortiment verursacht die teuersten Rückläufer. Alles hier dreht sich um einen Satz: montiert ist nicht funktionsfähig.",
+  "quellen": [
+    "produkte/funk-magnetkontakt.md"
+  ],
+  "internerHinweis": "Fragenkatalog v3. Diese Insel gewinnt deutlich mit echten Werkstattfotos. HID-01, HID-05 und HID-09 sind als Bildfragen vorgesehen — sobald Fotos vorliegen, nur das Feld \"media\" ergänzen. Fachlich zu bestätigen: die Auslöseschwelle über 30 mm bei der wasserdichten Ausführung in HID-03.",
+  "questions": [
+    {
+      "id": "HID-01",
+      "type": "single",
+      "category": "Der Klassiker",
+      "prompt": "Ein Standardkontakt ließ sich problemlos anlernen — beim Öffnen der Klappe passiert aber nichts. Woran liegt es?",
+      "options": [
+        { "id": "a", "text": "Die Batterie ist zu schwach zum Senden" },
+        { "id": "b", "text": "Die Platine liegt falsch herum — Sende-LED zeigt zum Magneten" },
+        { "id": "c", "text": "Der Kontakt wurde an der Zentrale nicht gespeichert" },
+        { "id": "d", "text": "Die Anlage war beim Test nicht scharf geschaltet" }
+      ],
+      "correct": ["b"],
+      "feedback": "In dieser Ausrichtung ist Anlernen möglich, eine Alarmierung aber nicht. Richtig: Sende-LED zeigt **weg** vom Magneten, nach oben.",
+      "irrtum": [
+        {
+          "fuer": ["c"],
+          "titel": "Nicht gespeichert",
+          "text": "Der Denkfehler steckt schon in der Frage — „ließ sich problemlos anlernen“. Genau das macht diesen Fehler so tückisch: Die Anlern-Bestätigung kommt, und man glaubt, alles sei gut."
+        },
+        {
+          "fuer": ["d"],
+          "titel": "Anlage nicht scharf",
+          "text": "Ein guter Reflex und immer wert zu prüfen. Bei einem frisch montierten Kontakt in falscher Lage bleibt der Alarm aber auch scharf geschaltet aus."
+        }
+      ],
+      "mitnehmen": "Die Anlern-Bestätigung beweist gar nichts. Nur der Testalarm mit scharfer Anlage tut es — **Prinzip 3**."
+    },
+    {
+      "id": "HID-02",
+      "type": "single",
+      "category": "Umgang mit Quellen",
+      "prompt": "In den Unterlagen stehen unterschiedliche Maximalabstände zwischen Sender und Magnet — 22 mm und 25 mm. Wie legst du die Montage aus?",
+      "options": [
+        { "id": "a", "text": "Auf 25 mm — das ist der höhere Wert" },
+        { "id": "b", "text": "Auf 22 mm — den kleineren der genannten Werte" },
+        { "id": "c", "text": "Auf den Mittelwert, rund 23 mm" },
+        { "id": "d", "text": "Unkritisch, solange der Kontakt im geschlossenen Zustand schließt" }
+      ],
+      "correct": ["b"],
+      "feedback": "Die Standard-Produktanleitung nennt 25 mm, das WiPro-III-Handbuch und die wasserdichte Ausführung 22 mm. Wer auf 22 mm auslegt, liegt in jedem Fall innerhalb der Spezifikation.",
+      "irrtum": [
+        {
+          "fuer": ["a"],
+          "titel": "25 mm",
+          "text": "Nicht falsch gelernt — dieser Wert steht tatsächlich in der Produktanleitung. Aber er gilt nicht für alle Ausführungen, und du weißt beim Einbau nicht immer, welche Unterlage der Kunde später zitiert."
+        },
+        {
+          "fuer": ["c"],
+          "titel": "Mittelwert",
+          "text": "Der schlechteste aller Wege. Bei widersprüchlichen Spezifikationen gibt es kein „ungefähr richtig“ — es gibt nur innerhalb oder außerhalb."
+        }
+      ],
+      "mitnehmen": "Bei abweichenden Quellenangaben immer konservativ auslegen. Und danach den Reichweitentest fahren — der schlägt jeden Papierwert."
+    },
+    {
+      "id": "HID-03",
+      "type": "single",
+      "category": "Falle",
+      "prompt": "Bei der wasserdichten Ausführung: Ab welchem Abstand gilt der Kontakt sicher als „offen“?",
+      "options": [
+        { "id": "a", "text": "Ab 22 mm" },
+        { "id": "b", "text": "Ab mehr als 30 mm" },
+        { "id": "c", "text": "Sobald die Teile sichtbar getrennt sind" },
+        { "id": "d", "text": "Ab 15 mm" }
+      ],
+      "correct": ["b"],
+      "feedback": "Zwei verschiedene Werte für zwei verschiedene Zustände: **22 mm** ist die Obergrenze im **geschlossenen** Zustand, **über 30 mm** ist die **Auslöseschwelle**.",
+      "irrtum": [
+        {
+          "fuer": ["a"],
+          "titel": "22 mm",
+          "text": "Der wahrscheinlichste Fehlgriff, weil 22 mm die Zahl ist, die man sich zu dieser Ausführung merkt. Genau darin liegt die Falle: Zwei Werte, die im selben Datenblatt stehen und Gegenteiliges bedeuten."
+        },
+        {
+          "fuer": ["c"],
+          "titel": "Sichtbar getrennt",
+          "text": "Beim Funktionstest reicht das oft nicht. Zwei Finger breit auseinander sind je nach Handgröße 20 mm — und damit noch „geschlossen“."
+        }
+      ],
+      "mitnehmen": "Beim Test großzügig trennen, nicht andeutungsweise. Ein halber Test ist ein falsches Ergebnis mit Brief und Siegel."
+    },
+    {
+      "id": "HID-04",
+      "type": "match",
+      "category": "Nicht vermischen",
+      "prompt": "Welche Regel gilt für welche Ausführung?",
+      "left": [
+        { "id": "l1", "text": "Sende-LED muss vom Magneten weg zeigen" },
+        { "id": "l2", "text": "Gehäusepfeile müssen zueinander zeigen" },
+        { "id": "l3", "text": "Montageadapter 100428 / 100729" },
+        { "id": "l4", "text": "V4A-Senkkopfschrauben (nicht im Lieferumfang)" }
+      ],
+      "right": [
+        { "id": "r1", "text": "Standard" },
+        { "id": "r2", "text": "Wasserdicht" }
+      ],
+      "correct": { "l1": "r1", "l2": "r2", "l3": "r1", "l4": "r2" },
+      "feedback": "Standard: Sende-LED weg vom Magneten, Montageadapter 100428 (schwarz) / 100729 (weiß). Wasserdicht: Gehäusepfeile zueinander, V4A-Senkkopfschrauben.",
+      "irrtum": [
+        {
+          "titel": "Regeln vertauscht",
+          "text": "Der häufigste Fehler an dieser Station. Beide Ausführungen sehen ähnlich aus und heißen fast gleich — aber die Ausrichtungsregel der einen ist bei der anderen nutzlos."
+        }
+      ],
+      "mitnehmen": "Erst die Ausführung bestimmen, dann die Regel anwenden. Nie umgekehrt. Und bei der wasserdichten Ausführung dran denken: Die Schrauben sind **nicht** im Lieferumfang — das merkt man sonst auf der Hebebühne."
+    },
+    {
+      "id": "HID-05",
+      "type": "single",
+      "category": "Werkstattfall",
+      "prompt": "Der Kontakt an der metallischen Heckgarage arbeitet unzuverlässig. Erste Maßnahme?",
+      "options": [
+        { "id": "a", "text": "Batterie tauschen" },
+        { "id": "b", "text": "Kontakt löschen und neu anlernen" },
+        { "id": "c", "text": "Montageadapter setzen und Reichweitentest wiederholen" },
+        { "id": "d", "text": "Zweiten Kontakt parallel montieren" }
+      ],
+      "correct": ["c"],
+      "feedback": "Metall in unmittelbarer Nähe dämpft die Funkstrecke. Der Adapter (100428 schwarz / 100729 weiß) schafft Abstand zur Metallfläche und überbrückt zugleich größere Spaltmaße.",
+      "irrtum": [
+        {
+          "fuer": ["b"],
+          "titel": "Neu anlernen",
+          "text": "Der Standardreflex bei Funkproblemen. Aber „unzuverlässig“ heißt: Er funktioniert manchmal — also ist er angelernt. Anlernen behebt keine Reichweitenprobleme."
+        },
+        {
+          "fuer": ["d"],
+          "titel": "Zweiter Kontakt",
+          "text": "Verdoppelt das Problem statt es zu lösen. Beide sitzen dann auf demselben Metall."
+        }
+      ],
+      "mitnehmen": "„Manchmal“ zeigt fast immer auf die Funkstrecke, „nie“ auf Anlernen oder Ausrichtung. Diese Unterscheidung spart dir die halbe Fehlersuche."
+    },
+    {
+      "id": "HID-06",
+      "type": "single",
+      "category": "Batteriediagnose",
+      "prompt": "Beim Öffnen einer Klappe ertönt ca. 2 Sekunden ein Ton aus der Zentrale, die rote Sende-LED bleibt rund 30 Sekunden an. Was bedeutet das?",
+      "options": [
+        { "id": "a", "text": "Der Kontakt ist nicht angelernt" },
+        { "id": "b", "text": "Die CR2032 des zuletzt betätigten Senders ist schwach" },
+        { "id": "c", "text": "Die Zentrale meldet einen Störsender" },
+        { "id": "d", "text": "Normale Sendebestätigung nach dem Anlernen" }
+      ],
+      "correct": ["b"],
+      "feedback": "Batteriewarnung unterhalb von ca. 2,6 V. Sie betrifft **immer nur den zuletzt betätigten Sender**.",
+      "irrtum": [
+        {
+          "fuer": ["d"],
+          "titel": "Normale Sendebestätigung",
+          "text": "Gefährlichster Irrtum, weil er zu Nichtstun führt. Wer die Warnung für normal hält, schickt den Kunden mit einem Sender los, der in wenigen Wochen verstummt."
+        },
+        {
+          "fuer": ["c"],
+          "titel": "Störsender",
+          "text": "Verwechslung mit dem Anti-Jamming-Alarm der WiPro. Der zeigt sich im Blinkcode der Status-LED, nicht als Ton beim Öffnen einer Klappe."
+        }
+      ],
+      "mitnehmen": "Wurden alle Kontakte gleichzeitig verbaut, stehen die übrigen kurz davor — Lebensdauer rund 2 Jahre. Gleich alle Knopfzellen ähnlichen Alters mitplanen, statt den Kunden dreimal kommen zu lassen."
+    },
+    {
+      "id": "HID-09",
+      "type": "single",
+      "category": "Montagelogik",
+      "prompt": "An einer Aufbautür: Welches Teil kommt wohin?",
+      "options": [
+        { "id": "a", "text": "Sendergehäuse an den festen Rahmen, Magnet ans Türblatt" },
+        { "id": "b", "text": "Umgekehrt — der Sender muss mit der Tür mitschwingen" },
+        { "id": "c", "text": "Beliebig, solange der Abstand stimmt" },
+        { "id": "d", "text": "Beide auf dem Türblatt, versetzt zueinander" }
+      ],
+      "correct": ["a"],
+      "feedback": "Der Sender enthält Elektronik und Batterie und gehört an das ruhende Teil. Der Magnet ist unempfindlich und darf sich bewegen.",
+      "irrtum": [
+        {
+          "fuer": ["c"],
+          "titel": "Beliebig",
+          "text": "Funktioniert am Prüftag tatsächlich. Nach ein paar hundert zugeschlagenen Klappen nicht mehr — jedes Zuschlagen ist ein Schlag auf die Platine und auf die Batteriekontakte."
+        }
+      ],
+      "mitnehmen": "Elektronik gehört ans ruhende Teil. Diese Regel gilt im ganzen Fahrzeug, nicht nur hier."
+    },
+    {
+      "id": "HID-07",
+      "type": "truefalse",
+      "category": "Richtig oder falsch",
+      "prompt": "„Jede Fahrzeugtür braucht einen Funk-Magnetkontakt.“",
+      "correct": ["falsch"],
+      "feedback": "Türen, deren Öffnung im Kombi-Instrument angezeigt wird, werden bei korrekt angeschlossener WiPro III bereits über den CAN-Bus überwacht.",
+      "irrtum": [
+        {
+          "fuer": ["richtig"],
+          "titel": "Richtig",
+          "text": "Sicherheitsdenken — lieber einen zu viel. Hier führt es zu unnötigen Kosten für den Kunden, mehr Batterien im Wartungsplan und mehr Bauteilen, die ausfallen können."
+        }
+      ],
+      "mitnehmen": "Schneller Praxistest am Fahrzeug: Tür öffnen und aufs Display schauen. Wird sie dort angezeigt, ist kein Kontakt nötig. Diese fünf Sekunden ersetzen jede Diskussion."
+    },
+    {
+      "id": "HID-08",
+      "type": "single",
+      "category": "Praxis, Winter",
+      "prompt": "Es ist November, die Werkstatt ist auf 8 °C runtergekühlt. Du sollst Klebepads verarbeiten. Was gilt?",
+      "options": [
+        { "id": "a", "text": "Kein Problem, Pads sind temperaturunabhängig" },
+        { "id": "b", "text": "Nicht kleben — unter 15 °C Oberflächentemperatur nicht verarbeiten" },
+        { "id": "c", "text": "Pad kurz mit Heißluft erwärmen und sofort belasten" },
+        { "id": "d", "text": "Zusätzlich Sekundenkleber auftragen" }
+      ],
+      "correct": ["b"],
+      "feedback": "Unter 15 °C Oberflächentemperatur bindet der Kleber nicht richtig ab.",
+      "irrtum": [
+        {
+          "fuer": ["c"],
+          "titel": "Mit Heißluft erwärmen",
+          "text": "Der cleverste der falschen Wege — und der verlockendste, weil er den Termin rettet. Das Pad wird warm, klebt sofort scheinbar gut, und die Endfestigkeit erreicht es trotzdem nie. Der Fehler zeigt sich Wochen später beim Kunden."
+        },
+        {
+          "fuer": ["a"],
+          "titel": "Temperaturunabhängig",
+          "text": "Der Fehler mit der längsten Latenz im ganzen Katalog. Der Kontakt hält den ganzen Winter und fällt im Frühjahr ab."
+        }
+      ],
+      "mitnehmen": "Zwei Dinge gehören dazu: Endfestigkeit erst nach ca. **24 Stunden**, und die Fläche muss sauber, trocken und fettfrei sein. Ein zu kalt oder zu schmutzig geklebter Kontakt fällt nicht sofort ab — er fällt dann ab, wenn niemand mehr an den Einbau denkt."
+    },
+    {
+      "id": "HID-10",
+      "type": "order",
+      "category": "Reihenfolge",
+      "prompt": "Bringe die Montageschritte in die richtige Reihenfolge.",
+      "items": [
+        { "id": "o1", "text": "Anlernen" },
+        { "id": "o2", "text": "Reichweitentest am geplanten Ort" },
+        { "id": "o3", "text": "Endgültig kleben oder verschrauben" },
+        { "id": "o4", "text": "Testalarm mit scharfer Anlage" }
+      ],
+      "correct": ["o1", "o2", "o3", "o4"],
+      "feedback": "Jeder Schritt setzt den vorherigen voraus — und jeder prüft etwas anderes. Der Reichweitentest prüft den **Ort**, der Testalarm die **Funktion**.",
+      "irrtum": [
+        {
+          "titel": "Erst kleben, dann testen",
+          "text": "Der teuerste Ablauf. Stimmt der Ort nicht, brauchst du ein neues Pad, eine neu vorbereitete Fläche und wieder 24 Stunden."
+        },
+        {
+          "titel": "Testalarm weggelassen",
+          "text": "Dann bleibt der Klassiker mit der falsch herum liegenden Platine unentdeckt — angelernt, montiert, und im Ernstfall passiert nichts."
+        }
+      ],
+      "mitnehmen": "**Prinzip 3 — montiert ist nicht funktionsfähig.** Zwei Tests, zwei verschiedene Fragen: „Kommt das Signal von hier an?“ und „Löst die Anlage wirklich aus?“ Keiner ersetzt den anderen."
+    }
+  ]
+}
