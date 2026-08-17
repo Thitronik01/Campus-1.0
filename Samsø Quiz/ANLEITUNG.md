@@ -6,8 +6,8 @@ Fertiges Netlify-Paket für die Schulungsinsel SAMSØ.
 | | |
 |---|---|
 | Fragen | 10 |
-| Fragensatz-Version | 3 |
-| Bilder | 9 |
+| Fragensatz-Version | 4 |
+| Bilder | 10 |
 
 ---
 

@@ -3,7 +3,7 @@
   "code": "USEDOM",
   "title": "Verkaufsdisplay & Konfigurator",
   "subtitle": "Vom Einzelprodukt zum System",
-  "version": "3",
+  "version": "4",
   "lernziel": "Wer die vier Ebenen trennt — Zentrale, Fernsteuerung, Lesestelle, Medium —, beantwortet fast jede Kundenfrage von selbst.",
   "quellen": [
     "referenz/systemueberblick.md",
@@ -11,36 +11,34 @@
     "produkte/nfc-modul.md",
     "referenz/zugang-bedienung.md"
   ],
-  "internerHinweis": "Fragenkatalog v3. USE-04 ist von Einfachauswahl auf Zuordnung umgestellt (vier Ebenen statt einer Einzelfrage), USE-01 auf Mehrfachauswahl. Produktbilder für die Displayfragen liegen weiterhin in Wissen/03_Medien/produkte/, falls USE-04 später als Bildfrage laufen soll. Fachlich zu bestätigen: die Artikelnummern 101286 / 101287 in USE-07 und die 94 dB der internen Sirene in USE-06.",
+  "internerHinweis": "Fragenkatalog v4. USEDOM erklärt das Verkaufsdisplay über Kundensituationen statt über reines Produkt-Zuordnen. Produktbilder liegen in Wissen/03_Medien/produkte/ und können USE-04 später visuell ergänzen. Fachlich zu bestätigen: die Artikelnummern 101286 / 101287 in USE-07 und die 94 dB der internen Sirene in USE-06.",
   "questions": [
     {
       "id": "USE-04",
-      "type": "match",
-      "category": "Displayzuordnung",
-      "prompt": "Ordne jeder Komponente auf dem Display ihre Aufgabe zu.",
-      "left": [
-        { "id": "l1", "text": "WiPro III" },
-        { "id": "l2", "text": "Pro-finder" },
-        { "id": "l3", "text": "NFC Modul" },
-        { "id": "l4", "text": "KeyTag" }
+      "type": "single",
+      "category": "Gespräch am Display",
+      "prompt": "Ein Kunde zeigt auf BT-connect, Pro-finder und NFC Modul: „Das ist doch dreimal dasselbe — das Fahrzeug ohne Schlüssel bedienen.“ Welche Erklärung trennt die Produkte sauber?",
+      "options": [
+        { "id": "a", "text": "BT-connect bedient die WiPro per Smartphone im Nahbereich; Pro-finder ermöglicht Mobilfunk-Fernzugriff und Ortung; das NFC Modul liest KeyCard, KeyTag oder KeyStrap direkt am Fahrzeug" },
+        { "id": "b", "text": "Alle drei sind eigenständige Alarmanlagen; sie unterscheiden sich nur in der Reichweite" },
+        { "id": "c", "text": "BT-connect und NFC Modul orten das Fahrzeug, Pro-finder öffnet ausschließlich die Aufbautür" },
+        { "id": "d", "text": "Es genügt immer eines der drei Produkte, eine WiPro III wird dafür nicht benötigt" }
       ],
-      "right": [
-        { "id": "r1", "text": "Alarmzentrale" },
-        { "id": "r2", "text": "Ortung und Fernsteuerung" },
-        { "id": "r3", "text": "Lesestelle am Fahrzeug" },
-        { "id": "r4", "text": "Zugangsmedium" },
-        { "id": "r5", "text": "Gaswarnung" },
-        { "id": "r6", "text": "Rauchmelder-Funktion" }
-      ],
-      "correct": { "l1": "r1", "l2": "r2", "l3": "r3", "l4": "r4" },
-      "feedback": "Vier Ebenen, vier Aufgaben. Diese Ordnung ist die Systemlogik hinter dem Display.",
+      "correct": ["a"],
+      "feedback": "Die Produkte bedienen unterschiedliche Situationen: Smartphone nah am Fahrzeug, Mobilfunk aus der Ferne oder ein physisches NFC-Medium direkt am Fahrzeug. BT-connect und NFC Modul setzen eine kompatible Alarmzentrale voraus.",
       "irrtum": [
         {
-          "titel": "NFC Modul und KeyTag vertauscht",
-          "text": "Die häufigste Verwechslung am Display, weil beide zusammen in einer Packung liegen. Das Modul bleibt am Fahrzeug, der Tag geht mit dem Kunden mit."
+          "fuer": ["b", "d"],
+          "titel": "Bedienwege mit eigenständigen Systemen verwechselt",
+          "text": "BT-connect und NFC Modul sind Bedienwege für eine kompatible WiPro. Sie ersetzen die Alarmzentrale nicht."
+        },
+        {
+          "fuer": ["c"],
+          "titel": "Ortung falsch zugeordnet",
+          "text": "Die Ortung gehört zum Pro-finder. Bluetooth und NFC lösen lokale Bedienvorgänge aus, bestimmen aber keine Fahrzeugposition."
         }
       ],
-      "mitnehmen": "Merke dir die vier Ebenen, nicht die Produktliste. Neue Produkte lassen sich dann einsortieren, ohne dass du sie kennst. Die Pro-finder Antenne ist übrigens Zubehör für ungünstige Einbaulagen, kein eigenes Produkt."
+      "mitnehmen": "Am Display nicht mit Gerätenamen beginnen, sondern mit drei Fragen: nah oder fern, Smartphone oder Medium, bedienen oder orten?"
     },
     {
       "id": "USE-01",

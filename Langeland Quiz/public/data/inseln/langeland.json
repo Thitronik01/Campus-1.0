@@ -3,15 +3,15 @@
   "code": "LANGELAND",
   "title": "Fahrzeugannahme & Fahrzeugübergabe",
   "subtitle": "Der Prozess vor und nach dem Schraubendreher",
-  "version": "3",
-  "lernziel": "Was du bei der Annahme nicht klärst, klärst du später am zerlegten Fahrzeug. Was du bei der Übergabe nicht erklärst, kommt als Anruf zurück.",
+  "version": "4",
+  "lernziel": "Ein Fahrzeug vollständig und freigabebewusst annehmen, den Einbau prüfbar dokumentieren und dem Kunden System, Grenzen und Bedienwege sicher übergeben.",
   "quellen": [
     "referenz/fahrzeugkompatibilitaet.md",
     "produkte/wipro-iii.md",
     "referenz/zugang-bedienung.md",
     "_intern/support-fallaufnahme.md"
   ],
-  "internerHinweis": "Fragenkatalog v3. LAN-10 ist von Einfachauswahl auf Mehrfachauswahl umgestellt. Fachlich zu bestätigen: die 60 Sekunden bis zum Testalarm bei Anbindung über den Innenbeleuchtungseingang in LAN-04. Der Freigabestand zum Iveco Daily in LAN-03 ist auf 01/2026 datiert — vor jeder Schulung gegenprüfen.",
+  "internerHinweis": "Fragenkatalog v4. Die vom Fachreview bestätigten Annahme- und Übergabefragen wurden inhaltlich erhalten und sprachlich auf den vollständigen Werkstattprozess ausgerichtet. Die 60 Sekunden in LAN-04 und der Freigabestand zum Iveco Daily in LAN-03 sind vor jeder Schulung gegen den aktuellen Stand zu prüfen.",
   "questions": [
     {
       "id": "LAN-01",

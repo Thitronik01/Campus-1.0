@@ -5,51 +5,58 @@
     {
       "slug": "vejro",
       "code": "VEJRØ",
-      "title": "CampLock & VanLock",
-      "thema": "Produktschulung",
-      "beschreibung": "Neue Produkte: Problem, Aufbau, Funktion, Verkaufsargumentation, Abgrenzung."
+      "title": "Produktneuheiten",
+      "thema": "Zugang & Wasserschutz",
+      "beschreibung": "CampLock, VanLock, Funk-Wassermelder 868 und wasserdichter Funk-Magnetkontakt.",
+      "image": "/media/inseln/vejro.webp"
     },
     {
       "slug": "poel",
       "code": "POEL",
       "title": "Händlerbereich",
-      "thema": "Was finde ich wo?",
-      "beschreibung": "Informationen selbstständig auf der THITRONIK-Website finden."
+      "thema": "Beratung & Werkstatt vorbereiten",
+      "beschreibung": "Aktuelle Unterlagen finden, Kundeninformationen trennen und Werkstattaufträge professionell vorbereiten.",
+      "image": "/media/inseln/poel.webp"
     },
     {
       "slug": "hiddensee",
       "code": "HIDDENSEE",
-      "title": "Funkkomponenten",
-      "thema": "Magnetkontakt & Adapter",
-      "beschreibung": "Aufbau, Positionierung, Montage, Abstände, typische Fehler."
+      "title": "Funkkontakte & Verbindungen",
+      "thema": "Montage, Abzweigen & Crimpen",
+      "beschreibung": "Funk-Magnetkontakte, gelgefüllte Abzweigverbinder und belastbare Crimpverbindungen.",
+      "image": "/media/inseln/hiddensee.webp"
     },
     {
       "slug": "samsoe",
       "code": "SAMSØ",
       "title": "Einbauorte",
       "thema": "Wo kommt was hin?",
-      "beschreibung": "Geeignete und ungeeignete Einbauorte je nach Basisfahrzeug."
+      "beschreibung": "Geeignete Einbauorte für Zentralen, Melder, Antennen und Bedienkomponenten im Fahrzeug.",
+      "image": "/media/inseln/samsoe.webp"
     },
     {
       "slug": "fehmarn",
       "code": "FEHMARN",
       "title": "Fehlersuche & Support",
       "thema": "Diagnose",
-      "beschreibung": "Fehler erkennen, analysieren, Ursache bestimmen, Lösung wählen."
+      "beschreibung": "Gerätesignale lesen, Fehler strukturiert analysieren und Pro-finder-Mobilfunk sicher beurteilen.",
+      "image": "/media/inseln/fehmarn.webp"
     },
     {
       "slug": "usedom",
       "code": "USEDOM",
       "title": "Verkaufsdisplay & Konfigurator",
       "thema": "Vom Produkt zum System",
-      "beschreibung": "Produkte erklären, kombinieren, Kundenbedarf erkennen."
+      "beschreibung": "Produkte am Display verständlich erklären, kombinieren und aus dem Kundenbedarf ein System bilden.",
+      "image": "/media/inseln/usedom.webp"
     },
     {
       "slug": "langeland",
       "code": "LANGELAND",
       "title": "Annahme & Übergabe",
       "thema": "Der Kundenprozess",
-      "beschreibung": "Der gesamte Ablauf mit dem Kunden, nicht nur die Technik."
+      "beschreibung": "Fahrzeug vollständig annehmen, Einbau dokumentieren und System sicher an den Kunden übergeben.",
+      "image": "/media/inseln/langeland.webp"
     }
   ]
 }

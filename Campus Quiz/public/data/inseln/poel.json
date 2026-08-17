@@ -2,15 +2,15 @@
   "island": "poel",
   "code": "POEL",
   "title": "Händlerbereich",
-  "subtitle": "Was finde ich wo?",
-  "version": "3",
-  "lernziel": "Sich selbst helfen, statt anzurufen. Jede Information hat genau einen richtigen Ort — öffentlich, geschützt oder gar nicht für Kundenhand.",
+  "subtitle": "Das digitale Werkzeug für Beratung und Werkstatt",
+  "version": "4",
+  "lernziel": "Den THITRONIK-Händlerbereich als tägliches Arbeitsmittel nutzen: Kundenunterlagen sauber von geschützten Einbaudaten trennen, Aufträge fundiert vorbereiten und den eigenen Werkstattservice stärken.",
   "quellen": [
     "Öffentliche Website-Struktur (Stand 13.08.2026)",
     "_intern/werkseinbau-eckernfoerde.md",
     "produkte/gas-pro-iii.md"
   ],
-  "internerHinweis": "Fragenkatalog v3. Vor dem Einsatz prüfen: Der Händlerbereich ist login-geschützt. Bestätigt sind nur die öffentlichen Rubriken. Die konkreten Menüpfade nach dem Login gegenprüfen — das betrifft POE-02, POE-03 und POE-06. Ebenfalls fachlich zu bestätigen: der Serienbereich 1286-008 bis 1286-012 der Rückrufaktion in POE-05.",
+  "internerHinweis": "Fragenkatalog v4. POEL erklärt den Händlerbereich und stärkt den professionellen Einbau durch den Fachbetrieb. Vor dem Einsatz die konkreten Menüpunkte nach dem Login und den Serienbereich 1286-008 bis 1286-012 der Rückrufaktion in POE-05 gegenprüfen.",
   "questions": [
     {
       "id": "POE-01",
@@ -37,24 +37,29 @@
     {
       "id": "POE-02",
       "type": "single",
-      "category": "Navigations-Falle",
-      "prompt": "Unter welcher Download-Produktgruppe liegt die Anleitung zum Pro-finder?",
+      "category": "Öffentlich oder geschützt?",
+      "prompt": "Du sendest dem Kunden eine Bedienungsanleitung und bereitest intern die fahrzeugspezifische Steckerbelegung vor. Welche Aufteilung ist richtig?",
       "options": [
-        { "id": "a", "text": "Alarmanlagen" },
-        { "id": "b", "text": "Fahrzeugortung" },
-        { "id": "c", "text": "Gaswarner" },
-        { "id": "d", "text": "Sonstiges (produktübergreifend)" }
+        { "id": "a", "text": "Beides aus dem öffentlichen Supportbereich an den Kunden senden" },
+        { "id": "b", "text": "Bedienungsanleitung öffentlich beziehen; Steckerbelegung geschützt im Händlerbereich nutzen" },
+        { "id": "c", "text": "Beides ausschließlich telefonisch bei THITRONIK anfordern" },
+        { "id": "d", "text": "Bedienungsanleitung aus dem Händlerbereich; Steckerbelegung aus dem Konfigurator" }
       ],
       "correct": ["b"],
-      "feedback": "Sortiert wird nach Produktfamilie, nicht nach Zubehörbeziehung.",
+      "feedback": "Kundenfähige Bedienungs- und Konformitätsunterlagen liegen öffentlich. Fahrzeugspezifische Steckerbelegungen und Einbauinformationen bleiben im geschützten Fachhändlerbereich.",
       "irrtum": [
         {
           "fuer": ["a"],
-          "titel": "Alarmanlagen",
-          "text": "Vollkommen nachvollziehbar — der Pro-finder arbeitet mit der WiPro zusammen und wird meist gemeinsam verkauft. Aber er ist ein Ortungsgerät mit eigener SIM, eigener Firmware und eigenen Befehlen."
+          "titel": "Interne Einbaudaten weitergegeben",
+          "text": "Öffentliche Kundenunterlagen und geschützte Werkstattinformationen haben unterschiedliche Zielgruppen. Die Steckerbelegung ist Arbeitsgrundlage des Fachbetriebs, keine Kundenbeilage."
+        },
+        {
+          "fuer": ["c"],
+          "titel": "Alles telefonisch angefordert",
+          "text": "Der Händlerbereich soll genau diese Routineanfragen vermeiden und stellt die aktuelle Unterlage direkt für die Auftragsvorbereitung bereit."
         }
       ],
-      "mitnehmen": "Sortiert wird danach, **was ein Gerät ist**, nicht danach, womit es zusammenarbeitet."
+      "mitnehmen": "Faustregel: Bedienung für den Kunden öffentlich, fahrzeugspezifischer Einbau für den Fachbetrieb geschützt."
     },
     {
       "id": "POE-03",
@@ -81,24 +86,29 @@
     {
       "id": "POE-04",
       "type": "single",
-      "category": "Rubrik-Zuordnung",
-      "prompt": "Ein Kunde meldet, dass ein Button in der App fehlt. Welche FAQ-Rubrik prüfst du zuerst?",
+      "category": "Freigabestatus",
+      "prompt": "Eine neue Fahrzeugvariante steht in der Werkstatt, im Händlerbereich findest du aber keine passende Einbauunterlage. Wie gehst du vor?",
       "options": [
-        { "id": "a", "text": "FAQ Produkte" },
-        { "id": "b", "text": "FAQ App" },
-        { "id": "c", "text": "FAQ Allgemein" },
-        { "id": "d", "text": "Werkskundendienst" }
+        { "id": "a", "text": "Anhand eines ähnlichen Modelljahrs anschließen und testen" },
+        { "id": "b", "text": "Freigabe und passende Unterlage über den technischen Support klären, bevor eingebaut wird" },
+        { "id": "c", "text": "Den öffentlichen Schaltplan des Basisfahrzeugs verwenden" },
+        { "id": "d", "text": "Den Einbau beginnen und offene Anschlüsse später ergänzen" }
       ],
       "correct": ["b"],
-      "feedback": "Es gibt drei getrennte FAQ-Rubriken. App-Fragen stehen in der FAQ App — auch dann, wenn sie sich auf ein Hardwareprodukt beziehen.",
+      "feedback": "Fehlt die fahrzeugspezifische Unterlage, fehlt die belastbare Einbaugrundlage. Erst Freigabe und aktuellen Anschlussweg klären, dann Termin und Arbeit bestätigen.",
       "irrtum": [
         {
           "fuer": ["a"],
-          "titel": "FAQ Produkte",
-          "text": "Der Kunde beschreibt ja ein Produktverhalten. Die Rubrik richtet sich aber danach, **wo der Kunde steht**, wenn er das Problem sieht — und er steht in der App."
+          "titel": "Ähnliches Fahrzeug übernommen",
+          "text": "Modellpflege kann Stecker, CAN-Signale und Softwarestände ändern. Ähnlich ist keine Freigabe."
+        },
+        {
+          "fuer": ["d"],
+          "titel": "Einbau auf Verdacht begonnen",
+          "text": "Ohne belastbare Einbaugrundlage riskierst du Zusatzarbeit, beschädigte Fahrzeugelektrik und einen Termin, den du nicht seriös halten kannst."
         }
       ],
-      "mitnehmen": "Rubrik nach dem Ort des Symptoms, nicht nach dem Ort der Ursache."
+      "mitnehmen": "Nicht gefundene Unterlage bedeutet nicht improvisieren, sondern Freigabestatus klären."
     },
     {
       "id": "POE-06",
@@ -174,31 +184,31 @@
     {
       "id": "POE-08",
       "type": "multi",
-      "category": "Werkseinbau",
-      "prompt": "Was gehört in eine Terminanfrage für den Werkseinbau in Eckernförde? Wähle alle zutreffenden.",
+      "category": "Eigener Werkstatttermin",
+      "prompt": "Ein Kunde möchte das Gerät nur abholen und selbst einbauen. Welche Argumente sprechen für einen professionellen Einbautermin in deinem Fachbetrieb? Wähle alle zutreffenden.",
       "options": [
-        { "id": "a", "text": "Fahrzeugdaten (Modell, Modelljahr, Aufbauart)" },
-        { "id": "b", "text": "Bereits vorhandene THITRONIK-Geräte" },
-        { "id": "c", "text": "Die Konfiguration als PDF aus dem Konfigurator" },
-        { "id": "d", "text": "Wunschzeitraum" },
-        { "id": "e", "text": "Kilometerstand und Tankfüllung" },
-        { "id": "f", "text": "Kopie des Kaufvertrags" }
+        { "id": "a", "text": "Fahrzeugkompatibilität und aktuelle Einbauunterlage werden vorab geprüft" },
+        { "id": "b", "text": "Einbauort, Funkstrecke und Anschluss werden am konkreten Fahrzeug bewertet" },
+        { "id": "c", "text": "Das Gesamtsystem wird nach dem Einbau getestet und verständlich übergeben" },
+        { "id": "d", "text": "Verbaute Komponenten, Seriennummern und Prüfergebnisse werden dokumentiert" },
+        { "id": "e", "text": "Nur ein Fachbetrieb darf THITRONIK-Produkte überhaupt einschalten" },
+        { "id": "f", "text": "Ein professioneller Einbau macht jeden späteren Defekt unmöglich" }
       ],
       "correct": ["a", "b", "c", "d"],
-      "feedback": "Ohne Fahrzeugdaten und Konfiguration lässt sich der Termin nicht planen — die Anfrage bleibt liegen, und der Kunde wartet auf eine Antwort, die niemand geben kann. Anfrage über thitronik.de/einbautermin.",
+      "feedback": "Der Wert des Werkstatttermins liegt in Prüfung, fachgerechtem Einbau, Systemtest, Übergabe und Dokumentation — nicht nur in der Montagezeit.",
       "irrtum": [
         {
-          "fuer": ["b"],
-          "titel": "Vorhandene Geräte vergessen",
-          "text": "Der häufigste Fehler. Ohne diese Angabe kann niemand einschätzen, ob es eine Erweiterung oder ein Neueinbau wird — und die beiden unterscheiden sich in der Einbauzeit erheblich."
+          "fuer": ["e"],
+          "titel": "Unzulässiges Ausschließlichkeitsargument",
+          "text": "Verkaufe die Qualität deiner Arbeit, nicht eine pauschale Behauptung. Entscheidend sind Fahrzeugkenntnis, Unterlagen, Prüfung und sichere Übergabe."
         },
         {
-          "fuer": ["e"],
-          "titel": "Kilometerstand angekreuzt",
-          "text": "Aus der Kfz-Werkstatt-Routine übernommen; hier ohne Bedeutung."
+          "fuer": ["f"],
+          "titel": "Fehlerfreiheit versprochen",
+          "text": "Auch ein professioneller Einbau macht Technik nicht unfehlbar. Er reduziert Risiken und schafft eine dokumentierte Basis für Wartung und Diagnose."
         }
       ],
-      "mitnehmen": "Für den Kunden nützlich zu wissen: Am Standort stehen kostenloser Stellplatz, Strom und WLAN bereit — eine Ver- und Entsorgung gibt es dort allerdings nicht."
+      "mitnehmen": "Der professionelle Besuch beginnt mit Beratung und endet erst nach dokumentiertem Funktionstest und Einweisung. Genau darin liegt der Mehrwert deines Betriebs."
     },
     {
       "id": "POE-10",
@@ -229,19 +239,30 @@
     },
     {
       "id": "POE-09",
-      "type": "truefalse",
-      "category": "Erwartungsmanagement",
-      "prompt": "„Ein Termin für den Werkseinbau steht erst mit der Rückmeldung von THITRONIK fest — die Anfrage über das Formular ist noch keine Zusage.“",
-      "correct": ["richtig"],
-      "feedback": "Eine Anfrage ist keine Zusage zu Termin, Preis, Dauer oder Leihfahrzeug.",
+      "type": "single",
+      "category": "Dokumentenstand",
+      "prompt": "Der Kunde bringt eine ältere Einbauanleitung mit, im Händlerbereich liegt eine neuere Fassung. Was ist der professionelle Umgang damit?",
+      "options": [
+        { "id": "a", "text": "Die ältere Anleitung verwenden, weil sie zum Kaufdatum gehört" },
+        { "id": "b", "text": "Aktuellen Freigabe- und Dokumentenstand prüfen und die gültige Fassung verwenden" },
+        { "id": "c", "text": "Beide Anleitungen mischen und jeweils den leichteren Schritt wählen" },
+        { "id": "d", "text": "Nur nach Erinnerung arbeiten, damit sich die Fassungen nicht widersprechen" }
+      ],
+      "correct": ["b"],
+      "feedback": "Für den Einbau zählt der aktuell freigegebene Dokumentenstand zum konkreten Fahrzeug und Produkt. Abweichungen werden geklärt, nicht gemischt.",
       "irrtum": [
         {
-          "fuer": ["falsch"],
-          "titel": "Falsch",
-          "text": "Der Irrtum entsteht aus Alltagserfahrung — die meisten Online-Formulare bestätigen sofort. Hier plant ein Mensch einen Werkstattplatz, und das braucht eine Rückmeldung."
+          "fuer": ["a"],
+          "titel": "Kaufdatum mit Gültigkeit verwechselt",
+          "text": "Eine neuere Anleitung kann technische Korrekturen oder geänderte Fahrzeugstände enthalten. Das Alter des Geräts allein entscheidet nicht."
+        },
+        {
+          "fuer": ["c"],
+          "titel": "Dokumente vermischt",
+          "text": "Ein Mischverfahren ist nicht reproduzierbar und kann sicherheitsrelevante Änderungen aushebeln. Widersprüche werden vor dem Einbau geklärt."
         }
       ],
-      "mitnehmen": "Diese Insel dreht sich um Informationen — und die wichtigste Information gibst du selbst weiter. Satz für den Kunden: „Ich melde die Anfrage an, den Termin bestätigt Ihnen THITRONIK. Bitte planen Sie die Anreise erst danach.“"
+      "mitnehmen": "Der Händlerbereich ist nicht nur ein Archiv, sondern deine Quelle für den aktuellen Arbeitsstand."
     }
   ]
 }

@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#1D3661">
   <meta name="color-scheme" content="light">
-  <meta name="description" content="THITRONIK Campus — Wissenscheck VEJRØ: CampLock & VanLock Fingerprint.">
+  <meta name="description" content="THITRONIK Campus — Wissenscheck VEJRØ: Produktneuheiten: Zugang & Wasserschutz.">
   <meta name="robots" content="noindex, nofollow">
-  <title>VEJRØ — CampLock & VanLock Fingerprint · THITRONIK Campus</title>
+  <title>VEJRØ — Produktneuheiten: Zugang & Wasserschutz · THITRONIK Campus</title>
   <link rel="stylesheet" href="/assets/styles.css">
 </head>
 <body>
@@ -23,6 +23,16 @@
           <strong id="masthead-title">Wissenscheck</strong>
         </span>
       </div>
+      <div class="masthead-progress" id="masthead-progress" hidden>
+        <div class="campus-progress-head">
+          <span>Campus-Fortschritt</span>
+          <strong id="campus-progress-value">0 %</strong>
+        </div>
+        <div class="campus-progress-track" id="campus-progress-track" role="progressbar" aria-label="Abgeschlossene Schulungsinseln" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <span id="campus-progress-fill"></span>
+        </div>
+        <small id="campus-progress-copy">0 von 7 Inseln abgeschlossen</small>
+      </div>
       <div class="masthead-meta" id="masthead-meta" hidden>
         <span class="chip" id="chip-island"></span>
         <span class="chip chip-quiet" id="chip-participant"></span>
@@ -33,12 +43,50 @@
 
       <!-- ==================== Inselübersicht ==================== -->
       <section class="screen" id="screen-islands" aria-labelledby="islands-title" hidden>
-        <div class="screen-head">
-          <p class="kicker">Campus 2026</p>
-          <h1 id="islands-title">Wähle deine Schulungsinsel</h1>
-          <p class="lead">Nach jeder Station beantwortest du hier ein kurzes Quiz. Du kannst die Inseln in beliebiger Reihenfolge durchlaufen.</p>
+        <div class="campus-map" id="campus-map">
+          <div class="screen-head island-intro">
+            <p class="kicker">Campus 2026</p>
+            <h1 id="islands-title">Deine Schulungsexpedition</h1>
+            <p class="lead">Entdecke sieben Schulungsinseln. Vertiefe dein Wissen Schritt für Schritt.</p>
+          </div>
+
+          <svg class="campus-map-art" id="campus-map-art" viewBox="0 0 1200 760" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+            <defs>
+              <marker id="route-arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+                <path d="M0,0 L0,6 L6,3 z"></path>
+              </marker>
+            </defs>
+            <g class="campus-routes">
+              <path data-route="fehmarn-samsoe" d="M312 326 C250 230 470 190 536 108"></path>
+              <path data-route="samsoe-vejro" d="M536 108 C560 140 665 180 658 258"></path>
+              <path data-route="vejro-hiddensee" d="M658 258 C735 290 860 310 916 400"></path>
+              <path data-route="hiddensee-poel" d="M916 400 C1015 480 850 560 692 629"></path>
+              <path data-route="poel-langeland" d="M692 629 C640 750 430 750 362 622"></path>
+              <path data-route="langeland-usedom" d="M362 622 C392 702 543 557 583 457"></path>
+              <path data-route="usedom-fehmarn" d="M583 457 C500 440 300 390 312 326"></path>
+            </g>
+            <g class="sea-waves">
+              <path d="M380 180 q8-12 16 0 q8-12 16 0 q8-12 16 0"></path>
+              <path d="M480 310 q8-12 16 0 q8-12 16 0 q8-12 16 0"></path>
+              <path d="M850 150 q8-12 16 0 q8-12 16 0 q8-12 16 0"></path>
+              <path d="M960 335 q8-12 16 0 q8-12 16 0 q8-12 16 0"></path>
+              <path d="M365 700 q8-12 16 0 q8-12 16 0 q8-12 16 0"></path>
+              <path d="M842 705 q8-12 16 0 q8-12 16 0 q8-12 16 0"></path>
+            </g>
+            <g class="map-compass" transform="translate(1100 105)">
+              <circle r="39"></circle>
+              <path d="M0-55 L8-8 L0 0 L-8-8 Z M55 0 L8 8 L0 0 L8-8 Z M0 55 L-8 8 L0 0 L8 8 Z M-55 0 L-8-8 L0 0 L-8 8 Z"></path>
+              <line x1="0" y1="-48" x2="0" y2="48"></line>
+              <line x1="-48" y1="0" x2="48" y2="0"></line>
+              <text x="0" y="-62">N</text>
+              <text x="63" y="4">E</text>
+              <text x="0" y="72">S</text>
+              <text x="-64" y="4">W</text>
+            </g>
+          </svg>
+
+          <ul class="island-map" id="island-grid" aria-label="Schulungsinseln"></ul>
         </div>
-        <ul class="island-grid" id="island-grid"></ul>
       </section>
 
       <!-- ==================== Start / Teilnehmerdaten ==================== -->
@@ -109,7 +157,10 @@
         </div>
 
         <div class="quiz-body">
-          <p class="q-category" id="q-category"></p>
+          <div class="q-meta">
+            <p class="q-category" id="q-category"></p>
+            <p class="q-mode" id="q-mode"></p>
+          </div>
           <h1 class="q-title" id="q-title" tabindex="-1"></h1>
           <p class="q-hint" id="q-hint" hidden></p>
 

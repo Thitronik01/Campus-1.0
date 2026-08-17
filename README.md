@@ -11,7 +11,7 @@
 
 <p align="center">
   <img alt="Inseln" src="https://img.shields.io/badge/Inseln-7-1D3661?style=flat-square">
-  <img alt="Fragen" src="https://img.shields.io/badge/Fragen-70-1D3661?style=flat-square">
+  <img alt="Fragen" src="https://img.shields.io/badge/Fragen-73-1D3661?style=flat-square">
   <img alt="Stack" src="https://img.shields.io/badge/Stack-Netlify%20%2B%20Supabase-3BA9D3?style=flat-square">
   <img alt="Framework" src="https://img.shields.io/badge/Framework-keins-AFCA05?style=flat-square">
   <img alt="Stand" src="https://img.shields.io/badge/Stand-vor%20dem%20ersten%20Deploy-CE132D?style=flat-square">
@@ -23,7 +23,7 @@
 
 Der THITRONIK Campus bleibt eine **Präsenzschulung**. Diese Software ersetzt sie
 nicht, sie begleitet sie: Nach jeder Station beantworten die Händler auf dem
-eigenen Telefon fünf bis zehn Fragen, am Ende des Tages den bestehenden
+eigenen Telefon fünf bis zwölf Fragen, am Ende des Tages den bestehenden
 Feedbackbogen.
 
 ```
@@ -42,11 +42,11 @@ Praxis-Halbwahrheiten — Annahmen, die im Support später Zeit kosten.
 
 | Insel | Thema | Fragen |
 |---|---|---|
-| **VEJRØ** | CampLock & VanLock Fingerprint | 10 |
-| **POEL** | Händlerbereich — was finde ich wo | 10 |
-| **HIDDENSEE** | Funk-Magnetkontakt & Adapter | 10 |
+| **VEJRØ** | Produktneuheiten: Zugang & Wasserschutz | 10 |
+| **POEL** | Händlerbereich — Beratung & Werkstatt vorbereiten | 10 |
+| **HIDDENSEE** | Funk-Magnetkontakte, Abzweigverbinder & Crimpen | 12 |
 | **SAMSØ** | Einbauorte im Fahrzeug | 10 |
-| **FEHMARN** | Fehlersuche & Support | 10 |
+| **FEHMARN** | Fehlersuche, Support & Pro-finder-Mobilfunk | 11 |
 | **USEDOM** | Verkaufsdisplay & Konfigurator | 10 |
 | **LANGELAND** | Fahrzeugannahme & -übergabe | 10 |
 
@@ -152,7 +152,7 @@ Alle sieben Einzelpakete auf einmal: `node tools/build-insel.js alle`
 | **Browser** | die einzige Anwendung, die der Händler braucht |
 
 Kein Framework, kein Build-Schritt für die Seite selbst, keine App, keine
-Installation. Insgesamt rund 190 KB je Insel-Paket.
+Installation. Je nach Bildanteil sind die Insel-Pakete derzeit 236 bis 661 KB groß.
 
 **Der Browser bewertet nicht.** Er sendet ausschließlich, *was* gewählt wurde —
 nie, ob es richtig war. Bewertet wird in der Netlify-Function, gegen dieselbe
@@ -167,8 +167,8 @@ nicht in der Datenbank.
 **Fertig und geprüft**
 
 - Ein Gesamtpaket (alle Inseln, eine Site) **und** sieben Einzelpakete, alle direkt hochladbar
-- 70 Fragen, alle fünf Fragetypen, aus dem Produktwissen mit Quellenangabe
-- 104 automatische Prüfungen je Paketform, dazu 26 der Bewertungslogik
+- 73 Fragen, alle fünf Fragetypen, aus dem Produktwissen mit Quellenangabe
+- 103 Paketprüfungen über alle sieben Inseln, dazu 26 Prüfungen der Bewertungslogik
 - Mobil geprüft bei 375 px: kein horizontaler Scroll, alle Trefferflächen ≥ 44 px
 - Farbkontraste am gerenderten Bild gemessen, alle über WCAG AA
 
@@ -176,7 +176,7 @@ nicht in der Datenbank.
 
 - ⛔ **Die Datenbank-Migration ist nicht eingespielt** — bis dahin speichert kein Paket etwas
 - Entscheidung: sieben getrennte Netlify-Sites oder eine mit sieben Routen. Beide Wege sind gebaut, die Empfehlung steht in [`Campus Quiz/README.md`](Campus%20Quiz/README.md)
-- Bilder für vier Inseln, siehe [Wunschliste](Campus%20Quiz/BILDER-WUNSCHLISTE.md)
+- Weitere Werkstattbilder für Bildfragen, siehe [Wunschliste](Campus%20Quiz/BILDER-WUNSCHLISTE.md)
 - Fachliche Freigabe der Fragen
 
 Alles Einzelne steht in den [Issues](https://github.com/Thitronik01/Campus-1.0/issues)

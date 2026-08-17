@@ -6,8 +6,8 @@ Fertiges Netlify-Paket mit **allen 7 Schulungsinseln auf einer Site**.
 | | |
 |---|---|
 | Inseln | 7 |
-| Fragen | 70 |
-| Bilder | 9 |
+| Fragen | 73 |
+| Bilder | 16 |
 
 > Nicht zu verwechseln mit `Campus Quiz/`. Das ist die **Quelle** und gehört
 > nicht hochgeladen: Dort liegen neben `public/` auch `FRAGENKATALOG.md` mit
@@ -92,11 +92,11 @@ Ein QR-Code je Insel, jeweils auf die Insel-Adresse:
 
 | Insel | Adresse | Fragen | Thema |
 |---|---|---|---|
-| **VEJRØ** | `/quiz/vejro` | 10 | CampLock & VanLock Fingerprint |
+| **VEJRØ** | `/quiz/vejro` | 10 | Produktneuheiten: Zugang & Wasserschutz |
 | **POEL** | `/quiz/poel` | 10 | Händlerbereich |
-| **HIDDENSEE** | `/quiz/hiddensee` | 10 | Funk-Magnetkontakt & Adapter |
+| **HIDDENSEE** | `/quiz/hiddensee` | 12 | Funk-Magnetkontakte & Leitungsverbindungen |
 | **SAMSØ** | `/quiz/samsoe` | 10 | Einbauorte im Fahrzeug |
-| **FEHMARN** | `/quiz/fehmarn` | 10 | Fehlersuche & Support |
+| **FEHMARN** | `/quiz/fehmarn` | 11 | Fehlersuche & Support |
 | **USEDOM** | `/quiz/usedom` | 10 | Verkaufsdisplay & Konfigurator |
 | **LANGELAND** | `/quiz/langeland` | 10 | Fahrzeugannahme & Fahrzeugübergabe |
 

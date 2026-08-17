@@ -102,14 +102,14 @@ gibt.
 
 | Ordner | Insel | Fragen | Größe |
 |---|---|---|---|
-| `Vejrø Quiz` | VEJRØ | 10 | 226 KB |
-| `Poel Quiz` | POEL | 10 | 226 KB |
-| `Hiddensee Quiz` | HIDDENSEE | 10 | 226 KB |
-| `Samsø Quiz` | SAMSØ | 10 · 2 Bildfragen | 658 KB |
-| `Fehmarn Quiz` | FEHMARN | 10 | 226 KB |
-| `Usedom Quiz` | USEDOM | 10 | 226 KB |
-| `Langeland Quiz` | LANGELAND | 10 | 226 KB |
-| `Campus Gesamtpaket` | **alle sieben** | 70 · 2 Bildfragen | 765 KB |
+| `Vejrø Quiz` | VEJRØ | 10 | 244 KB |
+| `Poel Quiz` | POEL | 10 | 262 KB |
+| `Hiddensee Quiz` | HIDDENSEE | 12 | 236 KB |
+| `Samsø Quiz` | SAMSØ | 10 · 2 Bildfragen | 661 KB |
+| `Fehmarn Quiz` | FEHMARN | 11 | 252 KB |
+| `Usedom Quiz` | USEDOM | 10 | 254 KB |
+| `Langeland Quiz` | LANGELAND | 10 | 251 KB |
+| `Campus Gesamtpaket` | **alle sieben** | 73 · 2 Bildfragen | 997 KB |
 
 ### Das Gesamtpaket
 
@@ -547,15 +547,17 @@ Produktbilder für USEDOM und zwei Hiddensee-Fragen liegen bereits in
 `Wissen/03_Medien/produkte/`, allerdings mit je gut 2 MB — vorher durch
 `tools/bilder-aufbereiten.js` schicken.
 
-**3. POEL ist inhaltlich unbestätigt.** Die Menüpfade stammen aus dem
-öffentlichen Teil der Website. Der Händlerbereich ist login-geschützt;
-`POE-02`, `POE-03` und `POE-06` müssen nach dem Login gegengeprüft werden. Der
-Hinweis steht als `internerHinweis` in der JSON-Datei — er erscheint bewusst
-**nicht** im Quiz, sondern in der Ausgabe von `tools/check-fragen.js` und im
-erzeugten `FRAGENKATALOG.md`.
+**3. POEL braucht noch den Login-Abgleich.** Der Händlerbereich ist
+login-geschützt; die konkrete Verfügbarkeit und Benennung der geschützten
+Einbauunterlagen (`POE-03`) und Werbemittel (`POE-06`) muss im echten Konto
+geprüft werden. Der Hinweis steht als `internerHinweis` in der JSON-Datei — er
+erscheint bewusst **nicht** im Quiz, sondern in der Ausgabe von
+`tools/check-fragen.js` und im erzeugten `FRAGENKATALOG.md`.
 
-**4. VEJRØ setzt CampLock/VanLock voraus.** Falls die Insel 2026 ein neueres,
-noch nicht dokumentiertes Produkt zeigt, muss der Fragensatz neu gebaut werden.
+**4. VEJRØ zeigt die Produktneuheiten.** CampLock/VanLock, Funk-Wassermelder
+868 und wasserdichter Funk-Magnetkontakt sind eingebaut. Einsatzbereiche,
+Montagewerte und aktuelle Freigabestände müssen vor der Schulung noch einmal
+gegen die dann gültigen Produktunterlagen geprüft werden.
 
 **5. Das bestehende FehlerQuiz ist nicht migriert.** `fehlerquiz-de` (6
 Bildfragen, 15 Einsendungen) liegt jetzt unter `FehlerQuiz/` und läuft
@@ -631,20 +633,20 @@ Antwortliste in anderer Form. Bei den heutigen Fragensätzen ist das durchgehend
 der Fall, weil die Kategorien Einzeletiketten sind („Der Klassiker", „Die
 Falle"). Die Auswertung je Frage passiert ohnehin in `campus_quiz_fragen`.
 
-**7. Die Fragen sind fachlich nicht gegengelesen.** Der Bestand entspricht
-Fragenkatalog v3: 70 Fragen, je zehn pro Insel, mit den Rubriken „Falsch
-gewählt?" und „Mitnehmen". Die Quellen stehen je Insel im Feld `quellen`, aber
-niemand aus Technik oder Support hat freigegeben.
+**7. Die Fragen brauchen noch die abschließende technische Freigabe.** Der
+Bestand entspricht Fragenkatalog v4: 73 Fragen, davon zwölf auf HIDDENSEE und
+elf auf FEHMARN, mit den Rubriken „Falsch gewählt?" und „Mitnehmen". Die
+Quellen stehen je Insel im Feld `quellen`; das Fachreview aus der Campus-Runde
+ist eingearbeitet.
 
-Zehn Angaben ließen sich im Wiki-Bestand **nicht** verifizieren und stehen
-namentlich im `internerHinweis` der betroffenen Insel: die VanLock-Angaben
-(`VEJ-01`, `VEJ-03`, `VEJ-08`), die Auslöseschwelle über 30 mm (`HID-03`), der
-Blinkcode 9× = Anti-Jamming (`FEH-01`, belegt ist nur 11× = Innenbeleuchtung),
-die Schwellen 11,2 V / 12,5 V (`FEH-04`), die 5 Sekunden Stillstand beim
-`kill`-Befehl (`FEH-08`), der Rückruf-Serienbereich 1286-008 bis 1286-012
-(`POE-05`), die 60 Sekunden bis zum Testalarm (`LAN-04`), die max. 7 m
-Zusatzsensorkabel (`SAM-08`), die Artikelnummern 101286 / 101287 (`USE-07`) und
-die 94 dB interne Sirene (`USE-06`).
+Offene technische Prüfpunkte stehen namentlich im `internerHinweis` der
+betroffenen Insel: aktuelle Produktstände der VEJRØ-Neuheiten, konkrete
+Menüpunkte im Händlerbereich und Rückruf-Serienbereich (`POE-05`), die
+Auslöseschwelle über 30 mm (`HID-03`), die max. 7 m Zusatzsensorkabel
+(`SAM-08`), Blinkcode 9× (`FEH-01`), Spannungsschwellen (`FEH-04`) und
+Stillstandsbedingung des `kill`-Befehls (`FEH-08`), Artikelnummern und
+Sirenenpegel auf USEDOM sowie Testverzögerung und Iveco-Freigabestand auf
+LANGELAND.
 
 Zum Gegenlesen dient [`FRAGENKATALOG.md`](FRAGENKATALOG.md) — erzeugt mit
 `node tools/fragenkatalog.js`, nennt alle Lösungen und gehört nicht in

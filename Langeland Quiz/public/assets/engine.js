@@ -36,6 +36,11 @@
 
   const el = {
     mastheadTitle: $("masthead-title"),
+    mastheadProgress: $("masthead-progress"),
+    campusProgressValue: $("campus-progress-value"),
+    campusProgressTrack: $("campus-progress-track"),
+    campusProgressFill: $("campus-progress-fill"),
+    campusProgressCopy: $("campus-progress-copy"),
     mastheadMeta: $("masthead-meta"),
     chipIsland: $("chip-island"),
     chipParticipant: $("chip-participant"),
@@ -49,6 +54,8 @@
       error: $("screen-error")
     },
 
+    campusMap: $("campus-map"),
+    campusMapArt: $("campus-map-art"),
     islandGrid: $("island-grid"),
 
     startCode: $("start-code"),
@@ -67,6 +74,7 @@
     qProgress: $("q-progress"),
     qProgressFill: $("q-progress-fill"),
     qCategory: $("q-category"),
+    qMode: $("q-mode"),
     qTitle: $("q-title"),
     qHint: $("q-hint"),
     qMedia: $("q-media"),
@@ -138,6 +146,7 @@
     Object.entries(el.screens).forEach(([key, node]) => {
       node.hidden = key !== name;
     });
+    el.mastheadProgress.hidden = name !== "islands";
     window.scrollTo({ top: 0, behavior: "auto" });
   }
 
@@ -280,25 +289,163 @@
 
   // -------------------------------------------------------- Inselübersicht --
 
+  const CAMPUS_ROUTES = [
+    "fehmarn-samsoe",
+    "samsoe-vejro",
+    "vejro-hiddensee",
+    "hiddensee-poel",
+    "poel-langeland",
+    "langeland-usedom",
+    "usedom-fehmarn"
+  ];
+
+  let campusRouteFrame = 0;
+
+  /** Ermittelt die Mitte des sichtbaren Stationspunkts. Die Punkte sind
+   *  Pseudoelemente, weil sie zugleich die kurze Verbindung zur Infobox
+   *  zeichnen. Ihre berechnete Position funktioniert auch bei höheren
+   *  Ergebnisboxen und an jedem Desktop-Breakpoint. */
+  function campusAnchor(slug, mapRect) {
+    const content = el.islandGrid.querySelector(`.island-${slug} .i-content`);
+    if (!content) return null;
+
+    const rect = content.getBoundingClientRect();
+    const dot = getComputedStyle(content, "::before");
+    const width = parseFloat(dot.width) || 8;
+    const height = parseFloat(dot.height) || 8;
+    const left = parseFloat(dot.left);
+    const right = parseFloat(dot.right);
+    const top = parseFloat(dot.top);
+    const screenX = Number.isFinite(left)
+      ? rect.left + left + width / 2
+      : rect.right - right - width / 2;
+    const screenY = rect.top + top + height / 2;
+
+    return {
+      x: ((screenX - mapRect.left) / mapRect.width) * 1200,
+      y: ((screenY - mapRect.top) / mapRect.height) * 760
+    };
+  }
+
+  function campusCurve(name, a, b) {
+    const point = (p) => `${p.x.toFixed(1)} ${p.y.toFixed(1)}`;
+    let c1;
+    let c2;
+
+    switch (name) {
+      case "fehmarn-samsoe":
+        c1 = { x: a.x - 60, y: a.y - 96 };
+        c2 = { x: b.x - 66, y: b.y + 82 };
+        break;
+      case "samsoe-vejro":
+        c1 = { x: a.x + 24, y: a.y + 32 };
+        c2 = { x: b.x + 7, y: b.y - 78 };
+        break;
+      case "vejro-hiddensee":
+        c1 = { x: a.x + 77, y: a.y + 32 };
+        c2 = { x: b.x - 56, y: b.y - 90 };
+        break;
+      case "hiddensee-poel":
+        c1 = { x: a.x + 99, y: a.y + 80 };
+        c2 = { x: b.x + 158, y: b.y - 69 };
+        break;
+      case "poel-langeland":
+        c1 = { x: a.x - 52, y: a.y + 121 };
+        c2 = { x: b.x + 68, y: b.y + 128 };
+        break;
+      case "langeland-usedom":
+        c1 = { x: a.x + 30, y: a.y + 80 };
+        c2 = { x: b.x - 40, y: b.y + 100 };
+        break;
+      case "usedom-fehmarn":
+        c1 = { x: a.x - 83, y: a.y - 17 };
+        c2 = { x: b.x - 12, y: b.y + 64 };
+        break;
+      default:
+        c1 = { x: a.x + (b.x - a.x) / 3, y: a.y };
+        c2 = { x: a.x + ((b.x - a.x) * 2) / 3, y: b.y };
+    }
+
+    return `M ${point(a)} C ${point(c1)}, ${point(c2)}, ${point(b)}`;
+  }
+
+  function updateCampusRoutes() {
+    if (!el.campusMap || !el.campusMapArt || el.screens.islands.hidden || innerWidth < 760) return;
+
+    const mapRect = el.campusMap.getBoundingClientRect();
+    if (!mapRect.width || !mapRect.height) return;
+
+    CAMPUS_ROUTES.forEach((name) => {
+      const [from, to] = name.split("-");
+      const a = campusAnchor(from, mapRect);
+      const b = campusAnchor(to, mapRect);
+      const path = el.campusMapArt.querySelector(`[data-route="${name}"]`);
+      if (a && b && path) path.setAttribute("d", campusCurve(name, a, b));
+    });
+  }
+
+  function scheduleCampusRoutes() {
+    if (campusRouteFrame) cancelAnimationFrame(campusRouteFrame);
+    campusRouteFrame = requestAnimationFrame(() => {
+      campusRouteFrame = 0;
+      updateCampusRoutes();
+    });
+  }
+
+  function setCampusRouteFocus(slug, active) {
+    if (!el.campusMap || !el.campusMapArt) return;
+
+    const routes = el.campusMapArt.querySelectorAll("[data-route]");
+    el.campusMap.classList.toggle("has-route-focus", active);
+    routes.forEach((path) => {
+      const stations = path.dataset.route.split("-");
+      path.classList.toggle("is-route-focus", active && stations.includes(slug));
+    });
+  }
+
   function renderIslands() {
     const done = loadDone();
-    el.islandGrid.innerHTML = "";
+    const total = state.catalog.inseln.length;
+    const abgeschlossen = state.catalog.inseln.filter((island) => done[island.slug]).length;
+    const fortschritt = total ? Math.round((abgeschlossen / total) * 100) : 0;
 
-    state.catalog.inseln.forEach((island) => {
+    setCampusRouteFocus("", false);
+    el.islandGrid.innerHTML = "";
+    el.campusProgressValue.textContent = `${fortschritt} %`;
+    el.campusProgressCopy.textContent = `${abgeschlossen} von ${total} ${total === 1 ? "Insel" : "Inseln"} abgeschlossen`;
+    el.campusProgressTrack.setAttribute("aria-valuenow", String(fortschritt));
+    el.campusProgressFill.style.width = `${fortschritt}%`;
+
+    state.catalog.inseln.forEach((island, index) => {
       const entry = done[island.slug];
       const li = document.createElement("li");
+      li.className = `island-map-item island-${island.slug}`;
+      li.style.setProperty("--island-order", index);
       const card = document.createElement("button");
       card.type = "button";
       card.className = "island-card" + (entry ? " is-done" : "");
+      if (entry) card.style.setProperty("--score", Math.max(0, Math.min(100, Number(entry.percent) || 0)));
       card.innerHTML = `
-        <span class="i-code">${escapeHtml(island.code)}</span>
-        <span class="i-title">${escapeHtml(island.title)}</span>
-        <span class="i-desc">${escapeHtml(island.beschreibung)}</span>
-        <span class="i-state">${entry ? `Abgeschlossen · ${entry.percent} %` : "Noch offen"}</span>`;
+        ${island.image ? `<span class="i-visual" aria-hidden="true"><img src="${escapeHtml(island.image)}" alt="" loading="lazy"></span>` : ""}
+        <span class="i-content">
+          <span class="i-code">${escapeHtml(island.code)}</span>
+          <span class="i-title">${escapeHtml(island.title)}</span>
+          <span class="i-desc">${escapeHtml(island.beschreibung)}</span>
+          <span class="i-state">${entry ? `Ergebnis ${entry.percent} %` : "Noch offen"}</span>
+          ${entry ? `<span class="i-score" aria-hidden="true"><span></span></span>` : ""}
+        </span>
+        <span class="i-open" aria-hidden="true"></span>`;
       card.addEventListener("click", () => {
         history.pushState({}, "", `/quiz/${island.slug}`);
         route();
       });
+      const syncRouteFocus = () => requestAnimationFrame(() => {
+        setCampusRouteFocus(island.slug, card.matches(":hover, :focus-visible"));
+      });
+      card.addEventListener("pointerenter", syncRouteFocus);
+      card.addEventListener("pointerleave", syncRouteFocus);
+      card.addEventListener("focus", syncRouteFocus);
+      card.addEventListener("blur", syncRouteFocus);
       li.appendChild(card);
       el.islandGrid.appendChild(li);
     });
@@ -306,6 +453,7 @@
     el.mastheadTitle.textContent = "Wissenscheck";
     el.mastheadMeta.hidden = true;
     show("islands");
+    scheduleCampusRoutes();
   }
 
   // ------------------------------------------------------------ Startbild ---
@@ -469,6 +617,14 @@
 
     el.qCategory.textContent = q.category || "";
     el.qCategory.hidden = !q.category;
+    const modeNames = {
+      single: "Eine Antwort auswählen",
+      truefalse: "Eine Antwort auswählen",
+      multi: "Mehrere Antworten auswählen",
+      order: "Schritte in Reihenfolge antippen",
+      match: "Jede Zeile zuordnen"
+    };
+    el.qMode.textContent = modeNames[q.type] || "Antwort auswählen";
     el.qTitle.textContent = q.prompt;
 
     if (q.hint) {
@@ -1280,6 +1436,7 @@
   });
 
   window.addEventListener("popstate", route);
+  window.addEventListener("resize", scheduleCampusRoutes, { passive: true });
 
   // ---------------------------------------------------------------- Start ---
 
@@ -1315,7 +1472,7 @@
   }
 
   async function boot() {
-    el.colophon.textContent = DEMO ? "Vorschaumodus — nichts wird gespeichert" : `Engine ${ENGINE_VERSION}`;
+    el.colophon.textContent = DEMO ? "Vorschaumodus: nichts wird gespeichert" : "Wissenscheck";
 
     try {
       state.catalog = await fetchJson("/data/inseln.json");

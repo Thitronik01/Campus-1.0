@@ -1,13 +1,13 @@
-# HIDDENSEE — Funk-Magnetkontakt & Adapter
+# HIDDENSEE — Funk-Magnetkontakte & Leitungsverbindungen
 
 Fertiges Netlify-Paket für die Schulungsinsel HIDDENSEE.
 **Wird erzeugt** — Änderungen gehören nach `Campus 1.0/Campus Quiz/`.
 
 | | |
 |---|---|
-| Fragen | 10 |
-| Fragensatz-Version | 3 |
-| Bilder | keine |
+| Fragen | 12 |
+| Fragensatz-Version | 4 |
+| Bilder | 1 |
 
 ---
 
@@ -83,7 +83,7 @@ Inselauswahl.
     public/index.html             Die Seite
     public/assets/                Engine, Stile, Logo
     public/data/                  Der Fragensatz
-    public/media/                 Die Bilder (in diesem Paket keine)
+    public/media/                 Die Bilder
 
 Der Browser bekommt nie zu sehen, welche Antwort richtig gewertet wird — er
 sendet nur, **was** gewählt wurde. Bewertet wird in der Function.

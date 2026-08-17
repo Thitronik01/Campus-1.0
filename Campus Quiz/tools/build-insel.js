@@ -234,6 +234,11 @@ function baue(slug) {
       bilder++;
     }
   }
+  if (insel.image) {
+    const relativ = insel.image.replace(/^\/+/, "");
+    kopiere(path.join(WURZEL, "public", relativ), path.join(oeff, relativ));
+    bilder++;
+  }
 
   // --- Function: nur diese eine Insel einbinden ---------------------------
   let fn = lies("netlify", "functions", "submit-quiz.js");
@@ -311,9 +316,15 @@ function baueGesamt() {
   let bilder = 0;
   for (const eintrag of katalog.inseln) {
     const bildQuelle = path.join(WURZEL, "public", "media", eintrag.slug);
-    if (!fs.existsSync(bildQuelle)) continue;
-    for (const datei of fs.readdirSync(bildQuelle)) {
-      kopiere(path.join(bildQuelle, datei), path.join(oeff, "media", eintrag.slug, datei));
+    if (fs.existsSync(bildQuelle)) {
+      for (const datei of fs.readdirSync(bildQuelle)) {
+        kopiere(path.join(bildQuelle, datei), path.join(oeff, "media", eintrag.slug, datei));
+        bilder++;
+      }
+    }
+    if (eintrag.image) {
+      const relativ = eintrag.image.replace(/^\/+/, "");
+      kopiere(path.join(WURZEL, "public", relativ), path.join(oeff, relativ));
       bilder++;
     }
   }

@@ -77,9 +77,9 @@ for (const island of catalog.inseln) {
     continue;
   }
 
-  // Das Konzept sieht 5–10 Fragen je Insel vor.
-  if (set.questions.length < 5 || set.questions.length > 10) {
-    warn(island.slug, `${set.questions.length} Fragen — vorgesehen sind 5 bis 10.`);
+  // Fachlich dichte Inseln dürfen bis zu zwölf Fragen enthalten.
+  if (set.questions.length < 5 || set.questions.length > 12) {
+    warn(island.slug, `${set.questions.length} Fragen — vorgesehen sind 5 bis 12.`);
   }
 
   const ids = new Set();

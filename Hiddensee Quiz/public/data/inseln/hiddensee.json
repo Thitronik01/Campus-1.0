@@ -1,20 +1,22 @@
 {
   "island": "hiddensee",
   "code": "HIDDENSEE",
-  "title": "Funk-Magnetkontakt & Adapter",
-  "subtitle": "Funkkomponenten",
-  "version": "3",
-  "lernziel": "Das billigste Bauteil im Sortiment verursacht die teuersten Rückläufer. Alles hier dreht sich um einen Satz: montiert ist nicht funktionsfähig.",
+  "title": "Funk-Magnetkontakte & Leitungsverbindungen",
+  "subtitle": "Anlernen, montieren, abzweigen und crimpen",
+  "version": "4",
+  "lernziel": "Funk-Magnetkontakte zuverlässig anlernen und montieren sowie elektrische Abgriffe mit dem passenden Verbinder und Werkzeug fachgerecht ausführen.",
   "quellen": [
-    "produkte/funk-magnetkontakt.md"
+    "produkte/funk-magnetkontakt.md",
+    "fahrzeuge/ford-transit-6g.md",
+    "referenz/fahrzeugkompatibilitaet.md"
   ],
-  "internerHinweis": "Fragenkatalog v3. Diese Insel gewinnt deutlich mit echten Werkstattfotos. HID-01, HID-05 und HID-09 sind als Bildfragen vorgesehen — sobald Fotos vorliegen, nur das Feld \"media\" ergänzen. Fachlich zu bestätigen: die Auslöseschwelle über 30 mm bei der wasserdichten Ausführung in HID-03.",
+  "internerHinweis": "Fragenkatalog v4. HIDDENSEE umfasst Funk-Magnetkontakte, gelgefüllte Abzweigverbinder und fachgerechte Crimpverbindungen. HID-01, HID-05 und HID-09 gewinnen später durch echte Werkstattfotos. Die Auslöseschwelle über 30 mm in HID-03 vor Einsatz fachlich bestätigen.",
   "questions": [
     {
       "id": "HID-01",
       "type": "single",
       "category": "Der Klassiker",
-      "prompt": "Ein Standardkontakt ließ sich problemlos anlernen — beim Öffnen der Klappe passiert aber nichts. Woran liegt es?",
+      "prompt": "Ein Funk-Magnetkontakt ließ sich problemlos anlernen — beim Öffnen der Klappe passiert aber nichts. Woran liegt es?",
       "options": [
         { "id": "a", "text": "Die Batterie ist zu schwach zum Senden" },
         { "id": "b", "text": "Die Platine liegt falsch herum — Sende-LED zeigt zum Magneten" },
@@ -181,16 +183,21 @@
         { "id": "c", "text": "Beliebig, solange der Abstand stimmt" },
         { "id": "d", "text": "Beide auf dem Türblatt, versetzt zueinander" }
       ],
-      "correct": ["a"],
-      "feedback": "Der Sender enthält Elektronik und Batterie und gehört an das ruhende Teil. Der Magnet ist unempfindlich und darf sich bewegen.",
+      "correct": ["c"],
+      "feedback": "Für die Funktion ist es beliebig, ob Sender oder Magnet am beweglichen Teil sitzt. Entscheidend sind der korrekte Abstand, die Ausrichtung der jeweiligen Ausführung und eine dauerhaft sichere Befestigung.",
       "irrtum": [
         {
-          "fuer": ["c"],
-          "titel": "Beliebig",
-          "text": "Funktioniert am Prüftag tatsächlich. Nach ein paar hundert zugeschlagenen Klappen nicht mehr — jedes Zuschlagen ist ein Schlag auf die Platine und auf die Batteriekontakte."
+          "fuer": ["a", "b"],
+          "titel": "Eine feste Seite vorgeschrieben",
+          "text": "Die elektrische Kontaktfunktion schreibt nicht vor, welches Bauteil am Rahmen oder Türblatt sitzt. Die konkrete Montage muss lediglich Abstand, Ausrichtung und mechanische Belastung sicher beherrschen."
+        },
+        {
+          "fuer": ["d"],
+          "titel": "Beide Teile auf derselben Seite",
+          "text": "Sender und Magnet müssen sich beim Öffnen voneinander entfernen. Sitzen beide auf dem Türblatt, ändert sich ihr Abstand nicht zuverlässig."
         }
       ],
-      "mitnehmen": "Elektronik gehört ans ruhende Teil. Diese Regel gilt im ganzen Fahrzeug, nicht nur hier."
+      "mitnehmen": "Rahmen oder Türblatt ist funktional frei wählbar — Abstand, Ausrichtung und eine robuste Befestigung sind es nicht."
     },
     {
       "id": "HID-07",
@@ -239,9 +246,9 @@
       "id": "HID-10",
       "type": "order",
       "category": "Reihenfolge",
-      "prompt": "Bringe die Montageschritte in die richtige Reihenfolge.",
+      "prompt": "Bringe die Montageschritte des Funk-Magnetkontakts in die richtige Reihenfolge.",
       "items": [
-        { "id": "o1", "text": "Anlernen" },
+        { "id": "o1", "text": "WiPro III in den Anlernmodus versetzen und Funk-Magnetkontakt anlernen" },
         { "id": "o2", "text": "Reichweitentest am geplanten Ort" },
         { "id": "o3", "text": "Endgültig kleben oder verschrauben" },
         { "id": "o4", "text": "Testalarm mit scharfer Anlage" }
@@ -259,6 +266,62 @@
         }
       ],
       "mitnehmen": "**Prinzip 3 — montiert ist nicht funktionsfähig.** Zwei Tests, zwei verschiedene Fragen: „Kommt das Signal von hier an?“ und „Löst die Anlage wirklich aus?“ Keiner ersetzt den anderen."
+    },
+    {
+      "id": "HID-11",
+      "type": "single",
+      "category": "Gelgefüllter Abzweigverbinder",
+      "prompt": "Du willst an einer Fahrzeugleitung einen gelgefüllten Abzweigverbinder setzen. Was muss vor dem Verpressen feststehen?",
+      "options": [
+        { "id": "a", "text": "Stecker, Pin, Leitungsfarbe und gemessenes Signal stimmen mit der fahrzeugspezifischen Unterlage überein" },
+        { "id": "b", "text": "Die Leitungsfarbe ähnelt der Farbe in einem anderen Fahrzeugmodell" },
+        { "id": "c", "text": "Der Verbinder lässt sich mit möglichst wenig Kraft schließen" },
+        { "id": "d", "text": "Die Fahrzeugbatterie bleibt angeschlossen, damit das Signal sofort sichtbar ist" }
+      ],
+      "correct": ["a"],
+      "feedback": "Ein Abzweig wird erst gesetzt, wenn Stecker, Pin, Leitungsfarbe und das tatsächlich gemessene Signal gemeinsam verifiziert sind. Anschlussarbeiten erfolgen spannungsfrei.",
+      "irrtum": [
+        {
+          "fuer": ["b"],
+          "titel": "Nur nach Leitungsfarbe gearbeitet",
+          "text": "Leitungsfarben können sich zwischen Modelljahren und Steckern wiederholen. Ohne Pin und Messung ist die Farbe kein belastbarer Anschlussnachweis."
+        },
+        {
+          "fuer": ["d"],
+          "titel": "Unter Spannung verpresst",
+          "text": "Gemessen wird vorab kontrolliert; die eigentliche Anschlussarbeit erfolgt spannungsfrei, um Kurzschluss und Schäden an Steuergeräten zu vermeiden."
+        }
+      ],
+      "mitnehmen": "Erst eindeutig identifizieren und messen, dann spannungsfrei verbinden. Der Verbinder ersetzt keine Diagnose."
+    },
+    {
+      "id": "HID-12",
+      "type": "multi",
+      "category": "Crimpen",
+      "prompt": "Woran erkennst du eine fachgerechte Crimpverbindung? Wähle alle zutreffenden.",
+      "options": [
+        { "id": "a", "text": "Verbinder und Crimpeinsatz passen zum Leitungsquerschnitt" },
+        { "id": "b", "text": "Es wird das dafür vorgesehene Crimpwerkzeug verwendet" },
+        { "id": "c", "text": "Die Verbindung hält einer vorsichtigen Zugprobe stand" },
+        { "id": "d", "text": "Leitung und Verbindung sind anschließend isoliert, geschützt und zugentlastet" },
+        { "id": "e", "text": "Eine Kombizange drückt den Verbinder sichtbar flach" },
+        { "id": "f", "text": "Die Litzen werden vor dem Crimpen verdrillt und verzinnt" }
+      ],
+      "correct": ["a", "b", "c", "d"],
+      "feedback": "Eine belastbare Crimpung entsteht aus passendem Material, definiertem Werkzeug, mechanischer Kontrolle und geschützter Verlegung.",
+      "irrtum": [
+        {
+          "fuer": ["e"],
+          "titel": "Kombizange statt Crimpwerkzeug",
+          "text": "Sichtbar flach ist kein Qualitätsmerkmal. Ohne definierten Pressbereich können Leiter beschädigt oder nur scheinbar festgeklemmt werden."
+        },
+        {
+          "fuer": ["f"],
+          "titel": "Litzen verzinnt",
+          "text": "Verzinnte Litzen können unter Druck nachgeben. Eine Crimpverbindung wird mit dem dafür vorgesehenen Leiterzustand und Verbinder hergestellt."
+        }
+      ],
+      "mitnehmen": "Die Zugprobe prüft die Verbindung; Zugentlastung sorgt dafür, dass sie im Fahrzeugbetrieb nicht ständig erneut geprüft wird."
     }
   ]
 }

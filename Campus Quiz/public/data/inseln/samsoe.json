@@ -3,7 +3,7 @@
   "code": "SAMSØ",
   "title": "Einbauorte im Fahrzeug",
   "subtitle": "Wo kommt was hin?",
-  "version": "3",
+  "version": "4",
   "lernziel": "Physik bestimmt den Einbauort, nicht der freie Platz. Wer das verstanden hat, muss keine Liste auswendig lernen.",
   "quellen": [
     "produkte/pro-finder.md",
@@ -13,7 +13,7 @@
     "produkte/wipro-iii.md",
     "fahrzeuge/*"
   ],
-  "internerHinweis": "Fragenkatalog v3. SAM-02 und SAM-03 nutzen echte Einbaufotos, gehoben aus dem bestehenden FehlerQuiz. Die Alt-Texte wurden dabei neu geschrieben — im Bestandsquiz sind die Beschreibungen der Gaswarner-Bilder um eine Position verrutscht. Fachlich zu bestätigen: die max. 7 m Gesamtlänge des Zusatzsensorkabels in SAM-08.",
+  "internerHinweis": "Fragenkatalog v4. SAM-02 und SAM-03 nutzen echte Einbaufotos aus dem bestehenden FehlerQuiz. SAM-04 prüft jetzt die Qualitätskriterien für den Einbauort einer WiPro III. Fachlich zu bestätigen: die max. 7 m Gesamtlänge des Zusatzsensorkabels in SAM-08.",
   "questions": [
     {
       "id": "SAM-01",
@@ -140,25 +140,32 @@
     },
     {
       "id": "SAM-04",
-      "type": "single",
-      "category": "GPS-Antenne",
-      "prompt": "Wie wird eine externe GPS-Antenne ausgerichtet?",
+      "type": "multi",
+      "category": "Einbauort der Zentrale",
+      "prompt": "Welche Merkmale erfüllt ein geeigneter Einbauort der WiPro III? Wähle alle zutreffenden.",
       "options": [
-        { "id": "a", "text": "Empfangsseite waagerecht nach oben" },
-        { "id": "b", "text": "Senkrecht, quer zur Fahrtrichtung" },
-        { "id": "c", "text": "Nach unten, damit Wasser ablaufen kann" },
-        { "id": "d", "text": "Mit der Empfangsseite zur Fahrzeugmitte" }
+        { "id": "a", "text": "Trocken und vor direkter Feuchtigkeit geschützt" },
+        { "id": "b", "text": "Für Diagnose und Service weiterhin erreichbar" },
+        { "id": "c", "text": "So gewählt, dass Antenne und Funkstrecke nicht unmittelbar durch Metall abgeschirmt werden" },
+        { "id": "d", "text": "Im Motorraum nahe der Fahrzeugbatterie" },
+        { "id": "e", "text": "Hinter einer vollständig geschlossenen Metallverkleidung" },
+        { "id": "f", "text": "Dort, wo die Antennenleitung möglichst eng aufgewickelt werden kann" }
       ],
-      "correct": ["a"],
-      "feedback": "Die Satelliten stehen oben.",
+      "correct": ["a", "b", "c"],
+      "feedback": "Ein guter Einbauort schützt die Zentrale, hält sie servicefähig und berücksichtigt die Funkphysik. Freier Platz allein ist kein Auswahlkriterium.",
       "irrtum": [
         {
-          "fuer": ["c"],
-          "titel": "Nach unten wegen Wasser",
-          "text": "Handwerklich vernünftig gedacht und trotzdem falsch — der Empfang geht dabei fast vollständig verloren. Gegen Wasser hilft der richtige Einbauort, nicht die falsche Ausrichtung."
+          "fuer": ["d"],
+          "titel": "Motorraum gewählt",
+          "text": "Kurze Versorgungswege ersetzen keinen geschützten Innenraum-Einbau. Temperatur, Feuchtigkeit und Servicezugang sprechen dagegen."
+        },
+        {
+          "fuer": ["e", "f"],
+          "titel": "Funkstrecke verschlechtert",
+          "text": "Metall schirmt ab, eine eng aufgewickelte Antennenleitung verändert die vorgesehene Antennenwirkung. Der Einbauort muss beides vermeiden."
         }
       ],
-      "mitnehmen": "Eine falsch ausgerichtete Antenne kostet Empfang, ohne dass es beim Einbau auffällt. Der Fehler zeigt sich, wenn die Ortung im Ernstfall gebraucht wird — also genau dann, wenn niemand mehr nachjustieren kann."
+      "mitnehmen": "Einbauort = Schutz + Servicezugang + Funkstrecke. Wenn einer der drei Punkte fehlt, ist der Platz nicht fertig bewertet."
     },
     {
       "id": "SAM-05",
