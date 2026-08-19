@@ -1,0 +1,12 @@
+# Werkzeuge und Zwischenstaende
+node_modules/
+package-lock.json
+.playwright-mcp/
+
+# Lokale Claude-Code-Einstellungen, gehoeren nicht ins Repo
+.claude/
+
+# Betriebssystem
+Thumbs.db
+desktop.ini
+.DS_Store
