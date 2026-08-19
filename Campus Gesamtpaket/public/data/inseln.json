@@ -4,6 +4,7 @@
   "inseln": [
     {
       "slug": "vejro",
+      "name": "Vejrø",
       "code": "VEJRØ",
       "title": "Produktneuheiten",
       "thema": "Zugang & Wasserschutz",
@@ -12,6 +13,7 @@
     },
     {
       "slug": "poel",
+      "name": "Poel",
       "code": "POEL",
       "title": "Händlerbereich",
       "thema": "Beratung & Werkstatt vorbereiten",
@@ -20,6 +22,7 @@
     },
     {
       "slug": "hiddensee",
+      "name": "Hiddensee",
       "code": "HIDDENSEE",
       "title": "Funkkontakte & Verbindungen",
       "thema": "Montage, Abzweigen & Crimpen",
@@ -28,6 +31,7 @@
     },
     {
       "slug": "samsoe",
+      "name": "Samsø",
       "code": "SAMSØ",
       "title": "Einbauorte",
       "thema": "Wo kommt was hin?",
@@ -36,6 +40,7 @@
     },
     {
       "slug": "fehmarn",
+      "name": "Fehmarn",
       "code": "FEHMARN",
       "title": "Fehlersuche & Support",
       "thema": "Diagnose",
@@ -44,6 +49,7 @@
     },
     {
       "slug": "usedom",
+      "name": "Usedom",
       "code": "USEDOM",
       "title": "Verkaufsdisplay & Konfigurator",
       "thema": "Vom Produkt zum System",
@@ -52,6 +58,7 @@
     },
     {
       "slug": "langeland",
+      "name": "Langeland",
       "code": "LANGELAND",
       "title": "Annahme & Übergabe",
       "thema": "Der Kundenprozess",

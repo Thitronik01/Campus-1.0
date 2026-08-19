@@ -51,6 +51,13 @@
      als dass sein Urteil unbemerkt kippt. */
   const DRAFT_KEY = 'thitronik-campus-2026-feedback-draft-v14';
 
+  /* Der Wissenscheck legt dieselben drei Pflichtangaben unter diesem
+     Schluessel ab. localStorage gilt pro Domain — seit der Bogen unter
+     /feedback derselben Site liegt, ist der Eintrag hier lesbar. Genau
+     dafuer wurde zusammengelegt: Wer morgens an der ersten Insel getippt
+     hat, soll abends nur noch bestaetigen. */
+  const QUIZ_KEY = 'thitronik.campus.2026.participant';
+
   const demoMode = new URLSearchParams(window.location.search).get('demo') === '1';
 
   /* itemLabel-Strings exakt wie in v11. Nicht ohne Anpassung der Auswertung
@@ -890,6 +897,37 @@
     /* "Feedback starten" waere hier gelogen: der Knopf setzt fort. */
     if (startButton) startButton.textContent = 'Weiter ausfüllen';
   }
+
+  /* Nach dem Entwurf, nicht davor: Was hier schon steht, hat der Teilnehmer
+     selbst eingetippt und wiegt schwerer als der Eintrag aus dem Quiz. Es
+     werden ausschliesslich leere Felder gefuellt, und nichts wird
+     abgeschickt, ohne dass jemand die Angaben gesehen hat — sie stehen auf
+     Schritt 1 offen da. */
+  (function ausQuizVorbelegen() {
+    let daten;
+    try {
+      const roh = localStorage.getItem(QUIZ_KEY);
+      daten = roh ? JSON.parse(roh) : null;
+    } catch (error) { return; }
+    if (!daten || typeof daten !== 'object') return;
+
+    const felder = [
+      ['dealer_name', daten.dealer],
+      ['dealer_number', daten.dealerNumber],
+      ['name', daten.name]
+    ];
+    let gefuellt = 0;
+    for (const [id, wert] of felder) {
+      const feld = document.getElementById(id);
+      if (!feld || feld.value.trim() || typeof wert !== 'string' || !wert.trim()) continue;
+      feld.value = wert.trim();
+      gefuellt++;
+    }
+    if (!gefuellt) return;
+
+    const hinweis = document.getElementById('quiz-uebernahme');
+    if (hinweis) hinweis.hidden = false;
+  })();
   updateIslands();
   updateProgress();
 

@@ -45,6 +45,21 @@ const ORDNER = {
  *  an einer einzigen Zeile. Dieses Paket enthält von vornherein nur das, was
  *  ausgeliefert werden soll. */
 const GESAMT = "Campus Gesamtpaket";
+
+/** Der Feedbackbogen deckt den Tagesabschluss ab und liegt im Gesamtpaket
+ *  unter /feedback. Auf derselben Domain wie die Inseln zu liegen ist der
+ *  eigentliche Zweck: localStorage gilt pro Domain, also stehen dem Bogen
+ *  abends dieselben Teilnehmerangaben zur Verfuegung, die morgens im Quiz
+ *  eingetippt wurden. Quelle ist sein erzeugtes Netlify-Paket. */
+const BOGEN_QUELLE = path.join(PROJEKT, "Feedbackbogen", "netlify-v14");
+const BOGEN_ZIEL = "feedback";
+
+/** _headers gilt nicht mit: seine Pfade sind auf die Wurzel geschrieben
+ *  ("/assets/*") und zeigten unter /feedback ins Leere. Die Regeln stehen
+ *  stattdessen in der netlify.toml des Pakets. README.txt richtet sich an
+ *  den, der hochlaedt, und hat im ausgelieferten Verzeichnis nichts zu
+ *  suchen. */
+const BOGEN_AUSGENOMMEN = new Set(["_headers", "README.txt"]);
 const GEMEINSAME_MEDIEN = [
   path.join("media", "campus", "campus-hintergrund-v1.webp"),
   path.join("media", "campus", "campus-kompass-v2.webp"),
@@ -73,6 +88,29 @@ function schreib(ziel, inhalt) {
 function kopiere(von, nach) {
   fs.mkdirSync(path.dirname(nach), { recursive: true });
   fs.copyFileSync(von, nach);
+}
+
+/** Kopiert den Feedbackbogen rekursiv nach public/feedback/. Seine
+ *  Verweise sind relativ ("assets/v12/..."), loesen sich unter dem
+ *  Unterverzeichnis also von selbst richtig auf. */
+function kopiereBogen(oeff) {
+  if (!fs.existsSync(BOGEN_QUELLE)) {
+    throw new Error(`Der Feedbackbogen fehlt: ${BOGEN_QUELLE}
+` +
+      "  Erst dort bauen: node tools/build-netlify.js");
+  }
+  let anzahl = 0;
+  const lauf = (von, nach) => {
+    for (const eintrag of fs.readdirSync(von, { withFileTypes: true })) {
+      if (BOGEN_AUSGENOMMEN.has(eintrag.name)) continue;
+      const q = path.join(von, eintrag.name);
+      const z = path.join(nach, eintrag.name);
+      if (eintrag.isDirectory()) lauf(q, z);
+      else { kopiere(q, z); anzahl++; }
+    }
+  };
+  lauf(BOGEN_QUELLE, path.join(oeff, BOGEN_ZIEL));
+  return anzahl;
 }
 
 function kopiereGemeinsameMedien(oeff) {
@@ -113,7 +151,7 @@ function leeren(ordner) {
  *  den Kommentar, der erklärt, wohin die Routen führen. Einmal geschrieben,
  *  damit eine Änderung an den Headern nicht an zwei Stellen nachgezogen
  *  werden muss. */
-function netlifyToml(kommentar) {
+function netlifyToml(kommentar, { mitBogen = false } = {}) {
   return `[build]
   publish = "public"
   functions = "netlify/functions"
@@ -136,7 +174,7 @@ ${kommentar}
   for = "/*"
   [headers.values]
     X-Content-Type-Options = "nosniff"
-    X-Frame-Options = "SAMEORIGIN"
+    X-Frame-Options = "DENY"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
 
@@ -164,6 +202,34 @@ ${kommentar}
   for = "/.netlify/functions/*"
   [headers.values]
     Cache-Control = "no-store"
+${mitBogen ? bogenHeaders() : ""}`;
+}
+
+/** Die Cache-Regeln des Feedbackbogens, auf /feedback umgeschrieben. Er
+ *  fuehrt die Version im Dateinamen (styles-v14.css), deshalb duerfen
+ *  seine Dateien wirklich unbegrenzt liegen bleiben — anders als die
+ *  Engine des Quiz, die ihre Version nur in der Adresse traegt. */
+function bogenHeaders() {
+  return `
+[[headers]]
+  for = "/feedback/"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/feedback/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/feedback/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/feedback/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
 `;
 }
 
@@ -344,6 +410,9 @@ function baueGesamt() {
     }
   }
 
+  // --- Feedbackbogen unter /feedback --------------------------------------
+  const bogenDateien = kopiereBogen(oeff);
+
   // --- Function unverändert: sie kennt bereits alle sieben Inseln --------
   kopiere(path.join(WURZEL, "netlify", "functions", "submit-quiz.js"),
     path.join(ziel, "netlify", "functions", "submit-quiz.js"));
@@ -351,13 +420,15 @@ function baueGesamt() {
   // --- netlify.toml -------------------------------------------------------
   schreib(path.join(ziel, "netlify.toml"), netlifyToml(
     `# Gesamtpaket: /quiz zeigt die Inselübersicht, /quiz/<insel> geht direkt\n` +
-    `# in eine Insel. Beides liefert dieselbe index.html.`));
+    `# in eine Insel. Beides liefert dieselbe index.html.\n` +
+    `# /feedback ist der Tagesabschluss — ein eigenes Verzeichnis mit eigener\n` +
+    `# index.html, deshalb ohne Rewrite.`, { mitBogen: true }));
 
   // --- Marker und Anleitung ----------------------------------------------
   schreib(path.join(ziel, MARKER), markerText("gesamt"));
-  schreib(path.join(ziel, "ANLEITUNG.md"), anleitungGesamt(katalog, inseln, bilder));
+  schreib(path.join(ziel, "ANLEITUNG.md"), anleitungGesamt(katalog, inseln, bilder, bogenDateien));
 
-  return { ordnerName: GESAMT, ziel, bilder, fragen, inseln: inseln.length };
+  return { ordnerName: GESAMT, ziel, bilder, fragen, inseln: inseln.length, bogenDateien };
 }
 
 // -------------------------------------------------------------- Anleitung --
@@ -455,7 +526,7 @@ sendet nur, **was** gewählt wurde. Bewertet wird in der Function.
 `;
 }
 
-function anleitungGesamt(katalog, inseln, bilder) {
+function anleitungGesamt(katalog, inseln, bilder, bogenDateien) {
   const zeilen = katalog.inseln.map((eintrag, i) => {
     const satz = inseln[i];
     return `| **${eintrag.code}** | \`/quiz/${eintrag.slug}\` | ${satz.questions.length} | ${satz.title} |`;
@@ -473,6 +544,7 @@ Fertiges Netlify-Paket mit **allen ${inseln.length} Schulungsinseln auf einer Si
 | Inseln | ${inseln.length} |
 | Fragen | ${fragen} |
 | Bilder | ${bilder || "keine"} |
+| Feedbackbogen | ${bogenDateien} Dateien unter \`/feedback\` |
 
 > Nicht zu verwechseln mit \`Campus Quiz/\`. Das ist die **Quelle** und gehört
 > nicht hochgeladen: Dort liegen neben \`public/\` auch \`FRAGENKATALOG.md\` mit
@@ -562,6 +634,11 @@ ${zeilen}
 Die nackte Adresse \`https://<deine-adresse>.netlify.app/\` zeigt die
 **Inselübersicht** — praktisch für den Empfang oder als Ausweichweg, wenn ein
 Stations-QR nicht lesbar ist.
+
+Der **Feedbackbogen** liegt unter \`/feedback\` — der Tagesabschluss, eine
+eigene Adresse für einen eigenen QR-Code. Er liegt bewusst auf derselben
+Domain wie die Inseln: Nur so stehen ihm abends die Angaben zur Verfügung,
+die morgens im Wissenscheck eingetippt wurden.
 
 ---
 

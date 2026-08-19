@@ -48,7 +48,14 @@ http.createServer((req, res) => {
   if (/^\/quiz(\/[a-z0-9-]+)?\/?$/i.test(pathname)) pathname = "/index.html";
   if (pathname === "/") pathname = "/index.html";
 
-  const file = path.join(ROOT, path.normalize(pathname).replace(/^([/\\])+/, ""));
+  let file = path.join(ROOT, path.normalize(pathname).replace(/^([/\\])+/, ""));
+  // Verzeichnisse liefern ihre index.html, wie Netlify es tut. Ohne das
+  // waere /feedback/ hier ein Lesefehler auf einem Ordner, waehrend es im
+  // Deployment funktioniert — die Probe waere dann keine mehr.
+  try {
+    if (fs.statSync(file).isDirectory()) file = path.join(file, "index.html");
+  } catch { /* gibt es nicht, faellt unten als 404 heraus */ }
+
   if (!file.startsWith(ROOT)) {
     res.writeHead(403).end("Verboten");
     return;

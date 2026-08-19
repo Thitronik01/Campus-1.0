@@ -117,6 +117,16 @@ gibt.
 node tools/build-insel.js gesamt
 ```
 
+> **Der Feedbackbogen muss vorher gebaut sein.** Das Gesamtpaket kopiert
+> `Feedbackbogen/netlify-v14/` nach `public/feedback/`; fehlt der Ordner,
+> bricht der Bau mit einem Hinweis ab. Neu bauen dort mit
+> `node tools/build-netlify.js`.
+
+Nicht mitkopiert werden zwei Dateien: `_headers`, dessen Pfade auf die
+Wurzel geschrieben sind und unter `/feedback` ins Leere zeigten — seine
+Regeln stehen stattdessen in der erzeugten `netlify.toml` —, und
+`README.txt`, die sich an den richtet, der hochlädt.
+
 Erzeugt `Campus Gesamtpaket/`: alle sieben Inseln auf einer Site, Übersicht
 unter `/quiz`, jede Insel unter `/quiz/<slug>`.
 

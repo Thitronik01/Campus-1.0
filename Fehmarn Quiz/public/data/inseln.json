@@ -4,6 +4,7 @@
   "inseln": [
     {
       "slug": "fehmarn",
+      "name": "Fehmarn",
       "code": "FEHMARN",
       "title": "Fehlersuche & Support",
       "thema": "Diagnose",

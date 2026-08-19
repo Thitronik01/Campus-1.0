@@ -75,7 +75,8 @@ merken sich keine Datenblätter, sie merken sich Sätze.
 ```
 Campus 1.0/
 ├── Campus Quiz/          ← die Quelle: Engine, Fragensätze, Werkzeuge
-├── Campus Gesamtpaket/   ← erzeugt: alle sieben Inseln auf einer Site
+├── Feedbackbogen/        ← die Quelle des Tagesabschlusses
+├── Campus Gesamtpaket/   ← erzeugt: Inseln + Feedbackbogen auf einer Site
 ├── <Insel> Quiz/         ← erzeugt: eine Insel je Site
 ├── Wissen/               ← 82 Wiki-Artikel, Design-System, 107 Mediendateien
 ├── FehlerQuiz/           ← Bestandsquiz, läuft getrennt weiter
@@ -98,9 +99,19 @@ verliert es beim nächsten Bau.
 wäre technisch auch lauffähig, enthält aber den Fragenkatalog mit sämtlichen
 Lösungen. Das erzeugte Paket enthält nur, was ausgeliefert werden soll.
 
-Der **Feedbackbogen** liegt in einem eigenen Repository:
+Der **Feedbackbogen** liegt seit dem 19.08.2026 in diesem Repository, samt
+seiner Historie aus
 [Thitronik-Campus-Feedbackbogen](https://github.com/Thitronik01/Thitronik-Campus-Feedbackbogen).
-Er ist bereits live und deckt den Tagesabschluss ab.
+Er deckt den Tagesabschluss ab und wird vom Gesamtpaket unter `/feedback`
+mit ausgeliefert.
+
+**Warum auf derselben Adresse.** `localStorage` gilt pro Domain. Liegt der
+Bogen auf einer eigenen Site, tippt jeder Teilnehmer abends Name, Betrieb
+und Händlernummer ein zweites Mal ein. Unter `/feedback` derselben Site
+liest er die Angaben aus dem Wissenscheck und fragt nur noch, ob sie
+stimmen. Aus demselben Grund kommen die Inselnamen jetzt aus
+`inseln.json` — vorher führten beide Anwendungen eigene Listen, und sie
+waren bereits auseinandergelaufen.
 
 ---
 

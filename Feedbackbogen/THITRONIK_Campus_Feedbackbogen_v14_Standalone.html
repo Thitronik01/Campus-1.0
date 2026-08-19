@@ -402,6 +402,17 @@ body.is-stepping .foot { display: none; }
   color: var(--th-navy); font-size: .89rem; font-weight: 620;
 }
 .draft[hidden] { display: none; }
+
+/* Derselbe Kasten wie beim gefundenen Entwurf, nur ohne Knopf: Beides sagt
+   "hier steht schon etwas, das nicht von dieser Seite stammt". */
+.draft__note {
+  margin: 16px 0 0; padding: 12px 16px;
+  border: 1.5px solid var(--th-blue);
+  border-radius: var(--radius-md);
+  background: var(--info-bg);
+  color: var(--th-navy); font-size: .86rem; font-weight: 620; line-height: 1.45;
+}
+.draft__note[hidden] { display: none; }
 .draft button {
   min-height: 44px; padding: 8px 16px;
   border: 1.5px solid var(--th-navy); border-radius: var(--radius-pill);
@@ -1136,6 +1147,9 @@ body.is-done .demo { display: none; }
         <p class="card__note">Damit wir R&uuml;ckmeldungen mehrerer Teilnehmender eines Betriebs zuordnen k&ouml;nnen.
           Die H&auml;ndlernummer findest du auf deinen Rechnungen und Lieferscheinen.</p>
 
+        <p class="draft__note" id="quiz-uebernahme" hidden>Wir haben deine Angaben aus dem Wissenscheck
+          &uuml;bernommen. Stimmt etwas nicht, &auml;ndere es einfach.</p>
+
         <div class="grid grid--angaben">
           <div class="field">
             <label for="dealer_name">H&auml;ndlerbetrieb <span class="req" aria-hidden="true">Pflicht</span></label>
@@ -1702,6 +1716,13 @@ body.is-done .demo { display: none; }
      stillschweigend die schlechteste Bewertung. Lieber faengt so jemand neu an,
      als dass sein Urteil unbemerkt kippt. */
   const DRAFT_KEY = 'thitronik-campus-2026-feedback-draft-v14';
+
+  /* Der Wissenscheck legt dieselben drei Pflichtangaben unter diesem
+     Schluessel ab. localStorage gilt pro Domain — seit der Bogen unter
+     /feedback derselben Site liegt, ist der Eintrag hier lesbar. Genau
+     dafuer wurde zusammengelegt: Wer morgens an der ersten Insel getippt
+     hat, soll abends nur noch bestaetigen. */
+  const QUIZ_KEY = 'thitronik.campus.2026.participant';
 
   const demoMode = new URLSearchParams(window.location.search).get('demo') === '1';
 
@@ -2542,6 +2563,37 @@ body.is-done .demo { display: none; }
     /* "Feedback starten" waere hier gelogen: der Knopf setzt fort. */
     if (startButton) startButton.textContent = 'Weiter ausfüllen';
   }
+
+  /* Nach dem Entwurf, nicht davor: Was hier schon steht, hat der Teilnehmer
+     selbst eingetippt und wiegt schwerer als der Eintrag aus dem Quiz. Es
+     werden ausschliesslich leere Felder gefuellt, und nichts wird
+     abgeschickt, ohne dass jemand die Angaben gesehen hat — sie stehen auf
+     Schritt 1 offen da. */
+  (function ausQuizVorbelegen() {
+    let daten;
+    try {
+      const roh = localStorage.getItem(QUIZ_KEY);
+      daten = roh ? JSON.parse(roh) : null;
+    } catch (error) { return; }
+    if (!daten || typeof daten !== 'object') return;
+
+    const felder = [
+      ['dealer_name', daten.dealer],
+      ['dealer_number', daten.dealerNumber],
+      ['name', daten.name]
+    ];
+    let gefuellt = 0;
+    for (const [id, wert] of felder) {
+      const feld = document.getElementById(id);
+      if (!feld || feld.value.trim() || typeof wert !== 'string' || !wert.trim()) continue;
+      feld.value = wert.trim();
+      gefuellt++;
+    }
+    if (!gefuellt) return;
+
+    const hinweis = document.getElementById('quiz-uebernahme');
+    if (hinweis) hinweis.hidden = false;
+  })();
   updateIslands();
   updateProgress();
 

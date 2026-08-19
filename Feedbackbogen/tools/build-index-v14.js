@@ -213,6 +213,9 @@ ${stepList}
         <p class="card__note">Damit wir R&uuml;ckmeldungen mehrerer Teilnehmender eines Betriebs zuordnen k&ouml;nnen.
           Die H&auml;ndlernummer findest du auf deinen Rechnungen und Lieferscheinen.</p>
 
+        <p class="draft__note" id="quiz-uebernahme" hidden>Wir haben deine Angaben aus dem Wissenscheck
+          &uuml;bernommen. Stimmt etwas nicht, &auml;ndere es einfach.</p>
+
         <div class="grid grid--angaben">
           <div class="field">
             <label for="dealer_name">H&auml;ndlerbetrieb <span class="req" aria-hidden="true">Pflicht</span></label>
