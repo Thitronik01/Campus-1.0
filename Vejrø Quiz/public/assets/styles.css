@@ -19,10 +19,10 @@
   --th-red: #CE132D;
 
   /* Antwortpalette A-G. A-D bleiben die vier THITRONIK-Markenfarben.
-     Violett und Amber erweitern den Farbkreis für Fragen mit fünf oder
-     sechs Optionen, Petrol deckt die vorhandenen Fragen mit sieben Optionen
-     ab. Auswahlfarben bleiben von Erfolg/Fehler semantisch getrennt.
-     Die Buchstaben bleiben die primäre, farbunabhängige Kennzeichnung. */
+     E-G greifen ausschließlich vorhandene Navy-, Cyan- und Grautöne auf:
+     zusätzliche Antworten sollen wie Teil derselben Oberfläche aussehen,
+     nicht wie neue Signalzustände. Die Buchstaben bleiben die primäre,
+     farbunabhängige Kennzeichnung. */
   --answer-a: #1D3661;
   --answer-a-rgb: 29, 54, 97;
   --answer-a-text: #FFFFFF;
@@ -35,14 +35,14 @@
   --answer-d: #CE132D;
   --answer-d-rgb: 206, 19, 45;
   --answer-d-text: #FFFFFF;
-  --answer-e: #6B4FA1;
-  --answer-e-rgb: 107, 79, 161;
+  --answer-e: #0A2747;
+  --answer-e-rgb: 10, 39, 71;
   --answer-e-text: #FFFFFF;
-  --answer-f: #C66A00;
-  --answer-f-rgb: 198, 106, 0;
-  --answer-f-text: #111111;
-  --answer-g: #007C83;
-  --answer-g-rgb: 0, 124, 131;
+  --answer-f: #1B7699;
+  --answer-f-rgb: 27, 118, 153;
+  --answer-f-text: #FFFFFF;
+  --answer-g: #5E6672;
+  --answer-g-rgb: 94, 102, 114;
   --answer-g-text: #FFFFFF;
   --th-white: #FFFFFF;
   --th-soft: #F0F0F0;
@@ -231,14 +231,24 @@ h2 { font-size: clamp(1.15rem, 1.05rem + .4vw, 1.5rem); letter-spacing: -.015em;
   align-items: baseline;
   justify-content: space-between;
   gap: 18px;
-  margin-bottom: 7px;
+  margin-bottom: 3px;
   color: var(--th-navy);
   font-size: .86rem;
   font-weight: 700;
 }
-.campus-progress-head strong {
-  font-size: 1.35rem;
-  line-height: 1;
+/* Der Prozentwert bleibt als Skala zur Fortschrittsleiste, tritt aber
+   hinter die Zahl zurueck, die jemand tatsaechlich vorliest. */
+.campus-progress-head small {
+  color: var(--th-muted);
+  font-size: .78rem;
+  font-variant-numeric: tabular-nums;
+}
+.campus-progress-copy {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--th-navy);
+  font-size: 1.06rem;
+  line-height: 1.15;
   font-variant-numeric: tabular-nums;
 }
 .campus-progress-track {
@@ -255,13 +265,7 @@ h2 { font-size: clamp(1.15rem, 1.05rem + .4vw, 1.5rem); letter-spacing: -.015em;
   background: linear-gradient(90deg, var(--th-blue), #279EC9);
   transition: width 280ms var(--ease-out);
 }
-.masthead-progress small {
-  display: block;
-  margin-top: 6px;
-  color: var(--th-muted);
-  font-size: .74rem;
-  text-align: right;
-}
+
 
 .chip {
   display: inline-flex;
@@ -823,17 +827,16 @@ main { flex: 1 0 auto; }
   margin-top: 20px;
 }
 
-#screen-start[data-island="samsoe"] .facts li {
-  grid-template-columns: 44px minmax(0, 1fr);
+#screen-start .start-intro .facts li {
+  grid-template-columns: 50px minmax(0, 1fr);
   gap: 12px;
-  min-height: 44px;
+  min-height: 50px;
   align-items: center;
-  font-size: clamp(.86rem, 1.04vw, .98rem);
 }
 
-#screen-start[data-island="samsoe"] .facts li::before {
-  width: 44px;
-  height: 44px;
+#screen-start .start-intro .facts li::before {
+  width: 50px;
+  height: 50px;
   border-radius: 0;
   background-color: transparent;
   background-position: center;
@@ -843,20 +846,20 @@ main { flex: 1 0 auto; }
   filter: drop-shadow(0 5px 7px rgba(0, 13, 38, .28));
 }
 
-#screen-start[data-island="samsoe"] .facts li:nth-child(1)::before {
-  background-image: url("/media/samsoe/sam-start-hex-fragen.webp");
+/* Das Symbol haengt an der Klasse, nicht an der Position. Die Reihenfolge
+   der Fakten ist Redaktionssache; bei :nth-child wandert sonst still das
+   falsche Bild an die falsche Zeile — dieselbe Begruendung wie bei
+   opt-1 bis opt-4 an den Antwortkacheln. */
+#screen-start .start-intro .facts .fact-fragen::before {
+  background-image: url("/media/campus/campus-hex-fragen.webp");
 }
 
-#screen-start[data-island="samsoe"] .facts li:nth-child(2)::before {
-  background-image: url("/media/samsoe/sam-start-hex-fragetypen.webp");
+#screen-start .start-intro .facts .fact-zeit::before {
+  background-image: url("/media/campus/campus-hex-zeitlimit.webp");
 }
 
-#screen-start[data-island="samsoe"] .facts li:nth-child(3)::before {
-  background-image: url("/media/samsoe/sam-start-hex-aufloesung.webp");
-}
-
-#screen-start[data-island="samsoe"] .facts li:nth-child(4)::before {
-  background-image: url("/media/samsoe/sam-start-hex-zeitlimit.webp");
+#screen-start .start-intro .facts .fact-aufloesung::before {
+  background-image: url("/media/campus/campus-hex-aufloesung.webp");
 }
 
 .samsoe-start-visual {
@@ -1200,7 +1203,47 @@ main { flex: 1 0 auto; }
   box-shadow: inset 0 0 0 6px var(--th-lime), inset 0 0 0 7px rgba(17, 17, 17, .3);
 }
 
+/* Der Block liegt auf der Insel-Illustration, und die ist je Insel anders
+   hell. Deshalb tragen Knopf und Text eine eigene dunkle Flaeche: Sonst
+   haengt die Lesbarkeit am Motiv statt an der Gestaltung. */
+.start-details { margin-top: 14px; }
+.start-details summary {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  padding: 0 16px;
+  border: 1px solid rgba(255, 255, 255, .3);
+  border-radius: 999px;
+  background: rgba(7, 29, 70, .74);
+  color: #fff;
+  font-size: .88rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.start-details summary:focus-visible { outline: 2px solid var(--th-blue); outline-offset: 3px; }
+.start-types {
+  max-width: 46ch;
+  margin: 8px 0 0;
+  padding: 11px 15px;
+  border-radius: 14px;
+  background: rgba(7, 29, 70, .74);
+  color: #fff;
+  font-size: .88rem;
+  line-height: 1.5;
+}
+
 .start-form { display: grid; align-content: start; gap: 14px; padding: clamp(24px, 4vw, 46px); }
+
+/* Beide Bloecke setzen display, deshalb muss [hidden] es zuruecknehmen —
+   sonst bliebe der zusammengefaltete Teil sichtbar. */
+.start-fields { display: grid; gap: 14px; }
+.start-fields[hidden] { display: none; }
+
+.participant-summary { display: grid; gap: 2px; }
+.participant-summary[hidden] { display: none; }
+.participant-name { margin: 0; color: var(--th-navy); font-size: 1.02rem; font-weight: 800; }
+.participant-meta { margin: 0 0 2px; color: var(--th-muted); font-size: .88rem; line-height: 1.45; }
+.participant-summary .btn { justify-self: start; padding-right: 0; padding-left: 0; }
 .form-title { margin-bottom: 2px; }
 .form-intro { margin: 0 0 4px; color: var(--th-muted); font-size: .9rem; }
 
@@ -1401,15 +1444,21 @@ main { flex: 1 0 auto; }
 .answer:active:not(:disabled) { transform: scale(.985); }
 .answer:disabled { cursor: default; }
 
-/* Der Ring ist voll deckend, nicht lasiert. Ein 20-prozentiger Schleier ist
-   im Hallenlicht und erst recht draußen am Fahrzeug kaum von "nicht gewählt"
-   zu unterscheiden. */
+/* Auswahl ist ein eigener, markenneutraler Zustand: Navy/Cyan statt der
+   späteren Bedeutungsfarben Grün und Rot. Ring, Glow, Anhebung und Häkchen
+   wirken zusammen, damit die Auswahl nie nur an einer Farbe hängt. */
 .answer.is-selected {
-  border-color: var(--opt);
-  background: rgba(var(--opt-rgb), .14);
-  box-shadow: 0 0 0 3px var(--opt), 0 8px 20px rgba(var(--opt-rgb), .24);
+  z-index: 1;
+  border-color: var(--th-navy-deep);
+  background: var(--info-bg);
+  box-shadow:
+    0 0 0 3px var(--th-white),
+    0 0 0 7px rgba(59, 169, 211, .72),
+    0 0 26px rgba(59, 169, 211, .46),
+    0 12px 26px rgba(10, 39, 71, .2);
+  transform: translateY(-2px) scale(1.012);
 }
-.answer.is-selected::after { width: 5px; opacity: 1; }
+.answer.is-selected::after { width: 6px; background: var(--th-blue); opacity: 1; }
 .answer.is-correct {
   border-color: #8FA600;
   background: var(--success-bg);
@@ -1473,15 +1522,18 @@ main { flex: 1 0 auto; }
   min-height: 0;
   padding: 0;
   border-width: 2px;
-  border-color: var(--opt);
+  border-color: var(--th-line-strong);
   overflow: hidden;
+  box-shadow: 0 7px 18px rgba(10, 39, 71, .1);
 }
 .answer-media {
   width: 100%;
   aspect-ratio: 3 / 4;              /* portrait, der Normalfall in der Werkstatt */
   object-fit: cover;
   background: var(--th-soft);
+  transition: filter var(--duration-fast) ease;
 }
+.answer-bild.is-selected .answer-media { filter: saturate(1.08) contrast(1.04); }
 .answers-bild[data-layout="square"] .answer-media { aspect-ratio: 1 / 1; }
 .answers-bild[data-layout="landscape"] .answer-media { aspect-ratio: 4 / 3; }
 
@@ -1980,13 +2032,12 @@ main { flex: 1 0 auto; }
   }
   #screen-start[data-island="samsoe"] .start-intro h1 { font-size: clamp(2rem, 10vw, 2.75rem); }
   #screen-start[data-island="samsoe"] .facts { gap: 8px; }
-  #screen-start[data-island="samsoe"] .facts li {
-    grid-template-columns: 38px minmax(0, 1fr);
+  #screen-start .start-intro .facts li {
+    grid-template-columns: 42px minmax(0, 1fr);
     gap: 10px;
-    min-height: 38px;
-    font-size: .9rem;
+    min-height: 42px;
   }
-  #screen-start[data-island="samsoe"] .facts li::before { width: 38px; height: 38px; }
+  #screen-start .start-intro .facts li::before { width: 42px; height: 42px; }
   .samsoe-start-vehicle { left: -15%; width: 88%; }
   .samsoe-start-technician { right: -23%; width: 68%; }
   #screen-start[data-island="samsoe"] .start-form { padding: 26px 22px; }

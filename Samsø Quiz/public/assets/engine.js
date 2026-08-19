@@ -13,7 +13,7 @@
 
 (function () {
   const EVENT_SLUG = "campus-2026";
-  const ENGINE_VERSION = "1.2.18";
+  const ENGINE_VERSION = "1.3.0";
   const SUBMIT_ENDPOINT = "/.netlify/functions/submit-quiz";
 
   const LS_PARTICIPANT = "thitronik.campus.2026.participant";
@@ -62,6 +62,8 @@
     startTitle: $("start-title"),
     startLead: $("start-lead"),
     startFacts: $("start-facts"),
+    startDetails: $("start-details"),
+    startTypes: $("start-types"),
     samsoeStartVisual: $("samsoe-start-visual"),
     samsoeStartVehicle: $("samsoe-start-vehicle"),
     samsoeStartTechnician: $("samsoe-start-technician"),
@@ -79,6 +81,11 @@
     fehmarnStartDiagnostic: $("fehmarn-start-diagnostic"),
     formIntro: $("form-intro"),
     startForm: $("start-form"),
+    startFields: $("start-fields"),
+    participantSummary: $("participant-summary"),
+    participantName: $("participant-name"),
+    participantMeta: $("participant-meta"),
+    btnEditParticipant: $("btn-edit-participant"),
     fName: $("f-name"),
     fDealer: $("f-dealer"),
     fNumber: $("f-number"),
@@ -104,6 +111,7 @@
     qFeedbackMediaImg: $("q-feedback-media-img"),
     qFeedbackMediaCaption: $("q-feedback-media-caption"),
     qFeedbackIrrtum: $("q-feedback-irrtum"),
+    qFeedbackIrrtumLabel: $("q-feedback-irrtum-label"),
     qFeedbackIrrtumList: $("q-feedback-irrtum-list"),
     qFeedbackMitnehmen: $("q-feedback-mitnehmen"),
     qFeedbackMitnehmenText: $("q-feedback-mitnehmen-text"),
@@ -271,6 +279,44 @@
     try { localStorage.setItem(LS_PARTICIPANT, JSON.stringify(data)); } catch { /* privater Modus */ }
   }
 
+  const AREA_LABELS = {
+    verkauf: "Verkauf",
+    werkstatt: "Werkstatt",
+    "verkauf-werkstatt": "Verkauf und Werkstatt",
+    leitung: "Betriebsleitung",
+    sonstiges: "Sonstiges"
+  };
+
+  /** Dieselben drei Pflichtfelder, die validateForm() prüft — nur ohne
+   *  Fehlermeldung und Fokussprung. Der Tätigkeitsbereich bleibt freiwillig
+   *  und darf die Zusammenfassung deshalb nicht verhindern. */
+  function participantComplete(data) {
+    if (!data) return false;
+    return String(data.name || "").trim().length >= 2
+      && String(data.dealer || "").trim().length >= 2
+      && /^\d{5}$/.test(String(data.dealerNumber || "").trim());
+  }
+
+  /** Vollständige Angaben werden zur Zeile zusammengefaltet: Sie sind
+   *  gespeichert, ihre erneute Eingabe ist also keine Aufgabe mehr, sondern
+   *  eine Störung vor der eigentlichen — dem Quiz. Das Formular bleibt im
+   *  Dokument und ist über "Angaben ändern" einen Klick entfernt. */
+  function showParticipantSummary(data) {
+    el.participantName.textContent = data.name;
+    const teile = [data.dealer, "Händlernummer " + data.dealerNumber];
+    const bereich = AREA_LABELS[data.area];
+    if (bereich) teile.push(bereich);
+    el.participantMeta.textContent = teile.join(" · ");
+    el.participantSummary.hidden = false;
+    el.startFields.hidden = true;
+  }
+
+  function showParticipantForm(focus) {
+    el.participantSummary.hidden = true;
+    el.startFields.hidden = false;
+    if (focus) el.fName.focus();
+  }
+
   function loadDone() {
     try {
       const raw = localStorage.getItem(LS_DONE);
@@ -428,9 +474,15 @@
 
     setCampusRouteFocus("", false);
     el.islandGrid.innerHTML = "";
+    // "1 von 7" ist die Aussage, die jemand am Aufsteller braucht. Der
+    // Prozentwert ist dieselbe Zahl in ungenauer — er bleibt als Skala
+    // stehen, tritt aber zurück. Für die Vorlesehilfe ersetzt aria-valuetext
+    // die nackten "14", die als Fortschritt nichts aussagen.
+    const fortschrittText = `${abgeschlossen} von ${total} ${total === 1 ? "Insel" : "Inseln"} abgeschlossen`;
     el.campusProgressValue.textContent = `${fortschritt} %`;
-    el.campusProgressCopy.textContent = `${abgeschlossen} von ${total} ${total === 1 ? "Insel" : "Inseln"} abgeschlossen`;
+    el.campusProgressCopy.textContent = fortschrittText;
     el.campusProgressTrack.setAttribute("aria-valuenow", String(fortschritt));
+    el.campusProgressTrack.setAttribute("aria-valuetext", fortschrittText);
     el.campusProgressFill.style.width = `${fortschritt}%`;
 
     state.catalog.inseln.forEach((island, index) => {
@@ -448,7 +500,7 @@
           <span class="i-code">${escapeHtml(island.code)}</span>
           <span class="i-title">${escapeHtml(island.title)}</span>
           <span class="i-desc">${escapeHtml(island.beschreibung)}</span>
-          <span class="i-state">${entry ? `Ergebnis ${entry.percent} %` : "Noch offen"}</span>
+          <span class="i-state">${entry ? `Abgeschlossen · ${entry.percent} %` : "Noch nicht begonnen"}</span>
           ${entry ? `<span class="i-score" aria-hidden="true"><span></span></span>` : ""}
         </span>
         <span class="i-open" aria-hidden="true"></span>`;
@@ -549,17 +601,31 @@
       match: "Zuordnung"
     };
 
+    // Reihenfolge nach dem, was vor dem Start zählt: Umfang, Zeitbedarf,
+    // kein Druck, sofortige Auflösung. "ca." steht bewusst dabei — die
+    // Angabe ist eine Einschätzung, keine Messung.
+    // Zeitbedarf und "kein Zeitlimit" stehen in einer Zeile: Es ist dieselbe
+    // Auskunft — wie lange es dauert und dass niemand gehetzt wird.
+    const minuten = Number(island.dauerMinuten) || 0;
     el.startFacts.innerHTML = "";
     [
-      `${count} ${count === 1 ? "Frage" : "Fragen"}`,
-      `Fragetypen: ${[...types].map((t) => typeNames[t] || t).join(", ")}`,
-      "Nach jeder Antwort gibt es sofort die Auflösung",
-      "Kein Zeitlimit — es geht nicht um Tempo"
-    ].forEach((text) => {
+      { klasse: "fact-fragen", text: `${count} ${count === 1 ? "Frage" : "Fragen"}` },
+      { klasse: "fact-zeit", text: minuten
+          ? `ca. ${minuten} Minuten — kein Zeitlimit`
+          : "Kein Zeitlimit — es geht nicht um Tempo" },
+      { klasse: "fact-aufloesung", text: "Nach jeder Antwort gibt es sofort die Auflösung" }
+    ].forEach((fakt) => {
       const li = document.createElement("li");
-      li.textContent = text;
+      li.className = fakt.klasse;
+      li.textContent = fakt.text;
       el.startFacts.appendChild(li);
     });
+
+    // Die Fragetypen beschreiben die Bedienung, nicht den Inhalt. Wer vor
+    // dem Aufsteller steht, entscheidet nicht danach, ob er anfängt — sie
+    // bleiben abrufbar, nehmen aber keinen Platz mehr vor dem Knopf weg.
+    el.startTypes.textContent = `Fragetypen: ${[...types].map((t) => typeNames[t] || t).join(", ")}`;
+    el.startDetails.open = false;
 
     // "internerHinweis" wird bewusst NICHT angezeigt. Das sind redaktionelle
     // Notizen an uns ("Menüpfade gegenprüfen", "Feld media ergänzen") — auf
@@ -577,6 +643,9 @@
     } else {
       el.chipParticipant.hidden = true;
     }
+
+    if (participantComplete(saved)) showParticipantSummary(saved);
+    else showParticipantForm(false);
 
     show("start");
   }
@@ -1042,17 +1111,19 @@
     return "";
   }
 
-  /** Alle Irrtümer erscheinen, nicht nur der eigene: Wer richtig geklickt hat,
-   *  erkennt in den anderen die Sätze seiner Kunden wieder. Der eigene wird
-   *  hervorgehoben — und zwar benannt, nicht nur eingefärbt, damit die
-   *  Markierung auch bei Farbenblindheit und im Vorlesemodus ankommt. */
-  function renderIrrtum(q, answer) {
+  /** Alle Irrtümer erscheinen als Lerninhalt. Nach einer richtigen Antwort
+   *  heißen sie neutral „Typische Fehler“; „Falsch gewählt?“ wäre dort eine
+   *  falsche Aussage über die Leistung des Teilnehmers. Bei einer falschen
+   *  Antwort wird der eigene Irrtum weiterhin benannt und nicht nur
+   *  eingefärbt, damit die Zuordnung auch ohne Farbwahrnehmung ankommt. */
+  function renderIrrtum(q, answer, isCorrect) {
     const eintraege = Array.isArray(q.irrtum) ? q.irrtum : [];
     if (!eintraege.length) {
       el.qFeedbackIrrtum.hidden = true;
       return;
     }
 
+    el.qFeedbackIrrtumLabel.textContent = isCorrect ? "Typische Fehler" : "Falsch gewählt?";
     el.qFeedbackIrrtumList.innerHTML = "";
     eintraege.forEach((eintrag) => {
       const marke = irrtumMarke(eintrag, q, answer);
@@ -1104,7 +1175,7 @@
       el.qFeedbackMedia.hidden = true;
     }
 
-    renderIrrtum(q, answer);
+    renderIrrtum(q, answer, isCorrect);
 
     // Der Mitnehmen-Satz steht zuletzt, nach Auflösung, Bild und Irrtümern:
     // Er ist das, was nach der Frage übrig bleiben soll — eine Faustregel oder
@@ -1414,7 +1485,14 @@
 
   el.startForm.addEventListener("submit", (event) => {
     event.preventDefault();
-    const data = validateForm();
+
+    // Bei zusammengefalteten Angaben zeigte eine Fehlermeldung sonst auf ein
+    // Feld, das gerade niemand sieht — und der Fokussprung ginge ins Leere.
+    let data = validateForm();
+    if (!data && el.startFields.hidden) {
+      showParticipantForm(false);
+      data = validateForm();
+    }
     if (!data) return;
     saveParticipant(data);
     el.chipParticipant.textContent = data.name;
@@ -1447,6 +1525,10 @@
   el.btnToIslands.addEventListener("click", () => {
     history.pushState({}, "", "/quiz");
     route();
+  });
+
+  el.btnEditParticipant.addEventListener("click", () => {
+    showParticipantForm(true);
   });
 
   el.btnNextIsland.addEventListener("click", () => {

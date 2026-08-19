@@ -5,6 +5,7 @@
   "subtitle": "Der Prozess vor und nach dem Schraubendreher",
   "version": "4",
   "lernziel": "Ein Fahrzeug vollständig und freigabebewusst annehmen, den Einbau prüfbar dokumentieren und dem Kunden System, Grenzen und Bedienwege sicher übergeben.",
+  "dauerMinuten": 7,
   "quellen": [
     "referenz/fahrzeugkompatibilitaet.md",
     "produkte/wipro-iii.md",

@@ -7,7 +7,7 @@ Fertiges Netlify-Paket für die Schulungsinsel FEHMARN.
 |---|---|
 | Fragen | 11 |
 | Fragensatz-Version | 4 |
-| Bilder | 4 |
+| Bilder | 8 |
 
 ---
 

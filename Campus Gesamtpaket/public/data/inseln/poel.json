@@ -5,6 +5,7 @@
   "subtitle": "Das digitale Werkzeug für Beratung und Werkstatt",
   "version": "4",
   "lernziel": "Den THITRONIK-Händlerbereich als tägliches Arbeitsmittel nutzen: Kundenunterlagen sauber von geschützten Einbaudaten trennen, Aufträge fundiert vorbereiten und den eigenen Werkstattservice stärken.",
+  "dauerMinuten": 7,
   "quellen": [
     "Öffentliche Website-Struktur (Stand 13.08.2026)",
     "_intern/werkseinbau-eckernfoerde.md",

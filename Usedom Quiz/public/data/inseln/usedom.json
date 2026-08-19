@@ -5,6 +5,7 @@
   "subtitle": "Vom Einzelprodukt zum System",
   "version": "4",
   "lernziel": "Wer die vier Ebenen trennt — Zentrale, Fernsteuerung, Lesestelle, Medium —, beantwortet fast jede Kundenfrage von selbst.",
+  "dauerMinuten": 7,
   "quellen": [
     "referenz/systemueberblick.md",
     "produkte/bt-connect.md",

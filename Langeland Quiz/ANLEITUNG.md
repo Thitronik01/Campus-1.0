@@ -7,7 +7,7 @@ Fertiges Netlify-Paket für die Schulungsinsel LANGELAND.
 |---|---|
 | Fragen | 10 |
 | Fragensatz-Version | 4 |
-| Bilder | 4 |
+| Bilder | 8 |
 
 ---
 

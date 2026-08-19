@@ -5,6 +5,7 @@
   "subtitle": "Anlernen, montieren, abzweigen und crimpen",
   "version": "4",
   "lernziel": "Funk-Magnetkontakte zuverlässig anlernen und montieren sowie elektrische Abgriffe mit dem passenden Verbinder und Werkzeug fachgerecht ausführen.",
+  "dauerMinuten": 9,
   "quellen": [
     "produkte/funk-magnetkontakt.md",
     "fahrzeuge/ford-transit-6g.md",
