@@ -248,8 +248,8 @@
     const problems = [];
     const inScope = (el) => !scope || scope.contains(el);
 
-    [['dealer_name', 'Händlerbetrieb', 'Bitte tragen Sie Ihren Händlerbetrieb ein.'],
-     ['name', 'Ihr Name', 'Bitte tragen Sie Ihren Namen ein.']].forEach(([id, label, message]) => {
+    [['dealer_name', 'Händlerbetrieb', 'Bitte trag deinen Händlerbetrieb ein.'],
+     ['name', 'Dein Name', 'Bitte trag deinen Namen ein.']].forEach(([id, label, message]) => {
       const el = document.getElementById(id);
       if (!el || !inScope(el)) return;
       if (el.value.trim().length < 2) {
@@ -267,7 +267,7 @@
     if (nummer && inScope(nummer)) {
       const wert = nummer.value.trim();
       if (!wert) {
-        showFieldError(nummer, 'Bitte tragen Sie Ihre Händlernummer ein.');
+        showFieldError(nummer, 'Bitte trag deine Händlernummer ein.');
         problems.push({ el: nummer, label: 'Händlernummer', panel: panelOf(nummer) });
       } else if (!DEALER_NUMBER.test(wert)) {
         showFieldError(nummer, 'Die Händlernummer besteht aus genau fünf Ziffern, zum Beispiel 34512.');
@@ -281,7 +281,7 @@
       const textarea = row.querySelector('[data-comment] textarea');
       if (!textarea || !inScope(textarea)) return;
       if (textarea.dataset.required === 'true' && !textarea.value.trim()) {
-        showFieldError(textarea, 'Bitte beschreiben Sie kurz, was wir verbessern können.');
+        showFieldError(textarea, 'Bitte beschreib kurz, was wir verbessern können.');
         const legend = row.querySelector('.rate__label');
         problems.push({
           el: textarea,
@@ -673,7 +673,7 @@
       updateIslands();
       if (draftNote) draftNote.hidden = true;
       updateProgress();
-      if (announce) announce.textContent = 'Der gespeicherte Entwurf wurde gelöscht. Sie beginnen von vorn.';
+      if (announce) announce.textContent = 'Der gespeicherte Entwurf wurde gelöscht. Du beginnst von vorn.';
       /* Der geklickte Knopf verschwindet mit dem Hinweis. Ohne dieses Umsetzen
          faellt der Fokus auf den Body und die Tastaturposition geht verloren. */
       if (startButton) {
@@ -824,16 +824,16 @@
 
   function messageForError(error) {
     if (error && error.name === 'AbortError') {
-      return 'Die Speicherung hat zu lange gedauert. Bitte prüfen Sie Ihre Verbindung und senden Sie erneut. Ihre Eingaben bleiben erhalten.';
+      return 'Die Speicherung hat zu lange gedauert. Bitte prüf deine Verbindung und send erneut. Deine Eingaben bleiben erhalten.';
     }
     const status = error && error.httpStatus;
     if (status === 401 || status === 403) {
-      return 'Die Verbindung zur Feedback-Datenbank wurde abgewiesen. Bitte wenden Sie sich kurz an das THITRONIK Team.';
+      return 'Die Verbindung zur Feedback-Datenbank wurde abgewiesen. Bitte wend dich kurz an das THITRONIK Team.';
     }
     if (status === 404) {
-      return 'Der Feedback-Dienst ist momentan nicht erreichbar. Bitte wenden Sie sich kurz an das THITRONIK Team.';
+      return 'Der Feedback-Dienst ist momentan nicht erreichbar. Bitte wend dich kurz an das THITRONIK Team.';
     }
-    return 'Das Feedback konnte gerade nicht gespeichert werden. Bitte versuchen Sie es erneut. Ihre Eingaben bleiben erhalten.';
+    return 'Das Feedback konnte gerade nicht gespeichert werden. Bitte versuch es erneut. Deine Eingaben bleiben erhalten.';
   }
 
   form.addEventListener('submit', async (event) => {
@@ -864,7 +864,7 @@
     nextButton.disabled = true;
     nextButton.setAttribute('aria-busy', 'true');
     if (nextLabel) nextLabel.textContent = 'Wird gesendet';
-    setStatus('Ihr Feedback wird gespeichert.');
+    setStatus('Dein Feedback wird gespeichert.');
 
     try {
       await saveToSupabase(payload);
