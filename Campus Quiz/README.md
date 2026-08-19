@@ -84,7 +84,7 @@ node tools/test-paket.js "../Samsø Quiz" samsoe
 
 Prüft die Function des Pakets ohne Datenbank: Bewertung aller vorkommenden
 Fragetypen, und ob ein manipuliertes Ergebnis abgewiesen wird. Je nach
-Fragetypen 14 bis 16 Prüfungen. Über alle sieben Pakete: **104 Prüfungen, alle
+Fragetypen 14 bis 16 Prüfungen. Über alle sieben Pakete: **103 Prüfungen, alle
 bestanden.**
 
 Das Gesamtpaket wird mit demselben Werkzeug geprüft, einmal je Insel:
@@ -102,14 +102,14 @@ gibt.
 
 | Ordner | Insel | Fragen | Größe |
 |---|---|---|---|
-| `Vejrø Quiz` | VEJRØ | 10 | 244 KB |
-| `Poel Quiz` | POEL | 10 | 262 KB |
-| `Hiddensee Quiz` | HIDDENSEE | 12 | 236 KB |
-| `Samsø Quiz` | SAMSØ | 10 · 2 Bildfragen | 661 KB |
-| `Fehmarn Quiz` | FEHMARN | 11 | 252 KB |
-| `Usedom Quiz` | USEDOM | 10 | 254 KB |
-| `Langeland Quiz` | LANGELAND | 10 | 251 KB |
-| `Campus Gesamtpaket` | **alle sieben** | 73 · 2 Bildfragen | 997 KB |
+| `Vejrø Quiz` | VEJRØ | 10 | 670 KB |
+| `Poel Quiz` | POEL | 10 | 674 KB |
+| `Hiddensee Quiz` | HIDDENSEE | 12 | 682 KB |
+| `Samsø Quiz` | SAMSØ | 10 · 3 Bildfragen | 1602 KB |
+| `Fehmarn Quiz` | FEHMARN | 11 | 706 KB |
+| `Usedom Quiz` | USEDOM | 10 | 582 KB |
+| `Langeland Quiz` | LANGELAND | 10 | 598 KB |
+| `Campus Gesamtpaket` | **alle sieben** | 73 · 3 Bildfragen | 2785 KB |
 
 ### Das Gesamtpaket
 
@@ -257,14 +257,17 @@ kommen zwei optionale Felder:
 
 | Feld | Typ | Was es leistet |
 |---|---|---|
-| `irrtum` | Liste von `{ titel, text, fuer? }` | Rubrik „Falsch gewählt?" — je ein Absatz pro verbreiteter Fehlannahme |
+| `irrtum` | Liste von `{ titel, text, fuer? }` | Je ein Absatz pro verbreiteter Fehlannahme; Rubrik abhängig vom Ergebnis |
 | `mitnehmen` | Text | Ein Satz: Faustregel, Handgriff oder Formulierung für das Kundengespräch |
 
 Beide sind optional, ältere Fragensätze laufen unverändert weiter.
 
 **Es erscheinen immer alle Irrtümer, nicht nur der eigene.** Wer richtig
 geklickt hat, erkennt in den übrigen die Sätze seiner Kunden wieder — das ist
-der eigentliche Zweck der Rubrik.
+der eigentliche Zweck der Rubrik. Nach einer richtigen Antwort heißt sie
+neutral **„Typische Fehler"**. Nur nach einer falschen Antwort lautet die
+Überschrift **„Falsch gewählt?"**, damit richtiges Verhalten nicht als Fehler
+bezeichnet wird.
 
 `fuer` nennt die Optionen, um die es dem Absatz geht. Was daraus ein Treffer
 wird, leitet die Engine aus der Frage ab und muss nicht doppelt gepflegt
@@ -311,10 +314,12 @@ Lupe als Geschwister in einem Wrapper — und die vier Kachelfarben hängen an
 festen Klassen (`opt-1` bis `opt-4`) statt an `:nth-child`, weil die
 DOM-Position durch den Wrapper nicht mehr der Antwortnummer entspricht.
 
-**SAMSØ hat bereits zwei echte Bildfragen** — Einbauort Gaswarner und Einbauort
-Pro-finder, acht geprüfte Werkstattfotos, gehoben aus dem bestehenden
-FehlerQuiz. Inhaltlich gehören sie ohnehin zu SAMSØ (Einbauorte) und nicht zur
-Fehlersuche.
+**SAMSØ hat bereits drei echte Bildfragen.** Zwei davon zeigen Einbauorte —
+Gaswarner und Pro-finder, acht geprüfte Werkstattfotos, gehoben aus dem
+bestehenden FehlerQuiz. Inhaltlich gehören sie ohnehin zu SAMSØ (Einbauorte)
+und nicht zur Fehlersuche. Die dritte, SAM-10, fragt mit acht Produktbildern
+ab, welche Komponenten gar keinen festen Einbauort haben — dieselbe Technik,
+aber als Mehrfachauswahl.
 
 Für die übrigen Inseln fehlen die Bilder noch:
 [`BILDER-WUNSCHLISTE.md`](BILDER-WUNSCHLISTE.md) listet sie über alle Inseln und
@@ -333,12 +338,40 @@ werden Kanten an Kabeln und Schriftzügen matschig). Braucht einmalig
 `npm install sharp --no-save`. `check-fragen.js` warnt, wenn ein Bild darüber
 liegt.
 
+### Was vor dem Start steht
+
+Der Startbildschirm nennt in dieser Reihenfolge: Anzahl der Fragen,
+Zeitbedarf samt „kein Zeitlimit", und dass die Auflösung sofort kommt. Die
+Fragetypen stehen darunter hinter „Details anzeigen" — sie beschreiben die
+Bedienung, nicht den Inhalt, und niemand entscheidet danach, ob er
+anfängt.
+
+Den Zeitbedarf liefert das Feld `dauerMinuten` je Insel. Er ist eine
+**Schätzung** — rund 45 Sekunden je Frage einschließlich Auflösung, auf
+volle Minuten aufgerundet, plus eine Minute bei Inseln mit Bildfragen.
+Nach der ersten Schulung gehört er gegen echte Zeiten ersetzt. Fehlt das
+Feld, entfällt die Zeile ersatzlos.
+
+> **Die Symbole der drei Zeilen hängen an Klassen** (`fact-fragen`,
+> `fact-zeit`, `fact-aufloesung`), nicht an `:nth-child`. Die Reihenfolge
+> ist Redaktionssache; bei Positionsauswahl wandert sonst still das falsche
+> Bild an die falsche Zeile. Gleiche Begründung wie bei `opt-1` bis `opt-4`
+> an den Antwortkacheln.
+
 ### Eine Frage ergänzen
 
 1. Frage in `public/data/inseln/<insel>.json` eintragen
 2. `node tools/check-fragen.js`
 3. **`version` in der Datei hochzählen** — sonst weisen laufende Browsersitzungen
    die Einsendung ab (die Function prüft die Version gegen den Fragensatz)
+
+### Engine oder Stile ändern
+
+`ENGINE_VERSION` in `engine.js` **und** die beiden `?v=`-Marken in
+`index.html` gemeinsam hochzählen. Die Marken sind der einzige
+Cache-Schlüssel: Bleiben sie stehen, liefert der Browser eines Teilnehmers
+nach dem Deploy weiter die alte Engine aus — und zwar genau dem, der die
+Seite schon einmal offen hatte.
 
 ### Eine Insel ergänzen
 
@@ -358,6 +391,20 @@ drei sind Pflicht.
 laufen. Die Angaben liegen im `localStorage`, und der gilt pro Domain; bei
 sieben getrennten Sites tippt jeder sie siebenmal. Siehe
 [Sieben Sites oder eine?](#sieben-sites-oder-eine-das-entscheidet-über-die-tipparbeit).
+
+**Sind die drei Pflichtfelder gefüllt, faltet sich das Formular zu einer
+Zeile zusammen** — Name, Betrieb, Händlernummer, Tätigkeitsbereich, dazu
+„Angaben ändern". Das Versprechen „einmal ausfüllen" stand vorher nur im
+Text, während auf jeder Insel wieder vier leere Felder erschienen. Das
+Formular bleibt im Dokument und ist einen Klick entfernt.
+
+Der Tätigkeitsbereich ist bewusst **nicht** Bedingung für die
+Zusammenfassung: Er ist freiwillig, und ein freiwilliges Feld darf die
+Darstellung nicht blockieren. Fehlt beim Absenden trotzdem etwas — etwa
+weil jemand die Angaben geöffnet und geleert hat —, klappt das Formular
+von selbst wieder auf, bevor die Fehlermeldung erscheint. Sonst zeigte sie
+auf ein Feld, das gerade niemand sieht, und der Fokussprung ginge ins
+Leere.
 
 **Händlernummer:** fünfstellige Zeichenkette, `type="text"` mit
 `inputmode="numeric"` — nicht `type="number"`, das würde die führende Null
@@ -538,8 +585,8 @@ läuft, gibt es die Tabelle nicht und jede Einsendung scheitert mit
 Ergebnis trotzdem — gespeichert wird es nicht.
 
 **2. Bildfragen: SAMSØ steht, den übrigen Inseln fehlen die Fotos.** Die
-Technik ist fertig und mit echtem Material bewiesen — SAMSØ hat zwei
-Bildfragen aus acht geprüften Werkstattfotos. Für HIDDENSEE, USEDOM, VEJRØ und
+Technik ist fertig und mit echtem Material bewiesen — SAMSØ hat drei
+Bildfragen aus acht Werkstattfotos und acht Produktbildern. Für HIDDENSEE, USEDOM, VEJRØ und
 POEL fehlen die Aufnahmen; siehe [`BILDER-WUNSCHLISTE.md`](BILDER-WUNSCHLISTE.md).
 Ab dann ist es reine Datenarbeit an den JSON-Dateien.
 

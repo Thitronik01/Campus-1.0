@@ -5,6 +5,7 @@
   "subtitle": "Erst lesen, dann tauschen",
   "version": "4",
   "lernziel": "Bevor du tauschst, lies. Jedes Gerät sagt, was los ist — über Blinkcode, Ton, Seriennummer, Spannungsverhalten. Tauschen ist die teuerste Form der Diagnose.",
+  "dauerMinuten": 8,
   "quellen": [
     "referenz/stoerungsbeseitigung.md",
     "_intern/support-fallaufnahme.md",

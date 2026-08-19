@@ -709,13 +709,13 @@
 | | |
 |---|---|
 | Fragen | 10 |
-| Fragensatz-Version | 6 |
+| Fragensatz-Version | 7 |
 | Art | Wo kommt was hin? |
 | Lernziel | Physik bestimmt den Einbauort, nicht der freie Platz. Wer das verstanden hat, muss keine Liste auswendig lernen. |
 
 **Quellen im Produktwissen:** `produkte/pro-finder.md`, `produkte/gas-pro-iii.md`, `produkte/nfc-modul.md`, `produkte/funk-rauchmelder.md`, `produkte/wipro-iii.md`, `fahrzeuge/*`
 
-> **Redaktioneller Hinweis (erscheint nicht im Quiz):** Fragenkatalog v6. SAM-02, SAM-03 und SAM-10 arbeiten mit echten Produkt- beziehungsweise Einbaufotos. SAM-10 zeigt acht Produkte einschließlich des T.S.A. Funk-Rauchmelders. SAM-04 prüft die Qualitätskriterien für den Einbauort einer WiPro III. Fachlich zu bestätigen: die max. 7 m Gesamtlänge des Zusatzsensorkabels in SAM-08.
+> **Redaktioneller Hinweis (erscheint nicht im Quiz):** Fragenkatalog v6. SAM-02, SAM-03 und SAM-10 arbeiten mit echten Produkt- beziehungsweise Einbaufotos. SAM-10 zeigt acht Produkte einschließlich des T.S.A. Funk-Rauchmelders. SAM-04 prüft die Qualitätskriterien für den Einbauort einer WiPro III. Fachlich zu bestätigen: die max. 7 m Gesamtlänge des Zusatzsensorkabels in SAM-08 sowie der konkrete gemeinsame Versorgungspunkt von WiPro III und Pro-finder in SAM-09.
 
 #### 1. Ordne jedem Gerät den vorgesehenen Einbauort zu.
 
@@ -723,12 +723,12 @@
 
 | Zuzuordnen | Richtig |
 |---|---|
-| G.A.S.-pro III (Propan, Butan, KO-Gase) | Senkrecht, ca. 10–20 cm über dem Boden |
+| G.A.S.-pro III (Propan, Butan, KO-Gase) | Senkrecht im Wohnraum, ca. 10–20 cm über dem Boden |
 | G.A.S.-pro III CO | Senkrecht, ca. 10–20 cm unter der Decke |
-| T.S.A. Funk-Rauchmelder | An oder nahe der Decke |
-| NFC Modul | Innenseite einer geeigneten Scheibe |
+| T.S.A. Funk-Rauchmelder | An der Decke oder seitlich nahe der Decke |
+| NFC Modul | Innen an einer geeigneten Scheibe, von außen erreichbar |
 
-Weitere Auswahlmöglichkeiten, die zu nichts passen: Im Bodenstauraum außerhalb des Wohnraums · Neben der WiPro-Zentrale im Schrank
+Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstauraum · Im Schrank neben der WiPro III
 
 **Auflösung:** Jeder Ort folgt aus der Physik. Flüssiggas ist schwerer als Luft und sammelt sich unten. CO verteilt sich anders und wird deckennah erfasst. Rauch steigt auf. Das NFC Modul muss von außen erreichbar sein und sitzt deshalb hinter der Scheibe.
 
@@ -845,13 +845,13 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im Bodenstauraum außerhalb
 
 **Mitnehmen:** Einen Nebeneffekt sprichst du von dir aus an: Bei **beheizbaren Frontscheiben** ist mit höherem Verbrauch und kürzerer Batterielebensdauer zu rechnen. Und beim Einbau: Das NFC Modul darf nicht als erstes Zubehör angelernt werden.
 
-#### 7. Das Fahrzeug hat eine Stoffdecke. Wie montierst du den T.S.A.?
+#### 7. Das Fahrzeug hat einen Stoffhimmel. Wie montierst du den T.S.A. Funk-Rauchmelder?
 
 `SAM-07` · Einfachauswahl · Rauchmelder
 
 - Klebepad direkt auf den Stoff drücken, 60 s halten
 - **Nicht auf Stoff kleben — Montageadapter verwenden** ✓
-- Durch die Stoffdecke schrauben
+- Durch den Stoffhimmel schrauben
 - In eine Fahrzeugecke setzen
 
 **Auflösung:** Auf Stoff hält kein Klebepad dauerhaft. Montageadapter 105755 (weiß) / 105756 (grau) an einem seitlichen Kunststoffelement nahe der Decke.
@@ -909,14 +909,14 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im Bodenstauraum außerhalb
 
 `SAM-10` · Mehrfachauswahl · Medium oder Gerät
 
-- A · `/media/samsoe/sam-produkt-nfc-modul.webp` — NFC Modul
-- B · `/media/samsoe/sam-produkt-keycard.webp` — **KeyCard** ✓
-- C · `/media/samsoe/sam-produkt-keytag.webp` — **KeyTag** ✓
-- D · `/media/samsoe/sam-produkt-keystrap.webp` — **KeyStrap** ✓
-- E · `/media/samsoe/sam-produkt-funk-handsender.webp` — **Funk-Handsender** ✓
-- F · `/media/samsoe/sam-produkt-gas-pro-iii.webp` — G.A.S.-pro III
-- G · `/media/samsoe/sam-produkt-pro-finder.webp` — Pro-finder
-- H · `/media/samsoe/sam-produkt-tsa-funk-rauchmelder.webp` — T.S.A. Funk-Rauchmelder
+- `/media/samsoe/sam-produkt-nfc-modul.webp` — Schwarzes THITRONIK NFC Modul
+- **`/media/samsoe/sam-produkt-keycard.webp` — THITRONIK KeyCard** ✓
+- **`/media/samsoe/sam-produkt-keytag.webp` — Blauer THITRONIK KeyTag** ✓
+- **`/media/samsoe/sam-produkt-keystrap.webp` — Schwarzer THITRONIK KeyStrap** ✓
+- **`/media/samsoe/sam-produkt-funk-handsender.webp` — Funk-Handsender von THITRONIK** ✓
+- `/media/samsoe/sam-produkt-gas-pro-iii.webp` — Schwarzer THITRONIK G.A.S.-pro III Gaswarner
+- `/media/samsoe/sam-produkt-pro-finder.webp` — THITRONIK Pro-finder mit Anschlüssen und Antenne
+- `/media/samsoe/sam-produkt-tsa-funk-rauchmelder.webp` — Zwei weiße T.S.A. Funk-Rauchmelder von THITRONIK
 
 **Auflösung:** Funk-Handsender, KeyCard, KeyTag und KeyStrap sind persönliche Zugangs**medien**. NFC Modul, Pro-finder, G.A.S.-pro III und T.S.A. Funk-Rauchmelder sind Geräte mit genau vorgegebenem Einbauort.
 

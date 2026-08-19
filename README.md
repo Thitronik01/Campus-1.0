@@ -152,7 +152,8 @@ Alle sieben Einzelpakete auf einmal: `node tools/build-insel.js alle`
 | **Browser** | die einzige Anwendung, die der Händler braucht |
 
 Kein Framework, kein Build-Schritt für die Seite selbst, keine App, keine
-Installation. Je nach Bildanteil sind die Insel-Pakete derzeit 236 bis 661 KB groß.
+Installation. Je nach Bildanteil sind die Insel-Pakete derzeit 582 bis 1602 KB
+groß, das Gesamtpaket 2785 KB.
 
 **Der Browser bewertet nicht.** Er sendet ausschließlich, *was* gewählt wurde —
 nie, ob es richtig war. Bewertet wird in der Netlify-Function, gegen dieselbe

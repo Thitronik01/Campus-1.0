@@ -3,8 +3,9 @@
   "code": "SAMSØ",
   "title": "Einbauorte im Fahrzeug",
   "subtitle": "Wo kommt was hin?",
-  "version": "6",
+  "version": "7",
   "lernziel": "Physik bestimmt den Einbauort, nicht der freie Platz. Wer das verstanden hat, muss keine Liste auswendig lernen.",
+  "dauerMinuten": 8,
   "quellen": [
     "produkte/pro-finder.md",
     "produkte/gas-pro-iii.md",
@@ -13,7 +14,7 @@
     "produkte/wipro-iii.md",
     "fahrzeuge/*"
   ],
-  "internerHinweis": "Fragenkatalog v6. SAM-02, SAM-03 und SAM-10 arbeiten mit echten Produkt- beziehungsweise Einbaufotos. SAM-10 zeigt acht Produkte einschließlich des T.S.A. Funk-Rauchmelders. SAM-04 prüft die Qualitätskriterien für den Einbauort einer WiPro III. Fachlich zu bestätigen: die max. 7 m Gesamtlänge des Zusatzsensorkabels in SAM-08.",
+  "internerHinweis": "Fragenkatalog v6. SAM-02, SAM-03 und SAM-10 arbeiten mit echten Produkt- beziehungsweise Einbaufotos. SAM-10 zeigt acht Produkte einschließlich des T.S.A. Funk-Rauchmelders. SAM-04 prüft die Qualitätskriterien für den Einbauort einer WiPro III. Fachlich zu bestätigen: die max. 7 m Gesamtlänge des Zusatzsensorkabels in SAM-08 sowie der konkrete gemeinsame Versorgungspunkt von WiPro III und Pro-finder in SAM-09.",
   "questions": [
     {
       "id": "SAM-01",
@@ -27,12 +28,12 @@
         { "id": "l4", "text": "NFC Modul" }
       ],
       "right": [
-        { "id": "r1", "text": "Senkrecht, ca. 10–20 cm über dem Boden" },
+        { "id": "r1", "text": "Senkrecht im Wohnraum, ca. 10–20 cm über dem Boden" },
         { "id": "r2", "text": "Senkrecht, ca. 10–20 cm unter der Decke" },
-        { "id": "r3", "text": "An oder nahe der Decke" },
-        { "id": "r4", "text": "Innenseite einer geeigneten Scheibe" },
-        { "id": "r5", "text": "Im Bodenstauraum außerhalb des Wohnraums" },
-        { "id": "r6", "text": "Neben der WiPro-Zentrale im Schrank" }
+        { "id": "r3", "text": "An der Decke oder seitlich nahe der Decke" },
+        { "id": "r4", "text": "Innen an einer geeigneten Scheibe, von außen erreichbar" },
+        { "id": "r5", "text": "Im abgetrennten Bodenstauraum" },
+        { "id": "r6", "text": "Im Schrank neben der WiPro III" }
       ],
       "correct": { "l1": "r1", "l2": "r2", "l3": "r3", "l4": "r4" },
       "feedback": "Jeder Ort folgt aus der Physik. Flüssiggas ist schwerer als Luft und sammelt sich unten. CO verteilt sich anders und wird deckennah erfasst. Rauch steigt auf. Das NFC Modul muss von außen erreichbar sein und sitzt deshalb hinter der Scheibe.",
@@ -225,11 +226,11 @@
       "id": "SAM-07",
       "type": "single",
       "category": "Rauchmelder",
-      "prompt": "Das Fahrzeug hat eine Stoffdecke. Wie montierst du den T.S.A.?",
+      "prompt": "Das Fahrzeug hat einen Stoffhimmel. Wie montierst du den T.S.A. Funk-Rauchmelder?",
       "options": [
         { "id": "a", "text": "Klebepad direkt auf den Stoff drücken, 60 s halten" },
         { "id": "b", "text": "Nicht auf Stoff kleben — Montageadapter verwenden" },
-        { "id": "c", "text": "Durch die Stoffdecke schrauben" },
+        { "id": "c", "text": "Durch den Stoffhimmel schrauben" },
         { "id": "d", "text": "In eine Fahrzeugecke setzen" }
       ],
       "correct": ["b"],

@@ -5,6 +5,7 @@
   "subtitle": "Neuheiten verstehen, passend beraten",
   "version": "4",
   "lernziel": "CampLock und VanLock sicher abgrenzen, den Fingerprint ehrlich beraten und die neuen Funklösungen gegen Wassereinbruch passend einsetzen.",
+  "dauerMinuten": 7,
   "quellen": [
     "produkte/camplock-fingerprint.md",
     "produkte/vanlock-fingerprint.md",
