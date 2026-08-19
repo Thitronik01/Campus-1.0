@@ -2,14 +2,18 @@
    THITRONIK Campus 2026 Feedbackbogen - v14
    Schritt fuer Schritt. Mobile first.
 
-   FARBEN: verbindliche THITRONIK Markenpalette.
-     th_blue_primary   #1D3661  Primary Flaechen, Headlines, Primary Buttons
-     th_blue_secondary #3BA9D3  Akzente, Badges, Links, Info-Flaechen
-     th_accent_lime    #AFCA05  Marker und Status, sehr sparsam
-     th_red_brand      #CE132D  Logo-Segel, sehr sparsam
-     graySoft          #F0F0F0  Backgrounds, Card-Flaechen
-     white             #FFFFFF  Ruheflaechen
-     ink               #111111  Text und Icons auf hell
+   FARBEN: verbindliche THITRONIK Markenpalette. Die Namen sind seit der
+   Zusammenfuehrung mit dem Wissenscheck dieselben wie dort — vorher hiess
+   das Navy hier --blue, waehrend --th-blue im Quiz das Cyan ist. Zwei
+   Stylesheets mit derselben Marke und gekreuzten Namen haetten beim
+   Zusammenlegen still die Flaechen umgefaerbt.
+     --th-navy   #1D3661  Primary Flaechen, Headlines, Primary Buttons
+     --th-blue   #3BA9D3  Akzente, Badges, Links, Info-Flaechen
+     --th-lime   #AFCA05  Marker und Status, sehr sparsam
+     --th-red    #CE132D  Logo-Segel, sehr sparsam
+     --th-soft   #F0F0F0  Backgrounds, Card-Flaechen
+     --th-white  #FFFFFF  Ruheflaechen
+     --th-ink    #111111  Text und Icons auf hell
 
    Rot erscheint deshalb ausschliesslich bei Fehlern und in der Skalen-Note 5,
    also dort, wo die Signalwirkung inhaltlich verdient ist. Primary Buttons
@@ -23,23 +27,23 @@
 
 :root {
   /* Marke */
-  --blue: #1D3661;
-  --blue-2: #3BA9D3;
-  --lime: #AFCA05;
-  --red: #CE132D;
-  --gray-soft: #F0F0F0;
-  --white: #FFFFFF;
-  --ink: #111111;
+  --th-navy: #1D3661;
+  --th-blue: #3BA9D3;
+  --th-lime: #AFCA05;
+  --th-red: #CE132D;
+  --th-soft: #F0F0F0;
+  --th-white: #FFFFFF;
+  --th-ink: #111111;
 
   /* Abgeleitet, bleibt im Farbklang der Marke */
-  --blue-deep: #14284A;
-  --blue-hover: #16294B;
-  --blue-tint: #E9F3F9;
-  --lime-deep: #7C8F04;
-  --red-deep: #A50F24;
-  --muted: #55606B;
-  --line: #D8DEE5;
-  --line-soft: #E6EAEF;
+  --th-navy-deep: #0A2747;
+  --th-navy-hover: #16294B;
+  --info-bg: #EDF7FB;
+  --th-lime-text: #5F7000;
+  --th-red-text: #A81024;
+  --th-muted: #5E6672;
+  --th-line: #DDE2E7;
+  --th-line-soft: #E6EAEF;
 
   /* Radien */
   --r-control: 12px;
@@ -79,8 +83,8 @@ html {
 
 body {
   margin: 0;
-  background: var(--gray-soft);
-  color: var(--ink);
+  background: var(--th-soft);
+  color: var(--th-ink);
   font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Text",
     "Segoe UI", system-ui, sans-serif;
   font-size: 17px;
@@ -94,7 +98,7 @@ button, input, textarea { font: inherit; color: inherit; }
 button { background: none; border: 0; }
 button, label, input[type="radio"], input[type="checkbox"] { cursor: pointer; }
 
-h1, h2 { margin: 0; color: var(--blue); letter-spacing: -.021em; }
+h1, h2 { margin: 0; color: var(--th-navy); letter-spacing: -.021em; }
 
 .shell { width: min(var(--shell), 100% - 28px); margin-inline: auto; }
 
@@ -108,7 +112,7 @@ h1, h2 { margin: 0; color: var(--blue); letter-spacing: -.021em; }
   position: fixed; z-index: 999; top: 10px; left: 10px;
   transform: translateY(-160%);
   padding: 11px 16px; border-radius: var(--r-pill);
-  background: var(--white); color: var(--blue);
+  background: var(--th-white); color: var(--th-navy);
   font-weight: 700; text-decoration: none;
   box-shadow: var(--lift);
   transition: transform var(--t-fast) var(--ease-out);
@@ -125,7 +129,7 @@ h1, h2 { margin: 0; color: var(--blue); letter-spacing: -.021em; }
 }
 
 :where(a, button, input, textarea, [tabindex]):focus-visible {
-  outline: 3px solid var(--blue-2);
+  outline: 3px solid var(--th-blue);
   outline-offset: 2px;
 }
 
@@ -146,7 +150,7 @@ input[type="text"], textarea, .rate, .field { scroll-margin-top: 118px; }
 
 .masthead {
   position: relative;
-  background: var(--blue);
+  background: var(--th-navy);
   overflow: hidden;
 }
 /* Das maritime Motiv bleibt als leiser Marken-Anklang, aber nur hier oben.
@@ -212,7 +216,7 @@ input[type="text"], textarea, .rate, .field { scroll-margin-top: 118px; }
    erreicht 10:1 Kontrast, weisser Text waere unlesbar. */
 .masthead__tag {
   padding: 6px 13px; border-radius: var(--r-pill);
-  background: var(--lime); color: var(--ink);
+  background: var(--th-lime); color: var(--th-ink);
   font-size: .74rem; font-weight: 800;
   letter-spacing: .1em; text-transform: uppercase; white-space: nowrap;
 }
@@ -225,7 +229,7 @@ input[type="text"], textarea, .rate, .field { scroll-margin-top: 118px; }
   position: sticky; top: 0; z-index: 40;
   background: rgba(255, 255, 255, .96);
   backdrop-filter: blur(14px);
-  border-bottom: 1px solid var(--line-soft);
+  border-bottom: 1px solid var(--th-line-soft);
   box-shadow: 0 6px 20px rgba(29, 54, 97, .07);
 }
 .rail[hidden] { display: none; }
@@ -237,12 +241,12 @@ input[type="text"], textarea, .rate, .field { scroll-margin-top: 118px; }
 
 .rail__head { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; }
 .rail__now { margin: 0; display: flex; align-items: baseline; gap: 9px; min-width: 0; }
-.rail__step { flex: none; color: var(--muted); font-size: .74rem; font-weight: 700; white-space: nowrap; }
+.rail__step { flex: none; color: var(--th-muted); font-size: .74rem; font-weight: 700; white-space: nowrap; }
 .rail__now strong {
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  color: var(--blue); font-size: 1.02rem; letter-spacing: -.015em;
+  color: var(--th-navy); font-size: 1.02rem; letter-spacing: -.015em;
 }
-.rail__count { margin: 0; flex: none; color: var(--muted); font-size: .76rem; font-weight: 650; font-variant-numeric: tabular-nums; }
+.rail__count { margin: 0; flex: none; color: var(--th-muted); font-size: .76rem; font-weight: 650; font-variant-numeric: tabular-nums; }
 
 /* Sechs Segmente statt eines durchgehenden Balkens: bei einem Fluss mit
    bekannter Laenge sagt die Form selbst, wie weit man ist. Erledigte
@@ -261,7 +265,7 @@ input[type="text"], textarea, .rate, .field { scroll-margin-top: 118px; }
   content: "";
   display: block; height: 5px;
   border-radius: var(--r-pill);
-  background: var(--line);
+  background: var(--th-line);
   transition: background var(--t-base) var(--ease-out), transform var(--t-base) var(--ease-out);
 }
 .steps button:disabled { cursor: default; }
@@ -269,10 +273,10 @@ input[type="text"], textarea, .rate, .field { scroll-margin-top: 118px; }
    damit die Farbe nicht zum Klicken einlaedt, wo nichts passiert. */
 .steps [data-state="done"] button::before { background: #9CC9DF; }
 .steps [data-state="done"] button:not(:disabled) { cursor: pointer; }
-.steps [data-state="done"] button:not(:disabled)::before { background: var(--blue-2); }
-.steps [data-state="done"] button:not(:disabled):hover::before { background: var(--blue); }
-.steps [data-state="current"] button::before { background: var(--blue); transform: scaleY(1.6); }
-.steps button:focus-visible { outline: 3px solid var(--blue-2); outline-offset: -1px; border-radius: 8px; }
+.steps [data-state="done"] button:not(:disabled)::before { background: var(--th-blue); }
+.steps [data-state="done"] button:not(:disabled):hover::before { background: var(--th-navy); }
+.steps [data-state="current"] button::before { background: var(--th-navy); transform: scaleY(1.6); }
+.steps button:focus-visible { outline: 3px solid var(--th-blue); outline-offset: -1px; border-radius: 8px; }
 
 .steps__label { display: none; }
 
@@ -281,11 +285,11 @@ input[type="text"], textarea, .rate, .field { scroll-margin-top: 118px; }
   .steps button { padding-bottom: 0; }
   .steps__label {
     display: block; margin-top: 7px;
-    color: var(--muted); font-size: .72rem; font-weight: 650;
+    color: var(--th-muted); font-size: .72rem; font-weight: 650;
     text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
-  .steps [data-state="current"] .steps__label { color: var(--blue); font-weight: 800; }
-  .steps [data-state="done"] .steps__label { color: var(--blue); }
+  .steps [data-state="current"] .steps__label { color: var(--th-navy); font-weight: 800; }
+  .steps [data-state="done"] .steps__label { color: var(--th-navy); }
 }
 
 @media (max-width: 620px) { .rail__step { display: none; } }
@@ -330,7 +334,7 @@ body.is-stepping .foot { display: none; }
 .intro {
   overflow: hidden;
   border-radius: var(--r-card);
-  background: var(--white);
+  background: var(--th-white);
   box-shadow: var(--lift);
 }
 .intro__media { position: relative; }
@@ -341,7 +345,7 @@ body.is-stepping .foot { display: none; }
 .intro__time {
   position: absolute; right: 14px; bottom: 14px;
   padding: 7px 14px; border-radius: var(--r-pill);
-  background: rgba(29, 54, 97, .94); color: var(--white);
+  background: rgba(29, 54, 97, .94); color: var(--th-white);
   font-size: .76rem; font-weight: 700;
   backdrop-filter: blur(6px);
 }
@@ -350,7 +354,7 @@ body.is-stepping .foot { display: none; }
 .intro h1 br { display: none; }
 .intro__lead {
   margin: 15px 0 0; max-width: 54ch;
-  color: var(--muted); font-size: clamp(1rem, 2.4vw, 1.09rem);
+  color: var(--th-muted); font-size: clamp(1rem, 2.4vw, 1.09rem);
 }
 
 .intro__facts {
@@ -359,13 +363,13 @@ body.is-stepping .foot { display: none; }
 }
 .intro__facts li {
   display: flex; align-items: center; gap: 11px;
-  color: var(--blue); font-size: .93rem; font-weight: 620;
+  color: var(--th-navy); font-size: .93rem; font-weight: 620;
 }
 .intro__facts b {
   display: grid; place-items: center;
   width: 26px; height: 26px; flex: none;
   border-radius: 50%;
-  background: var(--blue-tint); color: var(--blue);
+  background: var(--info-bg); color: var(--th-navy);
   font-size: .74rem; font-weight: 900;
 }
 
@@ -373,21 +377,21 @@ body.is-stepping .foot { display: none; }
   display: flex; align-items: center; justify-content: space-between;
   gap: 14px; flex-wrap: wrap;
   margin: 22px 0 0; padding: 14px 16px;
-  border: 1.5px solid var(--blue-2);
+  border: 1.5px solid var(--th-blue);
   border-radius: var(--r-control);
-  background: var(--blue-tint);
-  color: var(--blue); font-size: .89rem; font-weight: 620;
+  background: var(--info-bg);
+  color: var(--th-navy); font-size: .89rem; font-weight: 620;
 }
 .draft[hidden] { display: none; }
 .draft button {
   min-height: 44px; padding: 8px 16px;
-  border: 1.5px solid var(--blue); border-radius: var(--r-pill);
-  color: var(--blue); font-size: .82rem; font-weight: 750;
+  border: 1.5px solid var(--th-navy); border-radius: var(--r-pill);
+  color: var(--th-navy); font-size: .82rem; font-weight: 750;
   transition: background var(--t-fast) var(--ease-out),
               color var(--t-fast) var(--ease-out),
               transform var(--t-tap) var(--ease-out);
 }
-.draft button:hover { background: var(--blue); color: var(--white); }
+.draft button:hover { background: var(--th-navy); color: var(--th-white); }
 .draft button:active { transform: scale(.97); }
 
 .recommend { margin-top: 26px; }
@@ -397,13 +401,13 @@ body.is-stepping .foot { display: none; }
   margin-top: 26px; width: 100%;
   min-height: 58px; padding: 15px 30px;
   border-radius: var(--r-pill);
-  background: var(--blue); color: var(--white);
+  background: var(--th-navy); color: var(--th-white);
   font-size: 1.05rem; font-weight: 800;
   box-shadow: 0 10px 26px rgba(29, 54, 97, .26);
   transition: background var(--t-fast) var(--ease-out),
               transform var(--t-tap) var(--ease-out);
 }
-.intro__start:hover { background: var(--blue-hover); }
+.intro__start:hover { background: var(--th-navy-hover); }
 .intro__start:active { transform: scale(.975); }
 
 @media (min-width: 760px) {
@@ -418,7 +422,7 @@ body.is-stepping .foot { display: none; }
 .card {
   padding: 24px 20px;
   border-radius: var(--r-card);
-  background: var(--white);
+  background: var(--th-white);
   box-shadow: var(--lift);
 }
 
@@ -427,7 +431,7 @@ body.is-stepping .foot { display: none; }
   display: grid; place-items: center;
   width: 36px; height: 36px; flex: none;
   border-radius: 50%;
-  background: var(--blue); color: var(--white);
+  background: var(--th-navy); color: var(--th-white);
   font-weight: 800; font-size: .95rem; font-variant-numeric: tabular-nums;
 }
 .card__head h2 { font-size: clamp(1.18rem, 3.5vw, 1.55rem); line-height: 1.22; }
@@ -436,15 +440,15 @@ body.is-stepping .foot { display: none; }
   margin: 0 0 0 auto; flex: none;
   padding: 5px 11px;
   border-radius: var(--r-pill);
-  background: var(--gray-soft);
-  color: var(--muted); font-size: .74rem; font-weight: 750;
+  background: var(--th-soft);
+  color: var(--th-muted); font-size: .74rem; font-weight: 750;
   font-variant-numeric: tabular-nums; white-space: nowrap;
 }
-.card__tally--full { background: var(--lime); color: var(--ink); }
+.card__tally--full { background: var(--th-lime); color: var(--th-ink); }
 
 .card__note {
   margin: 15px 0 0; max-width: 68ch;
-  color: var(--muted); font-size: .93rem;
+  color: var(--th-muted); font-size: .93rem;
 }
 .card__head + .grid, .card__head + .rates, .card__head + .isles,
 .card__head + .overall, .card__note + * { margin-top: 22px; }
@@ -474,17 +478,17 @@ body.is-stepping .foot { display: none; }
 
 .field label, .chips legend, .recommend legend {
   display: block; margin-bottom: 8px;
-  color: var(--blue); font-weight: 700; font-size: .96rem;
+  color: var(--th-navy); font-weight: 700; font-size: .96rem;
 }
 /* "Pflicht" bleibt als Wort stehen, verliert aber das Rot: Rot ist in diesem
    Bogen die Fehlerfarbe. Ein rotes Etikett an einem noch unberuehrten Feld
    sieht aus wie eine Ruege, bevor man etwas falsch gemacht hat. */
 .req {
   margin-left: 8px;
-  color: var(--muted); font-size: .69rem; font-weight: 800;
+  color: var(--th-muted); font-size: .69rem; font-weight: 800;
   letter-spacing: .07em; text-transform: uppercase;
 }
-.hint { margin-left: 7px; color: var(--muted); font-size: .8rem; font-weight: 600; }
+.hint { margin-left: 7px; color: var(--th-muted); font-size: .8rem; font-weight: 600; }
 
 /* Eingaben sind weiss mit Rahmen, nicht grau gefuellt. Die Seitenflaeche ist
    selbst graySoft: ein graues Feld auf weisser Karte liest sich als gesperrt.
@@ -492,9 +496,9 @@ body.is-stepping .foot { display: none; }
    damit alles Bedienbare gleich aussieht. */
 input[type="text"], textarea {
   width: 100%; padding: 13px 15px;
-  border: 1.5px solid var(--line);
+  border: 1.5px solid var(--th-line);
   border-radius: var(--r-control);
-  background: var(--white);
+  background: var(--th-white);
   transition: border-color var(--t-fast) var(--ease-out),
               box-shadow var(--t-fast) var(--ease-out);
 }
@@ -503,20 +507,20 @@ textarea { min-height: 100px; resize: vertical; }
 input[type="text"]:hover, textarea:hover { border-color: #BFC8D2; }
 input[type="text"]:focus, textarea:focus {
   outline: none;
-  border-color: var(--blue-2);
+  border-color: var(--th-blue);
   box-shadow: var(--ring);
 }
 input[type="text"]::placeholder, textarea::placeholder { color: #8B95A1; }
 .field--bad input[type="text"], .field--bad textarea {
-  border-color: var(--red); background: #FDF2F4;
+  border-color: var(--th-red); background: #FDF2F4;
 }
-.field__err { margin: 7px 0 0; color: var(--red-deep); font-size: .84rem; font-weight: 650; }
+.field__err { margin: 7px 0 0; color: var(--th-red-text); font-size: .84rem; font-weight: 650; }
 .field__err[hidden] { display: none; }
 
 /* Das Format steht dauerhaft unter dem Feld, nicht erst im Fehlerfall. Eine
    Regel, die man vorher kennt, ist keine Ruege hinterher. Verschwindet, sobald
    der Fehlertext die Stelle braucht, damit nicht zwei Zeilen konkurrieren. */
-.field__hint { margin: 7px 0 0; color: var(--muted); font-size: .82rem; }
+.field__hint { margin: 7px 0 0; color: var(--th-muted); font-size: .82rem; }
 .field--bad .field__hint { display: none; }
 
 /* ---------------------------------------------------------------------- Chips */
@@ -535,18 +539,18 @@ input[type="text"]::placeholder, textarea::placeholder { color: #8B95A1; }
 .chip span {
   display: flex; align-items: center; justify-content: center;
   min-height: 52px; padding: 11px 14px;
-  border: 1.5px solid var(--line);
+  border: 1.5px solid var(--th-line);
   border-radius: var(--r-control);
-  background: var(--white);
+  background: var(--th-white);
   font-weight: 650; font-size: .95rem; text-align: center;
   transition: border-color var(--t-fast) var(--ease-out),
               background var(--t-fast) var(--ease-out),
               color var(--t-fast) var(--ease-out),
               transform var(--t-tap) var(--ease-out);
 }
-.chip span:hover { border-color: var(--blue-2); }
-.chip input:checked + span { border-color: var(--blue); background: var(--blue); color: var(--white); }
-.chip input:focus-visible + span { outline: 3px solid var(--blue-2); outline-offset: 2px; }
+.chip span:hover { border-color: var(--th-blue); }
+.chip input:checked + span { border-color: var(--th-navy); background: var(--th-navy); color: var(--th-white); }
+.chip input:focus-visible + span { outline: 3px solid var(--th-blue); outline-offset: 2px; }
 
 /* Mehrfachauswahl braucht ein Kaestchen. Ohne Markierung sehen die Felder aus
    wie Knoepfe, bei denen eine Wahl die vorige ersetzt. Die Einfachauswahl
@@ -556,12 +560,12 @@ input[type="text"]::placeholder, textarea::placeholder { color: #8B95A1; }
   content: ""; flex: none;
   width: 20px; height: 20px;
   border: 2px solid #9AA6B2; border-radius: 6px;
-  background: var(--white);
+  background: var(--th-white);
   transition: border-color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
 }
 .chips .chip input:checked + span::before {
-  border-color: var(--white);
-  background: var(--white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%231D3661' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round' d='M3.5 8.5l3 3 6-6'/%3E%3C/svg%3E") center / 14px no-repeat;
+  border-color: var(--th-white);
+  background: var(--th-white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%231D3661' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round' d='M3.5 8.5l3 3 6-6'/%3E%3C/svg%3E") center / 14px no-repeat;
 }
 
 /* -------------------------------------------------------------- Gesamteindruck */
@@ -572,36 +576,36 @@ input[type="text"]::placeholder, textarea::placeholder { color: #8B95A1; }
 .overall__opt span {
   display: flex; align-items: center; justify-content: center;
   min-height: 54px; padding: 11px 13px;
-  border: 1.5px solid var(--line);
+  border: 1.5px solid var(--th-line);
   border-radius: var(--r-control);
-  background: var(--white);
+  background: var(--th-white);
   font-weight: 650; font-size: .93rem; text-align: center;
   transition: border-color var(--t-fast) var(--ease-out),
               background var(--t-fast) var(--ease-out),
               color var(--t-fast) var(--ease-out),
               transform var(--t-tap) var(--ease-out);
 }
-.overall__opt span:hover { border-color: var(--blue-2); }
-.overall__opt input:checked + span { border-color: var(--blue); background: var(--blue); color: var(--white); }
+.overall__opt span:hover { border-color: var(--th-blue); }
+.overall__opt input:checked + span { border-color: var(--th-navy); background: var(--th-navy); color: var(--th-white); }
 /* Endpunkte tragen die Bedeutung, damit die Reihe als Skala liest. */
 .overall__opt:first-child input:checked + span {
-  border-color: var(--lime); background: var(--lime); color: var(--ink);
+  border-color: var(--th-lime); background: var(--th-lime); color: var(--th-ink);
 }
-.overall__opt:last-child input:checked + span { border-color: var(--red); background: var(--red); color: var(--white); }
-.overall__opt input:focus-visible + span { outline: 3px solid var(--blue-2); outline-offset: 2px; }
+.overall__opt:last-child input:checked + span { border-color: var(--th-red); background: var(--th-red); color: var(--th-white); }
+.overall__opt input:focus-visible + span { outline: 3px solid var(--th-blue); outline-offset: 2px; }
 
 @media (min-width: 560px) { .overall__row { grid-template-columns: repeat(3, 1fr); } }
 @media (min-width: 900px) { .overall__row { grid-template-columns: repeat(5, 1fr); } }
 
 /* ---------------------------------------------------------------- Bewertungen */
 
-.rates { border-top: 1px solid var(--line-soft); }
-.rate { padding: 20px 0; border-bottom: 1px solid var(--line-soft); }
+.rates { border-top: 1px solid var(--th-line-soft); }
+.rate { padding: 20px 0; border-bottom: 1px solid var(--th-line-soft); }
 .rate::after { content: ""; display: block; clear: both; }
 
 .rate__label {
   display: block; padding: 0 0 13px;
-  color: var(--blue); font-weight: 700; font-size: 1rem; line-height: 1.35;
+  color: var(--th-navy); font-weight: 700; font-size: 1rem; line-height: 1.35;
 }
 
 .rate__control { display: grid; grid-template-columns: minmax(0, 1fr); }
@@ -611,18 +615,18 @@ input[type="text"]::placeholder, textarea::placeholder { color: #8B95A1; }
 .rate__opt span {
   display: grid; place-items: center;
   min-height: 52px;
-  border: 1.5px solid var(--line);
+  border: 1.5px solid var(--th-line);
   border-radius: var(--r-control);
-  background: var(--white);
-  color: var(--blue); font-weight: 800; font-size: 1.05rem;
+  background: var(--th-white);
+  color: var(--th-navy); font-weight: 800; font-size: 1.05rem;
   font-variant-numeric: tabular-nums;
   transition: border-color var(--t-fast) var(--ease-out),
               background var(--t-fast) var(--ease-out),
               color var(--t-fast) var(--ease-out),
               transform var(--t-tap) var(--ease-out);
 }
-.rate__opt span:hover { border-color: var(--blue-2); background: var(--blue-tint); }
-.rate__opt input:checked + span { border-color: var(--blue); background: var(--blue); color: var(--white); }
+.rate__opt span:hover { border-color: var(--th-blue); background: var(--info-bg); }
+.rate__opt input:checked + span { border-color: var(--th-navy); background: var(--th-navy); color: var(--th-white); }
 
 /* Die Farbe haengt am WERT, nicht an der Position. Bis v13 stand hier
    :first-child und :last-child - als sich die Skala drehte, blieben die Farben
@@ -639,19 +643,19 @@ input[type="text"]::placeholder, textarea::placeholder { color: #8B95A1; }
    5,6:1. Beides ueber AA. Rot braucht weissen Text, Lime schwarzen - eine
    gemeinsame Textfarbe gibt es fuer beide nicht. */
 .rate__opt input[value="1"]:checked + span {
-  border-color: var(--red); background: var(--red); color: var(--white);
+  border-color: var(--th-red); background: var(--th-red); color: var(--th-white);
 }
 .rate__opt input[value="5"]:checked + span {
-  border-color: var(--lime); background: var(--lime); color: var(--ink);
+  border-color: var(--th-lime); background: var(--th-lime); color: var(--th-ink);
 }
-.rate__opt input:focus-visible + span { outline: 3px solid var(--blue-2); outline-offset: 2px; }
+.rate__opt input:focus-visible + span { outline: 3px solid var(--th-blue); outline-offset: 2px; }
 
 /* Bleibt auf JEDER Bildschirmgroesse sichtbar. Ohne diese Anker sind die
    Ziffern 1 bis 5 auf dem Smartphone bedeutungslos. */
 .rate__anchors {
   display: flex; justify-content: space-between; gap: 12px;
   margin: 7px 2px 0;
-  color: var(--muted); font-size: .74rem; font-weight: 650;
+  color: var(--th-muted); font-size: .74rem; font-weight: 650;
 }
 .rate__anchors span:last-child { text-align: right; }
 
@@ -664,33 +668,33 @@ input[type="text"]::placeholder, textarea::placeholder { color: #8B95A1; }
 .rate__na span {
   display: flex; align-items: center; justify-content: center;
   min-height: 44px; padding: 8px 15px;
-  border: 1.5px dashed var(--line);
+  border: 1.5px dashed var(--th-line);
   border-radius: var(--r-pill);
-  color: var(--muted); font-size: .82rem; font-weight: 650;
+  color: var(--th-muted); font-size: .82rem; font-weight: 650;
   transition: border-color var(--t-fast) var(--ease-out),
               background var(--t-fast) var(--ease-out),
               color var(--t-fast) var(--ease-out),
               transform var(--t-tap) var(--ease-out);
 }
-.rate__na span:hover { border-color: var(--blue-2); color: var(--blue); }
+.rate__na span:hover { border-color: var(--th-blue); color: var(--th-navy); }
 .rate__na input:checked + span {
   border-style: solid; border-color: #C2CBD5;
-  background: var(--gray-soft); color: var(--ink);
+  background: var(--th-soft); color: var(--th-ink);
 }
-.rate__na input:focus-visible + span { outline: 3px solid var(--blue-2); outline-offset: 2px; }
+.rate__na input:focus-visible + span { outline: 3px solid var(--th-blue); outline-offset: 2px; }
 
 .rate__comment {
   margin-top: 14px; padding: 14px;
-  border: 1.5px solid var(--line-soft);
+  border: 1.5px solid var(--th-line-soft);
   border-radius: var(--r-control);
-  background: var(--gray-soft);
+  background: var(--th-soft);
 }
 .rate__comment[hidden] { display: none; }
-.rate__comment textarea { min-height: 84px; background: var(--white); }
-.rate__commentLabel { display: block; margin-bottom: 8px; color: var(--blue); font-weight: 700; font-size: .92rem; }
-.rate__commentHelp { margin: 7px 0 0; color: var(--muted); font-size: .82rem; }
+.rate__comment textarea { min-height: 84px; background: var(--th-white); }
+.rate__commentLabel { display: block; margin-bottom: 8px; color: var(--th-navy); font-weight: 700; font-size: .92rem; }
+.rate__commentHelp { margin: 7px 0 0; color: var(--th-muted); font-size: .82rem; }
 .rate__comment--must { border-color: #EFC3CA; background: #FDF2F4; }
-.rate__comment--must .rate__commentHelp { color: var(--red-deep); font-weight: 650; }
+.rate__comment--must .rate__commentHelp { color: var(--th-red-text); font-weight: 650; }
 .rate__comment--good { border-color: #D6E08A; background: #FAFCEB; }
 
 /* Das Feld erscheint als Folge der eigenen Auswahl. Ein kurzes Aufblenden
@@ -732,9 +736,9 @@ input[type="text"]::placeholder, textarea::placeholder { color: #8B95A1; }
   display: grid; grid-template-columns: 62px minmax(0, 1fr) auto;
   align-items: center; gap: 14px;
   min-height: 80px; padding: 12px 14px 12px 46px;
-  border: 1.5px solid var(--line);
+  border: 1.5px solid var(--th-line);
   border-radius: var(--r-control);
-  background: var(--white);
+  background: var(--th-white);
   transition: border-color var(--t-fast) var(--ease-out),
               box-shadow var(--t-fast) var(--ease-out),
               opacity var(--t-fast) var(--ease-out),
@@ -747,18 +751,18 @@ input[type="text"]::placeholder, textarea::placeholder { color: #8B95A1; }
   transform: translateY(-50%);
   border: 2px solid #9AA6B2;
   border-radius: 6px;
-  background: var(--white);
+  background: var(--th-white);
   transition: background .15s ease, border-color .15s ease;
 }
 .isle input:checked + .isle__box {
-  border-color: var(--blue);
-  box-shadow: 0 0 0 1px var(--blue), 0 10px 24px rgba(29, 54, 97, .14);
+  border-color: var(--th-navy);
+  box-shadow: 0 0 0 1px var(--th-navy), 0 10px 24px rgba(29, 54, 97, .14);
 }
 .isle input:checked + .isle__box::before {
-  border-color: var(--blue);
-  background: var(--blue) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round' d='M3.5 8.5l3 3 6-6'/%3E%3C/svg%3E") center / 15px no-repeat;
+  border-color: var(--th-navy);
+  background: var(--th-navy) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round' d='M3.5 8.5l3 3 6-6'/%3E%3C/svg%3E") center / 15px no-repeat;
 }
-.isle input:focus-visible + .isle__box { outline: 3px solid var(--blue-2); outline-offset: 2px; }
+.isle input:focus-visible + .isle__box { outline: 3px solid var(--th-blue); outline-offset: 2px; }
 
 /* Sind drei Inseln gewaehlt, treten die uebrigen zurueck statt zu verschwinden.
    Der Nutzer soll sehen, dass sie noch da sind, nur eben nicht mehr waehlbar. */
@@ -796,7 +800,7 @@ input[type="text"]::placeholder, textarea::placeholder { color: #8B95A1; }
   display: none; place-items: center;
   padding: 4px 10px;
   border-radius: var(--r-pill);
-  background: var(--lime); color: var(--ink);
+  background: var(--th-lime); color: var(--th-ink);
   font-size: .66rem; font-weight: 900; letter-spacing: .05em;
   text-transform: uppercase; white-space: nowrap;
 }
@@ -810,24 +814,24 @@ input[type="text"]::placeholder, textarea::placeholder { color: #8B95A1; }
   display: grid; place-items: center;
   width: 62px; height: 56px;
   border-radius: 10px;
-  background: var(--gray-soft);
+  background: var(--th-soft);
   overflow: hidden;
 }
 .isle__thumb img { max-width: 56px; max-height: 50px; width: auto; height: auto; }
 .isle__thumb--icon svg {
   width: 34px; height: 34px;
-  fill: none; stroke: var(--blue); stroke-width: 3;
+  fill: none; stroke: var(--th-navy); stroke-width: 3;
   stroke-linecap: round; stroke-linejoin: round;
 }
 
 .isle__text { min-width: 0; }
-.isle__text strong { display: block; color: var(--blue); font-size: 1rem; line-height: 1.3; }
-.isle__text small { display: block; margin-top: 2px; color: var(--muted); font-size: .8rem; line-height: 1.35; }
+.isle__text strong { display: block; color: var(--th-navy); font-size: 1rem; line-height: 1.3; }
+.isle__text small { display: block; margin-top: 2px; color: var(--th-muted); font-size: .8rem; line-height: 1.35; }
 
 .isles__poster {
   margin: 0; overflow: hidden;
   border-radius: var(--r-control);
-  border: 1px solid var(--line-soft);
+  border: 1px solid var(--th-line-soft);
 }
 .isles__poster img { width: 100%; height: auto; }
 
@@ -852,24 +856,24 @@ input[type="text"]::placeholder, textarea::placeholder { color: #8B95A1; }
   background: #FDF2F4;
 }
 .missing[hidden] { display: none; }
-.missing__head { margin: 0 0 10px; color: var(--red-deep); font-weight: 750; font-size: .92rem; }
+.missing__head { margin: 0 0 10px; color: var(--th-red-text); font-weight: 750; font-size: .92rem; }
 .missing__list { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
 .missing__list a {
   display: inline-flex; align-items: center; gap: 9px;
   min-height: 44px; padding: 4px 0;
-  color: var(--blue); font-size: .93rem; font-weight: 650;
+  color: var(--th-navy); font-size: .93rem; font-weight: 650;
   text-decoration: underline; text-underline-offset: 3px;
 }
 .missing__list a::before {
   content: ""; flex: none;
   width: 7px; height: 7px; border-radius: 50%;
-  background: var(--red);
+  background: var(--th-red);
 }
 
-.send__status { margin: 14px 0 0; min-height: 1.3em; color: var(--muted); font-weight: 650; font-size: .94rem; }
+.send__status { margin: 14px 0 0; min-height: 1.3em; color: var(--th-muted); font-weight: 650; font-size: .94rem; }
 .send__status:empty { display: none; }
-.send__status.is-error { color: var(--red-deep); }
-.send__status.is-success { color: var(--lime-deep); }
+.send__status.is-error { color: var(--th-red-text); }
+.send__status.is-success { color: var(--th-lime-text); }
 
 /* -------------------------------------------------------------- Schrittleiste */
 
@@ -878,7 +882,7 @@ input[type="text"]::placeholder, textarea::placeholder { color: #8B95A1; }
   left: 0; right: 0; bottom: 0;
   background: rgba(255, 255, 255, .97);
   backdrop-filter: blur(14px);
-  border-top: 1px solid var(--line-soft);
+  border-top: 1px solid var(--th-line-soft);
   box-shadow: 0 -6px 24px rgba(29, 54, 97, .10);
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
@@ -896,20 +900,20 @@ input[type="text"]::placeholder, textarea::placeholder { color: #8B95A1; }
 }
 .stepbar__back {
   flex: 0 0 auto;
-  border: 1.5px solid var(--line);
-  color: var(--blue);
+  border: 1.5px solid var(--th-line);
+  color: var(--th-navy);
 }
-.stepbar__back:hover { border-color: var(--blue); }
+.stepbar__back:hover { border-color: var(--th-navy); }
 .stepbar__back[hidden] { display: none; }
 
 .stepbar__next {
   flex: 1;
   display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-  background: var(--blue); color: var(--white);
+  background: var(--th-navy); color: var(--th-white);
   font-size: 1.02rem;
   box-shadow: 0 8px 22px rgba(29, 54, 97, .26);
 }
-.stepbar__next:hover { background: var(--blue-hover); }
+.stepbar__next:hover { background: var(--th-navy-hover); }
 .stepbar__next:disabled { opacity: .7; cursor: progress; }
 .stepbar__back:active, .stepbar__next:active { transform: scale(.975); }
 
@@ -929,7 +933,7 @@ input[type="text"]::placeholder, textarea::placeholder { color: #8B95A1; }
   display: none;
   width: 17px; height: 17px; flex: none;
   border: 2.5px solid rgba(255, 255, 255, .4);
-  border-top-color: var(--white);
+  border-top-color: var(--th-white);
   border-radius: 50%;
   animation: spin .7s linear infinite;
 }
@@ -943,7 +947,7 @@ input[type="text"]::placeholder, textarea::placeholder { color: #8B95A1; }
 
 /* ------------------------------------------------------------------ Fusszeile */
 
-.foot { background: var(--blue); }
+.foot { background: var(--th-navy); }
 .foot__inner {
   display: flex; flex-wrap: wrap;
   align-items: center; justify-content: space-between;
@@ -957,8 +961,8 @@ input[type="text"]::placeholder, textarea::placeholder { color: #8B95A1; }
   position: fixed; inset: 0; z-index: 2000;
   display: grid; place-items: center;
   padding: 26px 20px; overflow: auto;
-  background: var(--blue);
-  color: var(--white);
+  background: var(--th-navy);
+  color: var(--th-white);
 }
 .done[hidden] { display: none; }
 .done::before {
@@ -974,10 +978,10 @@ input[type="text"]::placeholder, textarea::placeholder { color: #8B95A1; }
   display: grid; place-items: center;
   width: 62px; height: 62px; margin: 0 auto 22px;
   border-radius: 50%;
-  background: var(--lime); color: var(--ink);
+  background: var(--th-lime); color: var(--th-ink);
   font-size: 1.9rem; font-weight: 900; line-height: 1;
 }
-.done h2 { color: var(--white); font-size: clamp(1.85rem, 6.6vw, 3.2rem); line-height: 1.08; }
+.done h2 { color: var(--th-white); font-size: clamp(1.85rem, 6.6vw, 3.2rem); line-height: 1.08; }
 .done__lead { margin: 14px 0 0; color: rgba(255, 255, 255, .86); font-size: clamp(1rem, 2.6vw, 1.18rem); }
 .done__card {
   margin: 30px 0 0; padding: 24px;
@@ -1002,7 +1006,7 @@ body.is-done { overflow: hidden; }
   left: 12px; bottom: calc(14px + env(safe-area-inset-bottom, 0px));
   margin: 0; padding: 8px 14px;
   border: 1px solid #EFC3CA; border-radius: var(--r-pill);
-  background: var(--white); color: var(--red-deep);
+  background: var(--th-white); color: var(--th-red-text);
   font-size: .74rem; font-weight: 800;
   box-shadow: 0 8px 24px rgba(29, 54, 97, .22);
   pointer-events: none;
