@@ -13,7 +13,7 @@
 
 (function () {
   const EVENT_SLUG = "campus-2026";
-  const ENGINE_VERSION = "1.3.0";
+  const ENGINE_VERSION = "1.3.1";
   const SUBMIT_ENDPOINT = "/.netlify/functions/submit-quiz";
 
   const LS_PARTICIPANT = "thitronik.campus.2026.participant";
@@ -57,6 +57,10 @@
     campusMap: $("campus-map"),
     campusMapArt: $("campus-map-art"),
     islandGrid: $("island-grid"),
+    tagesabschluss: $("tagesabschluss"),
+    taKicker: $("ta-kicker"),
+    taTitle: $("ta-title"),
+    taDesc: $("ta-desc"),
 
     startCode: $("start-code"),
     startTitle: $("start-title"),
@@ -518,6 +522,26 @@
       li.appendChild(card);
       el.islandGrid.appendChild(li);
     });
+
+    // Der Tagesabschluss steht nur da, wo es ihn wirklich gibt: Die Adresse
+    // kommt aus dem Katalog, und die schreibt der Generator allein ins
+    // Gesamtpaket. In der Quelle und in den Einzelpaketen fuehrte eine fest
+    // verdrahtete Verknuepfung ins Leere.
+    if (state.catalog.feedback) {
+      const fertig = total > 0 && abgeschlossen === total;
+      el.tagesabschluss.href = state.catalog.feedback;
+      el.tagesabschluss.hidden = false;
+      el.tagesabschluss.classList.toggle("is-ready", fertig);
+      el.taKicker.textContent = fertig ? "Expedition abgeschlossen" : "Tagesabschluss";
+      el.taTitle.textContent = fertig
+        ? `Alle ${total} ${total === 1 ? "Insel" : "Inseln"} geschafft`
+        : "Feedbackbogen";
+      el.taDesc.textContent = fertig
+        ? "Es fehlt nur noch deine Rückmeldung zum Tag."
+        : "Deine Rückmeldung zur Schulung, etwa sechs Minuten. Geht auch, bevor alle Inseln erledigt sind.";
+    } else {
+      el.tagesabschluss.hidden = true;
+    }
 
     el.mastheadTitle.textContent = "Wissenscheck";
     el.mastheadMeta.hidden = true;

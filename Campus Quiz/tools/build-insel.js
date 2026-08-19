@@ -379,8 +379,12 @@ function baueGesamt() {
   kopiere(path.join(WURZEL, "public", "assets", "thitronik-logo.png"), path.join(oeff, "assets", "thitronik-logo.png"));
 
   // --- Daten: vollständiger Katalog, alle Fragensätze --------------------
-  kopiere(path.join(WURZEL, "public", "data", "inseln.json"),
-    path.join(oeff, "data", "inseln.json"));
+  // Das Feld "feedback" entsteht erst hier. Die Quelle und die Einzelpakete
+  // enthalten den Bogen nicht, und die Engine zeigt den Weg dorthin nur,
+  // wenn der Katalog ihn nennt — so kann die Verknüpfung nicht ins Leere
+  // zeigen, ohne dass jemand daran denken muss.
+  schreib(path.join(oeff, "data", "inseln.json"),
+    JSON.stringify({ ...katalog, feedback: `/${BOGEN_ZIEL}/` }, null, 2) + "\n");
 
   const inseln = [];
   let fragen = 0;

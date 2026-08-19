@@ -371,6 +371,72 @@ main { flex: 1 0 auto; }
 
 .island-map-item { min-width: 0; }
 
+/* ------------------------------------------------- Tagesabschluss --- */
+
+/* Steht unter der Karte, nicht darauf: Der Feedbackbogen ist keine Insel
+   und darf in "7 von 7" nicht mitzaehlen. Im Ruhezustand eine ruhige
+   Karte; sind alle Inseln erledigt, wird er zur naechsten Handlung und
+   traegt dann den Lime-Rahmen, den sonst nur abgeschlossene Inseln haben. */
+.tagesabschluss {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin: 18px 0 0;
+  padding: 18px 20px;
+  border: 1px solid var(--th-line);
+  border-radius: var(--radius-lg);
+  background: var(--th-white);
+  box-shadow: var(--shadow-sm);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color var(--duration-fast) var(--ease-out),
+              box-shadow var(--duration-fast) var(--ease-out),
+              transform var(--duration-press) var(--ease-out);
+}
+.tagesabschluss[hidden] { display: none; }
+.tagesabschluss:hover { border-color: var(--th-blue); box-shadow: var(--shadow-md); }
+.tagesabschluss:active { transform: scale(.995); }
+
+.ta-text { display: grid; gap: 3px; }
+.ta-kicker {
+  color: var(--th-blue-text);
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.ta-title { color: var(--th-navy); font-size: 1.12rem; font-weight: 800; }
+.ta-desc { max-width: 52ch; color: var(--th-muted); font-size: .88rem; line-height: 1.45; }
+
+.ta-cta {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  padding: 0 20px;
+  border-radius: var(--radius-md);
+  background: var(--th-navy);
+  color: var(--th-white);
+  font-size: .92rem;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+/* Alle Inseln erledigt: Der Bogen ist jetzt das, was als Naechstes dran
+   ist. Die Farbe allein traegt das nicht — der Text darueber wechselt
+   ebenfalls auf "Expedition abgeschlossen". */
+.tagesabschluss.is-ready {
+  border-color: var(--success-line);
+  background: linear-gradient(180deg, var(--th-white), #F9FCEB);
+}
+.tagesabschluss.is-ready .ta-kicker { color: var(--th-lime-text); }
+
+@media (max-width: 560px) {
+  .tagesabschluss { align-items: stretch; flex-direction: column; }
+  .ta-cta { justify-content: center; }
+}
+
 .island-card {
   position: relative;
   display: grid;

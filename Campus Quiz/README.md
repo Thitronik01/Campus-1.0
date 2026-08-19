@@ -122,6 +122,16 @@ node tools/build-insel.js gesamt
 > bricht der Bau mit einem Hinweis ab. Neu bauen dort mit
 > `node tools/build-netlify.js`.
 
+Der Katalog des Gesamtpakets bekommt dabei ein Feld \`feedback\`. Nur wenn es
+gesetzt ist, zeigt die Inselübersicht die Kachel **Tagesabschluss** unter der
+Karte. Die Quelle und die Einzelpakete enthalten den Bogen nicht — dort führte
+eine fest verdrahtete Verknüpfung ins Leere, und niemand müsste daran denken.
+Sind alle Inseln abgeschlossen, wechselt die Kachel auf „Expedition
+abgeschlossen" und wird zur nächsten Handlung.
+
+> Sichtbar ist die Kachel deshalb **nur gegen das gebaute Gesamtpaket**, nicht
+> gegen die Quelle. Zum Ansehen: \`node tools/dev-server.js "../Campus Gesamtpaket/public"\`.
+
 Nicht mitkopiert werden zwei Dateien: `_headers`, dessen Pfade auf die
 Wurzel geschrieben sind und unter `/feedback` ins Leere zeigten — seine
 Regeln stehen stattdessen in der erzeugten `netlify.toml` —, und

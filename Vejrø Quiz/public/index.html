@@ -8,7 +8,7 @@
   <meta name="description" content="THITRONIK Campus — Wissenscheck VEJRØ: Produktneuheiten: Zugang & Wasserschutz.">
   <meta name="robots" content="noindex, nofollow">
   <title>VEJRØ — Produktneuheiten: Zugang & Wasserschutz · THITRONIK Campus</title>
-  <link rel="stylesheet" href="/assets/styles.css?v=1.3.0">
+  <link rel="stylesheet" href="/assets/styles.css?v=1.3.1">
 </head>
 <body>
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
@@ -82,6 +82,18 @@
 
           <ul class="island-map" id="island-grid" aria-label="Schulungsinseln"></ul>
         </div>
+
+        <!-- Kein Listeneintrag und keine Insel: Der Tagesabschluss zaehlt
+             nicht in "7 von 7" mit. Ein echtes <a>, weil es ein anderes
+             Dokument ist — Mittelklick und "in neuem Tab" sollen gehen. -->
+        <a class="tagesabschluss" id="tagesabschluss" href="/feedback" hidden>
+          <span class="ta-text">
+            <span class="ta-kicker" id="ta-kicker">Tagesabschluss</span>
+            <span class="ta-title" id="ta-title">Feedbackbogen</span>
+            <span class="ta-desc" id="ta-desc"></span>
+          </span>
+          <span class="ta-cta">Feedbackbogen öffnen</span>
+        </a>
       </section>
 
       <!-- ==================== Start / Teilnehmerdaten ==================== -->
@@ -307,6 +319,6 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
-  <script src="/assets/engine.js?v=1.3.0" defer></script>
+  <script src="/assets/engine.js?v=1.3.1" defer></script>
 </body>
 </html>
