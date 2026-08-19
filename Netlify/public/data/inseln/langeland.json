@@ -1,0 +1,272 @@
+{
+  "island": "langeland",
+  "code": "LANGELAND",
+  "title": "Fahrzeugannahme & Fahrzeugübergabe",
+  "subtitle": "Der Prozess vor und nach dem Schraubendreher",
+  "version": "4",
+  "lernziel": "Ein Fahrzeug vollständig und freigabebewusst annehmen, den Einbau prüfbar dokumentieren und dem Kunden System, Grenzen und Bedienwege sicher übergeben.",
+  "quellen": [
+    "referenz/fahrzeugkompatibilitaet.md",
+    "produkte/wipro-iii.md",
+    "referenz/zugang-bedienung.md",
+    "_intern/support-fallaufnahme.md"
+  ],
+  "internerHinweis": "Fragenkatalog v4. Die vom Fachreview bestätigten Annahme- und Übergabefragen wurden inhaltlich erhalten und sprachlich auf den vollständigen Werkstattprozess ausgerichtet. Die 60 Sekunden in LAN-04 und der Freigabestand zum Iveco Daily in LAN-03 sind vor jeder Schulung gegen den aktuellen Stand zu prüfen.",
+  "questions": [
+    {
+      "id": "LAN-01",
+      "type": "single",
+      "category": "Annahme, Pflichtangaben",
+      "prompt": "Ein Kunde bringt sein Fahrzeug zur Erweiterung eines bestehenden Systems. Was gehört zwingend in die Annahme?",
+      "options": [
+        { "id": "a", "text": "Fahrzeugmodell, Kundenwunsch und gewünschter Termin" },
+        { "id": "b", "text": "Fahrzeugdaten plus Seriennummer und Softwarestand jeder Komponente" },
+        { "id": "c", "text": "Artikelnummern der Neuteile und die geplante Einbaudauer" },
+        { "id": "d", "text": "Kilometerstand, Tankfüllung und Anzahl der Schlüssel" }
+      ],
+      "correct": ["b"],
+      "feedback": "Ohne Seriennummer und Softwarestand ist keine belastbare Kompatibilitätsaussage möglich.",
+      "irrtum": [
+        {
+          "fuer": ["a"],
+          "titel": "Modell, Wunsch, Termin",
+          "text": "Reicht für die Terminvergabe und fühlt sich vollständig an. Es fehlt genau die Information, die entscheidet, ob der Einbau überhaupt geht — und die du später nur noch am zerlegten Fahrzeug bekommst."
+        }
+      ],
+      "mitnehmen": "Die Seriennummer sitzt nach dem Einbau hinter der Verkleidung. Bei der Annahme kostet sie zwei Minuten, im Supportfall einen halben Tag."
+    },
+    {
+      "id": "LAN-02",
+      "type": "single",
+      "category": "Risiko früh ansprechen",
+      "prompt": "Ein Mercedes Sprinter VS30 (Baujahr 2021) soll eine WiPro III bekommen. Welchen Punkt sprichst du schon bei der Annahme an?",
+      "options": [
+        { "id": "a", "text": "Der Sprinter benötigt grundsätzlich safe.lock" },
+        { "id": "b", "text": "Die Fahrzeughupe ist ohne Zündung nicht verfügbar" },
+        { "id": "c", "text": "Ein Testalarm ist bei diesem Fahrzeug nicht möglich" },
+        { "id": "d", "text": "Kein Thema — die Hupe funktioniert bei jedem Fahrzeug" }
+      ],
+      "correct": ["b"],
+      "feedback": "Je nach Anleitung ist eine Back-up-Sirene (100089) oder Zusatzhupe (105339) nötig — und die gehört ins **Angebot**, nicht auf die Rechnung.",
+      "irrtum": [
+        {
+          "fuer": ["d"],
+          "titel": "Kein Thema",
+          "text": "Betrifft weit mehr Fahrzeuge, als man denkt: alle Sprinter, VW T5 Facelift, T6 und T6.1, alle Crafter/MAN TGE sowie Iveco Daily ab MJ 2019. Wer das nicht auf dem Schirm hat, verkauft regelmäßig Anlagen, die im Ernstfall stumm bleiben."
+        }
+      ],
+      "mitnehmen": "Ein Zusatzteil, das erst auf der Rechnung auftaucht, ist ein Konflikt. Dasselbe Teil im Angebot ist eine Selbstverständlichkeit. Beim VS30 zusätzlich: ILS-LED-Scheinwerfer erfordern einen 220-Ω-Widerstand."
+    },
+    {
+      "id": "LAN-03",
+      "type": "single",
+      "category": "Freigabe-Falle",
+      "prompt": "Ein Kunde ruft an: „Ich habe einen Iveco Daily, Modelljahr 2026, wann kann ich kommen?“",
+      "options": [
+        { "id": "a", "text": "Termin zusagen — der Daily ist ein Standardfahrzeug" },
+        { "id": "b", "text": "Kein Termin ohne Prüfung — dieses Modelljahr ist nicht freigegeben" },
+        { "id": "c", "text": "Termin zusagen und vor Ort improvisieren" },
+        { "id": "d", "text": "Termin zusagen und den Universalanschluss verwenden" }
+      ],
+      "correct": ["b"],
+      "feedback": "Für den Iveco Daily ab Modelljahr 2025/2026 ist wegen BCM-Änderungen derzeit kein Einbau freigegeben (Stand 01/2026).",
+      "irrtum": [
+        {
+          "fuer": ["d"],
+          "titel": "Universalanschluss",
+          "text": "Die klügste der falschen Antworten — es gibt ihn ja wirklich. Er ist aber für ältere Fahrzeuge **ohne** CAN-Bus gedacht, nicht als Notlösung für ein nicht freigegebenes modernes Fahrzeug."
+        },
+        {
+          "fuer": ["a"],
+          "titel": "Standardfahrzeug",
+          "text": "Stimmte jahrelang. Genau das macht Freigabe-Fallen gefährlich: Sie treffen die Erfahrenen."
+        }
+      ],
+      "mitnehmen": "Ein zugesagter und dann abgesagter Termin kostet mehr Vertrauen als ein ehrliches „das kläre ich und rufe zurück“. Bei neuen Modelljahren gilt Erfahrung nicht — dort gilt nur die aktuelle Freigabe."
+    },
+    {
+      "id": "LAN-04",
+      "type": "single",
+      "category": "Testfalle bei der Abnahme",
+      "prompt": "Fahrerhaustüren sind über den Innenbeleuchtungseingang angebunden, nicht über den CAN-Bus. Wann kannst du den Testalarm durchführen?",
+      "options": [
+        { "id": "a", "text": "Sofort nach dem Scharfschalten" },
+        { "id": "b", "text": "Frühestens 60 Sekunden nach Aktivierung" },
+        { "id": "c", "text": "Erst nach 5 Minuten" },
+        { "id": "d", "text": "Gar nicht — nur CAN-Türen sind testbar" }
+      ],
+      "correct": ["b"],
+      "feedback": "Die Anlage braucht diese Zeit, bevor sie über diesen Eingang auslöst.",
+      "irrtum": [
+        {
+          "fuer": ["a"],
+          "titel": "Sofort",
+          "text": "Der wahrscheinlichste Fehler, weil man am Ende des Einbaus zügig fertig werden will. Ergebnis: Eine korrekt arbeitende Anlage wird für defekt gehalten, und es beginnt eine Fehlersuche, die es nicht braucht."
+        },
+        {
+          "fuer": ["d"],
+          "titel": "Gar nicht testbar",
+          "text": "Wäre bequem, ist aber falsch — und würde bedeuten, das Fahrzeug ungeprüft zu übergeben."
+        }
+      ],
+      "mitnehmen": "Diese eine Minute ist einer der häufigsten Gründe für einen vermeintlichen Mangel bei der Abnahme. Warten ist hier Teil des Tests — **Prinzip 3**."
+    },
+    {
+      "id": "LAN-06",
+      "type": "single",
+      "category": "Campingmodus",
+      "prompt": "Fahrzeug mit safe.lock im Campingmodus. Welchen Hinweis gibst du dem Kunden zwingend mit?",
+      "options": [
+        { "id": "a", "text": "Der Originalschlüssel funktioniert immer als Rückfallebene" },
+        { "id": "b", "text": "Im Campingmodus konsequent über den THITRONIK-Bedienweg verriegeln" },
+        { "id": "c", "text": "Der Campingmodus muss vor jeder Fahrt deaktiviert werden" },
+        { "id": "d", "text": "Im Campingmodus ist der Alarm inaktiv" }
+      ],
+      "correct": ["b"],
+      "feedback": "Wird mit THITRONIK-Zubehör verriegelt, bleibt der Originalschlüssel als Fallback nutzbar. Umgekehrt gilt das nicht: Wird zuerst mit dem Originalschlüssel verriegelt, kann die spätere Entriegelung über THITRONIK-Zubehör bei bestimmten Fahrzeugen blockiert sein.",
+      "irrtum": [
+        {
+          "fuer": ["a"],
+          "titel": "Originalschlüssel immer als Rückfallebene",
+          "text": "Die vernünftigste Annahme der Welt — und in dieser Richtung falsch. Genau diese Asymmetrie ist der Kern der Frage: Ein Weg führt zurück, der andere nicht."
+        },
+        {
+          "fuer": ["d"],
+          "titel": "Alarm im Campingmodus inaktiv",
+          "text": "Wäre ein gravierender Sicherheitsirrtum. Der Campingmodus ist eine Zugangslogik, keine Abschaltung."
+        }
+      ],
+      "mitnehmen": "Genau dieser Fall führt zu Anrufen vom Stellplatz — abends, wenn niemand mehr erreichbar ist. Einmal bei der Übergabe erklärt, tritt er nicht auf."
+    },
+    {
+      "id": "LAN-09",
+      "type": "single",
+      "category": "Nach einem safe.lock-Upgrade",
+      "prompt": "Die Zentrale kam aus dem safe.lock-Upgrade zurück und ist wieder eingebaut. Was ist jetzt zwingend?",
+      "options": [
+        { "id": "a", "text": "Nur den Master-Handsender neu anlernen" },
+        { "id": "b", "text": "Sämtliches Funk-Zubehör neu anlernen — der Speicher wurde gelöscht" },
+        { "id": "c", "text": "Nichts — der Speicher bleibt beim Upgrade erhalten" },
+        { "id": "d", "text": "Nur die Seriennummer in der App aktualisieren" }
+      ],
+      "correct": ["b"],
+      "feedback": "Beim Upgrade wird der Speicher geleert.",
+      "irrtum": [
+        {
+          "fuer": ["a"],
+          "titel": "Nur den Handsender",
+          "text": "Der gefährlichste Fehler, weil er sich richtig anfühlt. Die Bedienung funktioniert danach einwandfrei — es fehlen aber sämtliche Magnetkontakte. Und das merkt niemand bis zum Ernstfall."
+        }
+      ],
+      "mitnehmen": "Nach dem Upgrade vollständige Ein- und Ausgangstests inklusive Zentralverriegelung. Wer nur prüft, was er gerade angelernt hat, prüft das Falsche."
+    },
+    {
+      "id": "LAN-08",
+      "type": "single",
+      "category": "Backup-Beratung",
+      "prompt": "Der Kunde bedient alles nur über die App. Was empfiehlst du?",
+      "options": [
+        { "id": "a", "text": "Das reicht aus, die App ist zuverlässig" },
+        { "id": "b", "text": "Einen zweiten, technisch unabhängigen Bedienweg ergänzen" },
+        { "id": "c", "text": "Ein zweites Smartphone koppeln" },
+        { "id": "d", "text": "Den Originalschlüssel im Fahrzeug deponieren" }
+      ],
+      "correct": ["b"],
+      "feedback": "Jeder Bedienweg hat einen Ausfallmodus. Zwei Wege dürfen nicht denselben haben.",
+      "irrtum": [
+        {
+          "fuer": ["c"],
+          "titel": "Zweites Smartphone",
+          "text": "Klingt nach einer echten Redundanz und ist keine. Beide Geräte teilen dieselbe Technik und dieselben Fehlerquellen — deaktiviertes Bluetooth oder eine verlorene Kopplung sperrt beide gleichzeitig."
+        },
+        {
+          "fuer": ["d"],
+          "titel": "Schlüssel im Fahrzeug",
+          "text": "Löst das Zugangsproblem und hebt dafür die gesamte Sicherung auf. Ein sicherer Zugang, der die Anlage sinnlos macht."
+        }
+      ],
+      "mitnehmen": "**Prinzip 2 — ein Zugangsweg ist kein Zugangsweg**, und zwei gleichartige sind auch nur einer. Sauberste Lösung: ein zuvor geprüfter Funk-Handsender 868 (101064) — unabhängig vom Smartphone, bis ca. 75 m, CR2032, kein Neuanlernen nach Batteriewechsel."
+    },
+    {
+      "id": "LAN-05",
+      "type": "multi",
+      "category": "Übergabe, Pflichtprogramm",
+      "prompt": "Ein Kunde holt sein Fahrzeug nach Einbau von WiPro III und Pro-finder ab. Was gehört in die Übergabe? Wähle alle zutreffenden.",
+      "options": [
+        { "id": "a", "text": "Scharf- und Unscharfschalten über jeden vorgesehenen Bedienweg vorführen" },
+        { "id": "b", "text": "Einen echten Testalarm zeigen, den der Kunde selbst auslöst" },
+        { "id": "c", "text": "Zielrufnummern des Pro-finders gemeinsam testen, Masternummer zuerst" },
+        { "id": "d", "text": "Alarmspeicher und Batteriewarnung erklären" },
+        { "id": "e", "text": "Dem Kunden die SIM-PIN notieren" },
+        { "id": "f", "text": "Einen Ersatzschlüssel im Fahrzeug deponieren" },
+        { "id": "g", "text": "Alle DIP-Schaltereinstellungen mit dem Kunden durchgehen" }
+      ],
+      "correct": ["a", "b", "c", "d"],
+      "feedback": "Diese vier Punkte entscheiden, ob der Kunde die Anlage im Ernstfall bedienen kann. Dazu gehören Panikfunktion und deren Beenden sowie der Hinweis, dass sich die Batteriewarnung als ca. 2 s Ton aus der Zentrale plus rote Sende-LED für ca. 30 s zeigt.",
+      "irrtum": [
+        {
+          "fuer": ["g"],
+          "titel": "DIP-Einstellungen durchgehen",
+          "text": "Gut gemeint und fachlich beeindruckend — aber Werkstattwissen. Es überfordert den Kunden und lädt ihn dazu ein, selbst daran zu drehen. Die DIP-Stellung gehört in **deine** Akte."
+        },
+        {
+          "fuer": ["b"],
+          "titel": "Testalarm weggelassen",
+          "text": "Verständlich, weil laut und unangenehm. Aber ein Kunde, der den Alarm noch nie gehört hat, erkennt ihn im Ernstfall nicht als seinen."
+        }
+      ],
+      "mitnehmen": "Der Kunde muss jeden Bedienweg **einmal selbst** ausgeführt haben. Zusehen reicht nicht — was man nicht selbst gemacht hat, kann man abends auf dem Stellplatz nicht."
+    },
+    {
+      "id": "LAN-07",
+      "type": "single",
+      "category": "Erwartungsmanagement",
+      "prompt": "Welche Aussage darfst du bei der Übergabe nicht machen?",
+      "options": [
+        { "id": "a", "text": "„Die Anlage meldet Einbruchereignisse akustisch und optisch.“" },
+        { "id": "b", "text": "„Damit kann Ihnen niemand mehr ins Fahrzeug einbrechen.“" },
+        { "id": "c", "text": "„Nicht abgesicherte Öffnungen bleiben ungeschützt — abgesichert sind X, Y und Z.“" },
+        { "id": "d", "text": "„Nach einem Alarm bleibt die Überwachung aktiv.“" }
+      ],
+      "correct": ["b"],
+      "feedback": "Eine Alarmanlage meldet, sie verhindert nicht. Die Zusage ist inhaltlich falsch und im Schadensfall ein Problem.",
+      "irrtum": [
+        {
+          "fuer": ["c"],
+          "titel": "„Nicht abgesicherte Öffnungen bleiben ungeschützt“",
+          "text": "Klingt nach einem schwachen Verkaufsargument und wird deshalb gern vermieden. Es ist aber die wichtigste Aussage der ganzen Übergabe — und sie schafft Vertrauen, statt es zu kosten."
+        }
+      ],
+      "mitnehmen": "Zur Einordnung für den Kunden: Der akustische Alarm läuft ca. 30 Sekunden, der optische ca. 180 Sekunden. Die Anlage macht auf den Vorgang aufmerksam — sie hält niemanden auf. Wer das sagt, wird nach einem Schaden nicht zum Beklagten."
+    },
+    {
+      "id": "LAN-10",
+      "type": "multi",
+      "category": "Dokumentation",
+      "prompt": "Was gehört nach der Übergabe in die Akte? Wähle alle zutreffenden.",
+      "options": [
+        { "id": "a", "text": "Verbaute Produkte mit Artikel- und Seriennummern" },
+        { "id": "b", "text": "Softwarestände und ein Foto der DIP-Stellung" },
+        { "id": "c", "text": "Fahrzeugdaten sowie Einbaudatum" },
+        { "id": "d", "text": "Durchgeführte Tests und deren Ergebnis" },
+        { "id": "e", "text": "Nur die Rechnungsnummer" },
+        { "id": "f", "text": "Die SIM-PIN des Kunden" }
+      ],
+      "correct": ["a", "b", "c", "d"],
+      "feedback": "Diese vier Blöcke sind genau die Angaben, die FEHMARN im Supportfall verlangt. Wer sie jetzt notiert, hat sie dann.",
+      "irrtum": [
+        {
+          "fuer": ["d"],
+          "titel": "Tests weggelassen",
+          "text": "Der am leichtesten übersehene Punkt. Ohne Testdokumentation lässt sich später nicht unterscheiden, ob etwas nie funktioniert hat oder erst später ausgefallen ist — und genau daran hängt die Frage, wer den nächsten Termin zahlt."
+        },
+        {
+          "fuer": ["e"],
+          "titel": "Nur die Rechnungsnummer",
+          "text": "Trägt keinen einzigen Supportfall."
+        }
+      ],
+      "mitnehmen": "Das **Foto der DIP-Stellung** ist der am häufigsten vergessene und im Supportfall wertvollste Teil der Dokumentation — es beantwortet in zwei Sekunden eine Frage, die sonst eine Demontage kostet. Damit schließt sich der Kreis: Deine Akte von heute ist die Fallaufnahme von FEHMARN in zwei Jahren."
+    }
+  ]
+}

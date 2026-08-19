@@ -3,7 +3,7 @@
   "code": "SAMSØ",
   "title": "Einbauorte im Fahrzeug",
   "subtitle": "Wo kommt was hin?",
-  "version": "4",
+  "version": "6",
   "lernziel": "Physik bestimmt den Einbauort, nicht der freie Platz. Wer das verstanden hat, muss keine Liste auswendig lernen.",
   "quellen": [
     "produkte/pro-finder.md",
@@ -13,7 +13,7 @@
     "produkte/wipro-iii.md",
     "fahrzeuge/*"
   ],
-  "internerHinweis": "Fragenkatalog v4. SAM-02 und SAM-03 nutzen echte Einbaufotos aus dem bestehenden FehlerQuiz. SAM-04 prüft jetzt die Qualitätskriterien für den Einbauort einer WiPro III. Fachlich zu bestätigen: die max. 7 m Gesamtlänge des Zusatzsensorkabels in SAM-08.",
+  "internerHinweis": "Fragenkatalog v6. SAM-02, SAM-03 und SAM-10 arbeiten mit echten Produkt- beziehungsweise Einbaufotos. SAM-10 zeigt acht Produkte einschließlich des T.S.A. Funk-Rauchmelders. SAM-04 prüft die Qualitätskriterien für den Einbauort einer WiPro III. Fachlich zu bestätigen: die max. 7 m Gesamtlänge des Zusatzsensorkabels in SAM-08.",
   "questions": [
     {
       "id": "SAM-01",
@@ -306,23 +306,31 @@
       "id": "SAM-10",
       "type": "multi",
       "category": "Medium oder Gerät",
+      "layout": "product",
+      "shuffleOptions": false,
       "prompt": "Welche Komponenten haben keinen festen Einbauort im Fahrzeug? Wähle alle zutreffenden.",
       "options": [
-        { "id": "a", "text": "Funk-Handsender" },
-        { "id": "b", "text": "KeyCard" },
-        { "id": "c", "text": "KeyTag" },
-        { "id": "d", "text": "KeyStrap" },
-        { "id": "e", "text": "NFC Modul" },
-        { "id": "f", "text": "Pro-finder" },
-        { "id": "g", "text": "G.A.S.-pro III" }
+        { "id": "e", "text": "NFC Modul", "image": "/media/samsoe/sam-produkt-nfc-modul.webp", "imageAlt": "Schwarzes THITRONIK NFC Modul" },
+        { "id": "b", "text": "KeyCard", "image": "/media/samsoe/sam-produkt-keycard.webp", "imageAlt": "THITRONIK KeyCard" },
+        { "id": "c", "text": "KeyTag", "image": "/media/samsoe/sam-produkt-keytag.webp", "imageAlt": "Blauer THITRONIK KeyTag" },
+        { "id": "d", "text": "KeyStrap", "image": "/media/samsoe/sam-produkt-keystrap.webp", "imageAlt": "Schwarzer THITRONIK KeyStrap" },
+        { "id": "a", "text": "Funk-Handsender", "image": "/media/samsoe/sam-produkt-funk-handsender.webp", "imageAlt": "Funk-Handsender von THITRONIK" },
+        { "id": "g", "text": "G.A.S.-pro III", "image": "/media/samsoe/sam-produkt-gas-pro-iii.webp", "imageAlt": "Schwarzer THITRONIK G.A.S.-pro III Gaswarner" },
+        { "id": "f", "text": "Pro-finder", "image": "/media/samsoe/sam-produkt-pro-finder.webp", "imageAlt": "THITRONIK Pro-finder mit Anschlüssen und Antenne" },
+        { "id": "h", "text": "T.S.A. Funk-Rauchmelder", "image": "/media/samsoe/sam-produkt-tsa-funk-rauchmelder.webp", "imageAlt": "Zwei weiße T.S.A. Funk-Rauchmelder von THITRONIK" }
       ],
       "correct": ["a", "b", "c", "d"],
-      "feedback": "Funk-Handsender, KeyCard, KeyTag und KeyStrap sind persönliche Zugangs**medien**. NFC Modul, Pro-finder und G.A.S.-pro III sind Geräte mit genau vorgegebenem Einbauort.",
+      "feedback": "Funk-Handsender, KeyCard, KeyTag und KeyStrap sind persönliche Zugangs**medien**. NFC Modul, Pro-finder, G.A.S.-pro III und T.S.A. Funk-Rauchmelder sind Geräte mit genau vorgegebenem Einbauort.",
       "irrtum": [
         {
           "fuer": ["e"],
           "titel": "NFC Modul mitangekreuzt",
           "text": "Die verständlichste Verwechslung — KeyCard und NFC Modul gehören zusammen und werden gemeinsam verkauft. Aber das Modul ist die **Lesestelle am Fahrzeug**, die Karte ist das Medium in der Hosentasche."
+        },
+        {
+          "fuer": ["h"],
+          "titel": "T.S.A. Funk-Rauchmelder mitangekreuzt",
+          "text": "Der Rauchmelder ist kein persönliches Medium. Sein Einbauort ist funktional vorgegeben: an oder nahe der Decke, damit aufsteigender Rauch früh erkannt wird."
         }
       ],
       "mitnehmen": "Diese Trennung — Medium, Lesestelle, Steuergerät — ist die Grundordnung des ganzen Sortiments. Auf USEDOM begegnet sie dir am Display wieder."

@@ -13,7 +13,7 @@
 
 (function () {
   const EVENT_SLUG = "campus-2026";
-  const ENGINE_VERSION = "1.0";
+  const ENGINE_VERSION = "1.2.19";
   const SUBMIT_ENDPOINT = "/.netlify/functions/submit-quiz";
 
   const LS_PARTICIPANT = "thitronik.campus.2026.participant";
@@ -62,6 +62,21 @@
     startTitle: $("start-title"),
     startLead: $("start-lead"),
     startFacts: $("start-facts"),
+    samsoeStartVisual: $("samsoe-start-visual"),
+    samsoeStartVehicle: $("samsoe-start-vehicle"),
+    samsoeStartTechnician: $("samsoe-start-technician"),
+    hiddenseeStartVisual: $("hiddensee-start-visual"),
+    hiddenseeStartContact: $("hiddensee-start-contact"),
+    vejroStartVisual: $("vejro-start-visual"),
+    vejroStartProducts: $("vejro-start-products"),
+    poelStartVisual: $("poel-start-visual"),
+    poelStartHaendler: $("poel-start-haendler"),
+    usedomStartVisual: $("usedom-start-visual"),
+    usedomStartDisplay: $("usedom-start-display"),
+    langelandStartVisual: $("langeland-start-visual"),
+    langelandStartHandover: $("langeland-start-handover"),
+    fehmarnStartVisual: $("fehmarn-start-visual"),
+    fehmarnStartDiagnostic: $("fehmarn-start-diagnostic"),
     formIntro: $("form-intro"),
     startForm: $("start-form"),
     fName: $("f-name"),
@@ -282,8 +297,10 @@
   }
 
   async function fetchJson(url) {
-    const response = await fetch(url, { cache: "no-cache" });
-    if (!response.ok) throw new Error(`${url} → HTTP ${response.status}`);
+    const separator = url.includes("?") ? "&" : "?";
+    const versionedUrl = `${url}${separator}v=${encodeURIComponent(ENGINE_VERSION)}`;
+    const response = await fetch(versionedUrl, { cache: "no-store" });
+    if (!response.ok) throw new Error(`${versionedUrl} → HTTP ${response.status}`);
     return response.json();
   }
 
@@ -466,6 +483,45 @@
 
   function renderStart() {
     const island = state.island;
+    const isSamsoe = island.island === "samsoe";
+    const isHiddensee = island.island === "hiddensee";
+    const isVejro = island.island === "vejro";
+    const isPoel = island.island === "poel";
+    const isUsedom = island.island === "usedom";
+    const isLangeland = island.island === "langeland";
+    const isFehmarn = island.island === "fehmarn";
+
+    el.screens.start.dataset.island = island.island || "";
+    el.samsoeStartVisual.hidden = !isSamsoe;
+    el.hiddenseeStartVisual.hidden = !isHiddensee;
+    el.vejroStartVisual.hidden = !isVejro;
+    el.poelStartVisual.hidden = !isPoel;
+    el.usedomStartVisual.hidden = !isUsedom;
+    el.langelandStartVisual.hidden = !isLangeland;
+    el.fehmarnStartVisual.hidden = !isFehmarn;
+    if (isSamsoe) {
+      [el.samsoeStartVehicle, el.samsoeStartTechnician].forEach((image) => {
+        if (!image.getAttribute("src")) image.src = image.dataset.src;
+      });
+    }
+    if (isHiddensee && !el.hiddenseeStartContact.getAttribute("src")) {
+      el.hiddenseeStartContact.src = el.hiddenseeStartContact.dataset.src;
+    }
+    if (isVejro && !el.vejroStartProducts.getAttribute("src")) {
+      el.vejroStartProducts.src = el.vejroStartProducts.dataset.src;
+    }
+    if (isPoel && !el.poelStartHaendler.getAttribute("src")) {
+      el.poelStartHaendler.src = el.poelStartHaendler.dataset.src;
+    }
+    if (isUsedom && !el.usedomStartDisplay.getAttribute("src")) {
+      el.usedomStartDisplay.src = el.usedomStartDisplay.dataset.src;
+    }
+    if (isLangeland && !el.langelandStartHandover.getAttribute("src")) {
+      el.langelandStartHandover.src = el.langelandStartHandover.dataset.src;
+    }
+    if (isFehmarn && !el.fehmarnStartDiagnostic.getAttribute("src")) {
+      el.fehmarnStartDiagnostic.src = el.fehmarnStartDiagnostic.dataset.src;
+    }
 
     el.btnToIslands.hidden = istEinzelinsel();
 
@@ -713,7 +769,7 @@
         { id: "falsch", text: "Falsch" }
       ];
     }
-    return shuffled(q.options);
+    return q.shuffleOptions === false ? q.options.slice() : shuffled(q.options);
   }
 
   function renderChoices(q) {
@@ -736,7 +792,7 @@
 
       const button = document.createElement("button");
       button.type = "button";
-      button.className = "answer opt-" + ((i % 4) + 1) + (bildmodus ? " answer-bild" : "");
+      button.className = "answer opt-" + ((i % 7) + 1) + (bildmodus ? " answer-bild" : "");
       button.dataset.id = option.id;
       button.setAttribute("aria-pressed", "false");
 

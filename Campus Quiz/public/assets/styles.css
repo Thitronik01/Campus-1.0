@@ -17,6 +17,33 @@
   --th-blue-text: #1B7699;   /* 5,15:1 auf Weiß */
   --th-lime-text: #5F7000;   /* 5,47:1 auf Weiß, 5,02:1 auf --success-bg */
   --th-red: #CE132D;
+
+  /* Antwortpalette A-G. A-D bleiben die vier THITRONIK-Markenfarben.
+     Violett und Amber erweitern den Farbkreis für Fragen mit fünf oder
+     sechs Optionen, Petrol deckt die vorhandenen Fragen mit sieben Optionen
+     ab. Auswahlfarben bleiben von Erfolg/Fehler semantisch getrennt.
+     Die Buchstaben bleiben die primäre, farbunabhängige Kennzeichnung. */
+  --answer-a: #1D3661;
+  --answer-a-rgb: 29, 54, 97;
+  --answer-a-text: #FFFFFF;
+  --answer-b: #3BA9D3;
+  --answer-b-rgb: 59, 169, 211;
+  --answer-b-text: #111111;
+  --answer-c: #AFCA05;
+  --answer-c-rgb: 175, 202, 5;
+  --answer-c-text: #111111;
+  --answer-d: #CE132D;
+  --answer-d-rgb: 206, 19, 45;
+  --answer-d-text: #FFFFFF;
+  --answer-e: #6B4FA1;
+  --answer-e-rgb: 107, 79, 161;
+  --answer-e-text: #FFFFFF;
+  --answer-f: #C66A00;
+  --answer-f-rgb: 198, 106, 0;
+  --answer-f-text: #111111;
+  --answer-g: #007C83;
+  --answer-g-rgb: 0, 124, 131;
+  --answer-g-text: #FFFFFF;
   --th-white: #FFFFFF;
   --th-soft: #F0F0F0;
   --th-page: #EAF1F7;
@@ -151,6 +178,20 @@ h2 { font-size: clamp(1.15rem, 1.05rem + .4vw, 1.5rem); letter-spacing: -.015em;
 
 .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
 
+.brand-home {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  min-height: 44px;
+  border-radius: 8px;
+  text-decoration: none;
+}
+.brand-home:focus-visible {
+  outline: 3px solid var(--th-navy);
+  outline-offset: 4px;
+}
+.brand-home:active .brand-logo { transform: scale(.98); }
+
 /* Die Navy-Wortmarke auf transparent — dieselbe, die das Fehmarn-Quiz im Kopf
    trägt. Als Datei statt als Base64: 88 KB werden einmal geladen und gecacht,
    statt in jedem Dokument mitzureisen. */
@@ -158,6 +199,7 @@ h2 { font-size: clamp(1.15rem, 1.05rem + .4vw, 1.5rem); letter-spacing: -.015em;
   width: clamp(150px, 20vw, 210px);
   height: auto;
   flex: 0 0 auto;
+  transition: opacity var(--duration-fast) ease, transform var(--duration-press) var(--ease-out);
 }
 
 .brand-copy { min-width: 0; padding-left: 14px; border-left: 1px solid var(--th-line); }
@@ -292,27 +334,10 @@ main { flex: 1 0 auto; }
   min-height: 100%;
   overflow: hidden;
   background:
-    radial-gradient(circle at 58% 32%, rgba(255, 255, 255, .94), transparent 24rem),
-    linear-gradient(90deg, rgba(29, 54, 97, .055) 1px, transparent 1px),
-    linear-gradient(rgba(29, 54, 97, .055) 1px, transparent 1px),
+    linear-gradient(rgba(246, 250, 252, .08), rgba(246, 250, 252, .08)),
+    url("/media/campus/campus-hintergrund-v1.webp") center / cover no-repeat,
     #F6FAFC;
-  background-size: auto, 25% 100%, 100% 33.333%, auto;
 }
-
-.campus-map::before,
-.campus-map::after {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  width: 420px;
-  height: 320px;
-  border-radius: 48% 52% 46% 54%;
-  background: repeating-radial-gradient(ellipse, transparent 0 16px, rgba(59, 169, 211, .11) 17px, transparent 18px 31px);
-  opacity: .48;
-  pointer-events: none;
-}
-.campus-map::before { left: -210px; top: 190px; transform: rotate(9deg); }
-.campus-map::after { right: -230px; bottom: 80px; transform: rotate(-11deg); }
 
 .island-intro {
   position: relative;
@@ -329,7 +354,8 @@ main { flex: 1 0 auto; }
 
 .island-intro .lead { margin-bottom: 0; text-wrap: pretty; }
 
-.campus-map-art { display: none; }
+.campus-map-art,
+.map-compass { display: none; }
 
 .island-map {
   display: grid;
@@ -548,14 +574,17 @@ main { flex: 1 0 auto; }
     stroke-width: 1.5;
     opacity: .72;
   }
-  .map-compass { fill: none; stroke: #A9CCE0; stroke-width: 1.3; opacity: .7; }
-  .map-compass path { fill: rgba(59, 169, 211, .12); }
-  .map-compass text {
-    fill: #8AB8D0;
-    stroke: none;
-    font-size: 12px;
-    font-weight: 700;
-    text-anchor: middle;
+  .map-compass {
+    position: absolute;
+    z-index: 1;
+    top: clamp(28px, 3.8vw, 44px);
+    right: clamp(28px, 3.8vw, 48px);
+    display: block;
+    width: clamp(136px, 11vw, 180px);
+    height: auto;
+    opacity: .88;
+    pointer-events: none;
+    filter: drop-shadow(0 5px 9px rgba(10, 39, 71, .1));
   }
 
   .island-map { position: absolute; z-index: 2; inset: 0; display: block; padding: 0; }
@@ -732,6 +761,424 @@ main { flex: 1 0 auto; }
 .start-intro .kicker { background: rgba(255, 255, 255, .16); color: #fff; }
 .start-intro h1 { color: #fff; }
 .start-intro .lead { color: rgba(255, 255, 255, .88); }
+
+.samsoe-start-visual[hidden],
+.hiddensee-start-visual[hidden],
+.vejro-start-visual[hidden],
+.poel-start-visual[hidden],
+.usedom-start-visual[hidden],
+.langeland-start-visual[hidden],
+.fehmarn-start-visual[hidden] { display: none; }
+
+#screen-start[data-island="samsoe"] .start-layout {
+  grid-template-columns: minmax(0, 1.16fr) minmax(380px, .94fr);
+  min-height: clamp(660px, 72vh, 780px);
+}
+
+#screen-start[data-island="samsoe"] .start-intro {
+  position: relative;
+  isolation: isolate;
+  min-height: 660px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 52% 84%, rgba(19, 151, 232, .34), transparent 32%),
+    radial-gradient(circle at 10% 12%, rgba(61, 116, 190, .38), transparent 38%),
+    linear-gradient(145deg, #173F79 0%, #0C2E63 54%, #071D46 100%);
+}
+
+#screen-start[data-island="samsoe"] .start-intro::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  right: -18%;
+  bottom: -30%;
+  width: 90%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(27, 157, 235, .2), transparent 66%);
+  pointer-events: none;
+}
+
+#screen-start[data-island="samsoe"] .start-intro > :not(.samsoe-start-visual) {
+  position: relative;
+  z-index: 3;
+}
+
+#screen-start[data-island="samsoe"] .start-intro h1 {
+  max-width: none;
+  font-size: clamp(2.4rem, 3vw, 3.25rem);
+  line-height: 1.04;
+  letter-spacing: -.04em;
+  text-wrap: balance;
+}
+
+#screen-start[data-island="samsoe"] .start-intro .lead {
+  max-width: 53ch;
+  font-size: clamp(.98rem, 1.25vw, 1.12rem);
+  line-height: 1.55;
+}
+
+#screen-start[data-island="samsoe"] .facts {
+  max-width: 600px;
+  margin-top: 20px;
+}
+
+#screen-start .start-intro .facts li {
+  grid-template-columns: 50px minmax(0, 1fr);
+  gap: 12px;
+  min-height: 50px;
+  align-items: center;
+}
+
+#screen-start .start-intro .facts li::before {
+  width: 50px;
+  height: 50px;
+  border-radius: 0;
+  background-color: transparent;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  box-shadow: none;
+  filter: drop-shadow(0 5px 7px rgba(0, 13, 38, .28));
+}
+
+#screen-start .start-intro .facts li:nth-child(1)::before {
+  background-image: url("/media/campus/campus-hex-fragen.webp");
+}
+
+#screen-start .start-intro .facts li:nth-child(2)::before {
+  background-image: url("/media/campus/campus-hex-fragetypen.webp");
+}
+
+#screen-start .start-intro .facts li:nth-child(3)::before {
+  background-image: url("/media/campus/campus-hex-aufloesung.webp");
+}
+
+#screen-start .start-intro .facts li:nth-child(4)::before {
+  background-image: url("/media/campus/campus-hex-zeitlimit.webp");
+}
+
+.samsoe-start-visual {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.samsoe-start-visual img {
+  position: absolute;
+  display: block;
+  max-width: none;
+  height: auto;
+  user-select: none;
+}
+
+.samsoe-start-vehicle {
+  bottom: 1%;
+  left: -3%;
+  z-index: 1;
+  width: min(70%, 580px);
+  filter: drop-shadow(0 18px 20px rgba(0, 13, 38, .34));
+}
+
+.samsoe-start-technician {
+  right: 0;
+  bottom: -2%;
+  z-index: 2;
+  width: min(52%, 435px);
+  filter: drop-shadow(-12px 10px 18px rgba(0, 13, 38, .24));
+}
+
+#screen-start[data-island="samsoe"] .start-form {
+  gap: 14px;
+  padding: clamp(30px, 3.6vw, 48px);
+  background: rgba(255, 255, 255, .985);
+}
+
+#screen-start[data-island="samsoe"] .form-title {
+  font-size: clamp(1.65rem, 2.35vw, 2.15rem);
+  letter-spacing: -.03em;
+}
+
+#screen-start[data-island="samsoe"] .form-intro {
+  margin-bottom: 6px;
+  font-size: .95rem;
+  line-height: 1.5;
+}
+
+@media (min-width: 1100px) {
+  #screen-start[data-island="samsoe"] .start-intro h1 {
+    white-space: nowrap;
+    text-wrap: nowrap;
+  }
+}
+
+#screen-start[data-island="hiddensee"] .start-layout {
+  min-height: clamp(680px, 72vh, 790px);
+}
+
+#screen-start[data-island="hiddensee"] .start-intro {
+  position: relative;
+  isolation: isolate;
+  min-height: 680px;
+  overflow: hidden;
+}
+
+#screen-start[data-island="hiddensee"] .start-intro::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  left: 14%;
+  bottom: -24%;
+  width: 78%;
+  aspect-ratio: 1.4;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(37, 159, 227, .17), transparent 68%);
+  pointer-events: none;
+}
+
+#screen-start[data-island="hiddensee"] .start-intro > :not(.hiddensee-start-visual) {
+  position: relative;
+  z-index: 3;
+}
+
+#screen-start[data-island="hiddensee"] .facts {
+  max-width: 620px;
+}
+
+.hiddensee-start-visual {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.hiddensee-start-contact {
+  position: absolute;
+  bottom: -4%;
+  left: 50%;
+  display: block;
+  width: min(78%, 680px);
+  max-width: none;
+  height: auto;
+  transform: translateX(-50%);
+  filter: drop-shadow(0 20px 22px rgba(0, 13, 38, .34));
+  user-select: none;
+}
+
+#screen-start[data-island="vejro"] .start-layout {
+  min-height: clamp(740px, 74vh, 850px);
+}
+
+#screen-start[data-island="vejro"] .start-intro {
+  position: relative;
+  isolation: isolate;
+  min-height: 740px;
+  overflow: hidden;
+}
+
+#screen-start[data-island="vejro"] .start-intro > :not(.vejro-start-visual) {
+  position: relative;
+  z-index: 3;
+}
+
+#screen-start[data-island="vejro"] .facts {
+  max-width: 620px;
+}
+
+.vejro-start-visual {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.vejro-start-products {
+  position: absolute;
+  bottom: 1.5%;
+  left: 50%;
+  display: block;
+  width: auto;
+  max-width: 94%;
+  height: min(38%, 360px);
+  filter: drop-shadow(0 20px 24px rgba(0, 9, 30, .38));
+  transform: translateX(-50%);
+  user-select: none;
+}
+
+#screen-start[data-island="poel"] .start-layout {
+  min-height: clamp(740px, 74vh, 850px);
+}
+
+#screen-start[data-island="poel"] .start-intro {
+  position: relative;
+  isolation: isolate;
+  min-height: 740px;
+  overflow: hidden;
+}
+
+#screen-start[data-island="poel"] .start-intro > :not(.poel-start-visual) {
+  position: relative;
+  z-index: 3;
+}
+
+#screen-start[data-island="poel"] .facts {
+  max-width: 620px;
+}
+
+.poel-start-visual {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.poel-start-haendler {
+  position: absolute;
+  bottom: 1.5%;
+  left: 50%;
+  display: block;
+  width: auto;
+  max-width: 98%;
+  height: min(40%, 430px);
+  filter: drop-shadow(0 20px 24px rgba(0, 9, 30, .38));
+  transform: translateX(-50%);
+  user-select: none;
+}
+
+@media (min-width: 1400px) {
+  .vejro-start-products {
+    height: min(42%, 430px);
+  }
+}
+
+#screen-start[data-island="usedom"] .start-layout {
+  min-height: clamp(820px, 78vh, 920px);
+}
+
+#screen-start[data-island="usedom"] .start-intro {
+  position: relative;
+  isolation: isolate;
+  min-height: 820px;
+  overflow: hidden;
+}
+
+#screen-start[data-island="usedom"] .start-intro > :not(.usedom-start-visual) {
+  position: relative;
+  z-index: 3;
+}
+
+#screen-start[data-island="usedom"] .facts {
+  max-width: 620px;
+}
+
+.usedom-start-visual {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.usedom-start-display {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  display: block;
+  width: auto;
+  height: min(40%, 380px);
+  opacity: .98;
+  filter: drop-shadow(0 20px 24px rgba(0, 9, 30, .34));
+  transform: translateX(-50%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 18%, #000 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 18%, #000 100%);
+  user-select: none;
+}
+
+#screen-start[data-island="langeland"] .start-layout {
+  min-height: clamp(820px, 78vh, 920px);
+}
+
+#screen-start[data-island="langeland"] .start-intro {
+  position: relative;
+  isolation: isolate;
+  min-height: 820px;
+  overflow: hidden;
+}
+
+#screen-start[data-island="langeland"] .start-intro > :not(.langeland-start-visual) {
+  position: relative;
+  z-index: 3;
+}
+
+#screen-start[data-island="langeland"] .facts {
+  max-width: 620px;
+}
+
+.langeland-start-visual {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.langeland-start-handover {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  display: block;
+  width: auto;
+  height: min(40%, 380px);
+  filter: drop-shadow(0 20px 24px rgba(0, 9, 30, .34));
+  transform: translateX(-50%);
+  user-select: none;
+}
+
+#screen-start[data-island="fehmarn"] .start-layout {
+  min-height: clamp(820px, 78vh, 920px);
+}
+
+#screen-start[data-island="fehmarn"] .start-intro {
+  position: relative;
+  isolation: isolate;
+  min-height: 820px;
+  overflow: hidden;
+}
+
+#screen-start[data-island="fehmarn"] .start-intro > :not(.fehmarn-start-visual) {
+  position: relative;
+  z-index: 3;
+}
+
+#screen-start[data-island="fehmarn"] .facts {
+  max-width: 620px;
+}
+
+.fehmarn-start-visual {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.fehmarn-start-diagnostic {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  display: block;
+  width: auto;
+  max-width: 96%;
+  height: min(42%, 390px);
+  filter: drop-shadow(0 20px 24px rgba(0, 9, 30, .34));
+  transform: translateX(-50%);
+  user-select: none;
+}
 
 .facts { display: grid; gap: 10px; margin: 22px 0 0; padding: 0; list-style: none; }
 .facts li {
@@ -929,14 +1376,17 @@ main { flex: 1 0 auto; }
     transform var(--duration-press) var(--ease-out);
 }
 
-/* Vier kräftige Kachelfarben, aus Entfernung unterscheidbar.
+/* Sieben kräftige Kachelfarben, aus Entfernung unterscheidbar.
    Bewusst über feste Klassen statt :nth-child — bei Bildfragen liegt die
    Kachel in einem Wrapper (wegen der Lupe), und die Position im DOM stimmt
    dann nicht mehr mit der Antwortnummer überein. */
-.answer.opt-1 { --opt: #1D3661; --opt-rgb: 29, 54, 97;  --opt-text: #FFFFFF; }
-.answer.opt-2 { --opt: #3BA9D3; --opt-rgb: 59, 169, 211; --opt-text: #111111; }
-.answer.opt-3 { --opt: #AFCA05; --opt-rgb: 175, 202, 5;  --opt-text: #111111; }
-.answer.opt-4 { --opt: #CE132D; --opt-rgb: 206, 19, 45;  --opt-text: #FFFFFF; }
+.answer.opt-1 { --opt: var(--answer-a); --opt-rgb: var(--answer-a-rgb); --opt-text: var(--answer-a-text); }
+.answer.opt-2 { --opt: var(--answer-b); --opt-rgb: var(--answer-b-rgb); --opt-text: var(--answer-b-text); }
+.answer.opt-3 { --opt: var(--answer-c); --opt-rgb: var(--answer-c-rgb); --opt-text: var(--answer-c-text); }
+.answer.opt-4 { --opt: var(--answer-d); --opt-rgb: var(--answer-d-rgb); --opt-text: var(--answer-d-text); }
+.answer.opt-5 { --opt: var(--answer-e); --opt-rgb: var(--answer-e-rgb); --opt-text: var(--answer-e-text); }
+.answer.opt-6 { --opt: var(--answer-f); --opt-rgb: var(--answer-f-rgb); --opt-text: var(--answer-f-text); }
+.answer.opt-7 { --opt: var(--answer-g); --opt-rgb: var(--answer-g-rgb); --opt-text: var(--answer-g-text); }
 
 .answer::after {
   content: "";
@@ -975,6 +1425,7 @@ main { flex: 1 0 auto; }
 .answer.is-missed { border-color: var(--success-line); border-style: dashed; background: var(--success-bg); }
 
 .answer-letter {
+  position: relative;
   display: grid;
   place-items: center;
   width: 44px;
@@ -984,6 +1435,23 @@ main { flex: 1 0 auto; }
   color: var(--opt-text);
   font-weight: 800;
   box-shadow: 0 5px 12px rgba(var(--opt-rgb), .2);
+}
+.answer.is-selected .answer-letter::after {
+  content: "✓";
+  position: absolute;
+  right: -6px;
+  bottom: -6px;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--th-white);
+  border-radius: 50%;
+  background: var(--th-navy-deep);
+  color: var(--th-white);
+  font-size: .7rem;
+  line-height: 1;
+  box-shadow: 0 2px 5px rgba(10, 39, 71, .28);
 }
 .answer.is-correct .answer-letter { background: var(--th-lime); color: var(--th-ink); }
 .answer.is-wrong .answer-letter { background: var(--th-red); color: #fff; }
@@ -1003,6 +1471,8 @@ main { flex: 1 0 auto; }
   width: 100%;
   min-height: 0;
   padding: 0;
+  border-width: 2px;
+  border-color: var(--opt);
   overflow: hidden;
 }
 .answer-media {
@@ -1013,6 +1483,43 @@ main { flex: 1 0 auto; }
 }
 .answers-bild[data-layout="square"] .answer-media { aspect-ratio: 1 / 1; }
 .answers-bild[data-layout="landscape"] .answer-media { aspect-ratio: 4 / 3; }
+
+/* Produktvergleich mit vielen Optionen: echte Freisteller statt einer bunten
+   Textliste. Die neutrale Navy-Fassung hält sieben Produkte visuell ruhig;
+   Grün und Rot bleiben ausschließlich der Auswertung vorbehalten. */
+.answers-bild[data-layout="product"] {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.answers-bild[data-layout="product"] .answer-wrap { height: 100%; }
+.answers-bild[data-layout="product"] .answer {
+  --opt: var(--th-navy);
+  --opt-rgb: 29, 54, 97;
+  --opt-text: #FFFFFF;
+}
+.answers-bild[data-layout="product"] .answer-bild {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.answers-bild[data-layout="product"] .answer-media {
+  aspect-ratio: 1 / 1;
+  padding: 20px;
+  object-fit: contain;
+  background: linear-gradient(145deg, #FFFFFF 0%, #EEF3F7 100%);
+}
+.answers-bild[data-layout="product"] .answer-bild-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  margin-top: auto;
+  text-align: center;
+}
+.answers-bild[data-layout="product"] .answer-zoom {
+  top: 10px;
+  right: 10px;
+  bottom: auto;
+}
 
 /* Buchstabe und Lupe liegen auf dem Bild — beide mit eigener Fläche, damit
    sie auch auf einem hellen Foto lesbar bleiben. */
@@ -1409,6 +1916,17 @@ main { flex: 1 0 auto; }
 
 @media (max-width: 900px) {
   .start-layout { grid-template-columns: 1fr; }
+  #screen-start[data-island="samsoe"] .start-layout { grid-template-columns: 1fr; }
+  #screen-start[data-island="samsoe"] .start-intro { min-height: 690px; }
+  #screen-start[data-island="hiddensee"] .start-intro { min-height: 720px; }
+  #screen-start[data-island="vejro"] .start-intro { min-height: 760px; }
+  #screen-start[data-island="poel"] .start-intro { min-height: 740px; }
+  #screen-start[data-island="usedom"] .start-intro { min-height: 780px; }
+  .usedom-start-display { height: min(38%, 340px); }
+  #screen-start[data-island="langeland"] .start-intro { min-height: 780px; }
+  .langeland-start-handover { height: min(38%, 340px); }
+  #screen-start[data-island="fehmarn"] .start-intro { min-height: 780px; }
+  .fehmarn-start-diagnostic { height: min(40%, 350px); }
   .result-layout { grid-template-columns: 1fr; }
   .score-card { position: static; }
 }
@@ -1417,6 +1935,10 @@ main { flex: 1 0 auto; }
   .masthead-progress { order: 3; width: 100%; margin-left: 0; }
   .campus-progress-head { margin-bottom: 5px; }
   .masthead-progress small { text-align: left; }
+}
+
+@media (min-width: 641px) and (max-width: 960px) {
+  .answers-bild[data-layout="product"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
 @media (max-width: 640px) {
@@ -1434,7 +1956,9 @@ main { flex: 1 0 auto; }
   /* Bildkacheln bleiben auch auf dem Telefon zweispaltig — vier Fotos
      untereinander wären nicht vergleichbar, und Vergleichen ist die Aufgabe. */
   .answers-bild { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .answers-bild[data-layout="product"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .answer-bild { padding: 0; }
+  .answers-bild[data-layout="product"] .answer-media { padding: 12px; }
   .answer-bild .answer-letter { top: 7px; left: 7px; width: 34px; height: 34px; border-radius: 10px; }
   /* Die Lupe bleibt auf 44 px — sie liegt auf einer 155-px-Kachel, und wer
      mit Handschuhen danebengreift, wählt versehentlich die Antwort aus. */
@@ -1448,6 +1972,34 @@ main { flex: 1 0 auto; }
   .quiz-actions { flex-direction: column-reverse; align-items: stretch; }
   .quiz-actions .btn { width: 100%; }
   .start-actions .btn, .result-actions .btn { flex: 1 1 auto; }
+
+  #screen-start[data-island="samsoe"] .start-intro {
+    min-height: 630px;
+    padding: 26px 22px;
+  }
+  #screen-start[data-island="samsoe"] .start-intro h1 { font-size: clamp(2rem, 10vw, 2.75rem); }
+  #screen-start[data-island="samsoe"] .facts { gap: 8px; }
+  #screen-start .start-intro .facts li {
+    grid-template-columns: 42px minmax(0, 1fr);
+    gap: 10px;
+    min-height: 42px;
+  }
+  #screen-start .start-intro .facts li::before { width: 42px; height: 42px; }
+  .samsoe-start-vehicle { left: -15%; width: 88%; }
+  .samsoe-start-technician { right: -23%; width: 68%; }
+  #screen-start[data-island="samsoe"] .start-form { padding: 26px 22px; }
+  #screen-start[data-island="hiddensee"] .start-intro { min-height: 680px; }
+  .hiddensee-start-contact { bottom: -1%; width: min(108%, 560px); }
+  #screen-start[data-island="vejro"] .start-intro { min-height: 700px; }
+  .vejro-start-products { bottom: 2%; max-width: 98%; height: min(36%, 320px); }
+  #screen-start[data-island="poel"] .start-intro { min-height: 680px; }
+  .poel-start-haendler { bottom: 2%; max-width: 98%; height: min(35%, 300px); }
+  #screen-start[data-island="usedom"] .start-intro { min-height: 680px; }
+  .usedom-start-display { width: 94%; height: auto; }
+  #screen-start[data-island="langeland"] .start-intro { min-height: 680px; }
+  .langeland-start-handover { width: 96%; height: auto; }
+  #screen-start[data-island="fehmarn"] .start-intro { min-height: 680px; }
+  .fehmarn-start-diagnostic { width: 96%; height: auto; }
 }
 
 /* ------------------------------------------------------- Reduced Motion --- */

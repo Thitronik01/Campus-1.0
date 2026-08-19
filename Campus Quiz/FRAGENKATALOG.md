@@ -709,13 +709,13 @@
 | | |
 |---|---|
 | Fragen | 10 |
-| Fragensatz-Version | 4 |
+| Fragensatz-Version | 6 |
 | Art | Wo kommt was hin? |
 | Lernziel | Physik bestimmt den Einbauort, nicht der freie Platz. Wer das verstanden hat, muss keine Liste auswendig lernen. |
 
 **Quellen im Produktwissen:** `produkte/pro-finder.md`, `produkte/gas-pro-iii.md`, `produkte/nfc-modul.md`, `produkte/funk-rauchmelder.md`, `produkte/wipro-iii.md`, `fahrzeuge/*`
 
-> **Redaktioneller Hinweis (erscheint nicht im Quiz):** Fragenkatalog v4. SAM-02 und SAM-03 nutzen echte Einbaufotos aus dem bestehenden FehlerQuiz. SAM-04 prüft jetzt die Qualitätskriterien für den Einbauort einer WiPro III. Fachlich zu bestätigen: die max. 7 m Gesamtlänge des Zusatzsensorkabels in SAM-08.
+> **Redaktioneller Hinweis (erscheint nicht im Quiz):** Fragenkatalog v6. SAM-02, SAM-03 und SAM-10 arbeiten mit echten Produkt- beziehungsweise Einbaufotos. SAM-10 zeigt acht Produkte einschließlich des T.S.A. Funk-Rauchmelders. SAM-04 prüft die Qualitätskriterien für den Einbauort einer WiPro III. Fachlich zu bestätigen: die max. 7 m Gesamtlänge des Zusatzsensorkabels in SAM-08.
 
 #### 1. Ordne jedem Gerät den vorgesehenen Einbauort zu.
 
@@ -909,20 +909,23 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im Bodenstauraum außerhalb
 
 `SAM-10` · Mehrfachauswahl · Medium oder Gerät
 
-- **Funk-Handsender** ✓
-- **KeyCard** ✓
-- **KeyTag** ✓
-- **KeyStrap** ✓
-- NFC Modul
-- Pro-finder
-- G.A.S.-pro III
+- A · `/media/samsoe/sam-produkt-nfc-modul.webp` — NFC Modul
+- B · `/media/samsoe/sam-produkt-keycard.webp` — **KeyCard** ✓
+- C · `/media/samsoe/sam-produkt-keytag.webp` — **KeyTag** ✓
+- D · `/media/samsoe/sam-produkt-keystrap.webp` — **KeyStrap** ✓
+- E · `/media/samsoe/sam-produkt-funk-handsender.webp` — **Funk-Handsender** ✓
+- F · `/media/samsoe/sam-produkt-gas-pro-iii.webp` — G.A.S.-pro III
+- G · `/media/samsoe/sam-produkt-pro-finder.webp` — Pro-finder
+- H · `/media/samsoe/sam-produkt-tsa-funk-rauchmelder.webp` — T.S.A. Funk-Rauchmelder
 
-**Auflösung:** Funk-Handsender, KeyCard, KeyTag und KeyStrap sind persönliche Zugangs**medien**. NFC Modul, Pro-finder und G.A.S.-pro III sind Geräte mit genau vorgegebenem Einbauort.
+**Auflösung:** Funk-Handsender, KeyCard, KeyTag und KeyStrap sind persönliche Zugangs**medien**. NFC Modul, Pro-finder, G.A.S.-pro III und T.S.A. Funk-Rauchmelder sind Geräte mit genau vorgegebenem Einbauort.
 
 **Falsch gewählt?**
 
 - *NFC Modul mitangekreuzt:* Die verständlichste Verwechslung — KeyCard und NFC Modul gehören zusammen und werden gemeinsam verkauft. Aber das Modul ist die **Lesestelle am Fahrzeug**, die Karte ist das Medium in der Hosentasche.
   <br>↳ bezogen auf: „NFC Modul“
+- *T.S.A. Funk-Rauchmelder mitangekreuzt:* Der Rauchmelder ist kein persönliches Medium. Sein Einbauort ist funktional vorgegeben: an oder nahe der Decke, damit aufsteigender Rauch früh erkannt wird.
+  <br>↳ bezogen auf: „T.S.A. Funk-Rauchmelder“
 
 **Mitnehmen:** Diese Trennung — Medium, Lesestelle, Steuergerät — ist die Grundordnung des ganzen Sortiments. Auf USEDOM begegnet sie dir am Display wieder.
 
@@ -1583,4 +1586,3 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im Bodenstauraum außerhalb
   <br>↳ bezogen auf: „Nur die Rechnungsnummer“
 
 **Mitnehmen:** Das **Foto der DIP-Stellung** ist der am häufigsten vergessene und im Supportfall wertvollste Teil der Dokumentation — es beantwortet in zwei Sekunden eine Frage, die sonst eine Demontage kostet. Damit schließt sich der Kreis: Deine Akte von heute ist die Fallaufnahme von FEHMARN in zwei Jahren.
-

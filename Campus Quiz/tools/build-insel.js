@@ -45,6 +45,14 @@ const ORDNER = {
  *  an einer einzigen Zeile. Dieses Paket enthält von vornherein nur das, was
  *  ausgeliefert werden soll. */
 const GESAMT = "Campus Gesamtpaket";
+const GEMEINSAME_MEDIEN = [
+  path.join("media", "campus", "campus-hintergrund-v1.webp"),
+  path.join("media", "campus", "campus-kompass-v2.webp"),
+  path.join("media", "campus", "campus-hex-fragen.webp"),
+  path.join("media", "campus", "campus-hex-fragetypen.webp"),
+  path.join("media", "campus", "campus-hex-aufloesung.webp"),
+  path.join("media", "campus", "campus-hex-zeitlimit.webp")
+];
 
 /* Ein Schutz gegen versehentliches Überschreiben ist unten eingebaut: ein
    Zielordner, der Inhalt hat und keinen MARKER trägt, wurde nicht von diesem
@@ -65,6 +73,13 @@ function schreib(ziel, inhalt) {
 function kopiere(von, nach) {
   fs.mkdirSync(path.dirname(nach), { recursive: true });
   fs.copyFileSync(von, nach);
+}
+
+function kopiereGemeinsameMedien(oeff) {
+  for (const relativ of GEMEINSAME_MEDIEN) {
+    kopiere(path.join(WURZEL, "public", relativ), path.join(oeff, relativ));
+  }
+  return GEMEINSAME_MEDIEN.length;
 }
 
 /** Leert einen Ordner, ohne ihn selbst zu entfernen.
@@ -227,7 +242,7 @@ function baue(slug) {
 
   // --- Bilder -------------------------------------------------------------
   const bildQuelle = path.join(WURZEL, "public", "media", slug);
-  let bilder = 0;
+  let bilder = kopiereGemeinsameMedien(oeff);
   if (fs.existsSync(bildQuelle)) {
     for (const datei of fs.readdirSync(bildQuelle)) {
       kopiere(path.join(bildQuelle, datei), path.join(oeff, "media", slug, datei));
@@ -313,7 +328,7 @@ function baueGesamt() {
   }
 
   // --- Bilder aller Inseln ------------------------------------------------
-  let bilder = 0;
+  let bilder = kopiereGemeinsameMedien(oeff);
   for (const eintrag of katalog.inseln) {
     const bildQuelle = path.join(WURZEL, "public", "media", eintrag.slug);
     if (fs.existsSync(bildQuelle)) {

@@ -8,7 +8,7 @@
   <meta name="description" content="THITRONIK Campus — Wissenscheck LANGELAND: Fahrzeugannahme & Fahrzeugübergabe.">
   <meta name="robots" content="noindex, nofollow">
   <title>LANGELAND — Fahrzeugannahme & Fahrzeugübergabe · THITRONIK Campus</title>
-  <link rel="stylesheet" href="/assets/styles.css">
+  <link rel="stylesheet" href="/assets/styles.css?v=1.2.18">
 </head>
 <body>
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
@@ -16,8 +16,10 @@
   <div class="shell">
     <header class="masthead">
       <div class="brand">
-        <img class="brand-logo" src="/assets/thitronik-logo.png"
-             alt="THITRONIK — Alarmtechnik made in Germany" width="769" height="214">
+        <a class="brand-home" href="/quiz" aria-label="Zur Inselübersicht">
+          <img class="brand-logo" src="/assets/thitronik-logo.png"
+               alt="THITRONIK — Alarmtechnik made in Germany" width="769" height="214">
+        </a>
         <span class="brand-copy">
           <small>THITRONIK Campus</small>
           <strong id="masthead-title">Wissenscheck</strong>
@@ -73,17 +75,10 @@
               <path d="M365 700 q8-12 16 0 q8-12 16 0 q8-12 16 0"></path>
               <path d="M842 705 q8-12 16 0 q8-12 16 0 q8-12 16 0"></path>
             </g>
-            <g class="map-compass" transform="translate(1100 105)">
-              <circle r="39"></circle>
-              <path d="M0-55 L8-8 L0 0 L-8-8 Z M55 0 L8 8 L0 0 L8-8 Z M0 55 L-8 8 L0 0 L8 8 Z M-55 0 L-8-8 L0 0 L-8 8 Z"></path>
-              <line x1="0" y1="-48" x2="0" y2="48"></line>
-              <line x1="-48" y1="0" x2="48" y2="0"></line>
-              <text x="0" y="-62">N</text>
-              <text x="63" y="4">E</text>
-              <text x="0" y="72">S</text>
-              <text x="-64" y="4">W</text>
-            </g>
           </svg>
+
+          <img class="map-compass" src="/media/campus/campus-kompass-v2.webp"
+               alt="" aria-hidden="true" width="1254" height="1254">
 
           <ul class="island-map" id="island-grid" aria-label="Schulungsinseln"></ul>
         </div>
@@ -97,6 +92,44 @@
             <h1 id="start-title">Wissenscheck</h1>
             <p class="lead" id="start-lead"></p>
             <ul class="facts" id="start-facts"></ul>
+            <div class="samsoe-start-visual" id="samsoe-start-visual" aria-hidden="true" hidden>
+              <img class="samsoe-start-vehicle" id="samsoe-start-vehicle"
+                   data-src="/media/samsoe/sam-start-fahrzeug.webp" alt=""
+                   width="1448" height="1086">
+              <img class="samsoe-start-technician" id="samsoe-start-technician"
+                   data-src="/media/samsoe/sam-start-techniker.webp" alt=""
+                   width="1122" height="1402">
+            </div>
+            <div class="hiddensee-start-visual" id="hiddensee-start-visual" aria-hidden="true" hidden>
+              <img class="hiddensee-start-contact" id="hiddensee-start-contact"
+                   data-src="/media/hiddensee/hid-start-funk-magnetkontakt.webp" alt=""
+                   width="1536" height="1024">
+            </div>
+            <div class="vejro-start-visual" id="vejro-start-visual" aria-hidden="true" hidden>
+              <img class="vejro-start-products" id="vejro-start-products"
+                   data-src="/media/vejro/vej-start-produktneuheiten.webp" alt=""
+                   width="1200" height="800">
+            </div>
+            <div class="poel-start-visual" id="poel-start-visual" aria-hidden="true" hidden>
+              <img class="poel-start-haendler" id="poel-start-haendler"
+                   data-src="/media/poel/poe-start-haendlerbereich.webp" alt=""
+                   width="1200" height="675">
+            </div>
+            <div class="usedom-start-visual" id="usedom-start-visual" aria-hidden="true" hidden>
+              <img class="usedom-start-display" id="usedom-start-display"
+                   data-src="/media/usedom/use-start-verkaufsdisplay.webp" alt=""
+                   width="1400" height="788">
+            </div>
+            <div class="langeland-start-visual" id="langeland-start-visual" aria-hidden="true" hidden>
+              <img class="langeland-start-handover" id="langeland-start-handover"
+                   data-src="/media/langeland/lan-start-schluesseluebergabe.webp" alt=""
+                   width="1200" height="675">
+            </div>
+            <div class="fehmarn-start-visual" id="fehmarn-start-visual" aria-hidden="true" hidden>
+              <img class="fehmarn-start-diagnostic" id="fehmarn-start-diagnostic"
+                   data-src="/media/fehmarn/feh-start-fehlersuche.webp" alt=""
+                   width="1200" height="800">
+            </div>
           </div>
 
           <form class="start-form" id="start-form" novalidate>
@@ -261,6 +294,6 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
-  <script src="/assets/engine.js" defer></script>
+  <script src="/assets/engine.js?v=1.2.18" defer></script>
 </body>
 </html>

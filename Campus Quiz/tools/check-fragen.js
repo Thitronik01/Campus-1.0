@@ -184,8 +184,8 @@ for (const island of catalog.inseln) {
       if (!bild.alt) fail(where(q.id), `${bild.feld}: imageAlt bzw. alt fehlt (Vorlesetext und Ersatz bei Ladefehler).`);
     }
 
-    if (q.layout && !["portrait", "square", "landscape"].includes(q.layout)) {
-      fail(where(q.id), `Unbekanntes layout "${q.layout}" — erlaubt: portrait, square, landscape.`);
+    if (q.layout && !["portrait", "square", "landscape", "product"].includes(q.layout)) {
+      fail(where(q.id), `Unbekanntes layout "${q.layout}" — erlaubt: portrait, square, landscape, product.`);
     }
 
     // --- single / multi ---
@@ -193,6 +193,10 @@ for (const island of catalog.inseln) {
       if (!Array.isArray(q.options) || q.options.length < 2) {
         fail(where(q.id), "Mindestens zwei options nötig.");
         continue;
+      }
+      const maxOptions = q.layout === "product" ? 8 : 7;
+      if (q.options.length > maxOptions) {
+        fail(where(q.id), `${q.options.length} Optionen — dieses Antwortlayout unterstützt höchstens ${maxOptions}.`);
       }
       const optionIds = q.options.map((o) => o.id);
       if (new Set(optionIds).size !== optionIds.length) fail(where(q.id), "Doppelte option-id.");
