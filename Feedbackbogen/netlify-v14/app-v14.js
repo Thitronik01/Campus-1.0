@@ -71,16 +71,17 @@
     ['durchfuehrung', 'betreuung_thitronik', 'Betreuung durch THITRONIK']
   ];
 
-  const islandDefinitions = {
-    '1': ['insel_vejroe', 'Vejrø'],
-    '2': ['insel_hiddensee', 'Hiddensee'],
-    '3': ['insel_fehmarn', 'Fehmarn'],
-    '4': ['insel_poel', 'Poel'],
-    '5': ['insel_usedom', 'Usedom'],
-    '6': ['insel_langeland', 'Langeland'],
-    '7': ['insel_samsoe', 'Samsø'],
-    '8': ['insel_ruegen', 'Rügen']
-  };
+  /* Die Inseln stehen nicht mehr hier. Sie kommen als Datenblock aus dem
+     Generator, der sie seinerseits aus dem Katalog des Wissenschecks liest —
+     sonst fuehrten Bogen und Quiz die Namen an drei Stellen und liefen
+     wieder auseinander. Faellt der Block aus, bleiben die Inselwahlen leer;
+     das ist die richtige Folge, denn geraten wird hier nichts. */
+  const islandDefinitions = (() => {
+    try {
+      const knoten = document.getElementById('insel-daten');
+      return knoten ? JSON.parse(knoten.textContent) : {};
+    } catch (error) { return {}; }
+  })();
 
   const RATING_KEYS = ratingDefinitions.map((definition) => definition[1]);
   const SECTION_NAMES = ['Angaben', 'Eindruck', 'Organisation', 'Schulung', 'Inseln', 'Ausblick'];

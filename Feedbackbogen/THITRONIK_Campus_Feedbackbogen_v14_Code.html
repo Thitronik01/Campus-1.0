@@ -41,9 +41,9 @@ Codefassung zum Weitergeben an ein Sprachmodell.
    sind blau. Lime markiert Status, nie Flaeche.
 
    RADIEN (verbindlich):
-     --r-control  Eingaben, Optionen, Kommentarfelder
-     --r-card     Karten und grosse Flaechen
-     --r-pill     Aktionen und Badges
+     --radius-md    Eingaben, Optionen, Kommentarfelder
+     --radius-lg    Karten und grosse Flaechen
+     --radius-pill  Aktionen und Badges
    ========================================================================== */
 
 :root {
@@ -67,9 +67,9 @@ Codefassung zum Weitergeben an ein Sprachmodell.
   --th-line-soft: #E6EAEF;
 
   /* Radien */
-  --r-control: 12px;
-  --r-card: 20px;
-  --r-pill: 999px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-pill: 999px;
 
   --gap: 20px;
   --shell: 1200px;
@@ -79,11 +79,15 @@ Codefassung zum Weitergeben an ein Sprachmodell.
   /* BEWEGUNG: kurz und ausklingend. Eine Animation darf einen Zustandswechsel
      bestaetigen, sie darf ihn nie verzoegern. Deshalb nichts ueber 220 ms und
      kein ease-in auf Interaktionen: der traege Anlauf laesst die Oberflaeche
-     langsamer wirken, als sie ist. */
-  --t-tap: 90ms;
-  --t-fast: 130ms;
-  --t-base: 180ms;
-  --ease-out: cubic-bezier(.22, .76, .35, 1);
+     langsamer wirken, als sie ist.
+
+     Die Zahlen stammen seit der Zusammenfuehrung aus dem Wissenscheck
+     (vorher 90/130/180 ms und eine flachere Kurve). Die Regel darueber
+     gilt unveraendert weiter: 220 ms bleibt die Obergrenze. */
+  --duration-press: 140ms;
+  --duration-fast: 160ms;
+  --duration-normal: 220ms;
+  --ease-out: cubic-bezier(.23, 1, .32, 1);
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -132,11 +136,11 @@ h1, h2 { margin: 0; color: var(--th-navy); letter-spacing: -.021em; }
 .skip {
   position: fixed; z-index: 999; top: 10px; left: 10px;
   transform: translateY(-160%);
-  padding: 11px 16px; border-radius: var(--r-pill);
+  padding: 11px 16px; border-radius: var(--radius-pill);
   background: var(--th-white); color: var(--th-navy);
   font-weight: 700; text-decoration: none;
   box-shadow: var(--lift);
-  transition: transform var(--t-fast) var(--ease-out);
+  transition: transform var(--duration-fast) var(--ease-out);
 }
 /* Auch :focus, nicht nur :focus-visible. Der Sprunglink ist ausschliesslich
    ueber die Tastatur erreichbar, darf aber nie unsichtbar den Fokus halten. */
@@ -236,7 +240,7 @@ input[type="text"], textarea, .rate, .field { scroll-margin-top: 118px; }
 /* "Campus 2026" im THITRONIK Neongruen. Lime als Marker, dunkler Text darauf
    erreicht 10:1 Kontrast, weisser Text waere unlesbar. */
 .masthead__tag {
-  padding: 6px 13px; border-radius: var(--r-pill);
+  padding: 6px 13px; border-radius: var(--radius-pill);
   background: var(--th-lime); color: var(--th-ink);
   font-size: .74rem; font-weight: 800;
   letter-spacing: .1em; text-transform: uppercase; white-space: nowrap;
@@ -285,9 +289,9 @@ input[type="text"], textarea, .rate, .field { scroll-margin-top: 118px; }
 .steps button::before {
   content: "";
   display: block; height: 5px;
-  border-radius: var(--r-pill);
+  border-radius: var(--radius-pill);
   background: var(--th-line);
-  transition: background var(--t-base) var(--ease-out), transform var(--t-base) var(--ease-out);
+  transition: background var(--duration-normal) var(--ease-out), transform var(--duration-normal) var(--ease-out);
 }
 .steps button:disabled { cursor: default; }
 /* Erledigt und anklickbar. Erledigt, aber gesperrt (vorwaerts) bleibt heller,
@@ -354,7 +358,7 @@ body.is-stepping .foot { display: none; }
 
 .intro {
   overflow: hidden;
-  border-radius: var(--r-card);
+  border-radius: var(--radius-lg);
   background: var(--th-white);
   box-shadow: var(--lift);
 }
@@ -365,7 +369,7 @@ body.is-stepping .foot { display: none; }
 }
 .intro__time {
   position: absolute; right: 14px; bottom: 14px;
-  padding: 7px 14px; border-radius: var(--r-pill);
+  padding: 7px 14px; border-radius: var(--radius-pill);
   background: rgba(29, 54, 97, .94); color: var(--th-white);
   font-size: .76rem; font-weight: 700;
   backdrop-filter: blur(6px);
@@ -399,18 +403,18 @@ body.is-stepping .foot { display: none; }
   gap: 14px; flex-wrap: wrap;
   margin: 22px 0 0; padding: 14px 16px;
   border: 1.5px solid var(--th-blue);
-  border-radius: var(--r-control);
+  border-radius: var(--radius-md);
   background: var(--info-bg);
   color: var(--th-navy); font-size: .89rem; font-weight: 620;
 }
 .draft[hidden] { display: none; }
 .draft button {
   min-height: 44px; padding: 8px 16px;
-  border: 1.5px solid var(--th-navy); border-radius: var(--r-pill);
+  border: 1.5px solid var(--th-navy); border-radius: var(--radius-pill);
   color: var(--th-navy); font-size: .82rem; font-weight: 750;
-  transition: background var(--t-fast) var(--ease-out),
-              color var(--t-fast) var(--ease-out),
-              transform var(--t-tap) var(--ease-out);
+  transition: background var(--duration-fast) var(--ease-out),
+              color var(--duration-fast) var(--ease-out),
+              transform var(--duration-press) var(--ease-out);
 }
 .draft button:hover { background: var(--th-navy); color: var(--th-white); }
 .draft button:active { transform: scale(.97); }
@@ -421,12 +425,12 @@ body.is-stepping .foot { display: none; }
 .intro__start {
   margin-top: 26px; width: 100%;
   min-height: 58px; padding: 15px 30px;
-  border-radius: var(--r-pill);
+  border-radius: var(--radius-pill);
   background: var(--th-navy); color: var(--th-white);
   font-size: 1.05rem; font-weight: 800;
   box-shadow: 0 10px 26px rgba(29, 54, 97, .26);
-  transition: background var(--t-fast) var(--ease-out),
-              transform var(--t-tap) var(--ease-out);
+  transition: background var(--duration-fast) var(--ease-out),
+              transform var(--duration-press) var(--ease-out);
 }
 .intro__start:hover { background: var(--th-navy-hover); }
 .intro__start:active { transform: scale(.975); }
@@ -442,7 +446,7 @@ body.is-stepping .foot { display: none; }
 
 .card {
   padding: 24px 20px;
-  border-radius: var(--r-card);
+  border-radius: var(--radius-lg);
   background: var(--th-white);
   box-shadow: var(--lift);
 }
@@ -460,7 +464,7 @@ body.is-stepping .foot { display: none; }
 .card__tally {
   margin: 0 0 0 auto; flex: none;
   padding: 5px 11px;
-  border-radius: var(--r-pill);
+  border-radius: var(--radius-pill);
   background: var(--th-soft);
   color: var(--th-muted); font-size: .74rem; font-weight: 750;
   font-variant-numeric: tabular-nums; white-space: nowrap;
@@ -518,10 +522,10 @@ body.is-stepping .foot { display: none; }
 input[type="text"], textarea {
   width: 100%; padding: 13px 15px;
   border: 1.5px solid var(--th-line);
-  border-radius: var(--r-control);
+  border-radius: var(--radius-md);
   background: var(--th-white);
-  transition: border-color var(--t-fast) var(--ease-out),
-              box-shadow var(--t-fast) var(--ease-out);
+  transition: border-color var(--duration-fast) var(--ease-out),
+              box-shadow var(--duration-fast) var(--ease-out);
 }
 input[type="text"] { min-height: 50px; }
 textarea { min-height: 100px; resize: vertical; }
@@ -561,13 +565,13 @@ input[type="text"]::placeholder, textarea::placeholder { color: #8B95A1; }
   display: flex; align-items: center; justify-content: center;
   min-height: 52px; padding: 11px 14px;
   border: 1.5px solid var(--th-line);
-  border-radius: var(--r-control);
+  border-radius: var(--radius-md);
   background: var(--th-white);
   font-weight: 650; font-size: .95rem; text-align: center;
-  transition: border-color var(--t-fast) var(--ease-out),
-              background var(--t-fast) var(--ease-out),
-              color var(--t-fast) var(--ease-out),
-              transform var(--t-tap) var(--ease-out);
+  transition: border-color var(--duration-fast) var(--ease-out),
+              background var(--duration-fast) var(--ease-out),
+              color var(--duration-fast) var(--ease-out),
+              transform var(--duration-press) var(--ease-out);
 }
 .chip span:hover { border-color: var(--th-blue); }
 .chip input:checked + span { border-color: var(--th-navy); background: var(--th-navy); color: var(--th-white); }
@@ -582,7 +586,7 @@ input[type="text"]::placeholder, textarea::placeholder { color: #8B95A1; }
   width: 20px; height: 20px;
   border: 2px solid #9AA6B2; border-radius: 6px;
   background: var(--th-white);
-  transition: border-color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
+  transition: border-color var(--duration-fast) var(--ease-out), background var(--duration-fast) var(--ease-out);
 }
 .chips .chip input:checked + span::before {
   border-color: var(--th-white);
@@ -598,13 +602,13 @@ input[type="text"]::placeholder, textarea::placeholder { color: #8B95A1; }
   display: flex; align-items: center; justify-content: center;
   min-height: 54px; padding: 11px 13px;
   border: 1.5px solid var(--th-line);
-  border-radius: var(--r-control);
+  border-radius: var(--radius-md);
   background: var(--th-white);
   font-weight: 650; font-size: .93rem; text-align: center;
-  transition: border-color var(--t-fast) var(--ease-out),
-              background var(--t-fast) var(--ease-out),
-              color var(--t-fast) var(--ease-out),
-              transform var(--t-tap) var(--ease-out);
+  transition: border-color var(--duration-fast) var(--ease-out),
+              background var(--duration-fast) var(--ease-out),
+              color var(--duration-fast) var(--ease-out),
+              transform var(--duration-press) var(--ease-out);
 }
 .overall__opt span:hover { border-color: var(--th-blue); }
 .overall__opt input:checked + span { border-color: var(--th-navy); background: var(--th-navy); color: var(--th-white); }
@@ -637,14 +641,14 @@ input[type="text"]::placeholder, textarea::placeholder { color: #8B95A1; }
   display: grid; place-items: center;
   min-height: 52px;
   border: 1.5px solid var(--th-line);
-  border-radius: var(--r-control);
+  border-radius: var(--radius-md);
   background: var(--th-white);
   color: var(--th-navy); font-weight: 800; font-size: 1.05rem;
   font-variant-numeric: tabular-nums;
-  transition: border-color var(--t-fast) var(--ease-out),
-              background var(--t-fast) var(--ease-out),
-              color var(--t-fast) var(--ease-out),
-              transform var(--t-tap) var(--ease-out);
+  transition: border-color var(--duration-fast) var(--ease-out),
+              background var(--duration-fast) var(--ease-out),
+              color var(--duration-fast) var(--ease-out),
+              transform var(--duration-press) var(--ease-out);
 }
 .rate__opt span:hover { border-color: var(--th-blue); background: var(--info-bg); }
 .rate__opt input:checked + span { border-color: var(--th-navy); background: var(--th-navy); color: var(--th-white); }
@@ -690,12 +694,12 @@ input[type="text"]::placeholder, textarea::placeholder { color: #8B95A1; }
   display: flex; align-items: center; justify-content: center;
   min-height: 44px; padding: 8px 15px;
   border: 1.5px dashed var(--th-line);
-  border-radius: var(--r-pill);
+  border-radius: var(--radius-pill);
   color: var(--th-muted); font-size: .82rem; font-weight: 650;
-  transition: border-color var(--t-fast) var(--ease-out),
-              background var(--t-fast) var(--ease-out),
-              color var(--t-fast) var(--ease-out),
-              transform var(--t-tap) var(--ease-out);
+  transition: border-color var(--duration-fast) var(--ease-out),
+              background var(--duration-fast) var(--ease-out),
+              color var(--duration-fast) var(--ease-out),
+              transform var(--duration-press) var(--ease-out);
 }
 .rate__na span:hover { border-color: var(--th-blue); color: var(--th-navy); }
 .rate__na input:checked + span {
@@ -707,7 +711,7 @@ input[type="text"]::placeholder, textarea::placeholder { color: #8B95A1; }
 .rate__comment {
   margin-top: 14px; padding: 14px;
   border: 1.5px solid var(--th-line-soft);
-  border-radius: var(--r-control);
+  border-radius: var(--radius-md);
   background: var(--th-soft);
 }
 .rate__comment[hidden] { display: none; }
@@ -725,7 +729,7 @@ input[type="text"]::placeholder, textarea::placeholder { color: #8B95A1; }
   from { opacity: 0; transform: translateY(-4px); }
   to { opacity: 1; transform: none; }
 }
-.rate__comment.is-revealed { animation: commentIn var(--t-base) var(--ease-out) backwards; }
+.rate__comment.is-revealed { animation: commentIn var(--duration-normal) var(--ease-out) backwards; }
 
 @media (min-width: 900px) {
   .rate__label { float: left; width: 33%; padding: 6px 26px 0 0; }
@@ -758,12 +762,12 @@ input[type="text"]::placeholder, textarea::placeholder { color: #8B95A1; }
   align-items: center; gap: 14px;
   min-height: 80px; padding: 12px 14px 12px 46px;
   border: 1.5px solid var(--th-line);
-  border-radius: var(--r-control);
+  border-radius: var(--radius-md);
   background: var(--th-white);
-  transition: border-color var(--t-fast) var(--ease-out),
-              box-shadow var(--t-fast) var(--ease-out),
-              opacity var(--t-fast) var(--ease-out),
-              transform var(--t-tap) var(--ease-out);
+  transition: border-color var(--duration-fast) var(--ease-out),
+              box-shadow var(--duration-fast) var(--ease-out),
+              opacity var(--duration-fast) var(--ease-out),
+              transform var(--duration-press) var(--ease-out);
 }
 .isle__box::before {
   content: "";
@@ -820,7 +824,7 @@ input[type="text"]::placeholder, textarea::placeholder { color: #8B95A1; }
 .isle__rank {
   display: none; place-items: center;
   padding: 4px 10px;
-  border-radius: var(--r-pill);
+  border-radius: var(--radius-pill);
   background: var(--th-lime); color: var(--th-ink);
   font-size: .66rem; font-weight: 900; letter-spacing: .05em;
   text-transform: uppercase; white-space: nowrap;
@@ -851,7 +855,7 @@ input[type="text"]::placeholder, textarea::placeholder { color: #8B95A1; }
 
 .isles__poster {
   margin: 0; overflow: hidden;
-  border-radius: var(--r-control);
+  border-radius: var(--radius-md);
   border: 1px solid var(--th-line-soft);
 }
 .isles__poster img { width: 100%; height: auto; }
@@ -873,7 +877,7 @@ input[type="text"]::placeholder, textarea::placeholder { color: #8B95A1; }
 .missing {
   margin-top: 24px; padding: 16px 18px;
   border: 1.5px solid #EFC3CA;
-  border-radius: var(--r-control);
+  border-radius: var(--radius-md);
   background: #FDF2F4;
 }
 .missing[hidden] { display: none; }
@@ -912,12 +916,12 @@ input[type="text"]::placeholder, textarea::placeholder { color: #8B95A1; }
 
 .stepbar__back, .stepbar__next {
   min-height: 54px; padding: 13px 22px;
-  border-radius: var(--r-pill);
+  border-radius: var(--radius-pill);
   font-weight: 800; white-space: nowrap;
-  transition: background var(--t-fast) var(--ease-out),
-              color var(--t-fast) var(--ease-out),
-              border-color var(--t-fast) var(--ease-out),
-              transform var(--t-tap) var(--ease-out);
+  transition: background var(--duration-fast) var(--ease-out),
+              color var(--duration-fast) var(--ease-out),
+              border-color var(--duration-fast) var(--ease-out),
+              transform var(--duration-press) var(--ease-out);
 }
 .stepbar__back {
   flex: 0 0 auto;
@@ -1007,7 +1011,7 @@ input[type="text"]::placeholder, textarea::placeholder { color: #8B95A1; }
 .done__card {
   margin: 30px 0 0; padding: 24px;
   border: 1px solid rgba(255, 255, 255, .28);
-  border-radius: var(--r-card);
+  border-radius: var(--radius-lg);
   background: rgba(255, 255, 255, .1);
   backdrop-filter: blur(10px);
   text-align: left;
@@ -1026,7 +1030,7 @@ body.is-done { overflow: hidden; }
   position: fixed; z-index: 3000;
   left: 12px; bottom: calc(14px + env(safe-area-inset-bottom, 0px));
   margin: 0; padding: 8px 14px;
-  border: 1px solid #EFC3CA; border-radius: var(--r-pill);
+  border: 1px solid #EFC3CA; border-radius: var(--radius-pill);
   background: var(--th-white); color: var(--th-red-text);
   font-size: .74rem; font-weight: 800;
   box-shadow: 0 8px 24px rgba(29, 54, 97, .22);
@@ -1503,39 +1507,47 @@ body.is-done .demo { display: none; }
           <fieldset class="isles__list">
             <legend class="sr-only">Favorisierte Campus-Inseln, bis zu drei</legend>
           <label class="isle">
-            <input type="checkbox" name="inseln" value="1">
+            <input type="checkbox" name="inseln" value="vejro">
             <span class="isle__box">
               <span class="isle__thumb"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII=" alt="" width="90" height="76" loading="lazy" decoding="async"></span>
-              <span class="isle__text"><strong>Vejr&oslash;</strong><small>Premiumpartner und Produktschulung</small></span>
+              <span class="isle__text"><strong>Vejrø</strong><small>Produktneuheiten</small></span>
               <span class="isle__slot"><span class="isle__rank" data-rank></span></span>
             </span>
           </label>
           <label class="isle">
-            <input type="checkbox" name="inseln" value="2">
+            <input type="checkbox" name="inseln" value="poel">
             <span class="isle__box">
               <span class="isle__thumb"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII=" alt="" width="90" height="76" loading="lazy" decoding="async"></span>
-              <span class="isle__text"><strong>Hiddensee</strong><small>Funk-Magnetkontakte &amp; Abzweigverbinder</small></span>
+              <span class="isle__text"><strong>Poel</strong><small>Händlerbereich</small></span>
               <span class="isle__slot"><span class="isle__rank" data-rank></span></span>
             </span>
           </label>
           <label class="isle">
-            <input type="checkbox" name="inseln" value="3">
+            <input type="checkbox" name="inseln" value="hiddensee">
             <span class="isle__box">
               <span class="isle__thumb"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII=" alt="" width="90" height="76" loading="lazy" decoding="async"></span>
-              <span class="isle__text"><strong>Fehmarn</strong><small>Wichtige Supportthemen</small></span>
+              <span class="isle__text"><strong>Hiddensee</strong><small>Funkkontakte &amp; Verbindungen</small></span>
               <span class="isle__slot"><span class="isle__rank" data-rank></span></span>
             </span>
           </label>
           <label class="isle">
-            <input type="checkbox" name="inseln" value="4">
+            <input type="checkbox" name="inseln" value="samsoe">
             <span class="isle__box">
               <span class="isle__thumb"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII=" alt="" width="90" height="76" loading="lazy" decoding="async"></span>
-              <span class="isle__text"><strong>Poel</strong><small>H&auml;ndlerbereich</small></span>
+              <span class="isle__text"><strong>Samsø</strong><small>Einbauorte</small></span>
               <span class="isle__slot"><span class="isle__rank" data-rank></span></span>
             </span>
           </label>
           <label class="isle">
-            <input type="checkbox" name="inseln" value="5">
+            <input type="checkbox" name="inseln" value="fehmarn">
+            <span class="isle__box">
+              <span class="isle__thumb"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII=" alt="" width="90" height="76" loading="lazy" decoding="async"></span>
+              <span class="isle__text"><strong>Fehmarn</strong><small>Fehlersuche &amp; Support</small></span>
+              <span class="isle__slot"><span class="isle__rank" data-rank></span></span>
+            </span>
+          </label>
+          <label class="isle">
+            <input type="checkbox" name="inseln" value="usedom">
             <span class="isle__box">
               <span class="isle__thumb"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII=" alt="" width="90" height="76" loading="lazy" decoding="async"></span>
               <span class="isle__text"><strong>Usedom</strong><small>Verkaufsdisplay &amp; Konfigurator</small></span>
@@ -1543,23 +1555,15 @@ body.is-done .demo { display: none; }
             </span>
           </label>
           <label class="isle">
-            <input type="checkbox" name="inseln" value="6">
+            <input type="checkbox" name="inseln" value="langeland">
             <span class="isle__box">
               <span class="isle__thumb"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII=" alt="" width="90" height="76" loading="lazy" decoding="async"></span>
-              <span class="isle__text"><strong>Langeland</strong><small>Fahrzeugannahme &amp; &Uuml;bergabe</small></span>
+              <span class="isle__text"><strong>Langeland</strong><small>Annahme &amp; Übergabe</small></span>
               <span class="isle__slot"><span class="isle__rank" data-rank></span></span>
             </span>
           </label>
           <label class="isle">
-            <input type="checkbox" name="inseln" value="7">
-            <span class="isle__box">
-              <span class="isle__thumb"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII=" alt="" width="90" height="76" loading="lazy" decoding="async"></span>
-              <span class="isle__text"><strong>Sams&oslash;</strong><small>Basisfahrzeuge, Gaswarner &amp; Einbaupraxis</small></span>
-              <span class="isle__slot"><span class="isle__rank" data-rank></span></span>
-            </span>
-          </label>
-          <label class="isle">
-            <input type="checkbox" name="inseln" value="8">
+            <input type="checkbox" name="inseln" value="ruegen">
             <span class="isle__box">
               <span class="isle__thumb isle__thumb--icon"><svg viewBox="0 0 64 64" focusable="false" aria-hidden="true"><path d="M12 42h40M18 39a14 14 0 0 1 28 0M32 24v-5M28 18h8M9 47h46"/></svg></span>
               <span class="isle__text"><strong>R&uuml;gen</strong><small>Catering</small></span>
@@ -1656,6 +1660,7 @@ body.is-done .demo { display: none; }
     </div>
   </div>
 
+  <script type="application/json" id="insel-daten">{"vejro":["insel_vejroe","Vejrø"],"poel":["insel_poel","Poel"],"hiddensee":["insel_hiddensee","Hiddensee"],"samsoe":["insel_samsoe","Samsø"],"fehmarn":["insel_fehmarn","Fehmarn"],"usedom":["insel_usedom","Usedom"],"langeland":["insel_langeland","Langeland"],"ruegen":["insel_ruegen","Rügen"]}</script>
   <script>
 /* ============================================================================
    THITRONIK Campus 2026 Feedbackbogen - v14 (Schritt fuer Schritt)
@@ -1730,16 +1735,17 @@ body.is-done .demo { display: none; }
     ['durchfuehrung', 'betreuung_thitronik', 'Betreuung durch THITRONIK']
   ];
 
-  const islandDefinitions = {
-    '1': ['insel_vejroe', 'Vejrø'],
-    '2': ['insel_hiddensee', 'Hiddensee'],
-    '3': ['insel_fehmarn', 'Fehmarn'],
-    '4': ['insel_poel', 'Poel'],
-    '5': ['insel_usedom', 'Usedom'],
-    '6': ['insel_langeland', 'Langeland'],
-    '7': ['insel_samsoe', 'Samsø'],
-    '8': ['insel_ruegen', 'Rügen']
-  };
+  /* Die Inseln stehen nicht mehr hier. Sie kommen als Datenblock aus dem
+     Generator, der sie seinerseits aus dem Katalog des Wissenschecks liest —
+     sonst fuehrten Bogen und Quiz die Namen an drei Stellen und liefen
+     wieder auseinander. Faellt der Block aus, bleiben die Inselwahlen leer;
+     das ist die richtige Folge, denn geraten wird hier nichts. */
+  const islandDefinitions = (() => {
+    try {
+      const knoten = document.getElementById('insel-daten');
+      return knoten ? JSON.parse(knoten.textContent) : {};
+    } catch (error) { return {}; }
+  })();
 
   const RATING_KEYS = ratingDefinitions.map((definition) => definition[1]);
   const SECTION_NAMES = ['Angaben', 'Eindruck', 'Organisation', 'Schulung', 'Inseln', 'Ausblick'];

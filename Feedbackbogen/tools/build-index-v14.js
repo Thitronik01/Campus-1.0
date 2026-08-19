@@ -3,7 +3,8 @@
    Gegenueber v13 geaendert:
    - Skala umgedreht: 5 ist die beste Note, 1 die schlechteste.
    - Neues Pflichtfeld Haendlernummer, genau fuenf Ziffern.
-   - Vejroe heisst jetzt "Premiumpartner und Produktschulung". */
+   - Inselnamen kommen aus dem Katalog des Wissenschecks, nicht mehr von hier.
+*/
 const fs = require('fs');
 const P = require('path').resolve(__dirname, '..');
 
@@ -24,15 +25,25 @@ const SCHULUNG = [
   ['fragen', 'M&ouml;glichkeit f&uuml;r Fragen'],
   ['betreuung_thitronik', 'Betreuung durch THITRONIK'],
 ];
-const ISLANDS = [
-  ['1', 'vejro', 'Vejr&oslash;', 'Premiumpartner und Produktschulung'],
-  ['2', 'hiddensee', 'Hiddensee', 'Funk-Magnetkontakte &amp; Abzweigverbinder'],
-  ['3', 'fehmarn', 'Fehmarn', 'Wichtige Supportthemen'],
-  ['4', 'poel', 'Poel', 'H&auml;ndlerbereich'],
-  ['5', 'usedom', 'Usedom', 'Verkaufsdisplay &amp; Konfigurator'],
-  ['6', 'langeland', 'Langeland', 'Fahrzeugannahme &amp; &Uuml;bergabe'],
-  ['7', 'samsoe', 'Sams&oslash;', 'Basisfahrzeuge, Gaswarner &amp; Einbaupraxis'],
-];
+/* Die Inseln kommen aus dem Katalog des Wissenschecks. Vorher fuehrten der
+   Bogen und das Quiz je eine eigene Liste, und sie liefen auseinander:
+   Samsoe hiess hier 'Basisfahrzeuge, Gaswarner & Einbaupraxis' und dort
+   'Einbauorte', Fehmarn 'Wichtige Supportthemen' gegen 'Fehlersuche &
+   Support'. Ein Haendler las am selben Tag zwei Namen fuer dieselbe
+   Station. */
+const KATALOG = JSON.parse(fs.readFileSync(
+  require('path').resolve(P, '..', 'Campus Quiz', 'public', 'data', 'inseln.json'), 'utf8'));
+
+/* Der itemKey wandert in die Datenbank und bleibt deshalb, wie er war —
+   auch das unregelmaessige insel_vejroe gegenueber dem Slug vejro. */
+const ITEM_KEYS = {
+  vejro: 'insel_vejroe', poel: 'insel_poel', hiddensee: 'insel_hiddensee',
+  samsoe: 'insel_samsoe', fehmarn: 'insel_fehmarn', usedom: 'insel_usedom',
+  langeland: 'insel_langeland', ruegen: 'insel_ruegen'
+};
+
+const esc = (s) => String(s)
+  .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const STEP_NAMES = ['Angaben', 'Eindruck', 'Organisation', 'Schulung', 'Inseln', 'Ausblick'];
 
 const CATERING_SVG =
@@ -82,12 +93,24 @@ ${inner}
           </label>`;
 }
 
-const islandMarkup = ISLANDS.map(([value, slug, name, desc]) => isle(value,
-  `              <span class="isle__thumb"><img src="assets/v12/islands/${slug}.webp" alt="" width="90" height="76" loading="lazy" decoding="async"></span>
-              <span class="isle__text"><strong>${name}</strong><small>${desc}</small></span>`
+/* Der Wert der Kachel ist der Slug, nicht mehr die laufende Nummer. Die
+   Reihenfolge folgt jetzt dem Katalog, und positionsgebundene Zahlen haetten
+   dabei still ihre Bedeutung getauscht — aus der 4 waere Poel statt Usedom
+   geworden, ohne dass irgendetwas gemeldet haette. */
+const islandMarkup = KATALOG.inseln.map((insel) => isle(insel.slug,
+  `              <span class="isle__thumb"><img src="assets/v12/islands/${insel.slug}.webp" alt="" width="90" height="76" loading="lazy" decoding="async"></span>
+              <span class="isle__text"><strong>${esc(insel.name)}</strong><small>${esc(insel.title)}</small></span>`
 )).join('\n');
 
-const cateringMarkup = isle('8',
+/* Dieselben Angaben noch einmal als Daten, damit app-v14.js keine dritte
+   Liste fuehren muss. Vorher stand dort islandDefinitions mit denselben
+   Namen ein zweites Mal. */
+const inselDaten = JSON.stringify(Object.fromEntries(
+  KATALOG.inseln.map((i) => [i.slug, [ITEM_KEYS[i.slug], i.name]])
+    .concat([['ruegen', [ITEM_KEYS.ruegen, 'Rügen']]])
+));
+
+const cateringMarkup = isle('ruegen',
   `              <span class="isle__thumb isle__thumb--icon">${CATERING_SVG}</span>
               <span class="isle__text"><strong>R&uuml;gen</strong><small>Catering</small></span>`
 );
@@ -386,6 +409,7 @@ ${cateringMarkup}
     </div>
   </div>
 
+  <script type="application/json" id="insel-daten">${inselDaten}</script>
   <script src="app-v14.js" defer></script>
   <!-- Dekoration, bewusst nach dem Formular: der Bogen soll bedienbar sein,
        bevor der Hintergrund kommt. Faellt er aus, aendert sich sonst nichts. -->
