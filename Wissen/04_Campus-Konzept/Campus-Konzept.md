@@ -12,7 +12,7 @@ Der THITRONIK Campus bleibt eine **Präsenzschulung** mit Schulungsinseln. Die
 Digitalisierung ersetzt sie nicht, sondern begleitet die einzelnen Stationen.
 
 Nach jeder Insel beantworten die Händler auf Smartphone oder Tablet ein kurzes
-Quiz mit etwa 5–10 Fragen. Am Ende des Schulungstages wird der bereits vorhandene
+Quiz mit etwa 5–12 Fragen. Am Ende des Schulungstages wird der bereits vorhandene
 digitale Feedbackbogen ausgefüllt.
 
 **Das zentrale Prinzip:**

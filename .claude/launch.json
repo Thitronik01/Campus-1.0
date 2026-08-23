@@ -4,23 +4,41 @@
     {
       "name": "campus-quiz",
       "runtimeExecutable": "node",
-      "runtimeArgs": ["Campus Quiz/tools/dev-server.js"],
+      "runtimeArgs": [
+        "Campus Quiz/tools/dev-server.js"
+      ],
       "autoPort": true,
       "port": 8788
     },
     {
       "name": "samsoe-paket",
       "runtimeExecutable": "node",
-      "runtimeArgs": ["Campus Quiz/tools/dev-server.js", "Samsø Quiz/public"],
+      "runtimeArgs": [
+        "Campus Quiz/tools/dev-server.js",
+        "Samsø Quiz/public"
+      ],
       "autoPort": true,
       "port": 8789
     },
     {
       "name": "gesamtpaket",
       "runtimeExecutable": "node",
-      "runtimeArgs": ["Campus Quiz/tools/dev-server.js", "Campus Gesamtpaket/public"],
+      "runtimeArgs": [
+        "Campus Quiz/tools/dev-server.js",
+        "Campus Gesamtpaket/public"
+      ],
       "autoPort": true,
       "port": 8790
+    },
+    {
+      "name": "feedbackbogen",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "Campus Quiz/tools/dev-server.js",
+        "Feedbackbogen/netlify-v14"
+      ],
+      "autoPort": true,
+      "port": 8791
     }
   ]
 }

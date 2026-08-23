@@ -6,19 +6,6 @@ package-lock.json
 npm-debug.log*
 
 # ---------------------------------------------------------------------------
-# Der Feedbackbogen hat ein eigenes Repository
-#
-#   https://github.com/Thitronik01/Thitronik-Campus-Feedbackbogen
-#
-# Er liegt lokal im selben Ordner, ist aber ein eigenständiges Projekt mit
-# eigener Historie, eigenem Deployment und eigener Versionierung. Ihn hier
-# mitzucheckin würde entweder seine Historie verschlucken oder ein kaputtes
-# Submodul erzeugen. Wer beides zusammen braucht, klont beide Repos
-# nebeneinander.
-# ---------------------------------------------------------------------------
-Feedbackbogen/
-
-# ---------------------------------------------------------------------------
 # Umgebung und Geheimnisse
 #
 # Der Supabase Secret Key gehört ausschließlich in die Netlify-

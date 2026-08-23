@@ -13,7 +13,7 @@
 
 (function () {
   const EVENT_SLUG = "campus-2026";
-  const ENGINE_VERSION = "1.0";
+  const ENGINE_VERSION = "1.4.0";
   const SUBMIT_ENDPOINT = "/.netlify/functions/submit-quiz";
 
   const LS_PARTICIPANT = "thitronik.campus.2026.participant";
@@ -41,6 +41,11 @@
 
   const el = {
     mastheadTitle: $("masthead-title"),
+    mastheadProgress: $("masthead-progress"),
+    campusProgressValue: $("campus-progress-value"),
+    campusProgressTrack: $("campus-progress-track"),
+    campusProgressFill: $("campus-progress-fill"),
+    campusProgressCopy: $("campus-progress-copy"),
     mastheadMeta: $("masthead-meta"),
     chipIsland: $("chip-island"),
     chipParticipant: $("chip-participant"),
@@ -54,22 +59,45 @@
       error: $("screen-error")
     },
 
+    campusMap: $("campus-map"),
+    campusMapArt: $("campus-map-art"),
     islandGrid: $("island-grid"),
-    gesamt: $("gesamt"),
-    gesamtZahl: $("gesamt-zahl"),
-    gesamtSchnitt: $("gesamt-schnitt"),
-    gesamtBar: $("gesamt-bar"),
-    gesamtFill: $("gesamt-fill"),
+    tagesabschluss: $("tagesabschluss"),
     ausgang: $("ausgang"),
     ausgangText: $("ausgang-text"),
     btnAusgangSenden: $("btn-ausgang-senden"),
+    taKicker: $("ta-kicker"),
+    taTitle: $("ta-title"),
+    taDesc: $("ta-desc"),
 
     startCode: $("start-code"),
     startTitle: $("start-title"),
     startLead: $("start-lead"),
     startFacts: $("start-facts"),
+    startDetails: $("start-details"),
+    startTypes: $("start-types"),
+    samsoeStartVisual: $("samsoe-start-visual"),
+    samsoeStartVehicle: $("samsoe-start-vehicle"),
+    samsoeStartTechnician: $("samsoe-start-technician"),
+    hiddenseeStartVisual: $("hiddensee-start-visual"),
+    hiddenseeStartContact: $("hiddensee-start-contact"),
+    vejroStartVisual: $("vejro-start-visual"),
+    vejroStartProducts: $("vejro-start-products"),
+    poelStartVisual: $("poel-start-visual"),
+    poelStartHaendler: $("poel-start-haendler"),
+    usedomStartVisual: $("usedom-start-visual"),
+    usedomStartDisplay: $("usedom-start-display"),
+    langelandStartVisual: $("langeland-start-visual"),
+    langelandStartHandover: $("langeland-start-handover"),
+    fehmarnStartVisual: $("fehmarn-start-visual"),
+    fehmarnStartDiagnostic: $("fehmarn-start-diagnostic"),
     formIntro: $("form-intro"),
     startForm: $("start-form"),
+    startFields: $("start-fields"),
+    participantSummary: $("participant-summary"),
+    participantName: $("participant-name"),
+    participantMeta: $("participant-meta"),
+    btnEditParticipant: $("btn-edit-participant"),
     fName: $("f-name"),
     fDealer: $("f-dealer"),
     fNumber: $("f-number"),
@@ -80,6 +108,7 @@
     qProgress: $("q-progress"),
     qProgressFill: $("q-progress-fill"),
     qCategory: $("q-category"),
+    qMode: $("q-mode"),
     qTitle: $("q-title"),
     qHint: $("q-hint"),
     qMedia: $("q-media"),
@@ -94,6 +123,7 @@
     qFeedbackMediaImg: $("q-feedback-media-img"),
     qFeedbackMediaCaption: $("q-feedback-media-caption"),
     qFeedbackIrrtum: $("q-feedback-irrtum"),
+    qFeedbackIrrtumLabel: $("q-feedback-irrtum-label"),
     qFeedbackIrrtumList: $("q-feedback-irrtum-list"),
     qFeedbackMitnehmen: $("q-feedback-mitnehmen"),
     qFeedbackMitnehmenText: $("q-feedback-mitnehmen-text"),
@@ -153,6 +183,7 @@
     Object.entries(el.screens).forEach(([key, node]) => {
       node.hidden = key !== name;
     });
+    el.mastheadProgress.hidden = name !== "islands";
     // Der Ausgangshinweis hängt am Bildschirm, nicht am Sendezustand.
     if (el.ausgang) paintAusgang();
     window.scrollTo({ top: 0, behavior: "auto" });
@@ -264,6 +295,44 @@
     try { localStorage.setItem(LS_PARTICIPANT, JSON.stringify(data)); } catch { /* privater Modus */ }
   }
 
+  const AREA_LABELS = {
+    verkauf: "Verkauf",
+    werkstatt: "Werkstatt",
+    "verkauf-werkstatt": "Verkauf und Werkstatt",
+    leitung: "Betriebsleitung",
+    sonstiges: "Sonstiges"
+  };
+
+  /** Dieselben drei Pflichtfelder, die validateForm() prüft — nur ohne
+   *  Fehlermeldung und Fokussprung. Der Tätigkeitsbereich bleibt freiwillig
+   *  und darf die Zusammenfassung deshalb nicht verhindern. */
+  function participantComplete(data) {
+    if (!data) return false;
+    return String(data.name || "").trim().length >= 2
+      && String(data.dealer || "").trim().length >= 2
+      && /^\d{5}$/.test(String(data.dealerNumber || "").trim());
+  }
+
+  /** Vollständige Angaben werden zur Zeile zusammengefaltet: Sie sind
+   *  gespeichert, ihre erneute Eingabe ist also keine Aufgabe mehr, sondern
+   *  eine Störung vor der eigentlichen — dem Quiz. Das Formular bleibt im
+   *  Dokument und ist über "Angaben ändern" einen Klick entfernt. */
+  function showParticipantSummary(data) {
+    el.participantName.textContent = data.name;
+    const teile = [data.dealer, "Händlernummer " + data.dealerNumber];
+    const bereich = AREA_LABELS[data.area];
+    if (bereich) teile.push(bereich);
+    el.participantMeta.textContent = teile.join(" · ");
+    el.participantSummary.hidden = false;
+    el.startFields.hidden = true;
+  }
+
+  function showParticipantForm(focus) {
+    el.participantSummary.hidden = true;
+    el.startFields.hidden = false;
+    if (focus) el.fName.focus();
+  }
+
   function loadDone() {
     try {
       const raw = localStorage.getItem(LS_DONE);
@@ -348,85 +417,215 @@
   }
 
   async function fetchJson(url) {
-    const response = await fetch(url, { cache: "no-cache" });
-    if (!response.ok) throw new Error(`${url} → HTTP ${response.status}`);
+    const separator = url.includes("?") ? "&" : "?";
+    const versionedUrl = `${url}${separator}v=${encodeURIComponent(ENGINE_VERSION)}`;
+    const response = await fetch(versionedUrl, { cache: "no-store" });
+    if (!response.ok) throw new Error(`${versionedUrl} → HTTP ${response.status}`);
     return response.json();
   }
 
   // -------------------------------------------------------- Inselübersicht --
 
-  /** Malt Kacheln, Gesamtfortschritt und Ausgangshinweis neu, ohne den
-   *  Bildschirm zu wechseln. Das Nachsenden im Hintergrund ändert den
-   *  Zustand der Kacheln — es darf dabei aber nicht nach oben scrollen. */
-  function paintInseln() {
-    if (!state.catalog) return;
+  const CAMPUS_ROUTES = [
+    "fehmarn-samsoe",
+    "samsoe-vejro",
+    "vejro-hiddensee",
+    "hiddensee-poel",
+    "poel-langeland",
+    "langeland-usedom",
+    "usedom-fehmarn"
+  ];
 
+  let campusRouteFrame = 0;
+
+  /** Ermittelt die Mitte des sichtbaren Stationspunkts. Die Punkte sind
+   *  Pseudoelemente, weil sie zugleich die kurze Verbindung zur Infobox
+   *  zeichnen. Ihre berechnete Position funktioniert auch bei höheren
+   *  Ergebnisboxen und an jedem Desktop-Breakpoint. */
+  function campusAnchor(slug, mapRect) {
+    const content = el.islandGrid.querySelector(`.island-${slug} .i-content`);
+    if (!content) return null;
+
+    const rect = content.getBoundingClientRect();
+    const dot = getComputedStyle(content, "::before");
+    const width = parseFloat(dot.width) || 8;
+    const height = parseFloat(dot.height) || 8;
+    const left = parseFloat(dot.left);
+    const right = parseFloat(dot.right);
+    const top = parseFloat(dot.top);
+    const screenX = Number.isFinite(left)
+      ? rect.left + left + width / 2
+      : rect.right - right - width / 2;
+    const screenY = rect.top + top + height / 2;
+
+    return {
+      x: ((screenX - mapRect.left) / mapRect.width) * 1200,
+      y: ((screenY - mapRect.top) / mapRect.height) * 760
+    };
+  }
+
+  function campusCurve(name, a, b) {
+    const point = (p) => `${p.x.toFixed(1)} ${p.y.toFixed(1)}`;
+    let c1;
+    let c2;
+
+    switch (name) {
+      case "fehmarn-samsoe":
+        c1 = { x: a.x - 60, y: a.y - 96 };
+        c2 = { x: b.x - 66, y: b.y + 82 };
+        break;
+      case "samsoe-vejro":
+        c1 = { x: a.x + 24, y: a.y + 32 };
+        c2 = { x: b.x + 7, y: b.y - 78 };
+        break;
+      case "vejro-hiddensee":
+        c1 = { x: a.x + 77, y: a.y + 32 };
+        c2 = { x: b.x - 56, y: b.y - 90 };
+        break;
+      case "hiddensee-poel":
+        c1 = { x: a.x + 99, y: a.y + 80 };
+        c2 = { x: b.x + 158, y: b.y - 69 };
+        break;
+      case "poel-langeland":
+        c1 = { x: a.x - 52, y: a.y + 121 };
+        c2 = { x: b.x + 68, y: b.y + 128 };
+        break;
+      case "langeland-usedom":
+        c1 = { x: a.x + 30, y: a.y + 80 };
+        c2 = { x: b.x - 40, y: b.y + 100 };
+        break;
+      case "usedom-fehmarn":
+        c1 = { x: a.x - 83, y: a.y - 17 };
+        c2 = { x: b.x - 12, y: b.y + 64 };
+        break;
+      default:
+        c1 = { x: a.x + (b.x - a.x) / 3, y: a.y };
+        c2 = { x: a.x + ((b.x - a.x) * 2) / 3, y: b.y };
+    }
+
+    return `M ${point(a)} C ${point(c1)}, ${point(c2)}, ${point(b)}`;
+  }
+
+  function updateCampusRoutes() {
+    if (!el.campusMap || !el.campusMapArt || el.screens.islands.hidden || innerWidth < 760) return;
+
+    const mapRect = el.campusMap.getBoundingClientRect();
+    if (!mapRect.width || !mapRect.height) return;
+
+    CAMPUS_ROUTES.forEach((name) => {
+      const [from, to] = name.split("-");
+      const a = campusAnchor(from, mapRect);
+      const b = campusAnchor(to, mapRect);
+      const path = el.campusMapArt.querySelector(`[data-route="${name}"]`);
+      if (a && b && path) path.setAttribute("d", campusCurve(name, a, b));
+    });
+  }
+
+  function scheduleCampusRoutes() {
+    if (campusRouteFrame) cancelAnimationFrame(campusRouteFrame);
+    campusRouteFrame = requestAnimationFrame(() => {
+      campusRouteFrame = 0;
+      updateCampusRoutes();
+    });
+  }
+
+  function setCampusRouteFocus(slug, active) {
+    if (!el.campusMap || !el.campusMapArt) return;
+
+    const routes = el.campusMapArt.querySelectorAll("[data-route]");
+    el.campusMap.classList.toggle("has-route-focus", active);
+    routes.forEach((path) => {
+      const stations = path.dataset.route.split("-");
+      path.classList.toggle("is-route-focus", active && stations.includes(slug));
+    });
+  }
+
+  function renderIslands() {
     const done = loadDone();
+    const total = state.catalog.inseln.length;
+    const abgeschlossen = state.catalog.inseln.filter((island) => done[island.slug]).length;
+    const fortschritt = total ? Math.round((abgeschlossen / total) * 100) : 0;
+
+    setCampusRouteFocus("", false);
+    // Was noch im Ausgang liegt, darf auf der Kachel nicht wie erledigt
+    // aussehen — es ist auf diesem Gerät fertig, aber nirgends angekommen.
     const wartend = new Set(outboxAlle().map((e) => e.payload.session_id));
     el.islandGrid.innerHTML = "";
+    // "1 von 7" ist die Aussage, die jemand am Aufsteller braucht. Der
+    // Prozentwert ist dieselbe Zahl in ungenauer — er bleibt als Skala
+    // stehen, tritt aber zurück. Für die Vorlesehilfe ersetzt aria-valuetext
+    // die nackten "14", die als Fortschritt nichts aussagen.
+    const fortschrittText = `${abgeschlossen} von ${total} ${total === 1 ? "Insel" : "Inseln"} abgeschlossen`;
+    el.campusProgressValue.textContent = `${fortschritt} %`;
+    el.campusProgressCopy.textContent = fortschrittText;
+    el.campusProgressTrack.setAttribute("aria-valuenow", String(fortschritt));
+    el.campusProgressTrack.setAttribute("aria-valuetext", fortschrittText);
+    el.campusProgressFill.style.width = `${fortschritt}%`;
 
-    state.catalog.inseln.forEach((island) => {
+    state.catalog.inseln.forEach((island, index) => {
       const entry = done[island.slug];
       // Altbestand ohne session gilt als versendet.
-      const offen = Boolean(entry && entry.session && wartend.has(entry.session));
-
+      const unterwegs = Boolean(entry && entry.session && wartend.has(entry.session));
       const li = document.createElement("li");
+      li.className = `island-map-item island-${island.slug}`;
+      li.style.setProperty("--island-order", index);
       const card = document.createElement("button");
       card.type = "button";
-      card.className = "island-card" + (entry ? (offen ? " is-warten" : " is-done") : "");
-
-      const zustand = !entry
-        ? "Noch offen"
-        : offen
-          ? `Abgeschlossen · ${entry.percent} % — noch nicht gesendet`
-          : `Abgeschlossen · ${entry.percent} %`;
-
+      card.className = "island-card" + (entry ? (unterwegs ? " is-warten" : " is-done") : "");
+      if (entry) card.style.setProperty("--score", Math.max(0, Math.min(100, Number(entry.percent) || 0)));
       card.innerHTML = `
-        <span class="i-code">${escapeHtml(island.code)}</span>
-        <span class="i-title">${escapeHtml(island.title)}</span>
-        <span class="i-desc">${escapeHtml(island.beschreibung)}</span>
-        <span class="i-state">${escapeHtml(zustand)}</span>`;
+        ${island.image ? `<span class="i-visual" aria-hidden="true"><img src="${escapeHtml(island.image)}" alt="" loading="lazy"></span>` : ""}
+        <span class="i-content">
+          <span class="i-code">${escapeHtml(island.code)}</span>
+          <span class="i-title">${escapeHtml(island.title)}</span>
+          <span class="i-desc">${escapeHtml(island.beschreibung)}</span>
+          <span class="i-state">${escapeHtml(!entry
+            ? "Noch nicht begonnen"
+            : unterwegs
+              ? `Abgeschlossen · ${entry.percent} % — noch nicht gesendet`
+              : `Abgeschlossen · ${entry.percent} %`)}</span>
+          ${entry ? `<span class="i-score" aria-hidden="true"><span></span></span>` : ""}
+        </span>
+        <span class="i-open" aria-hidden="true"></span>`;
       card.addEventListener("click", () => {
         history.pushState({}, "", `/quiz/${island.slug}`);
         route();
       });
+      const syncRouteFocus = () => requestAnimationFrame(() => {
+        setCampusRouteFocus(island.slug, card.matches(":hover, :focus-visible"));
+      });
+      card.addEventListener("pointerenter", syncRouteFocus);
+      card.addEventListener("pointerleave", syncRouteFocus);
+      card.addEventListener("focus", syncRouteFocus);
+      card.addEventListener("blur", syncRouteFocus);
       li.appendChild(card);
       el.islandGrid.appendChild(li);
     });
 
-    paintGesamt(done);
-    paintAusgang();
-  }
-
-  /** Wie weit ist der Tag? Erscheint erst mit der ersten abgeschlossenen
-   *  Insel — davor wäre es ein Balken auf null, der nichts erzählt. */
-  function paintGesamt(done) {
-    const inseln = state.catalog.inseln;
-    const fertig = inseln.filter((i) => done[i.slug]);
-
-    if (istEinzelinsel() || !fertig.length) {
-      el.gesamt.hidden = true;
-      return;
+    // Der Tagesabschluss steht nur da, wo es ihn wirklich gibt: Die Adresse
+    // kommt aus dem Katalog, und die schreibt der Generator allein ins
+    // Gesamtpaket. In der Quelle und in den Einzelpaketen fuehrte eine fest
+    // verdrahtete Verknuepfung ins Leere.
+    if (state.catalog.feedback) {
+      const fertig = total > 0 && abgeschlossen === total;
+      el.tagesabschluss.href = state.catalog.feedback;
+      el.tagesabschluss.hidden = false;
+      el.tagesabschluss.classList.toggle("is-ready", fertig);
+      el.taKicker.textContent = fertig ? "Expedition abgeschlossen" : "Tagesabschluss";
+      el.taTitle.textContent = fertig
+        ? `Alle ${total} ${total === 1 ? "Insel" : "Inseln"} geschafft`
+        : "Feedbackbogen";
+      el.taDesc.textContent = fertig
+        ? "Es fehlt nur noch deine Rückmeldung zum Tag."
+        : "Deine Rückmeldung zur Schulung, etwa sechs Minuten. Geht auch, bevor alle Inseln erledigt sind.";
+    } else {
+      el.tagesabschluss.hidden = true;
     }
 
-    const anteil = Math.round((fertig.length / inseln.length) * 100);
-    const schnitt = Math.round(
-      fertig.reduce((summe, i) => summe + (done[i.slug].percent || 0), 0) / fertig.length);
-
-    el.gesamtZahl.textContent = fertig.length === inseln.length
-      ? `Alle ${inseln.length} Inseln abgeschlossen`
-      : `${fertig.length} von ${inseln.length} Inseln abgeschlossen`;
-    el.gesamtSchnitt.textContent = `${schnitt} % im Schnitt`;
-    el.gesamtFill.style.width = `${anteil}%`;
-    el.gesamtBar.setAttribute("aria-valuenow", String(anteil));
-    el.gesamt.hidden = false;
-  }
-
-  function renderIslands() {
-    paintInseln();
     el.mastheadTitle.textContent = "Wissenscheck";
     el.mastheadMeta.hidden = true;
     show("islands");
+    scheduleCampusRoutes();
   }
 
   // ------------------------------------------------------------ Startbild ---
@@ -439,6 +638,45 @@
 
   function renderStart() {
     const island = state.island;
+    const isSamsoe = island.island === "samsoe";
+    const isHiddensee = island.island === "hiddensee";
+    const isVejro = island.island === "vejro";
+    const isPoel = island.island === "poel";
+    const isUsedom = island.island === "usedom";
+    const isLangeland = island.island === "langeland";
+    const isFehmarn = island.island === "fehmarn";
+
+    el.screens.start.dataset.island = island.island || "";
+    el.samsoeStartVisual.hidden = !isSamsoe;
+    el.hiddenseeStartVisual.hidden = !isHiddensee;
+    el.vejroStartVisual.hidden = !isVejro;
+    el.poelStartVisual.hidden = !isPoel;
+    el.usedomStartVisual.hidden = !isUsedom;
+    el.langelandStartVisual.hidden = !isLangeland;
+    el.fehmarnStartVisual.hidden = !isFehmarn;
+    if (isSamsoe) {
+      [el.samsoeStartVehicle, el.samsoeStartTechnician].forEach((image) => {
+        if (!image.getAttribute("src")) image.src = image.dataset.src;
+      });
+    }
+    if (isHiddensee && !el.hiddenseeStartContact.getAttribute("src")) {
+      el.hiddenseeStartContact.src = el.hiddenseeStartContact.dataset.src;
+    }
+    if (isVejro && !el.vejroStartProducts.getAttribute("src")) {
+      el.vejroStartProducts.src = el.vejroStartProducts.dataset.src;
+    }
+    if (isPoel && !el.poelStartHaendler.getAttribute("src")) {
+      el.poelStartHaendler.src = el.poelStartHaendler.dataset.src;
+    }
+    if (isUsedom && !el.usedomStartDisplay.getAttribute("src")) {
+      el.usedomStartDisplay.src = el.usedomStartDisplay.dataset.src;
+    }
+    if (isLangeland && !el.langelandStartHandover.getAttribute("src")) {
+      el.langelandStartHandover.src = el.langelandStartHandover.dataset.src;
+    }
+    if (isFehmarn && !el.fehmarnStartDiagnostic.getAttribute("src")) {
+      el.fehmarnStartDiagnostic.src = el.fehmarnStartDiagnostic.dataset.src;
+    }
 
     el.btnToIslands.hidden = istEinzelinsel();
 
@@ -466,17 +704,31 @@
       match: "Zuordnung"
     };
 
+    // Reihenfolge nach dem, was vor dem Start zählt: Umfang, Zeitbedarf,
+    // kein Druck, sofortige Auflösung. "ca." steht bewusst dabei — die
+    // Angabe ist eine Einschätzung, keine Messung.
+    // Zeitbedarf und "kein Zeitlimit" stehen in einer Zeile: Es ist dieselbe
+    // Auskunft — wie lange es dauert und dass niemand gehetzt wird.
+    const minuten = Number(island.dauerMinuten) || 0;
     el.startFacts.innerHTML = "";
     [
-      `${count} ${count === 1 ? "Frage" : "Fragen"}`,
-      `Fragetypen: ${[...types].map((t) => typeNames[t] || t).join(", ")}`,
-      "Nach jeder Antwort gibt es sofort die Auflösung",
-      "Kein Zeitlimit — es geht nicht um Tempo"
-    ].forEach((text) => {
+      { klasse: "fact-fragen", text: `${count} ${count === 1 ? "Frage" : "Fragen"}` },
+      { klasse: "fact-zeit", text: minuten
+          ? `ca. ${minuten} Minuten — kein Zeitlimit`
+          : "Kein Zeitlimit — es geht nicht um Tempo" },
+      { klasse: "fact-aufloesung", text: "Nach jeder Antwort gibt es sofort die Auflösung" }
+    ].forEach((fakt) => {
       const li = document.createElement("li");
-      li.textContent = text;
+      li.className = fakt.klasse;
+      li.textContent = fakt.text;
       el.startFacts.appendChild(li);
     });
+
+    // Die Fragetypen beschreiben die Bedienung, nicht den Inhalt. Wer vor
+    // dem Aufsteller steht, entscheidet nicht danach, ob er anfängt — sie
+    // bleiben abrufbar, nehmen aber keinen Platz mehr vor dem Knopf weg.
+    el.startTypes.textContent = `Fragetypen: ${[...types].map((t) => typeNames[t] || t).join(", ")}`;
+    el.startDetails.open = false;
 
     // "internerHinweis" wird bewusst NICHT angezeigt. Das sind redaktionelle
     // Notizen an uns ("Menüpfade gegenprüfen", "Feld media ergänzen") — auf
@@ -494,6 +746,9 @@
     } else {
       el.chipParticipant.hidden = true;
     }
+
+    if (participantComplete(saved)) showParticipantSummary(saved);
+    else showParticipantForm(false);
 
     show("start");
   }
@@ -590,6 +845,14 @@
 
     el.qCategory.textContent = q.category || "";
     el.qCategory.hidden = !q.category;
+    const modeNames = {
+      single: "Eine Antwort auswählen",
+      truefalse: "Eine Antwort auswählen",
+      multi: "Mehrere Antworten auswählen",
+      order: "Schritte in Reihenfolge antippen",
+      match: "Jede Zeile zuordnen"
+    };
+    el.qMode.textContent = modeNames[q.type] || "Antwort auswählen";
     el.qTitle.textContent = q.prompt;
 
     if (q.hint) {
@@ -678,7 +941,7 @@
         { id: "falsch", text: "Falsch" }
       ];
     }
-    return shuffled(q.options);
+    return q.shuffleOptions === false ? q.options.slice() : shuffled(q.options);
   }
 
   function renderChoices(q) {
@@ -701,7 +964,7 @@
 
       const button = document.createElement("button");
       button.type = "button";
-      button.className = "answer opt-" + ((i % 4) + 1) + (bildmodus ? " answer-bild" : "");
+      button.className = "answer opt-" + ((i % 7) + 1) + (bildmodus ? " answer-bild" : "");
       button.dataset.id = option.id;
       button.setAttribute("aria-pressed", "false");
 
@@ -951,17 +1214,19 @@
     return "";
   }
 
-  /** Alle Irrtümer erscheinen, nicht nur der eigene: Wer richtig geklickt hat,
-   *  erkennt in den anderen die Sätze seiner Kunden wieder. Der eigene wird
-   *  hervorgehoben — und zwar benannt, nicht nur eingefärbt, damit die
-   *  Markierung auch bei Farbenblindheit und im Vorlesemodus ankommt. */
-  function renderIrrtum(q, answer) {
+  /** Alle Irrtümer erscheinen als Lerninhalt. Nach einer richtigen Antwort
+   *  heißen sie neutral „Typische Fehler“; „Falsch gewählt?“ wäre dort eine
+   *  falsche Aussage über die Leistung des Teilnehmers. Bei einer falschen
+   *  Antwort wird der eigene Irrtum weiterhin benannt und nicht nur
+   *  eingefärbt, damit die Zuordnung auch ohne Farbwahrnehmung ankommt. */
+  function renderIrrtum(q, answer, isCorrect) {
     const eintraege = Array.isArray(q.irrtum) ? q.irrtum : [];
     if (!eintraege.length) {
       el.qFeedbackIrrtum.hidden = true;
       return;
     }
 
+    el.qFeedbackIrrtumLabel.textContent = isCorrect ? "Typische Fehler" : "Falsch gewählt?";
     el.qFeedbackIrrtumList.innerHTML = "";
     eintraege.forEach((eintrag) => {
       const marke = irrtumMarke(eintrag, q, answer);
@@ -1013,7 +1278,7 @@
       el.qFeedbackMedia.hidden = true;
     }
 
-    renderIrrtum(q, answer);
+    renderIrrtum(q, answer, isCorrect);
 
     // Der Mitnehmen-Satz steht zuletzt, nach Auflösung, Bild und Irrtümern:
     // Er ist das, was nach der Frage übrig bleiben soll — eine Faustregel oder
@@ -1355,7 +1620,7 @@
     }
 
     state.sendetGerade = false;
-    paintInseln();
+    if (!el.screens.islands.hidden) renderIslands();
     paintAusgang();
 
     // Nachgesendet, während der Teilnehmer längst woanders ist: dann sagt
@@ -1448,7 +1713,14 @@
 
   el.startForm.addEventListener("submit", (event) => {
     event.preventDefault();
-    const data = validateForm();
+
+    // Bei zusammengefalteten Angaben zeigte eine Fehlermeldung sonst auf ein
+    // Feld, das gerade niemand sieht — und der Fokussprung ginge ins Leere.
+    let data = validateForm();
+    if (!data && el.startFields.hidden) {
+      showParticipantForm(false);
+      data = validateForm();
+    }
     if (!data) return;
     saveParticipant(data);
     el.chipParticipant.textContent = data.name;
@@ -1481,6 +1753,10 @@
   el.btnToIslands.addEventListener("click", () => {
     history.pushState({}, "", "/quiz");
     route();
+  });
+
+  el.btnEditParticipant.addEventListener("click", () => {
+    showParticipantForm(true);
   });
 
   el.btnNextIsland.addEventListener("click", () => {
@@ -1532,6 +1808,7 @@
   });
 
   window.addEventListener("popstate", route);
+  window.addEventListener("resize", scheduleCampusRoutes, { passive: true });
 
   // ---------------------------------------------------------------- Start ---
 
@@ -1567,7 +1844,7 @@
   }
 
   async function boot() {
-    el.colophon.textContent = DEMO ? "Vorschaumodus — nichts wird gespeichert" : `Engine ${ENGINE_VERSION}`;
+    el.colophon.textContent = DEMO ? "Vorschaumodus: nichts wird gespeichert" : "Wissenscheck";
 
     try {
       state.catalog = await fetchJson("/data/inseln.json");
@@ -1580,7 +1857,7 @@
     await route();
 
     // Bewusst ohne await: die Seite steht sofort, das Nachsenden läuft
-    // daneben und malt die Kacheln nach, wenn es durch ist.
+    // daneben und malt die Karte nach, wenn es durch ist.
     flushOutbox();
   }
 

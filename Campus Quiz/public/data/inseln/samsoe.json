@@ -3,8 +3,9 @@
   "code": "SAMSØ",
   "title": "Einbauorte im Fahrzeug",
   "subtitle": "Wo kommt was hin?",
-  "version": "3",
+  "version": "7",
   "lernziel": "Physik bestimmt den Einbauort, nicht der freie Platz. Wer das verstanden hat, muss keine Liste auswendig lernen.",
+  "dauerMinuten": 8,
   "quellen": [
     "produkte/pro-finder.md",
     "produkte/gas-pro-iii.md",
@@ -13,7 +14,7 @@
     "produkte/wipro-iii.md",
     "fahrzeuge/*"
   ],
-  "internerHinweis": "Fragenkatalog v3. SAM-02 und SAM-03 nutzen echte Einbaufotos, gehoben aus dem bestehenden FehlerQuiz. Die Alt-Texte wurden dabei neu geschrieben — im Bestandsquiz sind die Beschreibungen der Gaswarner-Bilder um eine Position verrutscht. Fachlich zu bestätigen: die max. 7 m Gesamtlänge des Zusatzsensorkabels in SAM-08.",
+  "internerHinweis": "Fragenkatalog v6. SAM-02, SAM-03 und SAM-10 arbeiten mit echten Produkt- beziehungsweise Einbaufotos. SAM-10 zeigt acht Produkte einschließlich des T.S.A. Funk-Rauchmelders. SAM-04 prüft die Qualitätskriterien für den Einbauort einer WiPro III. Fachlich zu bestätigen: die max. 7 m Gesamtlänge des Zusatzsensorkabels in SAM-08 sowie der konkrete gemeinsame Versorgungspunkt von WiPro III und Pro-finder in SAM-09.",
   "questions": [
     {
       "id": "SAM-01",
@@ -27,12 +28,12 @@
         { "id": "l4", "text": "NFC Modul" }
       ],
       "right": [
-        { "id": "r1", "text": "Senkrecht, ca. 10–20 cm über dem Boden" },
+        { "id": "r1", "text": "Senkrecht im Wohnraum, ca. 10–20 cm über dem Boden" },
         { "id": "r2", "text": "Senkrecht, ca. 10–20 cm unter der Decke" },
-        { "id": "r3", "text": "An oder nahe der Decke" },
-        { "id": "r4", "text": "Innenseite einer geeigneten Scheibe" },
-        { "id": "r5", "text": "Im Bodenstauraum außerhalb des Wohnraums" },
-        { "id": "r6", "text": "Neben der WiPro-Zentrale im Schrank" }
+        { "id": "r3", "text": "An der Decke oder seitlich nahe der Decke" },
+        { "id": "r4", "text": "Innen an einer geeigneten Scheibe, von außen erreichbar" },
+        { "id": "r5", "text": "Im abgetrennten Bodenstauraum" },
+        { "id": "r6", "text": "Im Schrank neben der WiPro III" }
       ],
       "correct": { "l1": "r1", "l2": "r2", "l3": "r3", "l4": "r4" },
       "feedback": "Jeder Ort folgt aus der Physik. Flüssiggas ist schwerer als Luft und sammelt sich unten. CO verteilt sich anders und wird deckennah erfasst. Rauch steigt auf. Das NFC Modul muss von außen erreichbar sein und sitzt deshalb hinter der Scheibe.",
@@ -140,25 +141,32 @@
     },
     {
       "id": "SAM-04",
-      "type": "single",
-      "category": "GPS-Antenne",
-      "prompt": "Wie wird eine externe GPS-Antenne ausgerichtet?",
+      "type": "multi",
+      "category": "Einbauort der Zentrale",
+      "prompt": "Welche Merkmale erfüllt ein geeigneter Einbauort der WiPro III? Wähle alle zutreffenden.",
       "options": [
-        { "id": "a", "text": "Empfangsseite waagerecht nach oben" },
-        { "id": "b", "text": "Senkrecht, quer zur Fahrtrichtung" },
-        { "id": "c", "text": "Nach unten, damit Wasser ablaufen kann" },
-        { "id": "d", "text": "Mit der Empfangsseite zur Fahrzeugmitte" }
+        { "id": "a", "text": "Trocken und vor direkter Feuchtigkeit geschützt" },
+        { "id": "b", "text": "Für Diagnose und Service weiterhin erreichbar" },
+        { "id": "c", "text": "So gewählt, dass Antenne und Funkstrecke nicht unmittelbar durch Metall abgeschirmt werden" },
+        { "id": "d", "text": "Im Motorraum nahe der Fahrzeugbatterie" },
+        { "id": "e", "text": "Hinter einer vollständig geschlossenen Metallverkleidung" },
+        { "id": "f", "text": "Dort, wo die Antennenleitung möglichst eng aufgewickelt werden kann" }
       ],
-      "correct": ["a"],
-      "feedback": "Die Satelliten stehen oben.",
+      "correct": ["a", "b", "c"],
+      "feedback": "Ein guter Einbauort schützt die Zentrale, hält sie servicefähig und berücksichtigt die Funkphysik. Freier Platz allein ist kein Auswahlkriterium.",
       "irrtum": [
         {
-          "fuer": ["c"],
-          "titel": "Nach unten wegen Wasser",
-          "text": "Handwerklich vernünftig gedacht und trotzdem falsch — der Empfang geht dabei fast vollständig verloren. Gegen Wasser hilft der richtige Einbauort, nicht die falsche Ausrichtung."
+          "fuer": ["d"],
+          "titel": "Motorraum gewählt",
+          "text": "Kurze Versorgungswege ersetzen keinen geschützten Innenraum-Einbau. Temperatur, Feuchtigkeit und Servicezugang sprechen dagegen."
+        },
+        {
+          "fuer": ["e", "f"],
+          "titel": "Funkstrecke verschlechtert",
+          "text": "Metall schirmt ab, eine eng aufgewickelte Antennenleitung verändert die vorgesehene Antennenwirkung. Der Einbauort muss beides vermeiden."
         }
       ],
-      "mitnehmen": "Eine falsch ausgerichtete Antenne kostet Empfang, ohne dass es beim Einbau auffällt. Der Fehler zeigt sich, wenn die Ortung im Ernstfall gebraucht wird — also genau dann, wenn niemand mehr nachjustieren kann."
+      "mitnehmen": "Einbauort = Schutz + Servicezugang + Funkstrecke. Wenn einer der drei Punkte fehlt, ist der Platz nicht fertig bewertet."
     },
     {
       "id": "SAM-05",
@@ -218,11 +226,11 @@
       "id": "SAM-07",
       "type": "single",
       "category": "Rauchmelder",
-      "prompt": "Das Fahrzeug hat eine Stoffdecke. Wie montierst du den T.S.A.?",
+      "prompt": "Das Fahrzeug hat einen Stoffhimmel. Wie montierst du den T.S.A. Funk-Rauchmelder?",
       "options": [
         { "id": "a", "text": "Klebepad direkt auf den Stoff drücken, 60 s halten" },
         { "id": "b", "text": "Nicht auf Stoff kleben — Montageadapter verwenden" },
-        { "id": "c", "text": "Durch die Stoffdecke schrauben" },
+        { "id": "c", "text": "Durch den Stoffhimmel schrauben" },
         { "id": "d", "text": "In eine Fahrzeugecke setzen" }
       ],
       "correct": ["b"],
@@ -299,23 +307,31 @@
       "id": "SAM-10",
       "type": "multi",
       "category": "Medium oder Gerät",
+      "layout": "product",
+      "shuffleOptions": false,
       "prompt": "Welche Komponenten haben keinen festen Einbauort im Fahrzeug? Wähle alle zutreffenden.",
       "options": [
-        { "id": "a", "text": "Funk-Handsender" },
-        { "id": "b", "text": "KeyCard" },
-        { "id": "c", "text": "KeyTag" },
-        { "id": "d", "text": "KeyStrap" },
-        { "id": "e", "text": "NFC Modul" },
-        { "id": "f", "text": "Pro-finder" },
-        { "id": "g", "text": "G.A.S.-pro III" }
+        { "id": "e", "text": "NFC Modul", "image": "/media/samsoe/sam-produkt-nfc-modul.webp", "imageAlt": "Schwarzes THITRONIK NFC Modul" },
+        { "id": "b", "text": "KeyCard", "image": "/media/samsoe/sam-produkt-keycard.webp", "imageAlt": "THITRONIK KeyCard" },
+        { "id": "c", "text": "KeyTag", "image": "/media/samsoe/sam-produkt-keytag.webp", "imageAlt": "Blauer THITRONIK KeyTag" },
+        { "id": "d", "text": "KeyStrap", "image": "/media/samsoe/sam-produkt-keystrap.webp", "imageAlt": "Schwarzer THITRONIK KeyStrap" },
+        { "id": "a", "text": "Funk-Handsender", "image": "/media/samsoe/sam-produkt-funk-handsender.webp", "imageAlt": "Funk-Handsender von THITRONIK" },
+        { "id": "g", "text": "G.A.S.-pro III", "image": "/media/samsoe/sam-produkt-gas-pro-iii.webp", "imageAlt": "Schwarzer THITRONIK G.A.S.-pro III Gaswarner" },
+        { "id": "f", "text": "Pro-finder", "image": "/media/samsoe/sam-produkt-pro-finder.webp", "imageAlt": "THITRONIK Pro-finder mit Anschlüssen und Antenne" },
+        { "id": "h", "text": "T.S.A. Funk-Rauchmelder", "image": "/media/samsoe/sam-produkt-tsa-funk-rauchmelder.webp", "imageAlt": "Zwei weiße T.S.A. Funk-Rauchmelder von THITRONIK" }
       ],
       "correct": ["a", "b", "c", "d"],
-      "feedback": "Funk-Handsender, KeyCard, KeyTag und KeyStrap sind persönliche Zugangs**medien**. NFC Modul, Pro-finder und G.A.S.-pro III sind Geräte mit genau vorgegebenem Einbauort.",
+      "feedback": "Funk-Handsender, KeyCard, KeyTag und KeyStrap sind persönliche Zugangs**medien**. NFC Modul, Pro-finder, G.A.S.-pro III und T.S.A. Funk-Rauchmelder sind Geräte mit genau vorgegebenem Einbauort.",
       "irrtum": [
         {
           "fuer": ["e"],
           "titel": "NFC Modul mitangekreuzt",
           "text": "Die verständlichste Verwechslung — KeyCard und NFC Modul gehören zusammen und werden gemeinsam verkauft. Aber das Modul ist die **Lesestelle am Fahrzeug**, die Karte ist das Medium in der Hosentasche."
+        },
+        {
+          "fuer": ["h"],
+          "titel": "T.S.A. Funk-Rauchmelder mitangekreuzt",
+          "text": "Der Rauchmelder ist kein persönliches Medium. Sein Einbauort ist funktional vorgegeben: an oder nahe der Decke, damit aufsteigender Rauch früh erkannt wird."
         }
       ],
       "mitnehmen": "Diese Trennung — Medium, Lesestelle, Steuergerät — ist die Grundordnung des ganzen Sortiments. Auf USEDOM begegnet sie dir am Display wieder."

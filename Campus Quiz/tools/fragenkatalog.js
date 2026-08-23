@@ -256,7 +256,7 @@ kopf.push("");
 kopf.push("---");
 kopf.push("");
 
-const dokument = kopf.join("\n") + inseln.map(inselBlock).join("\n---\n\n") + "\n";
+const dokument = (kopf.join("\n") + inseln.map(inselBlock).join("\n---\n\n")).trimEnd() + "\n";
 
 fs.writeFileSync(ZIEL, dokument, "utf8");
 

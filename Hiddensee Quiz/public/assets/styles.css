@@ -17,6 +17,33 @@
   --th-blue-text: #1B7699;   /* 5,15:1 auf Weiß */
   --th-lime-text: #5F7000;   /* 5,47:1 auf Weiß, 5,02:1 auf --success-bg */
   --th-red: #CE132D;
+
+  /* Antwortpalette A-G. A-D bleiben die vier THITRONIK-Markenfarben.
+     E-G greifen ausschließlich vorhandene Navy-, Cyan- und Grautöne auf:
+     zusätzliche Antworten sollen wie Teil derselben Oberfläche aussehen,
+     nicht wie neue Signalzustände. Die Buchstaben bleiben die primäre,
+     farbunabhängige Kennzeichnung. */
+  --answer-a: #1D3661;
+  --answer-a-rgb: 29, 54, 97;
+  --answer-a-text: #FFFFFF;
+  --answer-b: #3BA9D3;
+  --answer-b-rgb: 59, 169, 211;
+  --answer-b-text: #111111;
+  --answer-c: #AFCA05;
+  --answer-c-rgb: 175, 202, 5;
+  --answer-c-text: #111111;
+  --answer-d: #CE132D;
+  --answer-d-rgb: 206, 19, 45;
+  --answer-d-text: #FFFFFF;
+  --answer-e: #0A2747;
+  --answer-e-rgb: 10, 39, 71;
+  --answer-e-text: #FFFFFF;
+  --answer-f: #1B7699;
+  --answer-f-rgb: 27, 118, 153;
+  --answer-f-text: #FFFFFF;
+  --answer-g: #5E6672;
+  --answer-g-rgb: 94, 102, 114;
+  --answer-g-text: #FFFFFF;
   --th-white: #FFFFFF;
   --th-soft: #F0F0F0;
   --th-page: #EAF1F7;
@@ -31,15 +58,20 @@
   --error-line: #E4A2AA;
   --info-bg: #EDF7FB;
 
-  --shadow-sm: 0 8px 24px rgba(29, 54, 97, .08);
-  --shadow-md: 0 22px 60px rgba(29, 54, 97, .14);
+  --shadow-sm: 0 6px 20px rgba(10, 39, 71, .07);
+  --shadow-md: 0 24px 64px rgba(10, 39, 71, .12);
 
-  --radius-xl: 28px;
-  --radius-lg: 20px;
-  --radius-md: 14px;
-  --radius-sm: 10px;
+  --radius-xl: 24px;
+  --radius-lg: 18px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
 
-  --content: 1180px;
+  --duration-press: 140ms;
+  --duration-fast: 160ms;
+  --duration-normal: 220ms;
+  --ease-out: cubic-bezier(.23, 1, .32, 1);
+
+  --content: 1200px;
   --tap: 44px;   /* Mindest-Trefferfläche, WCAG 2.5.8 */
 }
 
@@ -64,8 +96,11 @@ body {
   color: var(--th-ink);
   background:
     radial-gradient(circle at 88% 6%, rgba(59, 169, 211, .16), transparent 26rem),
+    linear-gradient(rgba(29, 54, 97, .025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(29, 54, 97, .025) 1px, transparent 1px),
     linear-gradient(180deg, #E7F0F7 0%, #F7F8FA 46%, #EEF1F4 100%);
-  background-repeat: no-repeat;
+  background-repeat: no-repeat, repeat, repeat, no-repeat;
+  background-size: auto, 32px 32px, 32px 32px, auto;
   font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   font-size: 16px;
   line-height: 1.55;
@@ -73,7 +108,11 @@ body {
 }
 
 button, input, select, textarea { font: inherit; color: inherit; }
-button { -webkit-tap-highlight-color: transparent; cursor: pointer; }
+button {
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
+  touch-action: manipulation;
+}
 img { display: block; max-width: 100%; }
 [hidden] { display: none !important; }
 /* Der Ring ist Navy, nicht Cyan. Das Design-System nennt Cyan und erlaubt
@@ -130,12 +169,28 @@ h2 { font-size: clamp(1.15rem, 1.05rem + .4vw, 1.5rem); letter-spacing: -.015em;
   padding: 12px 16px;
   margin-bottom: 16px;
   border: 1px solid rgba(183, 194, 207, .72);
-  border-radius: 18px;
-  background: rgba(255, 255, 255, .94);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, .9);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   box-shadow: var(--shadow-sm);
 }
 
 .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+
+.brand-home {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  min-height: 44px;
+  border-radius: 8px;
+  text-decoration: none;
+}
+.brand-home:focus-visible {
+  outline: 3px solid var(--th-navy);
+  outline-offset: 4px;
+}
+.brand-home:active .brand-logo { transform: scale(.98); }
 
 /* Die Navy-Wortmarke auf transparent — dieselbe, die das Fehmarn-Quiz im Kopf
    trägt. Als Datei statt als Base64: 88 KB werden einmal geladen und gecacht,
@@ -144,6 +199,7 @@ h2 { font-size: clamp(1.15rem, 1.05rem + .4vw, 1.5rem); letter-spacing: -.015em;
   width: clamp(150px, 20vw, 210px);
   height: auto;
   flex: 0 0 auto;
+  transition: opacity var(--duration-fast) ease, transform var(--duration-press) var(--ease-out);
 }
 
 .brand-copy { min-width: 0; padding-left: 14px; border-left: 1px solid var(--th-line); }
@@ -165,6 +221,51 @@ h2 { font-size: clamp(1.15rem, 1.05rem + .4vw, 1.5rem); letter-spacing: -.015em;
 }
 
 .masthead-meta { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.masthead-progress {
+  width: min(360px, 42vw);
+  margin-left: auto;
+}
+.campus-progress-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 3px;
+  color: var(--th-navy);
+  font-size: .86rem;
+  font-weight: 700;
+}
+/* Der Prozentwert bleibt als Skala zur Fortschrittsleiste, tritt aber
+   hinter die Zahl zurueck, die jemand tatsaechlich vorliest. */
+.campus-progress-head small {
+  color: var(--th-muted);
+  font-size: .78rem;
+  font-variant-numeric: tabular-nums;
+}
+.campus-progress-copy {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--th-navy);
+  font-size: 1.06rem;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+.campus-progress-track {
+  height: 7px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #E4EAF0;
+}
+.campus-progress-track span {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--th-blue), #279EC9);
+  transition: width 280ms var(--ease-out);
+}
+
 
 .chip {
   display: inline-flex;
@@ -194,7 +295,7 @@ main { flex: 1 0 auto; }
   border-radius: var(--radius-xl);
   background: #fff;
   box-shadow: var(--shadow-md);
-  animation: enter .22s ease-out both;
+  animation: enter var(--duration-normal) var(--ease-out) both;
 }
 .screen-narrow { padding: clamp(24px, 5vw, 48px); }
 
@@ -203,7 +304,7 @@ main { flex: 1 0 auto; }
   to { opacity: 1; transform: none; }
 }
 
-.screen-head { padding: clamp(24px, 4vw, 44px) clamp(20px, 4vw, 44px) 0; }
+.screen-head { padding: clamp(26px, 4vw, 48px) clamp(20px, 4vw, 48px) 0; }
 
 .kicker {
   display: inline-flex;
@@ -225,34 +326,175 @@ main { flex: 1 0 auto; }
 
 /* --------------------------------------------------------- Inselauswahl --- */
 
-.island-grid {
+#screen-islands {
+  position: relative;
+  border-color: rgba(183, 194, 207, .8);
+  background: #F6FAFC;
+}
+
+.campus-map {
+  position: relative;
+  isolation: isolate;
+  min-height: 100%;
+  overflow: hidden;
+  background:
+    linear-gradient(rgba(246, 250, 252, .08), rgba(246, 250, 252, .08)),
+    url("/media/campus/campus-hintergrund-v1.webp") center / cover no-repeat,
+    #F6FAFC;
+}
+
+.island-intro {
+  position: relative;
+  z-index: 3;
+}
+
+.island-intro h1 {
+  max-width: 18ch;
+  font-size: clamp(1.8rem, 1.3rem + 2.1vw, 2.8rem);
+  line-height: 1.06;
+  letter-spacing: -.04em;
+  text-wrap: balance;
+}
+
+.island-intro .lead { margin-bottom: 0; text-wrap: pretty; }
+
+.campus-map-art,
+.map-compass { display: none; }
+
+.island-map {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(248px, 1fr));
-  gap: 14px;
+  gap: 12px;
   margin: 0;
-  padding: clamp(20px, 4vw, 44px);
+  padding: 26px clamp(18px, 4vw, 42px) 36px;
   list-style: none;
 }
 
-.island-card {
+.island-map-item { min-width: 0; }
+
+/* ------------------------------------------------- Tagesabschluss --- */
+
+/* Steht unter der Karte, nicht darauf: Der Feedbackbogen ist keine Insel
+   und darf in "7 von 7" nicht mitzaehlen. Im Ruhezustand eine ruhige
+   Karte; sind alle Inseln erledigt, wird er zur naechsten Handlung und
+   traegt dann den Lime-Rahmen, den sonst nur abgeschlossene Inseln haben. */
+.tagesabschluss {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin: 18px 0 0;
+  padding: 18px 20px;
+  border: 1px solid var(--th-line);
+  border-radius: var(--radius-lg);
+  background: var(--th-white);
+  box-shadow: var(--shadow-sm);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color var(--duration-fast) var(--ease-out),
+              box-shadow var(--duration-fast) var(--ease-out),
+              transform var(--duration-press) var(--ease-out);
+}
+.tagesabschluss[hidden] { display: none; }
+.tagesabschluss:hover { border-color: var(--th-blue); box-shadow: var(--shadow-md); }
+.tagesabschluss:active { transform: scale(.995); }
+
+.ta-text { display: grid; gap: 3px; }
+.ta-kicker {
+  color: var(--th-blue-text);
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.ta-title { color: var(--th-navy); font-size: 1.12rem; font-weight: 800; }
+.ta-desc { max-width: 52ch; color: var(--th-muted); font-size: .88rem; line-height: 1.45; }
+
+.ta-cta {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  padding: 0 20px;
+  border-radius: var(--radius-md);
+  background: var(--th-navy);
+  color: var(--th-white);
+  font-size: .92rem;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+/* Alle Inseln erledigt: Der Bogen ist jetzt das, was als Naechstes dran
+   ist. Die Farbe allein traegt das nicht — der Text darueber wechselt
+   ebenfalls auf "Expedition abgeschlossen". */
+.tagesabschluss.is-ready {
+  border-color: var(--success-line);
+  background: linear-gradient(180deg, var(--th-white), #F9FCEB);
+}
+.tagesabschluss.is-ready .ta-kicker { color: var(--th-lime-text); }
+
+@media (max-width: 560px) {
+  .tagesabschluss { align-items: stretch; flex-direction: column; }
+  .ta-cta { justify-content: center; }
+}
+
+.island-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 108px minmax(0, 1fr);
+  gap: 14px;
   width: 100%;
-  min-height: 132px;
-  padding: 18px;
+  min-height: 168px;
+  padding: 10px;
+  overflow: hidden;
   border: 1px solid var(--th-line);
   border-radius: var(--radius-lg);
   background: var(--th-white);
   text-align: left;
-  box-shadow: 0 6px 18px rgba(29, 54, 97, .06);
-  transition: border-color .15s, box-shadow .15s, transform .14s;
+  box-shadow: 0 8px 22px rgba(10, 39, 71, .07);
+  transition:
+    border-color var(--duration-fast) ease,
+    box-shadow var(--duration-fast) ease,
+    transform var(--duration-press) var(--ease-out);
+  animation: island-enter 260ms var(--ease-out) both;
+  animation-delay: calc(var(--island-order) * 35ms);
 }
-.island-card:hover {
-  border-color: var(--th-blue);
-  box-shadow: 0 12px 26px rgba(59, 169, 211, .16);
-  transform: translateY(-2px);
+
+@keyframes island-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
 }
+
+.island-card .i-visual {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 146px;
+  padding: 12px;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  border-radius: var(--radius-md);
+  background:
+    radial-gradient(circle at 50% 45%, rgba(255, 255, 255, .95), transparent 72%),
+    rgba(232, 240, 246, .56);
+}
+
+.island-card .i-visual img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 7px 10px rgba(10, 39, 71, .2));
+}
+
+.island-card .i-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  justify-content: center;
+  min-width: 0;
+  padding: 8px 42px 8px 0;
+}
+
 .island-card .i-code {
   color: var(--th-blue-text);
   font-size: .74rem;
@@ -260,83 +502,340 @@ main { flex: 1 0 auto; }
   letter-spacing: .12em;
   text-transform: uppercase;
 }
-.island-card .i-title { color: var(--th-navy); font-size: 1.12rem; font-weight: 800; }
-.island-card .i-desc { color: var(--th-muted); font-size: .88rem; line-height: 1.4; }
+.island-card .i-title {
+  color: var(--th-navy);
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: -.018em;
+  line-height: 1.16;
+  text-wrap: balance;
+}
+.island-card .i-desc {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--th-muted);
+  font-size: .8rem;
+  line-height: 1.38;
+  text-wrap: pretty;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
 .island-card .i-state {
-  margin-top: auto;
-  padding-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 2px;
   color: var(--th-muted);
   font-size: .8rem;
   font-weight: 700;
 }
-.island-card.is-done { border-color: var(--success-line); background: var(--success-bg); }
+.island-card .i-state::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #D6DEE6;
+}
+.island-card.is-done .i-state::before {
+  background: var(--th-lime);
+  box-shadow: inset 0 0 0 3px var(--th-lime), inset 0 0 0 4px rgba(17, 17, 17, .22);
+}
+/* Offener Ring statt gefülltem Punkt: begonnen, aber nicht abgeschickt. */
+.island-card.is-warten .i-state::before {
+  background: var(--th-white);
+  box-shadow: inset 0 0 0 3px var(--th-blue), inset 0 0 0 4px rgba(17, 17, 17, .18);
+}
+.i-score {
+  display: block;
+  width: 100%;
+  height: 7px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #E8EDF1;
+}
+.i-score span {
+  display: block;
+  width: calc(var(--score) * 1%);
+  height: 100%;
+  border-radius: inherit;
+  background: var(--th-lime);
+}
+/* Solange das Ergebnis im Ausgang liegt, ist auch der Balken nicht Lime.
+   Sonst meldet die Kachel oben "noch nicht gesendet" und unten Erfolg. */
+.island-card.is-warten .i-score span { background: var(--th-blue); }
+.island-card .i-open {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--th-line-strong);
+  border-radius: 50%;
+  background: var(--th-white);
+  transition:
+    border-color var(--duration-fast) ease,
+    background-color var(--duration-fast) ease,
+    transform var(--duration-fast) var(--ease-out);
+}
+.island-card .i-open::before {
+  content: "";
+  position: absolute;
+  left: 10px;
+  top: 9px;
+  width: 8px;
+  height: 8px;
+  border-top: 2px solid var(--th-navy);
+  border-right: 2px solid var(--th-navy);
+  transform: rotate(45deg);
+}
+.island-card .i-open::after {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 14px;
+  width: 12px;
+  height: 2px;
+  background: var(--th-navy);
+}
+.island-card:active { transform: scale(.985); }
+.island-card.is-done { border-color: var(--success-line); background: linear-gradient(180deg, var(--th-white), #F9FCEB); }
 .island-card.is-done .i-state { color: var(--th-lime-text); }
-/* Erledigt ist aus dem Augenwinkel zu erkennen, nicht erst nach dem Lesen —
-   die Übersicht wird zwischen zwei Stationen im Vorbeigehen aufgerufen. */
-.island-card.is-done .i-state::before { content: "\2713\00a0"; font-weight: 900; }
 
-/* Abgeschlossen, aber noch nicht beim Server: das ist ausdrücklich KEIN
+/* Abgeschlossen, aber noch nicht beim Server: ausdrücklich KEIN
    Erfolgszustand. Lime würde hier eine Sicherheit behaupten, die es nicht
    gibt — das Ergebnis liegt allein auf diesem Telefon. */
-.island-card.is-warten { border-color: var(--th-blue); background: var(--info-bg); }
+.island-card.is-warten { border-color: var(--th-blue); background: linear-gradient(180deg, var(--th-white), #F1F8FC); }
 .island-card.is-warten .i-state { color: var(--th-blue-text); }
-.island-card.is-warten .i-state::before { content: "\21bb\00a0"; font-weight: 900; }
 
-/* ---------------------------------------------------- Gesamtfortschritt --- */
+@media (min-width: 760px) {
+  .campus-map { min-height: clamp(735px, 76vw, 900px); }
+  .island-intro {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 36%;
+    padding: clamp(26px, 4vw, 48px);
+  }
+  .island-intro h1 { font-size: clamp(1.65rem, 2.6vw, 2.65rem); }
+  .island-intro .lead { max-width: 31ch; font-size: clamp(.88rem, 1.25vw, 1.02rem); }
 
-.gesamt { margin-top: 18px; max-width: 420px; }
-.gesamt-kopf {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 10px;
-  align-items: baseline;
-  margin-bottom: 8px;
-}
-.gesamt-kopf strong { color: var(--th-navy); font-size: .95rem; font-weight: 800; }
-.gesamt-kopf span { color: var(--th-muted); font-size: .85rem; }
-.gesamt-track {
-  height: 8px;
-  border-radius: 999px;
-  background: var(--th-soft);
-  overflow: hidden;
-}
-.gesamt-fill {
-  height: 100%;
-  width: 0;
-  border-radius: 999px;
-  background: var(--th-lime);
-  transition: width .4s ease;
+  .campus-map-art {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+  .campus-routes {
+    fill: none;
+    stroke: var(--th-blue);
+    stroke-width: 1.7;
+    stroke-dasharray: 7 9;
+    stroke-linecap: round;
+    opacity: 1;
+  }
+  .campus-routes path {
+    marker-end: url(#route-arrow);
+    opacity: .82;
+    vector-effect: non-scaling-stroke;
+    filter: drop-shadow(0 1px 0 rgba(246, 250, 252, .95));
+    transition:
+      opacity var(--duration-fast) ease,
+      stroke-width var(--duration-fast) var(--ease-out);
+  }
+  .campus-map.has-route-focus .campus-routes path { opacity: .24; }
+  .campus-map.has-route-focus .campus-routes path.is-route-focus {
+    stroke-width: 2.35;
+    opacity: 1;
+  }
+  .campus-map-art marker path { fill: var(--th-blue); }
+  .sea-waves {
+    fill: none;
+    stroke: #A9D2E6;
+    stroke-width: 1.5;
+    opacity: .72;
+  }
+  .map-compass {
+    position: absolute;
+    z-index: 1;
+    top: clamp(28px, 3.8vw, 44px);
+    right: clamp(28px, 3.8vw, 48px);
+    display: block;
+    width: clamp(136px, 11vw, 180px);
+    height: auto;
+    opacity: .88;
+    pointer-events: none;
+    filter: drop-shadow(0 5px 9px rgba(10, 39, 71, .1));
+  }
+
+  .island-map { position: absolute; z-index: 2; inset: 0; display: block; padding: 0; }
+  .island-map-item { position: absolute; }
+  .island-card {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    padding: 0;
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+  .island-card:focus-visible { outline: none; }
+  .island-card:focus-visible .i-content { outline: 3px solid var(--th-navy); outline-offset: 3px; }
+  .island-card.is-done,
+  .island-card.is-warten { border: 0; background: transparent; }
+  .island-card .i-visual {
+    position: absolute;
+    min-height: 0;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+  .island-card .i-visual img {
+    filter: drop-shadow(0 8px 8px rgba(10, 39, 71, .23));
+    transition:
+      filter var(--duration-fast) ease,
+      transform var(--duration-fast) var(--ease-out);
+  }
+  .island-card .i-content {
+    position: absolute;
+    z-index: 2;
+    display: flex;
+    justify-content: flex-start;
+    gap: 5px;
+    padding: clamp(10px, 1.25vw, 15px);
+    border: 1px solid var(--th-line-strong);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, .95);
+    box-shadow: 0 9px 22px rgba(10, 39, 71, .14), inset 0 1px 0 rgba(255, 255, 255, .85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition:
+      border-color var(--duration-fast) ease,
+      box-shadow var(--duration-fast) ease,
+      transform var(--duration-fast) var(--ease-out);
+  }
+  .island-card.is-done .i-content { border-color: #8DAA17; background: rgba(255, 255, 255, .97); }
+  .island-card.is-warten .i-content { border-color: var(--th-blue); background: rgba(255, 255, 255, .97); }
+  .island-card .i-code {
+    font-size: clamp(.64rem, .78vw, .72rem);
+    letter-spacing: .1em;
+  }
+  .island-card .i-title { font-size: clamp(.92rem, 1.22vw, 1.06rem); }
+  .island-card .i-desc { display: none; }
+  .island-card .i-state {
+    font-size: clamp(.7rem, .86vw, .78rem);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .island-card.is-warten .i-state {
+    align-items: flex-start;
+    white-space: normal;
+    text-wrap: balance;
+  }
+  .island-card.is-warten .i-state::before { margin-top: 4px; }
+  .island-card .i-open { display: none; }
+
+  .island-samsoe { left: 38%; top: 2%; width: 27%; height: 23%; }
+  .island-samsoe .i-visual { left: 0; top: 0; width: 45%; height: 100%; }
+  .island-samsoe .i-content { left: 30%; top: 29%; width: 64%; }
+
+  .island-vejro { left: 50%; top: 20%; width: 31%; height: 21%; }
+  .island-vejro .i-visual { left: 0; top: 25%; width: 43%; height: 75%; }
+  .island-vejro .i-content { left: 27%; top: 40%; width: 63%; }
+
+  .island-fehmarn { left: 8%; top: 29%; width: 32%; height: 25%; }
+  .island-fehmarn .i-visual { left: 47%; top: 4%; width: 53%; height: 96%; }
+  .island-fehmarn .i-content { left: 0; top: 29%; width: 47%; }
+
+  .island-usedom { left: 25%; top: 47%; width: 39%; height: 24%; }
+  .island-usedom .i-visual { left: 38%; top: 0; width: 62%; height: 100%; }
+  .island-usedom .i-content { left: 10%; top: 27%; width: 43%; }
+
+  .island-hiddensee { left: 70%; top: 33%; width: 29%; height: 38%; }
+  .island-hiddensee .i-visual {
+    left: 0;
+    top: 0;
+    width: 46%;
+    height: 100%;
+    transform: scale(1.2);
+  }
+  .island-hiddensee .i-content { left: 34%; top: 34%; width: 66%; }
+
+  .island-langeland { left: 11%; top: 68%; width: 33%; height: 26%; }
+  .island-langeland .i-visual {
+    left: 36%;
+    top: 0;
+    width: 43%;
+    height: 100%;
+    transform: scale(1.24);
+  }
+  .island-langeland .i-content { left: 0; top: 28%; width: 49%; }
+
+  .island-poel { left: 48%; top: 70%; width: 31%; height: 23%; }
+  .island-poel .i-visual { left: 0; top: 0; width: 55%; height: 100%; }
+  .island-poel .i-content { left: 43%; top: 31%; width: 55%; }
+
+  .island-samsoe .i-content::after,
+  .island-vejro .i-content::after,
+  .island-hiddensee .i-content::after,
+  .island-poel .i-content::after,
+  .island-fehmarn .i-content::after,
+  .island-usedom .i-content::after,
+  .island-langeland .i-content::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: clamp(14px, 2.6vw, 38px);
+    border-top: 1px solid #7890A7;
+  }
+  .island-samsoe .i-content::before,
+  .island-vejro .i-content::before,
+  .island-hiddensee .i-content::before,
+  .island-poel .i-content::before,
+  .island-fehmarn .i-content::before,
+  .island-usedom .i-content::before,
+  .island-langeland .i-content::before {
+    content: "";
+    position: absolute;
+    top: calc(50% - 4px);
+    width: 8px;
+    height: 8px;
+    border: 2px solid #56708C;
+    border-radius: 50%;
+    background: #F6FAFC;
+  }
+  .island-samsoe .i-content::after,
+  .island-vejro .i-content::after,
+  .island-hiddensee .i-content::after,
+  .island-poel .i-content::after { right: 100%; }
+  .island-samsoe .i-content::before,
+  .island-vejro .i-content::before,
+  .island-hiddensee .i-content::before,
+  .island-poel .i-content::before { right: calc(100% + clamp(10px, 2.6vw, 34px)); }
+  .island-fehmarn .i-content::after,
+  .island-usedom .i-content::after,
+  .island-langeland .i-content::after { left: 100%; }
+  .island-fehmarn .i-content::before,
+  .island-usedom .i-content::before,
+  .island-langeland .i-content::before { left: calc(100% + clamp(10px, 2.6vw, 34px)); }
+
+  /* Samsø ist deutlich schmaler als die übrigen Silhouetten. Der allgemeine
+     Verbinder schob den Anker bis auf die linke Inselseite. Ein kurzer,
+     eigener Anschluss hält den Punkt an der Box-/Inselkante. */
+  .island-samsoe .i-content::after { width: 8px; }
+  .island-samsoe .i-content::before { right: calc(100% + 4px); }
 }
 
-/* ------------------------------------------------------- Sende-Ausgang --- */
-
-.ausgang {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 14px;
-  align-items: center;
-  margin: 0 0 16px;
-  padding: 14px 16px;
-  border: 1px solid var(--th-blue);
-  border-radius: var(--radius-md);
-  background: var(--info-bg);
-}
-.ausgang-text {
-  flex: 1 1 220px;
-  margin: 0;
-  color: var(--th-navy);
-  font-size: .88rem;
-  line-height: 1.45;
-}
-.ausgang[hidden] { display: none; }
-.ausgang.is-fehler { border-color: var(--error-line); background: var(--error-bg); }
-
-/* Noch offene Inseln, direkt über den Knöpfen — dort wird entschieden,
-   wohin es weitergeht. */
-.rest-hinweis {
-  margin: 0 0 12px;
-  color: var(--th-muted);
-  font-size: .88rem;
+/* Auf hohen Browserfenstern nutzt die Expeditionskarte den vorhandenen Raum,
+   ohne die bewährten Proportionen auf typischen Querformaten zu verändern. */
+@media (min-width: 760px) and (min-height: 1000px) {
+  .campus-map { min-height: min(calc(100dvh - 170px), 1000px); }
 }
 
 /* ------------------------------------------------------------- Startbild --- */
@@ -354,6 +853,424 @@ main { flex: 1 0 auto; }
 .start-intro .kicker { background: rgba(255, 255, 255, .16); color: #fff; }
 .start-intro h1 { color: #fff; }
 .start-intro .lead { color: rgba(255, 255, 255, .88); }
+
+.samsoe-start-visual[hidden],
+.hiddensee-start-visual[hidden],
+.vejro-start-visual[hidden],
+.poel-start-visual[hidden],
+.usedom-start-visual[hidden],
+.langeland-start-visual[hidden],
+.fehmarn-start-visual[hidden] { display: none; }
+
+#screen-start[data-island="samsoe"] .start-layout {
+  grid-template-columns: minmax(0, 1.16fr) minmax(380px, .94fr);
+  min-height: clamp(660px, 72vh, 780px);
+}
+
+#screen-start[data-island="samsoe"] .start-intro {
+  position: relative;
+  isolation: isolate;
+  min-height: 660px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 52% 84%, rgba(19, 151, 232, .34), transparent 32%),
+    radial-gradient(circle at 10% 12%, rgba(61, 116, 190, .38), transparent 38%),
+    linear-gradient(145deg, #173F79 0%, #0C2E63 54%, #071D46 100%);
+}
+
+#screen-start[data-island="samsoe"] .start-intro::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  right: -18%;
+  bottom: -30%;
+  width: 90%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(27, 157, 235, .2), transparent 66%);
+  pointer-events: none;
+}
+
+#screen-start[data-island="samsoe"] .start-intro > :not(.samsoe-start-visual) {
+  position: relative;
+  z-index: 3;
+}
+
+#screen-start[data-island="samsoe"] .start-intro h1 {
+  max-width: none;
+  font-size: clamp(2.4rem, 3vw, 3.25rem);
+  line-height: 1.04;
+  letter-spacing: -.04em;
+  text-wrap: balance;
+}
+
+#screen-start[data-island="samsoe"] .start-intro .lead {
+  max-width: 53ch;
+  font-size: clamp(.98rem, 1.25vw, 1.12rem);
+  line-height: 1.55;
+}
+
+#screen-start[data-island="samsoe"] .facts {
+  max-width: 600px;
+  margin-top: 20px;
+}
+
+#screen-start .start-intro .facts li {
+  grid-template-columns: 50px minmax(0, 1fr);
+  gap: 12px;
+  min-height: 50px;
+  align-items: center;
+}
+
+#screen-start .start-intro .facts li::before {
+  width: 50px;
+  height: 50px;
+  border-radius: 0;
+  background-color: transparent;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  box-shadow: none;
+  filter: drop-shadow(0 5px 7px rgba(0, 13, 38, .28));
+}
+
+/* Das Symbol haengt an der Klasse, nicht an der Position. Die Reihenfolge
+   der Fakten ist Redaktionssache; bei :nth-child wandert sonst still das
+   falsche Bild an die falsche Zeile — dieselbe Begruendung wie bei
+   opt-1 bis opt-4 an den Antwortkacheln. */
+#screen-start .start-intro .facts .fact-fragen::before {
+  background-image: url("/media/campus/campus-hex-fragen.webp");
+}
+
+#screen-start .start-intro .facts .fact-zeit::before {
+  background-image: url("/media/campus/campus-hex-zeitlimit.webp");
+}
+
+#screen-start .start-intro .facts .fact-aufloesung::before {
+  background-image: url("/media/campus/campus-hex-aufloesung.webp");
+}
+
+.samsoe-start-visual {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.samsoe-start-visual img {
+  position: absolute;
+  display: block;
+  max-width: none;
+  height: auto;
+  user-select: none;
+}
+
+.samsoe-start-vehicle {
+  bottom: 1%;
+  left: -3%;
+  z-index: 1;
+  width: min(70%, 580px);
+  filter: drop-shadow(0 18px 20px rgba(0, 13, 38, .34));
+}
+
+.samsoe-start-technician {
+  right: 0;
+  bottom: -2%;
+  z-index: 2;
+  width: min(52%, 435px);
+  filter: drop-shadow(-12px 10px 18px rgba(0, 13, 38, .24));
+}
+
+#screen-start[data-island="samsoe"] .start-form {
+  gap: 14px;
+  padding: clamp(30px, 3.6vw, 48px);
+  background: rgba(255, 255, 255, .985);
+}
+
+#screen-start[data-island="samsoe"] .form-title {
+  font-size: clamp(1.65rem, 2.35vw, 2.15rem);
+  letter-spacing: -.03em;
+}
+
+#screen-start[data-island="samsoe"] .form-intro {
+  margin-bottom: 6px;
+  font-size: .95rem;
+  line-height: 1.5;
+}
+
+@media (min-width: 1100px) {
+  #screen-start[data-island="samsoe"] .start-intro h1 {
+    white-space: nowrap;
+    text-wrap: nowrap;
+  }
+}
+
+#screen-start[data-island="hiddensee"] .start-layout {
+  min-height: clamp(680px, 72vh, 790px);
+}
+
+#screen-start[data-island="hiddensee"] .start-intro {
+  position: relative;
+  isolation: isolate;
+  min-height: 680px;
+  overflow: hidden;
+}
+
+#screen-start[data-island="hiddensee"] .start-intro::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  left: 14%;
+  bottom: -24%;
+  width: 78%;
+  aspect-ratio: 1.4;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(37, 159, 227, .17), transparent 68%);
+  pointer-events: none;
+}
+
+#screen-start[data-island="hiddensee"] .start-intro > :not(.hiddensee-start-visual) {
+  position: relative;
+  z-index: 3;
+}
+
+#screen-start[data-island="hiddensee"] .facts {
+  max-width: 620px;
+}
+
+.hiddensee-start-visual {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.hiddensee-start-contact {
+  position: absolute;
+  bottom: -4%;
+  left: 50%;
+  display: block;
+  width: min(78%, 680px);
+  max-width: none;
+  height: auto;
+  transform: translateX(-50%);
+  filter: drop-shadow(0 20px 22px rgba(0, 13, 38, .34));
+  user-select: none;
+}
+
+#screen-start[data-island="vejro"] .start-layout {
+  min-height: clamp(740px, 74vh, 850px);
+}
+
+#screen-start[data-island="vejro"] .start-intro {
+  position: relative;
+  isolation: isolate;
+  min-height: 740px;
+  overflow: hidden;
+}
+
+#screen-start[data-island="vejro"] .start-intro > :not(.vejro-start-visual) {
+  position: relative;
+  z-index: 3;
+}
+
+#screen-start[data-island="vejro"] .facts {
+  max-width: 620px;
+}
+
+.vejro-start-visual {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.vejro-start-products {
+  position: absolute;
+  bottom: 1.5%;
+  left: 50%;
+  display: block;
+  width: auto;
+  max-width: 94%;
+  height: min(38%, 360px);
+  filter: drop-shadow(0 20px 24px rgba(0, 9, 30, .38));
+  transform: translateX(-50%);
+  user-select: none;
+}
+
+#screen-start[data-island="poel"] .start-layout {
+  min-height: clamp(740px, 74vh, 850px);
+}
+
+#screen-start[data-island="poel"] .start-intro {
+  position: relative;
+  isolation: isolate;
+  min-height: 740px;
+  overflow: hidden;
+}
+
+#screen-start[data-island="poel"] .start-intro > :not(.poel-start-visual) {
+  position: relative;
+  z-index: 3;
+}
+
+#screen-start[data-island="poel"] .facts {
+  max-width: 620px;
+}
+
+.poel-start-visual {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.poel-start-haendler {
+  position: absolute;
+  bottom: 1.5%;
+  left: 50%;
+  display: block;
+  width: auto;
+  max-width: 98%;
+  height: min(40%, 430px);
+  filter: drop-shadow(0 20px 24px rgba(0, 9, 30, .38));
+  transform: translateX(-50%);
+  user-select: none;
+}
+
+@media (min-width: 1400px) {
+  .vejro-start-products {
+    height: min(42%, 430px);
+  }
+}
+
+#screen-start[data-island="usedom"] .start-layout {
+  min-height: clamp(820px, 78vh, 920px);
+}
+
+#screen-start[data-island="usedom"] .start-intro {
+  position: relative;
+  isolation: isolate;
+  min-height: 820px;
+  overflow: hidden;
+}
+
+#screen-start[data-island="usedom"] .start-intro > :not(.usedom-start-visual) {
+  position: relative;
+  z-index: 3;
+}
+
+#screen-start[data-island="usedom"] .facts {
+  max-width: 620px;
+}
+
+.usedom-start-visual {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.usedom-start-display {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  display: block;
+  width: auto;
+  height: min(40%, 380px);
+  opacity: .98;
+  filter: drop-shadow(0 20px 24px rgba(0, 9, 30, .34));
+  transform: translateX(-50%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 18%, #000 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 18%, #000 100%);
+  user-select: none;
+}
+
+#screen-start[data-island="langeland"] .start-layout {
+  min-height: clamp(820px, 78vh, 920px);
+}
+
+#screen-start[data-island="langeland"] .start-intro {
+  position: relative;
+  isolation: isolate;
+  min-height: 820px;
+  overflow: hidden;
+}
+
+#screen-start[data-island="langeland"] .start-intro > :not(.langeland-start-visual) {
+  position: relative;
+  z-index: 3;
+}
+
+#screen-start[data-island="langeland"] .facts {
+  max-width: 620px;
+}
+
+.langeland-start-visual {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.langeland-start-handover {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  display: block;
+  width: auto;
+  height: min(40%, 380px);
+  filter: drop-shadow(0 20px 24px rgba(0, 9, 30, .34));
+  transform: translateX(-50%);
+  user-select: none;
+}
+
+#screen-start[data-island="fehmarn"] .start-layout {
+  min-height: clamp(820px, 78vh, 920px);
+}
+
+#screen-start[data-island="fehmarn"] .start-intro {
+  position: relative;
+  isolation: isolate;
+  min-height: 820px;
+  overflow: hidden;
+}
+
+#screen-start[data-island="fehmarn"] .start-intro > :not(.fehmarn-start-visual) {
+  position: relative;
+  z-index: 3;
+}
+
+#screen-start[data-island="fehmarn"] .facts {
+  max-width: 620px;
+}
+
+.fehmarn-start-visual {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.fehmarn-start-diagnostic {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  display: block;
+  width: auto;
+  max-width: 96%;
+  height: min(42%, 390px);
+  filter: drop-shadow(0 20px 24px rgba(0, 9, 30, .34));
+  transform: translateX(-50%);
+  user-select: none;
+}
 
 .facts { display: grid; gap: 10px; margin: 22px 0 0; padding: 0; list-style: none; }
 .facts li {
@@ -374,7 +1291,47 @@ main { flex: 1 0 auto; }
   box-shadow: inset 0 0 0 6px var(--th-lime), inset 0 0 0 7px rgba(17, 17, 17, .3);
 }
 
+/* Der Block liegt auf der Insel-Illustration, und die ist je Insel anders
+   hell. Deshalb tragen Knopf und Text eine eigene dunkle Flaeche: Sonst
+   haengt die Lesbarkeit am Motiv statt an der Gestaltung. */
+.start-details { margin-top: 14px; }
+.start-details summary {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  padding: 0 16px;
+  border: 1px solid rgba(255, 255, 255, .3);
+  border-radius: 999px;
+  background: rgba(7, 29, 70, .74);
+  color: #fff;
+  font-size: .88rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.start-details summary:focus-visible { outline: 2px solid var(--th-blue); outline-offset: 3px; }
+.start-types {
+  max-width: 46ch;
+  margin: 8px 0 0;
+  padding: 11px 15px;
+  border-radius: 14px;
+  background: rgba(7, 29, 70, .74);
+  color: #fff;
+  font-size: .88rem;
+  line-height: 1.5;
+}
+
 .start-form { display: grid; align-content: start; gap: 14px; padding: clamp(24px, 4vw, 46px); }
+
+/* Beide Bloecke setzen display, deshalb muss [hidden] es zuruecknehmen —
+   sonst bliebe der zusammengefaltete Teil sichtbar. */
+.start-fields { display: grid; gap: 14px; }
+.start-fields[hidden] { display: none; }
+
+.participant-summary { display: grid; gap: 2px; }
+.participant-summary[hidden] { display: none; }
+.participant-name { margin: 0; color: var(--th-navy); font-size: 1.02rem; font-weight: 800; }
+.participant-meta { margin: 0 0 2px; color: var(--th-muted); font-size: .88rem; line-height: 1.45; }
+.participant-summary .btn { justify-self: start; padding-right: 0; padding-left: 0; }
 .form-title { margin-bottom: 2px; }
 .form-intro { margin: 0 0 4px; color: var(--th-muted); font-size: .9rem; }
 
@@ -390,7 +1347,6 @@ main { flex: 1 0 auto; }
   background: #fff;
   transition: border-color .15s, box-shadow .15s;
 }
-.field input:hover, .field select:hover { border-color: var(--th-blue); }
 .field input:focus-visible, .field select:focus-visible { border-color: var(--th-blue); }
 .field small { color: var(--th-muted); font-size: .8rem; }
 .field.has-error input, .field.has-error select { border-color: var(--th-red); background: var(--error-bg); }
@@ -413,19 +1369,20 @@ main { flex: 1 0 auto; }
   border-radius: 12px;
   font-weight: 800;
   text-decoration: none;
-  transition: transform .14s, box-shadow .15s, background-color .15s, border-color .15s;
+  transition:
+    transform var(--duration-press) var(--ease-out),
+    box-shadow var(--duration-fast) ease,
+    background-color var(--duration-fast) ease,
+    border-color var(--duration-fast) ease;
 }
-.btn:hover:not(:disabled) { transform: translateY(-1px); }
 /* Am Fahrzeug wird getippt, nicht gehovert — ohne :active gäbe es auf dem
    Telefon überhaupt keine Rückmeldung, dass der Knopf getroffen wurde. */
-.btn:active:not(:disabled) { transform: scale(.985); box-shadow: none; }
+.btn:active:not(:disabled) { transform: scale(.97); box-shadow: none; }
 .btn:disabled { cursor: not-allowed; opacity: .45; transform: none; }
 
 .btn-primary { background: var(--th-navy); color: #fff; box-shadow: 0 10px 22px rgba(29, 54, 97, .22); }
-.btn-primary:hover:not(:disabled) { background: #172C50; }
 
 .btn-secondary { border-color: var(--th-line-strong); background: #fff; color: var(--th-navy); }
-.btn-secondary:hover:not(:disabled) { border-color: var(--th-blue); }
 
 .btn-tertiary { background: transparent; color: var(--th-navy); text-decoration: underline; text-underline-offset: 3px; }
 
@@ -448,7 +1405,6 @@ main { flex: 1 0 auto; }
    liest ein Screenreader je nach Programm mit — daraus würde "Multiplikations-
    zeichen Abbrechen". */
 .btn-ghost .btn-zeichen { margin-right: -2px; font-size: 1.25em; line-height: 1; }
-.btn-ghost:hover:not(:disabled) { background: var(--error-bg); }
 .btn-ghost:focus-visible { outline-color: var(--th-red); }
 
 /* Auch die Nebenbuttons bleiben auf 44 px. Das Design-System schreibt für den
@@ -468,16 +1424,27 @@ main { flex: 1 0 auto; }
   height: 100%;
   border-radius: 999px;
   background: linear-gradient(90deg, var(--th-blue), var(--th-lime));
-  transition: width .28s cubic-bezier(.23, 1, .32, 1);
+  transition: width 280ms var(--ease-out);
 }
 
-.quiz-body { padding: 18px clamp(18px, 4vw, 42px) clamp(22px, 4vw, 38px); }
+.quiz-body {
+  width: min(100%, 1010px);
+  margin: 0 auto;
+  padding: 22px clamp(18px, 4vw, 42px) clamp(24px, 4vw, 42px);
+}
 
+.q-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 10px;
+}
 .q-category {
   display: inline-flex;
   min-height: 28px;
   align-items: center;
-  margin: 0 0 10px;
+  margin: 0;
   padding: 3px 11px;
   border-radius: 999px;
   background: var(--info-bg);
@@ -486,6 +1453,19 @@ main { flex: 1 0 auto; }
   font-weight: 800;
   letter-spacing: .09em;
   text-transform: uppercase;
+}
+.q-mode {
+  display: inline-flex;
+  min-height: 28px;
+  align-items: center;
+  margin: 0;
+  padding: 3px 11px;
+  border: 1px solid var(--th-line);
+  border-radius: 999px;
+  background: var(--th-white);
+  color: var(--th-muted);
+  font-size: .78rem;
+  font-weight: 750;
 }
 .q-title { font-size: clamp(1.2rem, 1.05rem + .8vw, 1.75rem); margin-bottom: 8px; }
 .q-title:focus { outline: none; }
@@ -515,51 +1495,75 @@ main { flex: 1 0 auto; }
   min-height: 92px;
   padding: 15px;
   border: 1px solid var(--th-line);
-  border-radius: 18px;
+  overflow: hidden;
+  border-radius: var(--radius-md);
   background: var(--th-white);
   color: var(--th-ink);
   text-align: left;
-  box-shadow: 0 6px 18px rgba(29, 54, 97, .06);
-  transition: border-color .15s, box-shadow .15s, background-color .15s, transform .1s;
+  box-shadow: 0 5px 16px rgba(10, 39, 71, .055);
+  transition:
+    border-color var(--duration-fast) ease,
+    box-shadow var(--duration-fast) ease,
+    background-color var(--duration-fast) ease,
+    transform var(--duration-press) var(--ease-out);
 }
 
-/* Vier kräftige Kachelfarben, aus Entfernung unterscheidbar.
+/* Sieben kräftige Kachelfarben, aus Entfernung unterscheidbar.
    Bewusst über feste Klassen statt :nth-child — bei Bildfragen liegt die
    Kachel in einem Wrapper (wegen der Lupe), und die Position im DOM stimmt
    dann nicht mehr mit der Antwortnummer überein. */
-.answer.opt-1 { --opt: #1D3661; --opt-rgb: 29, 54, 97;  --opt-text: #FFFFFF; }
-.answer.opt-2 { --opt: #3BA9D3; --opt-rgb: 59, 169, 211; --opt-text: #111111; }
-.answer.opt-3 { --opt: #AFCA05; --opt-rgb: 175, 202, 5;  --opt-text: #111111; }
-.answer.opt-4 { --opt: #CE132D; --opt-rgb: 206, 19, 45;  --opt-text: #FFFFFF; }
+.answer.opt-1 { --opt: var(--answer-a); --opt-rgb: var(--answer-a-rgb); --opt-text: var(--answer-a-text); }
+.answer.opt-2 { --opt: var(--answer-b); --opt-rgb: var(--answer-b-rgb); --opt-text: var(--answer-b-text); }
+.answer.opt-3 { --opt: var(--answer-c); --opt-rgb: var(--answer-c-rgb); --opt-text: var(--answer-c-text); }
+.answer.opt-4 { --opt: var(--answer-d); --opt-rgb: var(--answer-d-rgb); --opt-text: var(--answer-d-text); }
+.answer.opt-5 { --opt: var(--answer-e); --opt-rgb: var(--answer-e-rgb); --opt-text: var(--answer-e-text); }
+.answer.opt-6 { --opt: var(--answer-f); --opt-rgb: var(--answer-f-rgb); --opt-text: var(--answer-f-text); }
+.answer.opt-7 { --opt: var(--answer-g); --opt-rgb: var(--answer-g-rgb); --opt-text: var(--answer-g-text); }
 
-.answer:hover:not(:disabled) {
-  border-color: var(--opt);
-  box-shadow: 0 10px 24px rgba(var(--opt-rgb), .14);
+.answer::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: var(--opt);
+  opacity: .28;
+  transition: width var(--duration-fast) var(--ease-out), opacity var(--duration-fast) ease;
 }
-.answer:active:not(:disabled) { transform: scale(.992); }
+.answer:active:not(:disabled) { transform: scale(.985); }
 .answer:disabled { cursor: default; }
 
-/* Der Ring ist voll deckend, nicht lasiert. Ein 20-prozentiger Schleier ist
-   im Hallenlicht und erst recht draußen am Fahrzeug kaum von "nicht gewählt"
-   zu unterscheiden. */
+/* Auswahl ist ein eigener, markenneutraler Zustand: Navy/Cyan statt der
+   späteren Bedeutungsfarben Grün und Rot. Ring, Glow, Anhebung und Häkchen
+   wirken zusammen, damit die Auswahl nie nur an einer Farbe hängt. */
 .answer.is-selected {
-  border-color: var(--opt);
-  background: rgba(var(--opt-rgb), .14);
-  box-shadow: 0 0 0 3px var(--opt), 0 8px 20px rgba(var(--opt-rgb), .24);
+  z-index: 1;
+  border-color: var(--th-navy-deep);
+  background: var(--info-bg);
+  box-shadow:
+    0 0 0 3px var(--th-white),
+    0 0 0 7px rgba(59, 169, 211, .72),
+    0 0 26px rgba(59, 169, 211, .46),
+    0 12px 26px rgba(10, 39, 71, .2);
+  transform: translateY(-2px) scale(1.012);
 }
+.answer.is-selected::after { width: 6px; background: var(--th-blue); opacity: 1; }
 .answer.is-correct {
   border-color: #8FA600;
   background: var(--success-bg);
   box-shadow: 0 0 0 3px rgba(175, 202, 5, .2);
 }
+.answer.is-correct::after,
+.answer.is-missed::after { background: var(--th-lime); opacity: 1; }
 .answer.is-wrong {
   border-color: var(--th-red);
   background: var(--error-bg);
   box-shadow: 0 0 0 3px rgba(206, 19, 45, .14);
 }
+.answer.is-wrong::after { background: var(--th-red); opacity: 1; }
 .answer.is-missed { border-color: var(--success-line); border-style: dashed; background: var(--success-bg); }
 
 .answer-letter {
+  position: relative;
   display: grid;
   place-items: center;
   width: 44px;
@@ -569,6 +1573,23 @@ main { flex: 1 0 auto; }
   color: var(--opt-text);
   font-weight: 800;
   box-shadow: 0 5px 12px rgba(var(--opt-rgb), .2);
+}
+.answer.is-selected .answer-letter::after {
+  content: "✓";
+  position: absolute;
+  right: -6px;
+  bottom: -6px;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--th-white);
+  border-radius: 50%;
+  background: var(--th-navy-deep);
+  color: var(--th-white);
+  font-size: .7rem;
+  line-height: 1;
+  box-shadow: 0 2px 5px rgba(10, 39, 71, .28);
 }
 .answer.is-correct .answer-letter { background: var(--th-lime); color: var(--th-ink); }
 .answer.is-wrong .answer-letter { background: var(--th-red); color: #fff; }
@@ -588,16 +1609,58 @@ main { flex: 1 0 auto; }
   width: 100%;
   min-height: 0;
   padding: 0;
+  border-width: 2px;
+  border-color: var(--th-line-strong);
   overflow: hidden;
+  box-shadow: 0 7px 18px rgba(10, 39, 71, .1);
 }
 .answer-media {
   width: 100%;
   aspect-ratio: 3 / 4;              /* portrait, der Normalfall in der Werkstatt */
   object-fit: cover;
   background: var(--th-soft);
+  transition: filter var(--duration-fast) ease;
 }
+.answer-bild.is-selected .answer-media { filter: saturate(1.08) contrast(1.04); }
 .answers-bild[data-layout="square"] .answer-media { aspect-ratio: 1 / 1; }
 .answers-bild[data-layout="landscape"] .answer-media { aspect-ratio: 4 / 3; }
+
+/* Produktvergleich mit vielen Optionen: echte Freisteller statt einer bunten
+   Textliste. Die neutrale Navy-Fassung hält sieben Produkte visuell ruhig;
+   Grün und Rot bleiben ausschließlich der Auswertung vorbehalten. */
+.answers-bild[data-layout="product"] {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.answers-bild[data-layout="product"] .answer-wrap { height: 100%; }
+.answers-bild[data-layout="product"] .answer {
+  --opt: var(--th-navy);
+  --opt-rgb: 29, 54, 97;
+  --opt-text: #FFFFFF;
+}
+.answers-bild[data-layout="product"] .answer-bild {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.answers-bild[data-layout="product"] .answer-media {
+  aspect-ratio: 1 / 1;
+  padding: 20px;
+  object-fit: contain;
+  background: linear-gradient(145deg, #FFFFFF 0%, #EEF3F7 100%);
+}
+.answers-bild[data-layout="product"] .answer-bild-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  margin-top: auto;
+  text-align: center;
+}
+.answers-bild[data-layout="product"] .answer-zoom {
+  top: 10px;
+  right: 10px;
+  bottom: auto;
+}
 
 /* Buchstabe und Lupe liegen auf dem Bild — beide mit eigener Fläche, damit
    sie auch auf einem hellen Foto lesbar bleiben. */
@@ -622,8 +1685,6 @@ main { flex: 1 0 auto; }
   font-size: 1.1rem;
   line-height: 1;
 }
-.answer-zoom:hover { background: var(--th-navy); }
-
 .answer-bild-text {
   display: block;
   padding: 11px 13px;
@@ -684,7 +1745,6 @@ main { flex: 1 0 auto; }
   box-shadow: 0 6px 18px rgba(29, 54, 97, .06);
   transition: border-color .15s, background-color .15s, box-shadow .15s;
 }
-.order-item:hover:not(:disabled) { border-color: var(--th-blue); }
 .order-item:disabled { cursor: default; }
 .order-item.is-picked { border-color: var(--th-navy); background: var(--info-bg); }
 .order-item.is-correct { border-color: #8FA600; background: var(--success-bg); }
@@ -945,12 +2005,81 @@ main { flex: 1 0 auto; }
   animation: enter .2s ease-out both;
 }
 
+/* Hover gehört nur auf Geräte, die tatsächlich hovern können. Auf Touch-
+   Displays bliebe der Zustand sonst nach dem Tippen hängen. */
+@media (hover: hover) and (pointer: fine) {
+  .island-card:hover {
+    border-color: var(--th-blue);
+    box-shadow: 0 16px 34px rgba(10, 39, 71, .13);
+    transform: translateY(-3px);
+  }
+  .island-card:hover .i-content { box-shadow: 0 13px 28px rgba(10, 39, 71, .17); }
+  .island-card:hover .i-open {
+    border-color: var(--th-navy);
+    background: var(--info-bg);
+    transform: translateX(2px);
+  }
+  .field input:hover, .field select:hover { border-color: var(--th-blue); }
+  .btn:hover:not(:disabled) { transform: translateY(-1px); }
+  .btn-primary:hover:not(:disabled) { background: #172C50; }
+  .btn-secondary:hover:not(:disabled) { border-color: var(--th-blue); }
+  .btn-ghost:hover:not(:disabled) { background: var(--error-bg); }
+  .answer:hover:not(:disabled) {
+    border-color: var(--opt);
+    box-shadow: 0 10px 24px rgba(var(--opt-rgb), .14);
+  }
+  .order-item:hover:not(:disabled) { border-color: var(--th-blue); }
+  .answer-zoom:hover { background: var(--th-navy); }
+}
+
+/* Auf der Karte ist die Schaltfläche so groß wie die komplette Inselstation.
+   Ein Schatten auf dieser unsichtbaren Fläche wirkt wie ein rechteckiger
+   Rahmen. Deshalb reagieren hier nur Beschriftung und Silhouette. */
+@media (min-width: 760px) and (hover: hover) and (pointer: fine) {
+  .island-card:hover {
+    border-color: transparent;
+    box-shadow: none;
+    transform: none;
+  }
+  .island-card:hover .i-content {
+    box-shadow: 0 13px 28px rgba(10, 39, 71, .17), inset 0 1px 0 rgba(255, 255, 255, .9);
+    transform: translateY(-2px);
+  }
+  .island-card:hover .i-visual img {
+    filter: drop-shadow(0 10px 10px rgba(10, 39, 71, .26));
+    transform: scale(1.015);
+  }
+  .island-card:active { transform: none; }
+  .island-card:active .i-content { transform: scale(.985); }
+}
+
 /* --------------------------------------------------------------- Mobile --- */
 
 @media (max-width: 900px) {
   .start-layout { grid-template-columns: 1fr; }
+  #screen-start[data-island="samsoe"] .start-layout { grid-template-columns: 1fr; }
+  #screen-start[data-island="samsoe"] .start-intro { min-height: 690px; }
+  #screen-start[data-island="hiddensee"] .start-intro { min-height: 720px; }
+  #screen-start[data-island="vejro"] .start-intro { min-height: 760px; }
+  #screen-start[data-island="poel"] .start-intro { min-height: 740px; }
+  #screen-start[data-island="usedom"] .start-intro { min-height: 780px; }
+  .usedom-start-display { height: min(38%, 340px); }
+  #screen-start[data-island="langeland"] .start-intro { min-height: 780px; }
+  .langeland-start-handover { height: min(38%, 340px); }
+  #screen-start[data-island="fehmarn"] .start-intro { min-height: 780px; }
+  .fehmarn-start-diagnostic { height: min(40%, 350px); }
   .result-layout { grid-template-columns: 1fr; }
   .score-card { position: static; }
+}
+
+@media (max-width: 759px) {
+  .masthead-progress { order: 3; width: 100%; margin-left: 0; }
+  .campus-progress-head { margin-bottom: 5px; }
+  .masthead-progress small { text-align: left; }
+}
+
+@media (min-width: 641px) and (max-width: 960px) {
+  .answers-bild[data-layout="product"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
 @media (max-width: 640px) {
@@ -968,7 +2097,9 @@ main { flex: 1 0 auto; }
   /* Bildkacheln bleiben auch auf dem Telefon zweispaltig — vier Fotos
      untereinander wären nicht vergleichbar, und Vergleichen ist die Aufgabe. */
   .answers-bild { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .answers-bild[data-layout="product"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .answer-bild { padding: 0; }
+  .answers-bild[data-layout="product"] .answer-media { padding: 12px; }
   .answer-bild .answer-letter { top: 7px; left: 7px; width: 34px; height: 34px; border-radius: 10px; }
   /* Die Lupe bleibt auf 44 px — sie liegt auf einer 155-px-Kachel, und wer
      mit Handschuhen danebengreift, wählt versehentlich die Antwort aus. */
@@ -982,6 +2113,34 @@ main { flex: 1 0 auto; }
   .quiz-actions { flex-direction: column-reverse; align-items: stretch; }
   .quiz-actions .btn { width: 100%; }
   .start-actions .btn, .result-actions .btn { flex: 1 1 auto; }
+
+  #screen-start[data-island="samsoe"] .start-intro {
+    min-height: 630px;
+    padding: 26px 22px;
+  }
+  #screen-start[data-island="samsoe"] .start-intro h1 { font-size: clamp(2rem, 10vw, 2.75rem); }
+  #screen-start[data-island="samsoe"] .facts { gap: 8px; }
+  #screen-start .start-intro .facts li {
+    grid-template-columns: 42px minmax(0, 1fr);
+    gap: 10px;
+    min-height: 42px;
+  }
+  #screen-start .start-intro .facts li::before { width: 42px; height: 42px; }
+  .samsoe-start-vehicle { left: -15%; width: 88%; }
+  .samsoe-start-technician { right: -23%; width: 68%; }
+  #screen-start[data-island="samsoe"] .start-form { padding: 26px 22px; }
+  #screen-start[data-island="hiddensee"] .start-intro { min-height: 680px; }
+  .hiddensee-start-contact { bottom: -1%; width: min(108%, 560px); }
+  #screen-start[data-island="vejro"] .start-intro { min-height: 700px; }
+  .vejro-start-products { bottom: 2%; max-width: 98%; height: min(36%, 320px); }
+  #screen-start[data-island="poel"] .start-intro { min-height: 680px; }
+  .poel-start-haendler { bottom: 2%; max-width: 98%; height: min(35%, 300px); }
+  #screen-start[data-island="usedom"] .start-intro { min-height: 680px; }
+  .usedom-start-display { width: 94%; height: auto; }
+  #screen-start[data-island="langeland"] .start-intro { min-height: 680px; }
+  .langeland-start-handover { width: 96%; height: auto; }
+  #screen-start[data-island="fehmarn"] .start-intro { min-height: 680px; }
+  .fehmarn-start-diagnostic { width: 96%; height: auto; }
 }
 
 /* ------------------------------------------------------- Reduced Motion --- */
@@ -996,6 +2155,15 @@ main { flex: 1 0 auto; }
   .btn:hover:not(:disabled), .island-card:hover { transform: none; }
 }
 
+@media (prefers-reduced-transparency: reduce) {
+  .masthead,
+  .island-card .i-content {
+    background: #fff;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
 /* ------------------------------------------------------------- Kontrast --- */
 
 @media (prefers-contrast: more) {
@@ -1006,9 +2174,40 @@ main { flex: 1 0 auto; }
 
 /* ---------------------------------------------------------------- Druck --- */
 
+/* ------------------------------------------------------- Sende-Ausgang --- */
+
+.ausgang {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  align-items: center;
+  margin: 0 0 16px;
+  padding: 14px 16px;
+  border: 1px solid var(--th-blue);
+  border-radius: var(--radius-md);
+  background: var(--info-bg);
+}
+.ausgang[hidden] { display: none; }
+.ausgang-text {
+  flex: 1 1 220px;
+  margin: 0;
+  color: var(--th-navy);
+  font-size: .88rem;
+  line-height: 1.45;
+}
+.ausgang.is-fehler { border-color: var(--error-line); background: var(--error-bg); }
+
+/* Noch offene Inseln, direkt über den Knöpfen — dort wird entschieden,
+   wohin es weitergeht. */
+.rest-hinweis {
+  margin: 0 0 12px;
+  color: var(--th-muted);
+  font-size: .88rem;
+}
+
 @media print {
   body { background: #fff; }
-  .masthead-meta, .quiz-actions, .result-actions, .toast, .skip-link,
+  .masthead-meta, .masthead-progress, .quiz-actions, .result-actions, .toast, .skip-link,
   .ausgang, .rest-hinweis { display: none !important; }
   .screen { box-shadow: none; border-color: #999; }
   .score-card { background: #fff; color: #000; border: 1px solid #999; }

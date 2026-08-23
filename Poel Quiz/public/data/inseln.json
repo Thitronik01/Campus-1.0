@@ -4,10 +4,12 @@
   "inseln": [
     {
       "slug": "poel",
+      "name": "Poel",
       "code": "POEL",
       "title": "Händlerbereich",
-      "thema": "Was finde ich wo?",
-      "beschreibung": "Informationen selbstständig auf der THITRONIK-Website finden."
+      "thema": "Beratung & Werkstatt vorbereiten",
+      "beschreibung": "Aktuelle Unterlagen finden, Kundeninformationen trennen und Werkstattaufträge professionell vorbereiten.",
+      "image": "/media/inseln/poel.webp"
     }
   ]
 }

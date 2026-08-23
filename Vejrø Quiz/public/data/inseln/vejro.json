@@ -1,16 +1,19 @@
 {
   "island": "vejro",
   "code": "VEJRØ",
-  "title": "CampLock & VanLock Fingerprint",
-  "subtitle": "Produktschulung",
-  "version": "3",
-  "lernziel": "Ein Komfortprodukt ehrlich verkaufen: Der Fingerprint ist das Produkt, bei dem der Kunde am meisten erwartet und am schnellsten enttäuscht ist.",
+  "title": "Produktneuheiten: Zugang & Wasserschutz",
+  "subtitle": "Neuheiten verstehen, passend beraten",
+  "version": "4",
+  "lernziel": "CampLock und VanLock sicher abgrenzen, den Fingerprint ehrlich beraten und die neuen Funklösungen gegen Wassereinbruch passend einsetzen.",
+  "dauerMinuten": 7,
   "quellen": [
     "produkte/camplock-fingerprint.md",
     "produkte/vanlock-fingerprint.md",
+    "produkte/funk-wassermelder.md",
+    "produkte/funk-magnetkontakt.md",
     "referenz/zugang-bedienung.md"
   ],
-  "internerHinweis": "Fragenkatalog v3. Alle VanLock-Angaben (Artikelnummern 106260/106259, Sensormaß, Einsatzbereich) sind im Wiki-Bestand nicht hinterlegt — vor dem Einsatz fachlich bestätigen, siehe Teil C des Katalogs. Betrifft VEJ-01, VEJ-03 und VEJ-08. Zeigt die Insel ein neueres, noch nicht dokumentiertes Produkt, muss der Fragensatz neu gebaut werden.",
+  "internerHinweis": "Fragenkatalog v4. VEJRØ bündelt Produktneuheiten: CampLock/VanLock, Funk-Wassermelder 868 und wasserdichter Funk-Magnetkontakt. VanLock-Einsatzbereich sowie alle Werte der Produktneuheiten vor jeder Schulung gegen den aktuellen Freigabestand prüfen.",
   "questions": [
     {
       "id": "VEJ-01",
@@ -41,19 +44,31 @@
     },
     {
       "id": "VEJ-03",
-      "type": "truefalse",
-      "category": "Richtig oder falsch",
-      "prompt": "„VanLock ist nur der neue Name für CampLock.“",
-      "correct": ["falsch"],
-      "feedback": "Eigene Artikelnummern, andere Sensormaße, anderer Einsatzbereich. Zwei Produkte, nicht zwei Namen.",
+      "type": "multi",
+      "category": "Produktneuheit: Wasserdichter Funk-Magnetkontakt",
+      "prompt": "Eine Außenklappe ist regelmäßig Spritzwasser ausgesetzt. Was gehört zur korrekten Montage des wasserdichten Funk-Magnetkontakts? Wähle alle zutreffenden.",
+      "options": [
+        { "id": "a", "text": "Die wasserdichte Ausführung für den feuchtebelasteten Einbauort wählen" },
+        { "id": "b", "text": "Die Gehäusepfeile von Sender und Magnet zueinander ausrichten" },
+        { "id": "c", "text": "Im geschlossenen Zustand höchstens 22 mm Abstand einplanen" },
+        { "id": "d", "text": "Grundsätzlich den Montageadapter des Standardkontakts verwenden" },
+        { "id": "e", "text": "Den Sender dauerhaft unter Wasser montieren — IP67 erlaubt das" }
+      ],
+      "correct": ["a", "b", "c"],
+      "feedback": "Für feuchte- und spritzwasserbelastete Öffnungen ist die wasserdichte Ausführung vorgesehen. Pfeile zueinander, geschlossen maximal 22 mm — und IP67 bedeutet nicht Dauereintauchen.",
       "irrtum": [
         {
-          "fuer": ["richtig"],
-          "titel": "Richtig",
-          "text": "Der Irrtum entsteht durch die ähnliche Bedienung — beide werden mit dem Finger bedient, beide arbeiten mit der WiPro zusammen. Gleiche Bedienung heißt nicht gleiches Produkt."
+          "fuer": ["d"],
+          "titel": "Standardadapter übernommen",
+          "text": "Die Montageregeln der Standardausführung dürfen nicht ungeprüft auf die wasserdichte Ausführung übertragen werden."
+        },
+        {
+          "fuer": ["e"],
+          "titel": "IP67 mit Dauereintauchen verwechselt",
+          "text": "IP67 schützt gegen zeitweiliges Untertauchen unter definierten Bedingungen. Es ist keine Freigabe für dauerhafte Montage unter Wasser oder den direkten Hochdruckstrahl."
         }
       ],
-      "mitnehmen": "Wer beide als dasselbe führt, bestellt irgendwann das falsche Teil für ein Fahrzeug, das schon in der Halle steht."
+      "mitnehmen": "Produktvariante zuerst nach dem Einbauort auswählen, danach nach ihrer eigenen Anleitung montieren — nicht nach der Regel eines ähnlich aussehenden Kontakts."
     },
     {
       "id": "VEJ-05",
@@ -84,28 +99,30 @@
     },
     {
       "id": "VEJ-08",
-      "type": "match",
-      "category": "Produktabgrenzung",
-      "prompt": "Welches Merkmal gehört zu welchem Produkt?",
-      "left": [
-        { "id": "l1", "text": "Hartal-Aufbautür mit Zentralverriegelung" },
-        { "id": "l2", "text": "Reisemobile und Kastenwagen" },
-        { "id": "l3", "text": "Art. 106111 / 106144" },
-        { "id": "l4", "text": "Art. 106260 / 106259" }
+      "type": "single",
+      "category": "Produktneuheit: Funk-Wassermelder 868",
+      "prompt": "Wo platzierst du beim Funk-Wassermelder 868 Sendeeinheit und Fühler?",
+      "options": [
+        { "id": "a", "text": "Sendeeinheit trocken und zugänglich; Fühler am tiefen Punkt, an dem Wasser früh erkannt werden soll" },
+        { "id": "b", "text": "Beide Komponenten direkt auf dem Fahrzeugboden im möglichen Wasserbereich" },
+        { "id": "c", "text": "Sendeeinheit hinter einer Metallverkleidung; Fühler möglichst hoch an der Wand" },
+        { "id": "d", "text": "Fühler in den Frischwassertank; Sendeeinheit außen unter das Fahrzeug" }
       ],
-      "right": [
-        { "id": "r1", "text": "CampLock" },
-        { "id": "r2", "text": "VanLock" }
-      ],
-      "correct": { "l1": "r1", "l2": "r2", "l3": "r1", "l4": "r2" },
-      "feedback": "CampLock = Hartal-Aufbautür, silber 106111 / schwarz 106144. VanLock = Reisemobil und Kastenwagen, silber 106260 / schwarz 106259. Schutzklasse IP67 gilt für beide.",
+      "correct": ["a"],
+      "feedback": "Die Sendeeinheit bleibt trocken, funkgünstig und für Wartung erreichbar. Der kabelgebundene Fühler sitzt tief am gewünschten Frühwarnpunkt, beide Kontaktflächen am Boden.",
       "irrtum": [
         {
-          "titel": "Nummern vertauscht",
-          "text": "Eselsbrücke — die **Camp**ing-Aufbautür ist die ältere Anwendung und hat die niedrigeren Nummern (1061xx). VanLock kam später (1062xx)."
+          "fuer": ["b", "d"],
+          "titel": "Sendeeinheit in den Nassbereich gesetzt",
+          "text": "Der Fühler erkennt das Wasser; die Sendeeinheit soll trocken bleiben. Wasserschutz ist keine Einladung, die Elektronik im möglichen Wasserstand zu montieren."
+        },
+        {
+          "fuer": ["c"],
+          "titel": "Zu hoch und funktechnisch abgeschirmt",
+          "text": "Ein hoch montierter Fühler meldet erst spät. Metall unmittelbar um die Sendeeinheit kann zusätzlich die Funkstrecke verschlechtern."
         }
       ],
-      "mitnehmen": "IP67 heißt zeitweiliges Untertauchen, nicht Dauerdruck. Der Hochdruckreiniger gehört nicht auf den Sensor."
+      "mitnehmen": "Beim Wassermelder haben Sender und Fühler bewusst zwei verschiedene Einbauorte: Elektronik trocken, Messpunkt tief."
     },
     {
       "id": "VEJ-04",
@@ -115,13 +132,13 @@
       "items": [
         { "id": "o1", "text": "Fahrzeug- und Türkompatibilität klären" },
         { "id": "o2", "text": "Steuergerät und Sensor montieren, mit 12/24 V versorgen" },
-        { "id": "o3", "text": "Mit der WiPro koppeln" },
+        { "id": "o3", "text": "WiPro und Fingerprint in den Anlernmodus versetzen und koppeln" },
         { "id": "o4", "text": "Zwei Master-Finger einlernen" },
         { "id": "o5", "text": "Nutzerfinger einlernen" },
         { "id": "o6", "text": "Funktionstest an der geschlossenen Tür, zweiten Zugangsweg mitprüfen" }
       ],
       "correct": ["o1", "o2", "o3", "o4", "o5", "o6"],
-      "feedback": "Kompatibilität → Montage → Kopplung → Master → Nutzer → Test. Die Master-Finger kommen immer vor den Nutzerfingern: Ohne sie lässt sich später niemand verwalten.",
+      "feedback": "Kompatibilität → Montage → Anlernmodus und Kopplung → Master → Nutzer → Test. Die Master-Finger kommen immer vor den Nutzerfingern: Ohne sie lässt sich später niemand verwalten.",
       "irrtum": [
         {
           "titel": "Kompatibilität später",

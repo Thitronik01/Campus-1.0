@@ -3,15 +3,17 @@
   "code": "FEHMARN",
   "title": "Fehlersuche & Support",
   "subtitle": "Erst lesen, dann tauschen",
-  "version": "3",
+  "version": "4",
   "lernziel": "Bevor du tauschst, lies. Jedes Gerät sagt, was los ist — über Blinkcode, Ton, Seriennummer, Spannungsverhalten. Tauschen ist die teuerste Form der Diagnose.",
+  "dauerMinuten": 8,
   "quellen": [
     "referenz/stoerungsbeseitigung.md",
     "_intern/support-fallaufnahme.md",
     "produkte/wipro-iii.md",
-    "produkte/pro-finder.md"
+    "produkte/pro-finder.md",
+    "referenz/mobilfunk-sim.md"
   ],
-  "internerHinweis": "Fragenkatalog v3. Das bestehende FehlerQuiz (quiz_id fehlerquiz-de, 6 Bildfragen) läuft weiterhin separat und ist noch nicht in dieses System migriert. Dieser Fragensatz ist die anspruchsvollere zweite Ebene und ersetzt es nicht. Fachlich zu bestätigen: Blinkcode 9× = Anti-Jamming in FEH-01 (belegt ist im Bestand nur 11× = Innenbeleuchtung), die Schwellen 11,2 V / 12,5 V in FEH-04 und die 5 Sekunden Stillstand beim kill-Befehl in FEH-08. Zum internen Befehlsnamen in FEH-08 liegt mit R6 des Katalogs eine Fassung ohne Befehlsnamen bereit — bewusst nicht übernommen.",
+  "internerHinweis": "Fragenkatalog v4. Das bestehende FehlerQuiz mit sechs Bildfragen läuft separat; FEHMARN ist die anspruchsvollere Supportebene. Neu: konkrete Bedeutung des gelben Blinkens bei 0699-045, strukturierte Fehleranalyse und belastbare Kriterien für Provider/SIM. Vor Einsatz Blinkcode 9×, Spannungsschwellen und Stillstandsbedingung des kill-Befehls fachlich bestätigen.",
   "questions": [
     {
       "id": "FEH-06",
@@ -69,29 +71,29 @@
     {
       "id": "FEH-03",
       "type": "single",
-      "category": "Diagnose-Voraussetzung",
-      "prompt": "Ein Kunde meldet: „Die LED am Pro-finder blinkt gelb.“ Was fehlt dir für eine belastbare Aussage?",
+      "category": "Pro-finder 0699-045",
+      "prompt": "Bei einem Pro-finder mit der Seriennummer 0699-045 blinkt die Status-LED gelb. Was bedeutet das?",
       "options": [
-        { "id": "a", "text": "Die vollständige Seriennummer mit Präfix 0699" },
-        { "id": "b", "text": "Der Mobilfunkanbieter des Kunden" },
-        { "id": "c", "text": "Der Softwarestand der THITRONIK App" },
-        { "id": "d", "text": "Nichts — gelb heißt immer „Zielrufnummernspeicher leer“" }
+        { "id": "a", "text": "Die zuletzt beauftragte SMS konnte nicht gesendet werden" },
+        { "id": "b", "text": "Der Zielrufnummernspeicher ist leer" },
+        { "id": "c", "text": "Die GPS-Antenne hat keinen Satellitenempfang" },
+        { "id": "d", "text": "Die Fahrzeugbatterie liegt unter 12,5 V" }
       ],
       "correct": ["a"],
-      "feedback": "Derselbe Blinkcode bedeutet vor und ab **0699-045** etwas Verschiedenes.",
+      "feedback": "Ab Seriennummer **0699-045** bedeutet gelbes Blinken: Die letzte SMS konnte nicht versendet werden. Jetzt Tarif/Guthaben, Zielrufnummer, Netz und SIM-Konfiguration prüfen.",
       "irrtum": [
         {
-          "fuer": ["d"],
-          "titel": "Nichts — gelb heißt immer dasselbe",
-          "text": "Der gefährlichste Reflex der ganzen Insel. Die Aussage stimmt sogar — für einen Teil der Geräte. Wer sie pauschal anwendet, diagnostiziert bei jedem zweiten Gerät falsch und ist sich dabei sicher."
+          "fuer": ["b"],
+          "titel": "Bedeutung älterer Geräte übernommen",
+          "text": "Bei älteren Pro-findern kann gelbes Blinken auf den leeren Zielrufnummernspeicher hinweisen. Ab 0699-045 hat derselbe Blinkcode eine andere Bedeutung."
         },
         {
           "fuer": ["c"],
-          "titel": "App-Softwarestand",
-          "text": "Nicht abwegig, aber die LED sitzt am Gerät und weiß nichts von der App."
+          "titel": "GPS- mit Mobilfunkfehler verwechselt",
+          "text": "Die gelbe Anzeige dieses Gerätestands bezieht sich auf den fehlgeschlagenen SMS-Versand, nicht auf die Satellitenposition."
         }
       ],
-      "mitnehmen": "Der Schnitt bei 045 ist auch sonst relevant: Ab dort arbeitet das Gerät mit 4G LTE und Nano-SIM. Erste Frage bei jedem Pro-finder-Fall: „Lesen Sie mir bitte die komplette Seriennummer vor.“"
+      "mitnehmen": "Der Gerätestand entscheidet über die Bedeutung eines Blinkcodes. Deshalb bei jeder Diagnose zuerst die vollständige Seriennummer aufnehmen."
     },
     {
       "id": "FEH-02",
@@ -248,8 +250,8 @@
     {
       "id": "FEH-10",
       "type": "multi",
-      "category": "Support-Fallaufnahme",
-      "prompt": "Welche Angaben sind vor der Eskalation an THITRONIK Pflicht? Wähle alle zutreffenden.",
+      "category": "Strukturierte Fehleranalyse",
+      "prompt": "Welche Angaben solltest du für eine belastbare Fehleranalyse zusammentragen? Wähle alle zutreffenden.",
       "options": [
         { "id": "a", "text": "Vollständige Seriennummern aller beteiligten Komponenten" },
         { "id": "b", "text": "Fahrzeug, Modelljahr, Aufbauart" },
@@ -259,7 +261,7 @@
         { "id": "f", "text": "Kilometerstand des Fahrzeugs" }
       ],
       "correct": ["a", "b", "c", "d"],
-      "feedback": "Mit diesen vier Angaben ist ein Fall in der Regel ohne Rückfrage bearbeitbar. Ohne sie beginnt eine Telefonschleife.",
+      "feedback": "Diese vier Angaben verbinden Gerätestand, Fahrzeugkontext, reproduzierbaren Ablauf und die Eigendiagnose des Systems. Damit lässt sich der Fehler gezielt eingrenzen oder vollständig an den Support übergeben.",
       "irrtum": [
         {
           "fuer": ["e"],
@@ -273,6 +275,35 @@
         }
       ],
       "mitnehmen": "Das ist die Insel in einem Satz: Alles, was du vor dem Anruf sammelst, ersetzt drei Rückfragen danach. Und „möglichst wörtlich“ heißt wörtlich — nicht „irgendwas mit gelb“."
+    },
+    {
+      "id": "FEH-11",
+      "type": "multi",
+      "category": "Provider & SIM",
+      "prompt": "Welche Kriterien muss ein empfehlenswerter Mobilfunktarif für den Pro-finder erfüllen? Wähle alle zutreffenden.",
+      "options": [
+        { "id": "a", "text": "Klassische SMS und Telefonie sind freigeschaltet" },
+        { "id": "b", "text": "Die SIM besitzt eine eindeutig erreichbare eigene Rufnummer" },
+        { "id": "c", "text": "Das Hostnetz bietet am Fahrzeugstandort und in den geplanten Reiseländern passende Abdeckung und Roaming" },
+        { "id": "d", "text": "SIM-Format und PIN-Regel passen zum Gerätestand; die vorbereitete Karte wird im Fahrzeug getestet" },
+        { "id": "e", "text": "Ein reiner Datentarif ohne SMS und Telefonie genügt" },
+        { "id": "f", "text": "Der Markenname des Providers allein garantiert die Kompatibilität dauerhaft" }
+      ],
+      "correct": ["a", "b", "c", "d"],
+      "feedback": "Eine belastbare Empfehlung richtet sich nach Diensten, Hostnetz, Einsatzland und Gerätestand. Prepaid und Vertrag sind grundsätzlich möglich; eine starre Providerliste wäre wegen wechselnder Tarife und Netze nicht dauerhaft zuverlässig.",
+      "irrtum": [
+        {
+          "fuer": ["e"],
+          "titel": "Reine Daten-SIM gewählt",
+          "text": "Der Pro-finder steuert und meldet über klassische SMS und Telefonie. Mobile Daten ersetzen diese Dienste nicht."
+        },
+        {
+          "fuer": ["f"],
+          "titel": "Nur nach Providernamen entschieden",
+          "text": "Tarife, Hostnetze und Roamingbedingungen ändern sich. Entscheidend ist die konkrete SIM mit ihren Diensten am vorgesehenen Einsatzort."
+        }
+      ],
+      "mitnehmen": "Empfohlen wird kein Logo, sondern eine nachweislich passende und getestete Verbindung: SMS, Telefonie, erreichbare Rufnummer und geeignetes Netz."
     }
   ]
 }

@@ -4,10 +4,12 @@
   "inseln": [
     {
       "slug": "hiddensee",
+      "name": "Hiddensee",
       "code": "HIDDENSEE",
-      "title": "Funkkomponenten",
-      "thema": "Magnetkontakt & Adapter",
-      "beschreibung": "Aufbau, Positionierung, Montage, Abstände, typische Fehler."
+      "title": "Funkkontakte & Verbindungen",
+      "thema": "Montage, Abzweigen & Crimpen",
+      "beschreibung": "Funk-Magnetkontakte, gelgefüllte Abzweigverbinder und belastbare Crimpverbindungen.",
+      "image": "/media/inseln/hiddensee.webp"
     }
   ]
 }

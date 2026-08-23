@@ -135,7 +135,7 @@ function buildPayload(mode, overrides = {}) {
   const zuWenig = buildPayload("richtig");
   zuWenig.answers = zuWenig.answers.slice(0, 5);
   r = await call(zuWenig);
-  check("Unvollständiger Satz → 400", r.status === 400 && /genau 10/.test(r.body.error), r.body.error);
+  check("Unvollständiger Satz → 400", r.status === 400 && r.body.error.includes(`genau ${island.questions.length}`), r.body.error);
 
   const doppelt = buildPayload("richtig");
   doppelt.answers[1] = JSON.parse(JSON.stringify(doppelt.answers[0]));
