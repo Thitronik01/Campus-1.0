@@ -412,6 +412,111 @@ node tools/test-function.js
 
 ---
 
+## Der Sende-Ausgang
+
+**Ein fertiges Ergebnis ist erst dann sicher, wenn der Server es bestätigt
+hat.** Bis dahin liegt es im `localStorage` unter
+`thitronik.campus.2026.ausgang` — auf der Platte, nicht im Arbeitsspeicher.
+Die Reihenfolge in `finish()` ist der ganze Punkt:
+
+```
+Ergebnis bauen  →  in den Ausgang schreiben  →  senden  →  bei Erfolg löschen
+```
+
+Vorher wurde zuerst gesendet und der Datensatz nur im Arbeitsspeicher
+gehalten. Ein Funkloch in der Halle reichte damit aus, um ihn zu verlieren:
+Der Teilnehmer sah „Keine Verbindung", tippte auf „Nächste Insel" — und der
+Datensatz war weg, während die Übersicht daneben „✓ Abgeschlossen · 80 %"
+zeigte. Das ist der Zustand, den ein Wissenscheck am wenigsten gebrauchen
+kann: eine Lücke in der Auswertung, die niemandem auffällt.
+
+**Nachgesendet wird ohne Zutun des Teilnehmers**, denn er ist längst an der
+nächsten Station:
+
+| Auslöser | wann |
+|---|---|
+| Seitenaufruf | jedes `boot()`, nach dem Laden des Katalogs |
+| `online`-Ereignis | sobald der Browser wieder Netz sieht |
+| nach jeder Runde | direkt im Anschluss an `submit()` |
+| „Jetzt senden" | von Hand, nimmt auch abgelehnte Einträge mit |
+
+**Wiedereinsenden ist gefahrlos.** `session_id` ist in der Datenbank `unique`,
+die Function antwortet auf ein bereits bekanntes Ergebnis mit
+`200 { duplicate: true }` statt einen zweiten Datensatz anzulegen. Ein
+Eintrag, der es doch durchgeschafft hat, verschwindet also auch dann aus dem
+Ausgang, wenn die Antwort von damals nie ankam.
+
+> Das Ergebnisbild sagt bei `duplicate` nicht mehr „Ergebnis war bereits
+> gespeichert", sondern wie sonst „Ergebnis gespeichert. Danke!". Mit dem
+> Ausgang ist ein zweiter Anlauf der Normalfall und kein Sonderfall mehr —
+> für den Teilnehmer ist das schlicht dieselbe gute Nachricht.
+
+**Nicht jeder Fehler ist derselbe Fehler.** Die Unterscheidung entscheidet,
+ob weiter versucht wird:
+
+| Antwort | Deutung | Automatik |
+|---|---|---|
+| `2xx` | gespeichert (oder war es schon) | Eintrag wird gelöscht |
+| kein Netz | Funkloch | bleibt liegen, nächster Anlauf später |
+| `5xx`, `408`, `429` | Server war da, konnte aber nicht | bleibt liegen, nächster Anlauf später |
+| übrige `4xx` | Absage an genau diesen Datensatz | wird als abgelehnt markiert, **keine** Automatik mehr |
+
+Der `5xx`-Fall ist ausdrücklich der [noch nicht eingespielten
+Migration](#offene-punkte) gewidmet: Solange die Tabelle fehlt, antwortet die
+Function mit „Die Datenbank hat die Speicherung abgelehnt." Die Ergebnisse
+bleiben dann auf den Geräten liegen und gehen von selbst raus, sobald die
+Migration läuft — vorausgesetzt, dieselben Geräte rufen die Seite noch einmal
+auf. Der Satz auf dem Ergebnisbild nennt in diesem Fall den Servergrund und
+spricht **nicht** von fehlendem Empfang; sonst sucht die halbe Schulung den
+Fehler beim Mobilfunk.
+
+Ein `400` wird nicht im Minutentakt wiederholt — daran ändert sich nichts.
+Der Eintrag bleibt trotzdem stehen, sichtbar und rot, mit der Bitte, sich bei
+der Schulungsleitung zu melden. Stillschweigend wegwerfen wäre genau der
+Datenverlust, den der Ausgang verhindern soll.
+
+**Wo man das sieht:**
+
+- **Über allen Bildschirmen** ein Hinweisband mit „Jetzt senden". Es steht
+  bewusst nicht in der Inselübersicht: Im Einzel-Insel-Paket gibt es diese
+  Übersicht gar nicht, und dort wäre der Hinweis unsichtbar. Während einer
+  laufenden Frage und auf dem Ergebnisbild bleibt es ausgeblendet — mitten im
+  Quiz kann niemand etwas daran ändern, und auf dem Ergebnisbild steht die
+  genauere Zeile schon unter dem Ring.
+- **Auf der Inselkachel** „Abgeschlossen · 80 % — noch nicht gesendet", in
+  Cyan mit `↻` statt in Lime mit `✓`. Lime würde hier eine Sicherheit
+  behaupten, die es nicht gibt.
+- **Unter dem Ergebnisring** der Stand dieser einen Runde.
+
+Kacheln aus der Zeit vor dem Ausgang tragen keine `session` und gelten als
+versendet — ein Ergebnis, das es nicht mehr gibt, lässt sich ohnehin nicht
+nachreichen.
+
+> Lässt sich der `localStorage` nicht beschreiben (privater Modus, Speicher
+> voll), hält eine Liste im Arbeitsspeicher die Einträge bis zum Schließen
+> des Tabs. Besser als nichts, und mehr behauptet der Statustext dann auch
+> nicht.
+
+---
+
+## Gesamtfortschritt
+
+Über der Inselübersicht steht, wie weit der Tag ist: „3 von 7 Inseln
+abgeschlossen · 78 % im Schnitt", darunter ein Balken. Er erscheint erst mit
+der ersten abgeschlossenen Insel — davor wäre es ein Balken auf null, der
+nichts erzählt, und im Einzel-Insel-Paket gar nicht.
+
+Auf dem Ergebnisbild steht über den Knöpfen, was noch aussteht
+(„Noch offen: SAMSØ · FEHMARN · USEDOM"). Daneben liegt „Nächste Insel" —
+dann darf dort auch stehen, welche das überhaupt noch sein können. Sind alle
+durch, steht es ebenfalls da.
+
+Beides liest ausschließlich `thitronik.campus.2026.done`, also den lokalen
+Stand dieses Geräts. Es ist eine Orientierung für den Teilnehmer, keine
+Auswertung — die kommt aus der Datenbank.
+
+---
+
 ## Backend
 
 Supabase-Projekt `mhzlayhnyqlxdyiceyqz`, Tabelle `campus_quiz_submissions`.
@@ -518,6 +623,14 @@ Gemessen, nicht geschätzt:
 - 26 Tests der Bewertungslogik, darunter zwei Manipulationsversuche
 - Kontrast der tragenden Farbpaare am gerenderten Bild
 - Formularvalidierung mit Fokussprung auf das erste fehlerhafte Feld
+- Sende-Ausgang gegen vier Serverantworten durchgespielt: Funkloch, `500`,
+  `400` und `201`. Geprüft wurde, dass zwei Ergebnisse einen Reload
+  überleben, beim `online`-Ereignis von selbst rausgehen, die Kacheln danach
+  von Cyan auf Lime wechseln, ein `400` nicht endlos wiederholt wird und
+  „Jetzt senden" ihn trotzdem noch einmal versucht
+- Einzel-Insel-Paket gesondert: dort trägt das Startbild den Hinweis, weil es
+  keine Übersicht gibt
+- Kontrast der neuen Paare am Rechenwert: alle über 4,7:1
 - Bildfragen gegen einen Probedatensatz: Kacheln zweispaltig auch auf 375 px
   (155 × 206 px), alle vier Bilder geladen, Großansicht als echtes Modal mit
   Fokus im Dialog, Auflösung markiert gewählt-falsch und übersehen-richtig
@@ -536,6 +649,12 @@ Mobilfunknetz in der Halle.
 läuft, gibt es die Tabelle nicht und jede Einsendung scheitert mit
 „Die Datenbank hat die Speicherung abgelehnt." Der Teilnehmer sieht sein
 Ergebnis trotzdem — gespeichert wird es nicht.
+
+Seit dem [Sende-Ausgang](#der-sende-ausgang) ist das kein endgültiger Verlust
+mehr: Die Ergebnisse bleiben auf den Geräten liegen und gehen von selbst
+raus, sobald die Tabelle steht — sofern dieselben Geräte die Seite noch
+einmal aufrufen. Darauf zu bauen wäre trotzdem leichtsinnig. Die Migration
+gehört vor die Schulung, nicht danach.
 
 **2. Bildfragen: SAMSØ steht, den übrigen Inseln fehlen die Fotos.** Die
 Technik ist fertig und mit echtem Material bewiesen — SAMSØ hat zwei

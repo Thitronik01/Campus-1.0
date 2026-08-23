@@ -160,6 +160,13 @@ JSON-Datei, die auch die Engine ausliefert. Das hat zwei Folgen: Es gibt genau
 eine Wahrheitsquelle für die Lösungen, und ein manipuliertes Ergebnis landet
 nicht in der Datenbank.
 
+**Ein Ergebnis geht nicht verloren, wenn das Netz wegbleibt.** Es wird
+zuerst auf dem Gerät abgelegt und erst gelöscht, wenn der Server bestätigt
+hat. Nachgesendet wird von selbst — beim nächsten Seitenaufruf oder sobald
+der Browser wieder Empfang meldet. Solange etwas aussteht, sagt die Insel
+„noch nicht gesendet" statt „abgeschlossen". Details in
+[`Campus Quiz/README.md`](Campus%20Quiz/README.md#der-sende-ausgang).
+
 ---
 
 ## Stand
@@ -170,11 +177,13 @@ nicht in der Datenbank.
 - 70 Fragen, alle fünf Fragetypen, aus dem Produktwissen mit Quellenangabe
 - 104 automatische Prüfungen je Paketform, dazu 26 der Bewertungslogik
 - Mobil geprüft bei 375 px: kein horizontaler Scroll, alle Trefferflächen ≥ 44 px
+- Sende-Ausgang gegen Funkloch, `500`, `400` und Erfolg durchgespielt — inklusive
+  Reload zwischendrin
 - Farbkontraste am gerenderten Bild gemessen, alle über WCAG AA
 
 **Noch offen**
 
-- ⛔ **Die Datenbank-Migration ist nicht eingespielt** — bis dahin speichert kein Paket etwas
+- ⛔ **Die Datenbank-Migration ist nicht eingespielt** — bis dahin nimmt die Datenbank nichts an. Die Ergebnisse bleiben auf den Geräten liegen und gehen von selbst raus, sobald die Tabelle steht; darauf bauen sollte man trotzdem nicht
 - Entscheidung: sieben getrennte Netlify-Sites oder eine mit sieben Routen. Beide Wege sind gebaut, die Empfehlung steht in [`Campus Quiz/README.md`](Campus%20Quiz/README.md)
 - Bilder für vier Inseln, siehe [Wunschliste](Campus%20Quiz/BILDER-WUNSCHLISTE.md)
 - Fachliche Freigabe der Fragen

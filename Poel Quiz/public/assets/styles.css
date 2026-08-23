@@ -275,6 +275,70 @@ main { flex: 1 0 auto; }
    die Übersicht wird zwischen zwei Stationen im Vorbeigehen aufgerufen. */
 .island-card.is-done .i-state::before { content: "\2713\00a0"; font-weight: 900; }
 
+/* Abgeschlossen, aber noch nicht beim Server: das ist ausdrücklich KEIN
+   Erfolgszustand. Lime würde hier eine Sicherheit behaupten, die es nicht
+   gibt — das Ergebnis liegt allein auf diesem Telefon. */
+.island-card.is-warten { border-color: var(--th-blue); background: var(--info-bg); }
+.island-card.is-warten .i-state { color: var(--th-blue-text); }
+.island-card.is-warten .i-state::before { content: "\21bb\00a0"; font-weight: 900; }
+
+/* ---------------------------------------------------- Gesamtfortschritt --- */
+
+.gesamt { margin-top: 18px; max-width: 420px; }
+.gesamt-kopf {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+.gesamt-kopf strong { color: var(--th-navy); font-size: .95rem; font-weight: 800; }
+.gesamt-kopf span { color: var(--th-muted); font-size: .85rem; }
+.gesamt-track {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--th-soft);
+  overflow: hidden;
+}
+.gesamt-fill {
+  height: 100%;
+  width: 0;
+  border-radius: 999px;
+  background: var(--th-lime);
+  transition: width .4s ease;
+}
+
+/* ------------------------------------------------------- Sende-Ausgang --- */
+
+.ausgang {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  align-items: center;
+  margin: 0 0 16px;
+  padding: 14px 16px;
+  border: 1px solid var(--th-blue);
+  border-radius: var(--radius-md);
+  background: var(--info-bg);
+}
+.ausgang-text {
+  flex: 1 1 220px;
+  margin: 0;
+  color: var(--th-navy);
+  font-size: .88rem;
+  line-height: 1.45;
+}
+.ausgang[hidden] { display: none; }
+.ausgang.is-fehler { border-color: var(--error-line); background: var(--error-bg); }
+
+/* Noch offene Inseln, direkt über den Knöpfen — dort wird entschieden,
+   wohin es weitergeht. */
+.rest-hinweis {
+  margin: 0 0 12px;
+  color: var(--th-muted);
+  font-size: .88rem;
+}
+
 /* ------------------------------------------------------------- Startbild --- */
 
 .start-layout {
@@ -944,7 +1008,8 @@ main { flex: 1 0 auto; }
 
 @media print {
   body { background: #fff; }
-  .masthead-meta, .quiz-actions, .result-actions, .toast, .skip-link { display: none !important; }
+  .masthead-meta, .quiz-actions, .result-actions, .toast, .skip-link,
+  .ausgang, .rest-hinweis { display: none !important; }
   .screen { box-shadow: none; border-color: #999; }
   .score-card { background: #fff; color: #000; border: 1px solid #999; }
   .score-card * { color: #000 !important; }

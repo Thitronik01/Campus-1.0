@@ -31,12 +31,34 @@
 
     <main id="main">
 
+      <!-- Sende-Ausgang. Steht über den Bildschirmen und nicht in der
+           Inselübersicht: im Einzel-Insel-Paket gibt es diese Übersicht gar
+           nicht, und genau dort wäre der Hinweis sonst unsichtbar. Während
+           einer laufenden Frage bleibt er ausgeblendet — mitten im Quiz ist
+           niemand in der Lage, etwas daran zu ändern. -->
+      <div class="ausgang" id="ausgang" hidden>
+        <p class="ausgang-text" id="ausgang-text" role="status" aria-live="polite"></p>
+        <button class="btn btn-secondary btn-small" id="btn-ausgang-senden" type="button">Jetzt senden</button>
+      </div>
+
       <!-- ==================== Inselübersicht ==================== -->
       <section class="screen" id="screen-islands" aria-labelledby="islands-title" hidden>
         <div class="screen-head">
           <p class="kicker">Campus 2026</p>
           <h1 id="islands-title">Wähle deine Schulungsinsel</h1>
           <p class="lead">Nach jeder Station beantwortest du hier ein kurzes Quiz. Du kannst die Inseln in beliebiger Reihenfolge durchlaufen.</p>
+
+          <!-- Gesamtfortschritt. Erscheint erst, wenn mindestens eine Insel
+               abgeschlossen ist — vorher stünde dort nur eine leere Null. -->
+          <div class="gesamt" id="gesamt" hidden>
+            <div class="gesamt-kopf">
+              <strong id="gesamt-zahl"></strong>
+              <span id="gesamt-schnitt"></span>
+            </div>
+            <div class="gesamt-track" role="progressbar" aria-label="Abgeschlossene Inseln" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="gesamt-bar">
+              <div class="gesamt-fill" id="gesamt-fill"></div>
+            </div>
+          </div>
         </div>
         <ul class="island-grid" id="island-grid"></ul>
       </section>
@@ -175,6 +197,8 @@
               <h2>Deine Antworten</h2>
               <div class="review-list" id="r-review"></div>
             </section>
+
+            <p class="rest-hinweis" id="r-rest" hidden></p>
 
             <div class="result-actions">
               <button class="btn btn-primary" id="btn-wrong-only" type="button" hidden>Nur falsche Fragen wiederholen</button>

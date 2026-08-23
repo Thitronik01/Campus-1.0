@@ -73,7 +73,17 @@ Steht dort etwas anderes, ist es eine dieser drei Ursachen:
 |---|---|
 | „Backend ist noch nicht vollständig konfiguriert" | Umgebungsvariablen fehlen oder es wurde danach nicht neu deployt |
 | „Die Datenbank hat die Speicherung abgelehnt" | Die Tabelle `campus_quiz_submissions` fehlt — Migration einspielen |
-| „Keine Verbindung" | Die Function wurde nicht mitdeployt: der komplette Ordner muss hoch, nicht nur `public/` |
+| „Noch keine Verbindung" | Die Function wurde nicht mitdeployt: der komplette Ordner muss hoch, nicht nur `public/` |
+
+**Ein Ergebnis geht dabei nicht verloren.** Es liegt auf dem Gerät, bis der
+Server bestätigt hat, und wird von selbst nachgesendet — beim nächsten Aufruf
+der Seite oder sobald wieder Empfang da ist. Solange etwas aussteht, steht
+oben ein Hinweisband mit „Jetzt senden", und die Insel meldet „noch nicht
+gesendet" statt „abgeschlossen".
+
+Das heißt auch: Wer den Fehler oben behebt und die Teilnehmer die Seite noch
+einmal aufrufen lässt, bekommt die liegengebliebenen Ergebnisse nachträglich
+noch in die Datenbank.
 
 Zum Nachsehen in Supabase:
 

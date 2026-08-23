@@ -18,6 +18,11 @@
 
   const LS_PARTICIPANT = "thitronik.campus.2026.participant";
   const LS_DONE = "thitronik.campus.2026.done";
+  const LS_OUTBOX = "thitronik.campus.2026.ausgang";
+
+  /** Unterscheidet "gar nicht erst rausgekommen" von "Server hat Nein gesagt".
+   *  Für den Teilnehmer sind das zwei verschiedene Sätze. */
+  const KEIN_NETZ = "Keine Verbindung";
 
   /** ?demo=1 läuft komplett durch, speichert aber absichtlich nichts.
    *  Gleiche Konvention wie im Feedbackbogen — für Tests immer verwenden. */
@@ -50,6 +55,14 @@
     },
 
     islandGrid: $("island-grid"),
+    gesamt: $("gesamt"),
+    gesamtZahl: $("gesamt-zahl"),
+    gesamtSchnitt: $("gesamt-schnitt"),
+    gesamtBar: $("gesamt-bar"),
+    gesamtFill: $("gesamt-fill"),
+    ausgang: $("ausgang"),
+    ausgangText: $("ausgang-text"),
+    btnAusgangSenden: $("btn-ausgang-senden"),
 
     startCode: $("start-code"),
     startTitle: $("start-title"),
@@ -100,6 +113,7 @@
     rDuration: $("r-duration"),
     rIsland: $("r-island"),
     rSave: $("r-save"),
+    rRest: $("r-rest"),
     rTopics: $("r-topics"),
     rTopicsBlock: $("r-topics-block"),
     rReview: $("r-review"),
@@ -127,7 +141,8 @@
     startedAt: null,
     questionStartedAt: null,
     revealed: false,
-    lastPayload: null,
+    lastSession: null,   // session_id der zuletzt beendeten Runde
+    sendetGerade: false,
     isRepeatRound: false,
     weiterFrei: 0       // Zeitpunkt, ab dem "Nächste Frage" wieder zählt
   };
@@ -138,6 +153,8 @@
     Object.entries(el.screens).forEach(([key, node]) => {
       node.hidden = key !== name;
     });
+    // Der Ausgangshinweis hängt am Bildschirm, nicht am Sendezustand.
+    if (el.ausgang) paintAusgang();
     window.scrollTo({ top: 0, behavior: "auto" });
   }
 
@@ -255,12 +272,70 @@
     } catch { return {}; }
   }
 
-  function markDone(slug, percent) {
+  /** Die session_id wird mitgeschrieben, damit die Übersicht später sagen
+   *  kann, ob zu dieser Insel noch etwas im Ausgang liegt. Altbestand ohne
+   *  session gilt als versendet — ein Ergebnis, das es nicht mehr gibt,
+   *  lässt sich ohnehin nicht nachreichen. */
+  function markDone(slug, percent, sessionId) {
     try {
       const done = loadDone();
-      done[slug] = { percent, at: new Date().toISOString() };
+      done[slug] = { percent, at: new Date().toISOString(), session: sessionId || null };
       localStorage.setItem(LS_DONE, JSON.stringify(done));
     } catch { /* privater Modus */ }
+  }
+
+  // -------------------------------------------------------- Sende-Ausgang ---
+
+  /* Ein Ergebnis ist erst dann sicher, wenn der Server es bestätigt hat.
+     Bis dahin liegt es hier — auf der Platte, nicht im Arbeitsspeicher. Das
+     ist der Unterschied zwischen "wird nachgesendet" und "weg, sobald der
+     Tab zugeht". In einer Halle mit einem Balken Empfang ist der zweite Fall
+     der Regelfall, nicht die Ausnahme.
+
+     Wiedereinsenden ist gefahrlos: session_id ist in der Datenbank unique,
+     und die Function antwortet auf ein bereits bekanntes Ergebnis mit
+     200 { duplicate: true } statt einen zweiten Datensatz anzulegen. */
+
+  /** Was sich nicht speichern ließ (privater Modus, Speicher voll). Hält
+   *  nur bis zum Schließen des Tabs — besser als gar nichts, und der
+   *  Statustext sagt in diesem Fall auch nichts anderes. */
+  const fluechtig = [];
+
+  function outboxLoad() {
+    try {
+      const raw = localStorage.getItem(LS_OUTBOX);
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed.filter((e) => e && e.payload && e.payload.session_id) : [];
+    } catch { return []; }
+  }
+
+  function outboxSave(list) {
+    try { localStorage.setItem(LS_OUTBOX, JSON.stringify(list)); return true; }
+    catch { return false; }
+  }
+
+  function outboxAlle() {
+    return outboxLoad().concat(fluechtig);
+  }
+
+  function outboxAdd(payload) {
+    const eintrag = { payload, versuche: 0, fehler: null, blockiert: false };
+    const liste = outboxLoad();
+    liste.push(eintrag);
+    if (!outboxSave(liste)) fluechtig.push(eintrag);
+  }
+
+  function outboxErsetzen(eintrag) {
+    // Ein flüchtiger Eintrag liegt bereits per Referenz richtig.
+    if (fluechtig.includes(eintrag)) return;
+    outboxSave(outboxLoad().map((e) =>
+      e.payload.session_id === eintrag.payload.session_id ? eintrag : e));
+  }
+
+  function outboxEntfernen(sessionId) {
+    const i = fluechtig.findIndex((e) => e.payload.session_id === sessionId);
+    if (i >= 0) fluechtig.splice(i, 1);
+    outboxSave(outboxLoad().filter((e) => e.payload.session_id !== sessionId));
   }
 
   // ------------------------------------------------------------- Routing ---
@@ -280,21 +355,37 @@
 
   // -------------------------------------------------------- Inselübersicht --
 
-  function renderIslands() {
+  /** Malt Kacheln, Gesamtfortschritt und Ausgangshinweis neu, ohne den
+   *  Bildschirm zu wechseln. Das Nachsenden im Hintergrund ändert den
+   *  Zustand der Kacheln — es darf dabei aber nicht nach oben scrollen. */
+  function paintInseln() {
+    if (!state.catalog) return;
+
     const done = loadDone();
+    const wartend = new Set(outboxAlle().map((e) => e.payload.session_id));
     el.islandGrid.innerHTML = "";
 
     state.catalog.inseln.forEach((island) => {
       const entry = done[island.slug];
+      // Altbestand ohne session gilt als versendet.
+      const offen = Boolean(entry && entry.session && wartend.has(entry.session));
+
       const li = document.createElement("li");
       const card = document.createElement("button");
       card.type = "button";
-      card.className = "island-card" + (entry ? " is-done" : "");
+      card.className = "island-card" + (entry ? (offen ? " is-warten" : " is-done") : "");
+
+      const zustand = !entry
+        ? "Noch offen"
+        : offen
+          ? `Abgeschlossen · ${entry.percent} % — noch nicht gesendet`
+          : `Abgeschlossen · ${entry.percent} %`;
+
       card.innerHTML = `
         <span class="i-code">${escapeHtml(island.code)}</span>
         <span class="i-title">${escapeHtml(island.title)}</span>
         <span class="i-desc">${escapeHtml(island.beschreibung)}</span>
-        <span class="i-state">${entry ? `Abgeschlossen · ${entry.percent} %` : "Noch offen"}</span>`;
+        <span class="i-state">${escapeHtml(zustand)}</span>`;
       card.addEventListener("click", () => {
         history.pushState({}, "", `/quiz/${island.slug}`);
         route();
@@ -303,6 +394,36 @@
       el.islandGrid.appendChild(li);
     });
 
+    paintGesamt(done);
+    paintAusgang();
+  }
+
+  /** Wie weit ist der Tag? Erscheint erst mit der ersten abgeschlossenen
+   *  Insel — davor wäre es ein Balken auf null, der nichts erzählt. */
+  function paintGesamt(done) {
+    const inseln = state.catalog.inseln;
+    const fertig = inseln.filter((i) => done[i.slug]);
+
+    if (istEinzelinsel() || !fertig.length) {
+      el.gesamt.hidden = true;
+      return;
+    }
+
+    const anteil = Math.round((fertig.length / inseln.length) * 100);
+    const schnitt = Math.round(
+      fertig.reduce((summe, i) => summe + (done[i.slug].percent || 0), 0) / fertig.length);
+
+    el.gesamtZahl.textContent = fertig.length === inseln.length
+      ? `Alle ${inseln.length} Inseln abgeschlossen`
+      : `${fertig.length} von ${inseln.length} Inseln abgeschlossen`;
+    el.gesamtSchnitt.textContent = `${schnitt} % im Schnitt`;
+    el.gesamtFill.style.width = `${anteil}%`;
+    el.gesamtBar.setAttribute("aria-valuenow", String(anteil));
+    el.gesamt.hidden = false;
+  }
+
+  function renderIslands() {
+    paintInseln();
     el.mastheadTitle.textContent = "Wissenscheck";
     el.mastheadMeta.hidden = true;
     show("islands");
@@ -1012,12 +1133,17 @@
     el.btnNextIsland.hidden = istEinzelinsel();
 
     if (!state.isRepeatRound) {
-      markDone(state.slug, percent);
-      submit(finishedAt);
+      const payload = buildPayload(finishedAt);
+      markDone(state.slug, percent, payload.session_id);
+      submit(payload);
     } else {
       el.rSave.textContent = "Wiederholungsrunde — sie wird nicht zusätzlich gespeichert.";
       el.btnRetrySave.hidden = true;
     }
+
+    // Erst nach markDone: sonst stünde die gerade beendete Insel noch in der
+    // Liste der offenen.
+    paintRest();
 
     show("result");
 
@@ -1030,6 +1156,20 @@
     // nie der Endstand.
     void el.rRing.offsetWidth;
     el.rRing.style.setProperty("--pct", String(percent));
+  }
+
+  /** Was heute noch aussteht. Der Knopf daneben heißt "Nächste Insel" —
+   *  dann darf daneben auch stehen, welche das überhaupt noch sein können. */
+  function paintRest() {
+    if (istEinzelinsel()) { el.rRest.hidden = true; return; }
+
+    const done = loadDone();
+    const offen = state.catalog.inseln.filter((i) => !done[i.slug]);
+
+    el.rRest.textContent = offen.length
+      ? `Noch offen: ${offen.map((i) => i.code).join(" · ")}`
+      : "Alle Inseln durch — das war der letzte Wissenscheck. Danke!";
+    el.rRest.hidden = false;
   }
 
   function renderTopics() {
@@ -1118,10 +1258,10 @@
 
   // ------------------------------------------------------------- Speichern --
 
-  async function submit(finishedAt) {
+  function buildPayload(finishedAt) {
     const participant = loadParticipant() || {};
 
-    const payload = {
+    return {
       event: EVENT_SLUG,
       island: state.slug,
       quiz_version: String(state.island.version || "1"),
@@ -1137,65 +1277,171 @@
       page_url: location.href.split("?")[0],
       answers: state.responses
     };
-    state.lastPayload = payload;
+  }
 
+  /** Nimmt das Ergebnis entgegen: erst auf die Platte, dann ins Netz. Die
+   *  Reihenfolge ist der ganze Punkt — was hier zuerst gesendet und erst bei
+   *  Erfolg gespeichert würde, wäre bei jedem Funkloch verloren. */
+  function submit(payload) {
     if (DEMO) {
       el.rSave.textContent = "Vorschaumodus (?demo=1) — es wurde absichtlich nichts gespeichert.";
       el.btnRetrySave.hidden = true;
       return;
     }
 
-    el.rSave.textContent = "Ergebnis wird gespeichert …";
+    state.lastSession = payload.session_id;
+    outboxAdd(payload);
+    el.rSave.textContent = "Ergebnis wird gesendet …";
     el.btnRetrySave.hidden = true;
+    flushOutbox();
+  }
 
+  /** Einen einzelnen Eintrag loswerden.
+   *  → "ok"         gespeichert (oder war es schon)
+   *  → "netz"       vorübergehend, später erneut versuchen
+   *  → "abgelehnt"  der Server will genau diesen Datensatz nicht */
+  async function sendeEinen(eintrag) {
+    let response;
     try {
-      const response = await fetch(SUBMIT_ENDPOINT, {
+      response = await fetch(SUBMIT_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(eintrag.payload)
       });
-
-      const body = await response.json().catch(() => ({}));
-
-      if (response.ok) {
-        el.rSave.textContent = body.duplicate
-          ? "Ergebnis war bereits gespeichert."
-          : "Ergebnis gespeichert. Danke!";
-        return;
-      }
-
-      el.rSave.textContent = body.error
-        ? `Nicht gespeichert: ${body.error}`
-        : `Nicht gespeichert (Fehler ${response.status}).`;
-      el.btnRetrySave.hidden = false;
     } catch {
-      el.rSave.textContent = "Keine Verbindung. Das Ergebnis wurde noch nicht gespeichert.";
-      el.btnRetrySave.hidden = false;
+      eintrag.fehler = KEIN_NETZ;
+      return "netz";
+    }
+
+    const body = await response.json().catch(() => ({}));
+    if (response.ok) return "ok";
+
+    // 5xx, 408 und 429 gehen vorbei — hierher gehört auch der Fall, dass die
+    // Migration noch nicht eingespielt ist: sobald die Tabelle steht, kommen
+    // die liegengebliebenen Ergebnisse von selbst durch. Ein 400 dagegen ist
+    // eine Absage an diesen Datensatz; ihn im Minutentakt erneut zu schicken
+    // ändert daran nichts.
+    const spaeter = response.status >= 500 || response.status === 408 || response.status === 429;
+    eintrag.fehler = body.error || `Fehler ${response.status}`;
+    return spaeter ? "netz" : "abgelehnt";
+  }
+
+  /** Arbeitet den Ausgang ab. Läuft beim Seitenaufruf, nach jeder Runde,
+   *  sobald der Browser wieder online meldet und auf Knopfdruck.
+   *  `force` nimmt auch die abgelehnten Einträge noch einmal mit. */
+  async function flushOutbox({ force = false } = {}) {
+    if (DEMO || state.sendetGerade) return;
+
+    const offen = outboxAlle().filter((e) => force || !e.blockiert);
+    if (!offen.length) { paintAusgang(); return; }
+
+    state.sendetGerade = true;
+    paintAusgang();
+
+    let gesendet = 0;
+    for (const eintrag of offen) {
+      const ergebnis = await sendeEinen(eintrag);
+      if (ergebnis === "ok") {
+        outboxEntfernen(eintrag.payload.session_id);
+        gesendet += 1;
+        continue;
+      }
+      eintrag.versuche += 1;
+      eintrag.blockiert = ergebnis === "abgelehnt";
+      outboxErsetzen(eintrag);
+      // Kein Netz heißt: für die übrigen gilt dasselbe. Der nächste
+      // Anlauf kommt beim online-Ereignis oder beim nächsten Aufruf.
+      if (ergebnis === "netz") break;
+    }
+
+    state.sendetGerade = false;
+    paintInseln();
+    paintAusgang();
+
+    // Nachgesendet, während der Teilnehmer längst woanders ist: dann sagt
+    // es der Toast, denn das Ergebnisbild von damals sieht niemand mehr.
+    if (gesendet && el.screens.result.hidden) {
+      toast(gesendet === 1 ? "Ergebnis nachgesendet." : `${gesendet} Ergebnisse nachgesendet.`);
     }
   }
 
-  async function retrySubmit() {
-    if (!state.lastPayload) return;
-    el.btnRetrySave.disabled = true;
-    el.rSave.textContent = "Neuer Versuch …";
-    try {
-      const response = await fetch(SUBMIT_ENDPOINT, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(state.lastPayload)
-      });
-      const body = await response.json().catch(() => ({}));
-      if (response.ok) {
-        el.rSave.textContent = "Ergebnis gespeichert. Danke!";
-        el.btnRetrySave.hidden = true;
-      } else {
-        el.rSave.textContent = body.error ? `Nicht gespeichert: ${body.error}` : `Nicht gespeichert (Fehler ${response.status}).`;
-      }
-    } catch {
-      el.rSave.textContent = "Weiterhin keine Verbindung.";
-    } finally {
-      el.btnRetrySave.disabled = false;
+  // ------------------------------------------------------ Ausgang anzeigen ---
+
+  function paintAusgang() {
+    const offen = outboxAlle();
+
+    // Nicht mitten in einer Frage, und nicht auf dem Ergebnisbild: dort steht
+    // die Zeile unter dem Ring, und zwar genauer — sie spricht von dieser
+    // Runde statt von "zwei Ergebnissen".
+    const stoerend = !el.screens.quiz.hidden || !el.screens.result.hidden;
+
+    if (!offen.length || stoerend) {
+      el.ausgang.hidden = true;
+    } else {
+      el.ausgang.hidden = false;
+      el.ausgang.classList.toggle("is-fehler", offen.every((e) => e.blockiert));
+      el.ausgangText.textContent = ausgangSatz(offen);
+      el.btnAusgangSenden.disabled = state.sendetGerade;
+      el.btnAusgangSenden.textContent = state.sendetGerade ? "Sendet …" : "Jetzt senden";
     }
+
+    paintSpeicherstand(offen);
+  }
+
+  function ausgangSatz(offen) {
+    const n = offen.length;
+    const kopf = n === 1 ? "Ein Ergebnis liegt" : `${n} Ergebnisse liegen`;
+
+    if (state.sendetGerade) return `${kopf} noch auf diesem Gerät — wird gerade gesendet …`;
+
+    if (offen.every((e) => e.blockiert)) {
+      return `${kopf} auf diesem Gerät und ${n === 1 ? "wurde" : "wurden"} vom Server nicht angenommen `
+        + `(${offen[0].fehler}). Bitte bei der Schulungsleitung melden — die Daten sind noch da, `
+        + `solange diese Seite auf dem Gerät nicht gelöscht wird.`;
+    }
+
+    // Ein Serverfehler ist etwas anderes als ein Funkloch — beim fehlenden
+    // Migrationsstand hilft es niemandem, auf besseren Empfang zu warten.
+    const serverfehler = offen.find((e) => e.fehler && e.fehler !== KEIN_NETZ);
+    if (serverfehler) {
+      return `${kopf} noch auf diesem Gerät. Der Server konnte zuletzt nicht speichern `
+        + `(${serverfehler.fehler}) — es wird automatisch weiter versucht.`;
+    }
+
+    return `${kopf} noch auf diesem Gerät. Sobald wieder Netz da ist, `
+      + `${n === 1 ? "geht es" : "gehen sie"} automatisch raus — spätestens beim nächsten Aufruf dieser Seite.`;
+  }
+
+  /** Die Zeile unter dem Ergebnisring. Sie spricht nur über die Runde, die
+   *  gerade gelaufen ist, nicht über den ganzen Ausgang. */
+  function paintSpeicherstand(offen) {
+    if (DEMO || state.isRepeatRound || !state.lastSession) return;
+
+    const eigen = offen.find((e) => e.payload.session_id === state.lastSession);
+
+    if (!eigen) {
+      el.rSave.textContent = "Ergebnis gespeichert. Danke!";
+      el.btnRetrySave.hidden = true;
+      return;
+    }
+
+    if (state.sendetGerade) {
+      el.rSave.textContent = "Ergebnis wird gesendet …";
+      el.btnRetrySave.hidden = true;
+      return;
+    }
+
+    if (eigen.blockiert) {
+      el.rSave.textContent = `Nicht gespeichert: ${eigen.fehler}. Das Ergebnis bleibt auf dem Gerät — bitte der Schulungsleitung Bescheid geben.`;
+    } else if (eigen.fehler && eigen.fehler !== KEIN_NETZ) {
+      // Der Server war erreichbar und hat trotzdem nicht gespeichert. Der
+      // Grund gehört hierhin: solange die Migration fehlt, steht hier genau
+      // das, und niemand sucht den Fehler beim Funknetz.
+      el.rSave.textContent = `Der Server konnte gerade nicht speichern (${eigen.fehler}). Das Ergebnis liegt auf dem Gerät und wird automatisch nachgesendet.`;
+    } else {
+      el.rSave.textContent = "Noch keine Verbindung. Das Ergebnis liegt auf dem Gerät und wird automatisch nachgesendet.";
+    }
+    el.btnRetrySave.hidden = false;
   }
 
   // ------------------------------------------------------------- Ereignisse --
@@ -1273,7 +1519,13 @@
   // Öffnen setzt sie ohnehin vor showModal(), es gäbe also kein Nachblitzen —
   // ein geleertes src würde dagegen kurz das Platzhalter-Icon zeigen.
 
-  el.btnRetrySave.addEventListener("click", retrySubmit);
+  el.btnRetrySave.addEventListener("click", () => flushOutbox({ force: true }));
+  el.btnAusgangSenden.addEventListener("click", () => flushOutbox({ force: true }));
+
+  // Der Browser meldet sich, sobald er wieder Netz sieht. Das ist der Moment,
+  // in dem das Nachsenden ohne Zutun des Teilnehmers passieren soll — er hat
+  // die Insel längst verlassen und wird von sich aus nichts mehr antippen.
+  window.addEventListener("online", () => flushOutbox());
   el.btnErrBack.addEventListener("click", () => {
     history.pushState({}, "", "/quiz");
     route();
@@ -1326,6 +1578,10 @@
     }
 
     await route();
+
+    // Bewusst ohne await: die Seite steht sofort, das Nachsenden läuft
+    // daneben und malt die Kacheln nach, wenn es durch ist.
+    flushOutbox();
   }
 
   boot();
