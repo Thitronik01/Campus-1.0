@@ -76,24 +76,37 @@ merken sich keine Datenblätter, sie merken sich Sätze.
 Campus 1.0/
 ├── Campus Quiz/          ← die Quelle: Engine, Fragensätze, Werkzeuge
 ├── Feedbackbogen/        ← die Quelle des Tagesabschlusses
-├── Campus Gesamtpaket/   ← erzeugt: Inseln + Feedbackbogen auf einer Site
-├── <Insel> Quiz/         ← erzeugt: eine Insel je Site
-├── Wissen/               ← 82 Wiki-Artikel, Design-System, 107 Mediendateien
+├── Wissen/               ← 82 Wiki-Artikel, Design-System, Medien
 ├── FehlerQuiz/           ← Bestandsquiz, läuft getrennt weiter
 └── Pro-finder Quiz/      ← Bestandsquiz, läuft getrennt weiter
 ```
 
 **Eine Engine, sieben Fragensätze.** Geändert wird ausschließlich in
-[`Campus Quiz/`](Campus%20Quiz/). Alle Paket-Ordner sind **erzeugt** — jeder
-enthält einen `ZIEL-ORDNER-WIRD-ERZEUGT.txt`, und wer dort hineinbearbeitet,
-verliert es beim nächsten Bau.
+[`Campus Quiz/`](Campus%20Quiz/).
 
 | Ordner | Was drin ist |
 |---|---|
 | [`Campus Quiz/`](Campus%20Quiz/) | Engine, die sieben Fragensätze, Netlify-Function, Werkzeuge, [ausführliche Doku](Campus%20Quiz/README.md) |
+| [`Feedbackbogen/`](Feedbackbogen/) | Tagesabschluss; wird beim Bau nach `/feedback` kopiert |
 | [`Wissen/`](Wissen/) | Produktwissen, Design-System, Medien, Campus-Konzept — [Einstieg](Wissen/README.md) |
-| `Campus Gesamtpaket/` | Alle sieben Inseln auf **einer** Site, mit eigener `ANLEITUNG.md` |
-| `<Insel> Quiz/` | Fertiges Netlify-Paket je Insel, mit eigener `ANLEITUNG.md` |
+
+### Die Pakete stehen nicht im Repository
+
+`Campus Gesamtpaket/` und die sieben `<Insel> Quiz/` sind **Ausgabe**, keine
+Quelle. Nach einem frischen Klon sind sie nicht da — sie entstehen in
+Sekunden:
+
+```bash
+cd "Campus Quiz"
+node tools/build-insel.js gesamt     # das Paket für den Deploy
+node tools/build-insel.js alle       # die sieben Einzelpakete
+```
+
+Bis August 2026 lagen sie mit im Repository: 216 Dateien, ein Drittel des
+Projekts, bei jeder Änderung an Engine, Styles oder `index.html` achtfach
+mitgeschrieben. Zwei Zweige an derselben Quelldatei kollidierten dadurch
+nicht in drei Dateien, sondern in 27. Seitdem stehen die Ordner in
+`.gitignore` — und ein Bau ist billiger als jeder dieser Konflikte.
 
 **Für den Deploy: `Campus Gesamtpaket/`, nicht `Campus Quiz/`.** Die Quelle
 wäre technisch auch lauffähig, enthält aber den Fragenkatalog mit sämtlichen
@@ -189,6 +202,7 @@ der Browser wieder Empfang meldet. Solange etwas aussteht, sagt die Insel
 - 73 Fragen, alle fünf Fragetypen, aus dem Produktwissen mit Quellenangabe
 - 103 Paketprüfungen über alle sieben Inseln, dazu 26 Prüfungen der Bewertungslogik
 - Mobil geprüft bei 375 px: kein horizontaler Scroll, alle Trefferflächen ≥ 44 px
+- Arbeitsregeln in [`CLAUDE.md`](CLAUDE.md) — was Quelle ist, was erzeugt, und was vor jedem Commit läuft
 - Sende-Ausgang gegen Funkloch, `500`, `400` und Erfolg durchgespielt — inklusive
   Reload zwischendrin
 - Farbkontraste am gerenderten Bild gemessen, alle über WCAG AA

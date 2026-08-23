@@ -25,3 +25,28 @@ Thumbs.db
 desktop.ini
 *.tmp
 ~$*
+
+# ---------------------------------------------------------------------------
+# Erzeugte Netlify-Pakete
+#
+# Diese Ordner sind Ausgabe von "node tools/build-insel.js", nicht Quelle.
+# Sie lagen bis August 2026 mit im Repository und waren damit ein Drittel
+# aller Dateien — bei jeder Änderung an Engine, Styles oder index.html
+# schrieb der Bau acht Kopien mit. Zwei Zweige, die dieselbe Quelldatei
+# anfassten, kollidierten dadurch nicht in drei Dateien, sondern in 27.
+#
+# Gebraucht werden sie nur zum Hochladen bei Netlify, und dafür genügt es,
+# sie vorher zu bauen:
+#
+#     cd "Campus Quiz"
+#     node tools/build-insel.js gesamt     # Deploy-Paket
+#     node tools/build-insel.js alle       # sieben Einzelpakete
+# ---------------------------------------------------------------------------
+/Campus Gesamtpaket/
+/Vejrø Quiz/
+/Poel Quiz/
+/Hiddensee Quiz/
+/Samsø Quiz/
+/Fehmarn Quiz/
+/Usedom Quiz/
+/Langeland Quiz/

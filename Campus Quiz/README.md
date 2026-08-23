@@ -61,6 +61,14 @@ Problem, das dieses Projekt ablöst. Hier bleibt die Wahrheit in `Campus Quiz/`,
 die Insel-Ordner sind Ausgabe. In jedem liegt `ZIEL-ORDNER-WIRD-ERZEUGT.txt`,
 damit das auch dort steht, wo jemand versehentlich hineinbearbeitet.
 
+**Und deshalb stehen sie seit August 2026 nicht mehr im Repository.** Ausgabe
+gehört nicht in die Versionierung: 216 Dateien, ein Drittel des Projekts, bei
+jeder Engine-Änderung achtfach mitgeschrieben. Zwei Zweige an derselben
+Quelldatei kollidierten dadurch nicht in drei Dateien, sondern in 27. Die
+Ordner stehen jetzt in `.gitignore`; nach einem frischen Klon sind sie nicht
+da, bis `build-insel.js` gelaufen ist. Das ist kein Verlust — der Bau dauert
+Sekunden und ist reproduzierbar, ein Merge-Konflikt ist es nicht.
+
 Ein erzeugtes Paket unterscheidet sich in drei Punkten von dieser Quelle:
 
 - Der Katalog `inseln.json` enthält **nur diese eine Insel**. Daran erkennt die

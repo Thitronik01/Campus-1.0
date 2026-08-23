@@ -20,14 +20,6 @@
 *.woff binary
 *.woff2 binary
 
-# Erzeugte Insel-Pakete in Diffs zusammenklappen — sie sind Ausgabe,
-# geaendert wird in "Campus Quiz/". Pfade mit Leerzeichen gehoeren in
-# doppelte Anfuehrungszeichen; ein maskiertes Leerzeichen versteht Git hier
-# nicht und meldet "is not a valid attribute name".
-"Vejrø Quiz/**"      linguist-generated=true
-"Poel Quiz/**"       linguist-generated=true
-"Hiddensee Quiz/**"  linguist-generated=true
-"Samsø Quiz/**"      linguist-generated=true
-"Fehmarn Quiz/**"    linguist-generated=true
-"Usedom Quiz/**"     linguist-generated=true
-"Langeland Quiz/**"  linguist-generated=true
+# Erzeugte Insel-Pakete werden seit August 2026 nicht mehr versioniert,
+# siehe .gitignore. Die linguist-Regeln, die sie in Diffs zusammenklappten,
+# sind damit gegenstandslos und stehen hier nicht mehr.
