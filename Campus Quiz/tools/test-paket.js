@@ -16,6 +16,7 @@
 process.env.SUPABASE_URL = "https://beispiel.invalid";
 process.env.SUPABASE_SECRET_KEY = "sb_secret_test";
 
+const fs = require("fs");
 const path = require("path");
 
 const paketArg = process.argv[2];
@@ -41,9 +42,17 @@ const fremdeInsel = ["vejro", "poel", "hiddensee", "samsoe", "fehmarn",
   "usedom", "langeland", "nordstrand"].find((s) => !bekannt.has(s));
 
 let cap = null;
+
+/** Antwort, die die Supabase-Attrappe beim nächsten Aufruf gibt. 201 ist der
+ *  Normalfall; 409 bildet die Kollision auf dem unique-Index von session_id
+ *  nach, 503 einen zeitweise nicht erreichbaren Dienst. */
+let naechsteAntwort = { ok: true, status: 201 };
+
 global.fetch = async (url, opt) => {
   cap = JSON.parse(opt.body);
-  return { ok: true, status: 201, text: async () => "", json: async () => ({}) };
+  const a = naechsteAntwort;
+  naechsteAntwort = { ok: true, status: 201 };   // gilt nur für einen Aufruf
+  return { ok: a.ok, status: a.status, text: async () => a.text || "", json: async () => ({}) };
 };
 
 const { handler } = require(path.join(paket, "netlify", "functions", "submit-quiz.js"));
@@ -191,6 +200,54 @@ async function ruf(payload) {
         r.gespeichert?.answers.find((a) => a.id === zuordnung.id)?.is_correct === false);
     }
   }
+
+  // ---- Nachsenden aus dem Sende-Ausgang ---------------------------------
+  //
+  // Der Browser legt ein Ergebnis auf dem Gerät ab und schickt es so lange
+  // erneut, bis der Server bestätigt hat. Das ist nur dann gefahrlos, wenn
+  // eine zweite Einsendung derselben session_id keinen zweiten Datensatz
+  // anlegt und für den Teilnehmer nicht wie ein Fehler aussieht. Die
+  // Datenbank verhindert das Duplikat über den unique-Index; geprüft wird
+  // hier, dass die Function die 409 auch richtig übersetzt.
+  const wiederholung = bauen("richtig", { session_id: "ausgang-probe-1" });
+
+  r = await ruf(wiederholung);
+  pruefe("Nachsenden: erste Einsendung → 201", r.status === 201, r.body.error);
+
+  naechsteAntwort = { ok: false, status: 409, text: "duplicate key value" };
+  r = await ruf(wiederholung);
+  pruefe("Nachsenden: zweite mit gleicher session_id → 200",
+    r.status === 200, `${r.status} ${r.body.error || ""}`);
+  pruefe("Nachsenden: als Duplikat gemeldet, nicht als Fehler",
+    r.body.duplicate === true && !r.body.error, JSON.stringify(r.body));
+
+  // Ein zeitweiliger Serverfehler muss als 502 zurückkommen. Der Browser
+  // wertet 5xx als "später erneut versuchen" und behält den Eintrag; käme
+  // hier eine 4xx, würde er ihn als endgültig abgelehnt einstufen und nicht
+  // mehr von selbst nachsenden.
+  naechsteAntwort = { ok: false, status: 503, text: "service unavailable" };
+  r = await ruf(bauen("richtig", { session_id: "ausgang-probe-2" }));
+  pruefe("Nachsenden: Dienst weg → 502, damit weiter versucht wird",
+    r.status === 502, `${r.status}`);
+  pruefe("Nachsenden: 502 liegt im Wiederhol-Bereich (>= 500)", r.status >= 500);
+
+  // ---- Cache-Buster ------------------------------------------------------
+  //
+  // netlify.toml cacht /assets/* mit max-age=31536000, immutable. Bleibt das
+  // ?v= in der index.html beim Deploy stehen, holt jeder Browser, der schon
+  // einmal da war, die alte Engine ein Jahr lang aus seinem Cache. Die
+  // Zahl muss deshalb zur ausgelieferten Engine passen — build-insel.js setzt
+  // sie ein, hier wird nachgesehen, ob das auch angekommen ist.
+  const seite = fs.readFileSync(path.join(paket, "public", "index.html"), "utf8");
+  const motor = fs.readFileSync(path.join(paket, "public", "assets", "engine.js"), "utf8");
+  const fassung = (motor.match(/const ENGINE_VERSION = "([^"]+)"/) || [])[1];
+  const verweise = [...seite.matchAll(/\/assets\/[a-z.]+\?v=([^"']+)/g)].map((m) => m[1]);
+
+  pruefe("Engine nennt eine Fassung", Boolean(fassung), String(fassung));
+  pruefe("index.html hängt ?v= an die Assets", verweise.length >= 2, `${verweise.length} Verweise`);
+  pruefe("Cache-Buster passt zur Engine-Fassung",
+    verweise.length > 0 && verweise.every((v) => v === fassung),
+    `HTML: ${[...new Set(verweise)].join(", ")} — Engine: ${fassung}`);
 
   r = await handler({ httpMethod: "GET" });
   pruefe("GET → 405", r.statusCode === 405);

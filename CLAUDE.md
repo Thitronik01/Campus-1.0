@@ -5,6 +5,22 @@ gekostet, als sie fehlten.
 
 ---
 
+## 0. „Es ist Montag"
+
+Sagt jemand **„es ist Montag"**, **„Arbeitsbeginn"** oder ruft `/montag` auf,
+dann arbeite [`.claude/commands/montag.md`](.claude/commands/montag.md) ab:
+Stand holen, offene Zweige prüfen, bauen, alle Prüfungen laufen lassen,
+Entwicklungsserver starten, kurz melden.
+
+Ohne Claude geht es genauso:
+
+```bash
+cd "Campus Quiz"
+node tools/montag.js
+```
+
+---
+
 ## 1. Vor dem ersten Handgriff: nachsehen, wer sonst noch arbeitet
 
 ```bash
@@ -53,14 +69,22 @@ Merge-Konflikten kamen 24 allein daher.
 
 ```bash
 cd "Campus Quiz"
+node tools/montag.js --ohne-server
+```
+
+Baut beide Paketformen und lässt alles laufen: Fragensätze, die 26 Prüfungen
+der Bewertungslogik und rund 138 Paketprüfungen je Paketform. Endet mit
+Rückgabewert 1, sobald irgendetwas durchfällt — und zeigt dann nur die
+Zeilen, auf die es ankommt, statt der vollen Stapelspuren.
+
+Einzeln geht weiterhin alles:
+
+```bash
 node tools/check-fragen.js                        # Fragensätze
 node tools/test-function.js                       # Bewertungslogik (26)
 node tools/build-insel.js gesamt && node tools/build-insel.js alle
 node tools/test-paket.js "../Campus Gesamtpaket" vejro   # je Insel-Slug
 ```
-
-Alles muss grün sein. `test-paket.js` läuft je Insel einzeln; über alle
-sieben sind es rund 103 Prüfungen je Paketform.
 
 ---
 

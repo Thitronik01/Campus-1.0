@@ -76,6 +76,30 @@ const GEMEINSAME_MEDIEN = [
 
 // ------------------------------------------------------------------ Helfer --
 
+/** Die Fassung der Engine, gelesen aus der Engine selbst.
+ *
+ *  index.html hängt sie als ?v= an engine.js und styles.css. Das ist kein
+ *  Schmuck: netlify.toml cacht /assets/* mit max-age=31536000, immutable.
+ *  Bleibt die Zahl beim Deploy stehen, holt ein Browser, der schon einmal
+ *  da war, die alte Engine ein Jahr lang aus seinem Cache — die neue liegt
+ *  auf dem Server und erreicht niemanden.
+ *
+ *  Deshalb wird sie hier beim Bau eingesetzt statt in der HTML gepflegt.
+ *  Zwei Stellen für dieselbe Zahl sind genau eine zu viel; im August 2026
+ *  stand die Engine auf 1.4.0 und die HTML fragte noch nach 1.3.1. */
+function engineFassung() {
+  const quelle = fs.readFileSync(
+    path.join(WURZEL, "public", "assets", "engine.js"), "utf8");
+  const treffer = quelle.match(/const ENGINE_VERSION = "([^"]+)"/);
+  if (!treffer) throw new Error("ENGINE_VERSION nicht in engine.js gefunden.");
+  return treffer[1];
+}
+
+/** Setzt die Fassung in alle ?v=-Verweise der index.html ein. */
+function fassungEinsetzen(html, fassung) {
+  return html.replace(/(\/assets\/[a-z.]+)\?v=[^"']*/g, `$1?v=${fassung}`);
+}
+
 function lies(...teile) {
   return fs.readFileSync(path.join(WURZEL, ...teile), "utf8");
 }
@@ -293,6 +317,7 @@ function baue(slug) {
       `<title>${satz.code} — ${satz.title} · THITRONIK Campus</title>`)
     .replace(/<meta name="description" content=".*?">/,
       `<meta name="description" content="THITRONIK Campus — Wissenscheck ${satz.code}: ${satz.title}.">`);
+  html = fassungEinsetzen(html, engineFassung());
   schreib(path.join(oeff, "index.html"), html);
 
   // --- Engine und Stile unverändert --------------------------------------
@@ -371,6 +396,7 @@ function baueGesamt() {
       `<title>Wissenscheck · THITRONIK Campus</title>`)
     .replace(/<meta name="description" content=".*?">/,
       `<meta name="description" content="THITRONIK Campus — Wissenscheck zu allen sieben Schulungsinseln.">`);
+  html = fassungEinsetzen(html, engineFassung());
   schreib(path.join(oeff, "index.html"), html);
 
   // --- Engine und Stile unverändert --------------------------------------
