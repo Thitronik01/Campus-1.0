@@ -73,7 +73,7 @@ node tools/montag.js --ohne-server
 ```
 
 Baut beide Paketformen und lässt alles laufen: Fragensätze, die 26 Prüfungen
-der Bewertungslogik und rund 138 Paketprüfungen je Paketform. Endet mit
+der Bewertungslogik und rund 159 Paketprüfungen je Paketform. Endet mit
 Rückgabewert 1, sobald irgendetwas durchfällt — und zeigt dann nur die
 Zeilen, auf die es ankommt, statt der vollen Stapelspuren.
 
