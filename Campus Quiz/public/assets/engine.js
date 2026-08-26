@@ -1,10 +1,10 @@
 /* ==========================================================================
-   THITRONIK Campus — Wissenscheck, gemeinsame Quiz-Engine
+   THITRONIK Campus - Wissenscheck, gemeinsame Quiz-Engine
    --------------------------------------------------------------------------
    Eine Engine, sieben Fragensätze. Die Insel steht im Pfad (/quiz/hiddensee),
    die Fragen in /data/inseln/<slug>.json.
 
-   Wichtig: Der Browser sendet nur, WAS gewählt wurde — nie, ob es richtig
+   Wichtig: Der Browser sendet nur, WAS gewählt wurde - nie, ob es richtig
    war. Die Bewertung macht die Netlify-Function gegen dieselbe JSON-Datei.
    Damit gibt es genau eine Wahrheitsquelle für die richtigen Antworten.
    ========================================================================== */
@@ -25,7 +25,7 @@
   const KEIN_NETZ = "Keine Verbindung";
 
   /** ?demo=1 läuft komplett durch, speichert aber absichtlich nichts.
-   *  Gleiche Konvention wie im Feedbackbogen — für Tests immer verwenden. */
+   *  Gleiche Konvention wie im Feedbackbogen - für Tests immer verwenden. */
   const DEMO = new URLSearchParams(location.search).get("demo") === "1";
 
   /** Wer Bewegung abbestellt hat, bekommt auch keine weichen Sprünge. */
@@ -132,6 +132,7 @@
     lightboxImage: $("lightbox-image"),
     lightboxCaption: $("lightbox-caption"),
     lightboxClose: $("lightbox-close"),
+    abortDialog: $("abort-dialog"),
     qStatus: $("q-status"),
     btnCheck: $("btn-check"),
     btnAbort: $("btn-abort"),
@@ -191,9 +192,17 @@
 
   function toast(message, ms = 2600) {
     el.toast.textContent = message;
+    delete el.toast.dataset.closing;
     el.toast.hidden = false;
     clearTimeout(toast._t);
-    toast._t = setTimeout(() => { el.toast.hidden = true; }, ms);
+    clearTimeout(toast._hide);
+    toast._t = setTimeout(() => {
+      el.toast.dataset.closing = "true";
+      toast._hide = setTimeout(() => {
+        el.toast.hidden = true;
+        delete el.toast.dataset.closing;
+      }, 140);
+    }, ms);
   }
 
   function fail(message) {
@@ -206,7 +215,7 @@
     show("error");
   }
 
-  /** Fisher-Yates. Ohne Seed — „gleiche Reihenfolge wiederholen" arbeitet
+  /** Fisher-Yates. Ohne Seed - „gleiche Reihenfolge wiederholen" arbeitet
    *  stattdessen auf der bereits gemischten Liste. */
   function shuffled(list) {
     const out = list.slice();
@@ -238,7 +247,7 @@
 
   /** Erst escapen, dann **fett** zulassen.
    *
-   *  Der Fragenkatalog hebt in den Auflösungen einzelne Wörter hervor — die
+   *  Der Fragenkatalog hebt in den Auflösungen einzelne Wörter hervor - die
    *  Trennung „Aufbautür" gegen „Fahrzeug-Zentralverriegelung" etwa lebt
    *  davon. Als reiner Text stünden dort sichtbare Sternchen.
    *
@@ -303,7 +312,7 @@
     sonstiges: "Sonstiges"
   };
 
-  /** Dieselben drei Pflichtfelder, die validateForm() prüft — nur ohne
+  /** Dieselben drei Pflichtfelder, die validateForm() prüft - nur ohne
    *  Fehlermeldung und Fokussprung. Der Tätigkeitsbereich bleibt freiwillig
    *  und darf die Zusammenfassung deshalb nicht verhindern. */
   function participantComplete(data) {
@@ -315,14 +324,14 @@
 
   /** Vollständige Angaben werden zur Zeile zusammengefaltet: Sie sind
    *  gespeichert, ihre erneute Eingabe ist also keine Aufgabe mehr, sondern
-   *  eine Störung vor der eigentlichen — dem Quiz. Das Formular bleibt im
+   *  eine Störung vor der eigentlichen - dem Quiz. Das Formular bleibt im
    *  Dokument und ist über "Angaben ändern" einen Klick entfernt. */
   function showParticipantSummary(data) {
     el.participantName.textContent = data.name;
     const teile = [data.dealer, "Händlernummer " + data.dealerNumber];
     const bereich = AREA_LABELS[data.area];
     if (bereich) teile.push(bereich);
-    el.participantMeta.textContent = teile.join(" · ");
+    el.participantMeta.textContent = teile.join(", ");
     el.participantSummary.hidden = false;
     el.startFields.hidden = true;
   }
@@ -343,7 +352,7 @@
 
   /** Die session_id wird mitgeschrieben, damit die Übersicht später sagen
    *  kann, ob zu dieser Insel noch etwas im Ausgang liegt. Altbestand ohne
-   *  session gilt als versendet — ein Ergebnis, das es nicht mehr gibt,
+   *  session gilt als versendet - ein Ergebnis, das es nicht mehr gibt,
    *  lässt sich ohnehin nicht nachreichen. */
   function markDone(slug, percent, sessionId) {
     try {
@@ -356,7 +365,7 @@
   // -------------------------------------------------------- Sende-Ausgang ---
 
   /* Ein Ergebnis ist erst dann sicher, wenn der Server es bestätigt hat.
-     Bis dahin liegt es hier — auf der Platte, nicht im Arbeitsspeicher. Das
+     Bis dahin liegt es hier - auf der Platte, nicht im Arbeitsspeicher. Das
      ist der Unterschied zwischen "wird nachgesendet" und "weg, sobald der
      Tab zugeht". In einer Halle mit einem Balken Empfang ist der zweite Fall
      der Regelfall, nicht die Ausnahme.
@@ -366,7 +375,7 @@
      200 { duplicate: true } statt einen zweiten Datensatz anzulegen. */
 
   /** Was sich nicht speichern ließ (privater Modus, Speicher voll). Hält
-   *  nur bis zum Schließen des Tabs — besser als gar nichts, und der
+   *  nur bis zum Schließen des Tabs - besser als gar nichts, und der
    *  Statustext sagt in diesem Fall auch nichts anderes. */
   const fluechtig = [];
 
@@ -548,11 +557,11 @@
 
     setCampusRouteFocus("", false);
     // Was noch im Ausgang liegt, darf auf der Kachel nicht wie erledigt
-    // aussehen — es ist auf diesem Gerät fertig, aber nirgends angekommen.
+    // aussehen - es ist auf diesem Gerät fertig, aber nirgends angekommen.
     const wartend = new Set(outboxAlle().map((e) => e.payload.session_id));
     el.islandGrid.innerHTML = "";
     // "1 von 7" ist die Aussage, die jemand am Aufsteller braucht. Der
-    // Prozentwert ist dieselbe Zahl in ungenauer — er bleibt als Skala
+    // Prozentwert ist dieselbe Zahl in ungenauer - er bleibt als Skala
     // stehen, tritt aber zurück. Für die Vorlesehilfe ersetzt aria-valuetext
     // die nackten "14", die als Fortschritt nichts aussagen.
     const fortschrittText = `${abgeschlossen} von ${total} ${total === 1 ? "Insel" : "Inseln"} abgeschlossen`;
@@ -582,7 +591,7 @@
           <span class="i-state">${escapeHtml(!entry
             ? "Noch nicht begonnen"
             : unterwegs
-              ? `Abgeschlossen · ${entry.percent} % — noch nicht gesendet`
+              ? `Abgeschlossen · ${entry.percent} % - noch nicht gesendet`
               : `Abgeschlossen · ${entry.percent} %`)}</span>
           ${entry ? `<span class="i-score" aria-hidden="true"><span></span></span>` : ""}
         </span>
@@ -630,7 +639,7 @@
 
   // ------------------------------------------------------------ Startbild ---
 
-  /** Enthält der Katalog nur eine Insel, gibt es keine Übersicht — dann
+  /** Enthält der Katalog nur eine Insel, gibt es keine Übersicht - dann
    *  führen „Andere Insel" und „Nächste Insel" ins Leere. */
   function istEinzelinsel() {
     return state.catalog.inseln.length === 1;
@@ -656,7 +665,15 @@
     el.fehmarnStartVisual.hidden = !isFehmarn;
     if (isSamsoe) {
       [el.samsoeStartVehicle, el.samsoeStartTechnician].forEach((image) => {
-        if (!image.getAttribute("src")) image.src = image.dataset.src;
+        if (!image.getAttribute("src")) {
+          // Beide Ebenen bilden gemeinsam das Startmotiv und liegen sofort im
+          // sichtbaren Bereich. Der Browser soll sie deshalb nicht hinter
+          // spaeteren Quizbildern einreihen.
+          image.loading = "eager";
+          image.decoding = "async";
+          image.fetchPriority = "high";
+          image.src = image.dataset.src;
+        }
       });
     }
     if (isHiddensee && !el.hiddenseeStartContact.getAttribute("src")) {
@@ -682,10 +699,10 @@
 
     // Die Angaben liegen im localStorage, und der gilt pro Domain. Läuft jede
     // Insel als eigene Netlify-Site, tragen sie NICHT zur nächsten Insel
-    // hinüber — dann darf hier auch nichts anderes stehen.
+    // hinüber - dann darf hier auch nichts anderes stehen.
     el.formIntro.textContent = istEinzelinsel()
       ? "Damit lässt sich dein Ergebnis der Schulung zuordnen."
-      : "Einmal ausfüllen — für die weiteren Inseln bleiben die Angaben gespeichert.";
+      : "Einmal ausfüllen - für die weiteren Inseln bleiben die Angaben gespeichert.";
 
     el.startCode.textContent = island.code;
     el.startTitle.textContent = island.title;
@@ -705,17 +722,17 @@
     };
 
     // Reihenfolge nach dem, was vor dem Start zählt: Umfang, Zeitbedarf,
-    // kein Druck, sofortige Auflösung. "ca." steht bewusst dabei — die
+    // kein Druck, sofortige Auflösung. "ca." steht bewusst dabei - die
     // Angabe ist eine Einschätzung, keine Messung.
     // Zeitbedarf und "kein Zeitlimit" stehen in einer Zeile: Es ist dieselbe
-    // Auskunft — wie lange es dauert und dass niemand gehetzt wird.
+    // Auskunft - wie lange es dauert und dass niemand gehetzt wird.
     const minuten = Number(island.dauerMinuten) || 0;
     el.startFacts.innerHTML = "";
     [
       { klasse: "fact-fragen", text: `${count} ${count === 1 ? "Frage" : "Fragen"}` },
       { klasse: "fact-zeit", text: minuten
-          ? `ca. ${minuten} Minuten — kein Zeitlimit`
-          : "Kein Zeitlimit — es geht nicht um Tempo" },
+          ? `ca. ${minuten} Minuten - kein Zeitlimit`
+          : "Kein Zeitlimit - es geht nicht um Tempo" },
       { klasse: "fact-aufloesung", text: "Nach jeder Antwort gibt es sofort die Auflösung" }
     ].forEach((fakt) => {
       const li = document.createElement("li");
@@ -725,13 +742,13 @@
     });
 
     // Die Fragetypen beschreiben die Bedienung, nicht den Inhalt. Wer vor
-    // dem Aufsteller steht, entscheidet nicht danach, ob er anfängt — sie
+    // dem Aufsteller steht, entscheidet nicht danach, ob er anfängt - sie
     // bleiben abrufbar, nehmen aber keinen Platz mehr vor dem Knopf weg.
     el.startTypes.textContent = `Fragetypen: ${[...types].map((t) => typeNames[t] || t).join(", ")}`;
     el.startDetails.open = false;
 
     // "internerHinweis" wird bewusst NICHT angezeigt. Das sind redaktionelle
-    // Notizen an uns ("Menüpfade gegenprüfen", "Feld media ergänzen") — auf
+    // Notizen an uns ("Menüpfade gegenprüfen", "Feld media ergänzen") - auf
     // dem Startbildschirm läse sie der Händler am Aufsteller mit. Sie
     // erscheinen stattdessen in der Ausgabe von tools/check-fragen.js.
 
@@ -759,7 +776,7 @@
     const field = input.closest(".field");
 
     // Die Meldung wird an das Feld gebunden. Ohne das meldet ein Screenreader
-    // beim Sprung ins Feld nur "ungültig" und verschweigt den Grund — die
+    // beim Sprung ins Feld nur "ungültig" und verschweigt den Grund - die
     // Meldung steht zwar daneben, gehört aber zu nichts. Ein vorhandener
     // Hilfetext ("Genau fünf Ziffern") bleibt dabei erhalten.
     const beschreibungen = (input.getAttribute("aria-describedby") || "")
@@ -797,7 +814,7 @@
     } else setFieldError(el.fDealer, $("e-dealer"), null);
 
     // Händlernummer: Zeichenkette, genau fünf Ziffern. Gleiche Regeln wie im
-    // Feedbackbogen — erst putzen, dann prüfen, kein maxlength.
+    // Feedbackbogen - erst putzen, dann prüfen, kein maxlength.
     const number = el.fNumber.value.trim();
     if (!number) {
       setFieldError(el.fNumber, $("e-number"), "Die Händlernummer fehlt.");
@@ -879,7 +896,7 @@
     renderInput(q);
 
     // preventScroll, weil der Browser sonst nur so weit scrollt, bis die
-    // Überschrift eben im Bild ist — bei einer langen Frage steht man dann
+    // Überschrift eben im Bild ist - bei einer langen Frage steht man dann
     // mitten im Text. Der Blick gehört an den Anfang der Frage.
     el.qTitle.focus({ preventScroll: true });
     el.screens.quiz.scrollIntoView({ block: "start", behavior: scrollArt() });
@@ -897,7 +914,10 @@
 
     if (q.type === "single" || q.type === "truefalse") {
       ready = draft.selected.length === 1;
-      status = ready ? "" : "Wähle eine Antwort.";
+      // Die sichtbare Bedienhilfe steht bereits direkt über den Antworten.
+      // Eine zweite gleichlautende Zeile unter dem Button erzeugt dort nur
+      // Unruhe; der deaktivierte Button bildet den Zustand zusätzlich ab.
+      status = "";
     } else if (q.type === "multi") {
       ready = draft.selected.length > 0;
       status = ready
@@ -907,7 +927,7 @@
       ready = draft.order.length === q.items.length;
       status = ready
         ? "Reihenfolge vollständig."
-        : `${draft.order.length} von ${q.items.length} gesetzt — tippe die Schritte in der richtigen Reihenfolge an.`;
+        : `${draft.order.length} von ${q.items.length} gesetzt - tippe die Schritte in der richtigen Reihenfolge an.`;
     } else if (q.type === "match") {
       const filled = Object.values(draft.pairs).filter(Boolean).length;
       ready = filled === q.left.length;
@@ -972,7 +992,7 @@
         const alt = option.imageAlt || option.text || `Bild ${letter}`;
         button.setAttribute("aria-label", `Antwort ${letter}: ${alt}`);
         // Bewusst NICHT loading="lazy": bei einer Bildfrage sind die Fotos die
-        // Antwort. Sie müssen dastehen, sobald die Frage erscheint — sonst
+        // Antwort. Sie müssen dastehen, sobald die Frage erscheint - sonst
         // vergleicht der Teilnehmer leere Kästen, und die unteren beiden
         // Kacheln lädt der Browser erst beim Scrollen nach.
         button.innerHTML = `
@@ -1005,7 +1025,7 @@
       });
 
       if (bildmodus) {
-        // Kachel und Lupe nebeneinander im Wrapper — sonst stünde ein Button
+        // Kachel und Lupe nebeneinander im Wrapper - sonst stünde ein Button
         // im Button.
         const holder = document.createElement("div");
         holder.className = "answer-wrap";
@@ -1045,7 +1065,7 @@
       button.className = "order-item";
       button.dataset.id = item.id;
       button.innerHTML = `
-        <span class="order-rank" aria-hidden="true">–</span>
+        <span class="order-rank" aria-hidden="true">-</span>
         <span class="order-text">${escapeHtml(item.text)}</span>`;
       button.addEventListener("click", () => {
         if (state.revealed) return;
@@ -1078,10 +1098,10 @@
     list.querySelectorAll(".order-item").forEach((node) => {
       const pos = draft.order.indexOf(node.dataset.id);
       const rank = node.querySelector(".order-rank");
-      rank.textContent = pos >= 0 ? String(pos + 1) : "–";
+      rank.textContent = pos >= 0 ? String(pos + 1) : "-";
       node.classList.toggle("is-picked", pos >= 0);
       node.setAttribute("aria-label",
-        `${node.querySelector(".order-text").textContent} — ${pos >= 0 ? `Position ${pos + 1}` : "noch nicht gesetzt"}`);
+        `${node.querySelector(".order-text").textContent} - ${pos >= 0 ? `Position ${pos + 1}` : "noch nicht gesetzt"}`);
     });
   }
 
@@ -1094,7 +1114,7 @@
     // Die Auswahlliste wird einmal je Frage gemischt, nicht je Zeile: alle
     // Zeilen zeigen dieselbe Reihenfolge, sonst müsste man in jeder Zeile
     // neu suchen. Vorher stand sie unverändert in der Reihenfolge der
-    // Quelldatei — und dort steht die Lösung meist der Reihe nach (erster
+    // Quelldatei - und dort steht die Lösung meist der Reihe nach (erster
     // linker Eintrag zum ersten rechten). Wer die Frage ein zweites Mal
     // sah, konnte sich das Muster merken, ohne die Sache zu kennen.
     const auswahl = shuffled(q.right);
@@ -1132,7 +1152,7 @@
 
   // ------------------------------------------------- Sofortige Bewertung ---
 
-  /** Clientseitige Bewertung — ausschließlich für die Sofortanzeige.
+  /** Clientseitige Bewertung - ausschließlich für die Sofortanzeige.
    *  Verbindlich ist die Bewertung in der Netlify-Function. */
   function evaluate(q, answer) {
     if (q.type === "single" || q.type === "truefalse" || q.type === "multi") {
@@ -1150,7 +1170,7 @@
   }
 
   /** Beschriftung einer Option. Bildfragen tragen keinen text, dort ist der
-   *  Alt-Text die einzige Benennung — sonst bliebe die Auflösungszeile leer. */
+   *  Alt-Text die einzige Benennung - sonst bliebe die Auflösungszeile leer. */
   function optionLabel(option) {
     if (!option) return "";
     return option.text || option.imageAlt || "";
@@ -1162,7 +1182,7 @@
     }
     if (q.type === "single" || q.type === "multi") {
       const texts = q.correct.map((id) => optionLabel(q.options.find((o) => o.id === id))).filter(Boolean);
-      return `Richtig ${texts.length > 1 ? "wären" : "wäre"}: ${texts.join(" · ")}`;
+      return `Richtig ${texts.length > 1 ? "wären" : "wäre"}: ${texts.join("; ")}`;
     }
     if (q.type === "order") {
       const texts = q.correct.map((id) => (q.items.find((o) => o.id === id) || {}).text).filter(Boolean);
@@ -1174,7 +1194,7 @@
         const right = (q.right.find((o) => o.id === r) || {}).text;
         return `${left} → ${right}`;
       });
-      return parts.join(" · ");
+      return parts.join("; ");
     }
     return "";
   }
@@ -1187,12 +1207,12 @@
    *  Ein Irrtums-Absatz nennt in `fuer` die Optionen, um die es ihm geht. Ob
    *  daraus ein Treffer wird, leitet sich aus der Frage selbst ab und muss
    *  nicht zusätzlich gepflegt werden: Eine falsche Option trifft zu, wenn sie
-   *  angekreuzt wurde — eine richtige, wenn sie fehlt. Genau so sind die
+   *  angekreuzt wurde - eine richtige, wenn sie fehlt. Genau so sind die
    *  Absätze geschrieben: „Sensor defekt" (gewählt) steht neben „Blinkcode
    *  weggelassen" (nicht gewählt).
    *
    *  Reihenfolge- und Zuordnungsfragen haben keine Optionen, auf die sich das
-   *  beziehen ließe. Dort bleiben die Absätze unmarkiert — sie gelten ohnehin
+   *  beziehen ließe. Dort bleiben die Absätze unmarkiert - sie gelten ohnehin
    *  allen. */
   function irrtumMarke(eintrag, q, answer) {
     if (!Array.isArray(eintrag.fuer) || !eintrag.fuer.length) return "";
@@ -1232,7 +1252,7 @@
       const marke = irrtumMarke(eintrag, q, answer);
       const li = document.createElement("li");
       li.className = "irrtum-item" + (marke ? " is-mine" : "");
-      li.innerHTML = `<b>${richText(eintrag.titel)}${marke ? ` — ${marke}` : ""}:</b> ` +
+      li.innerHTML = `<b>${richText(eintrag.titel)}${marke ? ` - ${marke}` : ""}:</b> ` +
         richText(eintrag.text);
       el.qFeedbackIrrtumList.appendChild(li);
     });
@@ -1266,7 +1286,7 @@
       el.qFeedbackSolution.hidden = false;
     }
 
-    // Erklärbild zur Auflösung — im Fehmarn-Quiz zeigt das etwa den
+    // Erklärbild zur Auflösung - im Fehmarn-Quiz zeigt das etwa den
     // „GPS inside"-Aufkleber, auf den es bei der Montage ankommt.
     if (q.feedbackMedia && q.feedbackMedia.src) {
       el.qFeedbackMediaImg.src = q.feedbackMedia.src;
@@ -1281,7 +1301,7 @@
     renderIrrtum(q, answer, isCorrect);
 
     // Der Mitnehmen-Satz steht zuletzt, nach Auflösung, Bild und Irrtümern:
-    // Er ist das, was nach der Frage übrig bleiben soll — eine Faustregel oder
+    // Er ist das, was nach der Frage übrig bleiben soll - eine Faustregel oder
     // ein Satz für das Kundengespräch. Am Ende der Insel steht er noch einmal
     // in der Ergebnisliste.
     if (q.mitnehmen) {
@@ -1306,7 +1326,7 @@
     el.qStatus.textContent = "";
 
     // Auflösung in den Blick holen, Nachtippen kurz verschlucken. Der Knopf
-    // wechselt an derselben Stelle von "Antwort prüfen" auf "Nächste Frage" —
+    // wechselt an derselben Stelle von "Antwort prüfen" auf "Nächste Frage" -
     // ein zweiter Tipp aus Gewohnheit übersprang bisher genau das, wofür der
     // Check gemacht ist.
     state.weiterFrei = Date.now() + 450;
@@ -1385,10 +1405,10 @@
     el.rIsland.textContent = state.island.code;
 
     el.rRating.textContent =
-      percent === 100 ? "Alles richtig — sehr gut."
+      percent === 100 ? "Alles richtig - sehr gut."
         : percent >= 80 ? "Sitzt. Die wichtigsten Punkte sind angekommen."
           : percent >= 60 ? "Solide Grundlage, ein paar Details lohnen den zweiten Blick."
-            : "Schau dir die markierten Punkte noch einmal an — genau dafür ist der Check da.";
+            : "Schau dir die markierten Punkte noch einmal an - genau dafür ist der Check da.";
 
     renderTopics();
     renderReview();
@@ -1402,7 +1422,7 @@
       markDone(state.slug, percent, payload.session_id);
       submit(payload);
     } else {
-      el.rSave.textContent = "Wiederholungsrunde — sie wird nicht zusätzlich gespeichert.";
+      el.rSave.textContent = "Wiederholungsrunde - sie wird nicht zusätzlich gespeichert.";
       el.btnRetrySave.hidden = true;
     }
 
@@ -1413,7 +1433,7 @@
     show("result");
 
     // Der Ring steht erst auf 0, ein erzwungener Reflow macht diesen Stand
-    // zum Ausgangswert, dann folgt der Zielwert — der Übergang läuft.
+    // zum Ausgangswert, dann folgt der Zielwert - der Übergang läuft.
     // Bewusst synchron statt in requestAnimationFrame: rAF ruht in einem
     // Tab, das gerade nicht im Vordergrund ist. Wer beim Absenden kurz die
     // App wechselt, käme sonst auf einen Ring zurück, der auf null steht,
@@ -1423,7 +1443,7 @@
     el.rRing.style.setProperty("--pct", String(percent));
   }
 
-  /** Was heute noch aussteht. Der Knopf daneben heißt "Nächste Insel" —
+  /** Was heute noch aussteht. Der Knopf daneben heißt "Nächste Insel" -
    *  dann darf daneben auch stehen, welche das überhaupt noch sein können. */
   function paintRest() {
     if (istEinzelinsel()) { el.rRest.hidden = true; return; }
@@ -1432,8 +1452,8 @@
     const offen = state.catalog.inseln.filter((i) => !done[i.slug]);
 
     el.rRest.textContent = offen.length
-      ? `Noch offen: ${offen.map((i) => i.code).join(" · ")}`
-      : "Alle Inseln durch — das war der letzte Wissenscheck. Danke!";
+      ? `Noch offen: ${offen.map((i) => i.code).join(", ")}`
+      : "Alle Inseln durch - das war der letzte Wissenscheck. Danke!";
     el.rRest.hidden = false;
   }
 
@@ -1449,7 +1469,7 @@
 
     // Die Aufschlüsselung lohnt nur, wenn sie tatsächlich etwas gruppiert.
     // Zehn Themen mit je einer Frage sind bloß die Antwortliste in anderer
-    // Form — die steht ohnehin darunter.
+    // Form - die steht ohnehin darunter.
     const grouped = [...groups.values()].some((entry) => entry.total > 1);
     if (groups.size < 3 || !grouped) {
       el.rTopicsBlock.hidden = true;
@@ -1475,19 +1495,19 @@
   function givenText(q, answer) {
     if (q.type === "truefalse") {
       const v = (answer.selected || [])[0];
-      return v === "richtig" ? "Richtig" : v === "falsch" ? "Falsch" : "—";
+      return v === "richtig" ? "Richtig" : v === "falsch" ? "Falsch" : "-";
     }
     if (q.type === "single" || q.type === "multi") {
       const texts = (answer.selected || [])
         .map((id) => optionLabel(q.options.find((o) => o.id === id)))
         .filter(Boolean);
-      return texts.length ? texts.join(" · ") : "—";
+      return texts.length ? texts.join("; ") : "-";
     }
     if (q.type === "order") {
       const texts = (answer.order || [])
         .map((id) => (q.items.find((o) => o.id === id) || {}).text)
         .filter(Boolean);
-      return texts.length ? texts.join(" → ") : "—";
+      return texts.length ? texts.join(" → ") : "-";
     }
     if (q.type === "match") {
       const parts = Object.entries(answer.pairs || {})
@@ -1497,9 +1517,9 @@
           const right = (q.right.find((o) => o.id === r) || {}).text;
           return `${left} → ${right}`;
         });
-      return parts.length ? parts.join(" · ") : "—";
+      return parts.length ? parts.join("; ") : "-";
     }
-    return "—";
+    return "-";
   }
 
   function renderReview() {
@@ -1545,11 +1565,11 @@
   }
 
   /** Nimmt das Ergebnis entgegen: erst auf die Platte, dann ins Netz. Die
-   *  Reihenfolge ist der ganze Punkt — was hier zuerst gesendet und erst bei
+   *  Reihenfolge ist der ganze Punkt - was hier zuerst gesendet und erst bei
    *  Erfolg gespeichert würde, wäre bei jedem Funkloch verloren. */
   function submit(payload) {
     if (DEMO) {
-      el.rSave.textContent = "Vorschaumodus (?demo=1) — es wurde absichtlich nichts gespeichert.";
+      el.rSave.textContent = "Vorschaumodus (?demo=1) - es wurde absichtlich nichts gespeichert.";
       el.btnRetrySave.hidden = true;
       return;
     }
@@ -1581,7 +1601,7 @@
     const body = await response.json().catch(() => ({}));
     if (response.ok) return "ok";
 
-    // 5xx, 408 und 429 gehen vorbei — hierher gehört auch der Fall, dass die
+    // 5xx, 408 und 429 gehen vorbei - hierher gehört auch der Fall, dass die
     // Migration noch nicht eingespielt ist: sobald die Tabelle steht, kommen
     // die liegengebliebenen Ergebnisse von selbst durch. Ein 400 dagegen ist
     // eine Absage an diesen Datensatz; ihn im Minutentakt erneut zu schicken
@@ -1636,7 +1656,7 @@
     const offen = outboxAlle();
 
     // Nicht mitten in einer Frage, und nicht auf dem Ergebnisbild: dort steht
-    // die Zeile unter dem Ring, und zwar genauer — sie spricht von dieser
+    // die Zeile unter dem Ring, und zwar genauer - sie spricht von dieser
     // Runde statt von "zwei Ergebnissen".
     const stoerend = !el.screens.quiz.hidden || !el.screens.result.hidden;
 
@@ -1657,24 +1677,24 @@
     const n = offen.length;
     const kopf = n === 1 ? "Ein Ergebnis liegt" : `${n} Ergebnisse liegen`;
 
-    if (state.sendetGerade) return `${kopf} noch auf diesem Gerät — wird gerade gesendet …`;
+    if (state.sendetGerade) return `${kopf} noch auf diesem Gerät - wird gerade gesendet …`;
 
     if (offen.every((e) => e.blockiert)) {
       return `${kopf} auf diesem Gerät und ${n === 1 ? "wurde" : "wurden"} vom Server nicht angenommen `
-        + `(${offen[0].fehler}). Bitte bei der Schulungsleitung melden — die Daten sind noch da, `
+        + `(${offen[0].fehler}). Bitte bei der Schulungsleitung melden - die Daten sind noch da, `
         + `solange diese Seite auf dem Gerät nicht gelöscht wird.`;
     }
 
-    // Ein Serverfehler ist etwas anderes als ein Funkloch — beim fehlenden
+    // Ein Serverfehler ist etwas anderes als ein Funkloch - beim fehlenden
     // Migrationsstand hilft es niemandem, auf besseren Empfang zu warten.
     const serverfehler = offen.find((e) => e.fehler && e.fehler !== KEIN_NETZ);
     if (serverfehler) {
       return `${kopf} noch auf diesem Gerät. Der Server konnte zuletzt nicht speichern `
-        + `(${serverfehler.fehler}) — es wird automatisch weiter versucht.`;
+        + `(${serverfehler.fehler}) - es wird automatisch weiter versucht.`;
     }
 
     return `${kopf} noch auf diesem Gerät. Sobald wieder Netz da ist, `
-      + `${n === 1 ? "geht es" : "gehen sie"} automatisch raus — spätestens beim nächsten Aufruf dieser Seite.`;
+      + `${n === 1 ? "geht es" : "gehen sie"} automatisch raus - spätestens beim nächsten Aufruf dieser Seite.`;
   }
 
   /** Die Zeile unter dem Ergebnisring. Sie spricht nur über die Runde, die
@@ -1697,7 +1717,7 @@
     }
 
     if (eigen.blockiert) {
-      el.rSave.textContent = `Nicht gespeichert: ${eigen.fehler}. Das Ergebnis bleibt auf dem Gerät — bitte der Schulungsleitung Bescheid geben.`;
+      el.rSave.textContent = `Nicht gespeichert: ${eigen.fehler}. Das Ergebnis bleibt auf dem Gerät - bitte der Schulungsleitung Bescheid geben.`;
     } else if (eigen.fehler && eigen.fehler !== KEIN_NETZ) {
       // Der Server war erreichbar und hat trotzdem nicht gespeichert. Der
       // Grund gehört hierhin: solange die Migration fehlt, steht hier genau
@@ -1715,7 +1735,7 @@
     event.preventDefault();
 
     // Bei zusammengefalteten Angaben zeigte eine Fehlermeldung sonst auf ein
-    // Feld, das gerade niemand sieht — und der Fokussprung ginge ins Leere.
+    // Feld, das gerade niemand sieht - und der Fokussprung ginge ins Leere.
     let data = validateForm();
     if (!data && el.startFields.hidden) {
       showParticipantForm(false);
@@ -1729,7 +1749,7 @@
   });
 
   // Händlernummer: alles außer Ziffern fällt schon beim Tippen weg, danach
-  // auf fünf kappen. Reihenfolge ist wichtig — sonst frisst das Kappen eine
+  // auf fünf kappen. Reihenfolge ist wichtig - sonst frisst das Kappen eine
   // Ziffer aus eingefügtem Text mit Leerzeichen.
   el.fNumber.addEventListener("input", () => {
     const cleaned = el.fNumber.value.replace(/\D/g, "").slice(0, 5);
@@ -1746,8 +1766,18 @@
   });
 
   el.btnAbort.addEventListener("click", () => {
-    if (!confirm("Quiz abbrechen? Die bisherigen Antworten gehen verloren.")) return;
-    show("start");
+    if (typeof el.abortDialog.showModal === "function") {
+      // Ein vorheriger Formularwert bleibt am Dialog haften. Vor jedem Öffnen
+      // leeren, damit Escape niemals versehentlich einen alten Abbruch ausführt.
+      el.abortDialog.returnValue = "";
+      el.abortDialog.showModal();
+      return;
+    }
+    if (confirm("Quiz abbrechen? Die bisherigen Antworten gehen verloren.")) show("start");
+  });
+
+  el.abortDialog.addEventListener("close", () => {
+    if (el.abortDialog.returnValue === "abort") show("start");
   });
 
   el.btnToIslands.addEventListener("click", () => {
@@ -1792,14 +1822,14 @@
     if (event.target === el.lightbox) el.lightbox.close();
   });
   // Die Bildquelle wird beim Schließen bewusst NICHT geleert: das nächste
-  // Öffnen setzt sie ohnehin vor showModal(), es gäbe also kein Nachblitzen —
+  // Öffnen setzt sie ohnehin vor showModal(), es gäbe also kein Nachblitzen -
   // ein geleertes src würde dagegen kurz das Platzhalter-Icon zeigen.
 
   el.btnRetrySave.addEventListener("click", () => flushOutbox({ force: true }));
   el.btnAusgangSenden.addEventListener("click", () => flushOutbox({ force: true }));
 
   // Der Browser meldet sich, sobald er wieder Netz sieht. Das ist der Moment,
-  // in dem das Nachsenden ohne Zutun des Teilnehmers passieren soll — er hat
+  // in dem das Nachsenden ohne Zutun des Teilnehmers passieren soll - er hat
   // die Insel längst verlassen und wird von sich aus nichts mehr antippen.
   window.addEventListener("online", () => flushOutbox());
   el.btnErrBack.addEventListener("click", () => {
@@ -1814,7 +1844,7 @@
 
   async function route() {
     // Einzel-Insel-Paket: enthält der Katalog nur eine Insel, gibt es nichts
-    // auszuwählen — dann direkt dorthin, ohne Übersicht.
+    // auszuwählen - dann direkt dorthin, ohne Übersicht.
     const einzelinsel = state.catalog.inseln.length === 1;
     const slug = readSlug() || (einzelinsel ? state.catalog.inseln[0].slug : null);
 

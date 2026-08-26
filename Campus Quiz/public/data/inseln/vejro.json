@@ -18,7 +18,7 @@
     {
       "id": "VEJ-01",
       "type": "single",
-      "category": "Kundensituation",
+      "category": "CampLock oder VanLock",
       "prompt": "Ein Kunde hat einen Kastenwagen ohne Hartal-Aufbautür und möchte biometrischen Zugang. Was empfiehlst du?",
       "options": [
         { "id": "a", "text": "CampLock Fingerprint" },
@@ -37,7 +37,7 @@
         {
           "fuer": ["d"],
           "titel": "Umbau auf Hartal-Tür",
-          "text": "Technisch absurd teuer — und unnötig, weil es für genau diesen Fall ein eigenes Produkt gibt."
+          "text": "Technisch absurd teuer - und unnötig, weil es für genau diesen Fall ein eigenes Produkt gibt."
         }
       ],
       "mitnehmen": "Erste Frage am Fahrzeug ist nie „welcher Fingerprint“, sondern „welche Tür“."
@@ -52,10 +52,10 @@
         { "id": "b", "text": "Die Gehäusepfeile von Sender und Magnet zueinander ausrichten" },
         { "id": "c", "text": "Im geschlossenen Zustand höchstens 22 mm Abstand einplanen" },
         { "id": "d", "text": "Grundsätzlich den Montageadapter des Standardkontakts verwenden" },
-        { "id": "e", "text": "Den Sender dauerhaft unter Wasser montieren — IP67 erlaubt das" }
+        { "id": "e", "text": "Den Sender dauerhaft unter Wasser montieren - IP67 erlaubt das" }
       ],
       "correct": ["a", "b", "c"],
-      "feedback": "Für feuchte- und spritzwasserbelastete Öffnungen ist die wasserdichte Ausführung vorgesehen. Pfeile zueinander, geschlossen maximal 22 mm — und IP67 bedeutet nicht Dauereintauchen.",
+      "feedback": "Für feuchte- und spritzwasserbelastete Öffnungen ist die wasserdichte Ausführung vorgesehen. Pfeile zueinander, geschlossen maximal 22 mm - und IP67 bedeutet nicht Dauereintauchen.",
       "irrtum": [
         {
           "fuer": ["d"],
@@ -68,7 +68,7 @@
           "text": "IP67 schützt gegen zeitweiliges Untertauchen unter definierten Bedingungen. Es ist keine Freigabe für dauerhafte Montage unter Wasser oder den direkten Hochdruckstrahl."
         }
       ],
-      "mitnehmen": "Produktvariante zuerst nach dem Einbauort auswählen, danach nach ihrer eigenen Anleitung montieren — nicht nach der Regel eines ähnlich aussehenden Kontakts."
+      "mitnehmen": "Produktvariante zuerst nach dem Einbauort auswählen, danach nach ihrer eigenen Anleitung montieren - nicht nach der Regel eines ähnlich aussehenden Kontakts."
     },
     {
       "id": "VEJ-05",
@@ -76,13 +76,13 @@
       "category": "Speicher in der Praxis",
       "prompt": "Eine vierköpfige Familie soll Zugang bekommen, jede Person mit zwei Fingern. Reicht der Speicher?",
       "options": [
-        { "id": "a", "text": "Nein — es passen nur 8 Finger insgesamt" },
-        { "id": "b", "text": "Ja — 16 Finger sind anlernbar, davon 2 als Master" },
+        { "id": "a", "text": "Nein - es passen nur 8 Finger insgesamt" },
+        { "id": "b", "text": "Ja - 16 Finger sind anlernbar, davon 2 als Master" },
         { "id": "c", "text": "Ja, aber nur wenn auf Master-Finger verzichtet wird" },
-        { "id": "d", "text": "Ja — die Zahl ist unbegrenzt" }
+        { "id": "d", "text": "Ja - die Zahl ist unbegrenzt" }
       ],
       "correct": ["b"],
-      "feedback": "16 anlernbare Finger, davon 2 Master. Vier Personen × zwei Finger sind acht — der Speicher ist hier nicht die Grenze.",
+      "feedback": "16 anlernbare Finger, davon 2 Master. Vier Personen × zwei Finger sind acht - der Speicher ist hier nicht die Grenze.",
       "irrtum": [
         {
           "fuer": ["c"],
@@ -95,7 +95,7 @@
           "text": "Verlockend, weil der Speicher in der Praxis nie knapp wird. Bei einem Vermietfahrzeug mit wechselnden Nutzern wird er es aber sehr wohl."
         }
       ],
-      "mitnehmen": "Speicher ist selten das Problem — die Verteilung schon. Zwei Finger pro Person, damit ein Pflaster nicht den Urlaub kostet."
+      "mitnehmen": "Speicher ist selten das Problem - die Verteilung schon. Zwei Finger pro Person, damit ein Pflaster nicht den Urlaub kostet."
     },
     {
       "id": "VEJ-08",
@@ -127,7 +127,7 @@
     {
       "id": "VEJ-04",
       "type": "order",
-      "category": "Reihenfolge",
+      "category": "Fingerprint in Betrieb nehmen",
       "prompt": "Bringe die Inbetriebnahme in die richtige Reihenfolge.",
       "items": [
         { "id": "o1", "text": "Fahrzeug- und Türkompatibilität klären" },
@@ -149,12 +149,12 @@
           "text": "Ein Test ohne angelernte Finger prüft nur, ob Strom anliegt."
         }
       ],
-      "mitnehmen": "Der Funktionstest gehört an die **geschlossene** Tür. Offen getestet heißt gar nicht getestet — Prinzip 3."
+      "mitnehmen": "Der Funktionstest gehört an die **geschlossene** Tür. Offen getestet heißt gar nicht getestet - Prinzip 3."
     },
     {
       "id": "VEJ-10",
       "type": "single",
-      "category": "Übergabe",
+      "category": "Master-Finger",
       "prompt": "Ein Ehepaar bekommt das System. Wie legst du die beiden Master-Finger an?",
       "options": [
         { "id": "a", "text": "Beide Master auf denselben Finger des Halters" },
@@ -176,7 +176,7 @@
           "text": "Fühlt sich ordentlich an, ist aber ein einziger Ausfallpunkt. Ein Gipsarm sperrt dann die gesamte Verwaltung."
         }
       ],
-      "mitnehmen": "Frag bei der Übergabe: „Wer fährt das Fahrzeug außer Ihnen?“ — diese eine Frage verhindert den halben Reklamationsanteil dieser Insel."
+      "mitnehmen": "Frag bei der Übergabe: „Wer fährt das Fahrzeug außer Ihnen?“ - diese eine Frage verhindert den halben Reklamationsanteil dieser Insel."
     },
     {
       "id": "VEJ-07",
@@ -195,7 +195,7 @@
         {
           "fuer": ["c"],
           "titel": "Sensor defekt",
-          "text": "Der teuerste Reflex im Sortiment. Ein Sensor, der zeitweise und wetterabhängig nicht erkennt, ist fast nie defekt — ein defekter Sensor erkennt gar nicht."
+          "text": "Der teuerste Reflex im Sortiment. Ein Sensor, der zeitweise und wetterabhängig nicht erkennt, ist fast nie defekt - ein defekter Sensor erkennt gar nicht."
         },
         {
           "fuer": ["b"],
@@ -239,10 +239,10 @@
       "category": "Systemgrenze",
       "prompt": "Kunde mit WiPro III (ohne safe.lock): „Mit dem Finger mache ich dann das ganze Fahrzeug auf.“ Was stimmt?",
       "options": [
-        { "id": "a", "text": "Richtig — der Finger entriegelt Aufbautür und Fahrzeug" },
-        { "id": "b", "text": "Nur die Aufbautür — die Fahrzeug-Zentralverriegelung braucht safe.lock" },
-        { "id": "c", "text": "Nur das Fahrzeug — die Aufbautür bleibt am Originalschloss" },
-        { "id": "d", "text": "Weder noch — ohne safe.lock arbeitet CampLock gar nicht" }
+        { "id": "a", "text": "Richtig - der Finger entriegelt Aufbautür und Fahrzeug" },
+        { "id": "b", "text": "Nur die Aufbautür - die Fahrzeug-Zentralverriegelung braucht safe.lock" },
+        { "id": "c", "text": "Nur das Fahrzeug - die Aufbautür bleibt am Originalschloss" },
+        { "id": "d", "text": "Weder noch - ohne safe.lock arbeitet CampLock gar nicht" }
       ],
       "correct": ["b"],
       "feedback": "Zwei getrennte Vorgänge. Die **Aufbautür** bedient CampLock selbst. Die **Fahrzeug-Zentralverriegelung** wird nur bei WiPro III safe.lock mit passender ZV-Anbindung mitgeführt. Scharf-/Unscharfschalten der Alarmanlage geht auch mit der Standard-WiPro III.",
@@ -250,29 +250,29 @@
         {
           "fuer": ["a"],
           "titel": "Beides geht",
-          "text": "Der häufigste Irrtum im ganzen Sortiment — und er entsteht nicht aus Unwissen, sondern weil der Kunde es so erwartet und man ihm nicht widersprechen will. Genau deshalb ist es der Beratungsfehler Nr. 1."
+          "text": "Der häufigste Irrtum im ganzen Sortiment - und er entsteht nicht aus Unwissen, sondern weil der Kunde es so erwartet und man ihm nicht widersprechen will. Genau deshalb ist es der Beratungsfehler Nr. 1."
         },
         {
           "fuer": ["d"],
           "titel": "CampLock arbeitet ohne safe.lock gar nicht",
-          "text": "Übervorsichtig gedacht. Die Aufbautür und die Alarmsteuerung funktionieren sehr wohl — nur eben nicht die Fahrzeug-ZV."
+          "text": "Übervorsichtig gedacht. Die Aufbautür und die Alarmsteuerung funktionieren sehr wohl - nur eben nicht die Fahrzeug-ZV."
         }
       ],
-      "mitnehmen": "**Prinzip 1 — Scharf/Unscharf ≠ Auf/Zu.** Diese Trennung begegnet dir heute noch dreimal: bei der KeyCard, bei BT-connect und im Campingmodus. Ein Satz für den Kunden: „Der Finger öffnet Ihre Aufbautür und schaltet die Anlage. Das ganze Fahrzeug entriegeln — dafür brauchen wir safe.lock.“"
+      "mitnehmen": "**Prinzip 1 - Scharf/Unscharf ≠ Auf/Zu.** Diese Trennung begegnet dir heute noch dreimal: bei der KeyCard, bei BT-connect und im Campingmodus. Ein Satz für den Kunden: „Der Finger öffnet Ihre Aufbautür und schaltet die Anlage. Das ganze Fahrzeug entriegeln - dafür brauchen wir safe.lock.“"
     },
     {
       "id": "VEJ-06",
       "type": "single",
-      "category": "Verkaufsgespräch",
+      "category": "Unabhängiger Zweitzugang",
       "prompt": "Kunde: „Super, dann kann ich den Fahrzeugschlüssel ja zu Hause lassen.“ Deine beste Antwort?",
       "options": [
         { "id": "a", "text": "Ja, der Fingerprint ersetzt den Schlüssel" },
-        { "id": "b", "text": "Nein — immer einen zweiten, unabhängigen Zugangsweg vorsehen" },
+        { "id": "b", "text": "Nein - immer einen zweiten, unabhängigen Zugangsweg vorsehen" },
         { "id": "c", "text": "Ja, sofern zusätzlich ein Pro-finder verbaut ist" },
         { "id": "d", "text": "Ja, sobald safe.lock verbaut ist" }
       ],
       "correct": ["b"],
-      "feedback": "Jeder Bedienweg hat einen Ausfallmodus. Nasse Finger, leerer Akku, verlorene Kopplung — keiner davon darf dazu führen, dass der Kunde vor dem Fahrzeug steht.",
+      "feedback": "Jeder Bedienweg hat einen Ausfallmodus. Nasse Finger, leerer Akku, verlorene Kopplung - keiner davon darf dazu führen, dass der Kunde vor dem Fahrzeug steht.",
       "irrtum": [
         {
           "fuer": ["c"],
@@ -282,10 +282,10 @@
         {
           "fuer": ["d"],
           "titel": "Mit safe.lock ja",
-          "text": "safe.lock erweitert, was der Fingerprint kann — es macht ihn nicht ausfallsicher."
+          "text": "safe.lock erweitert, was der Fingerprint kann - es macht ihn nicht ausfallsicher."
         }
       ],
-      "mitnehmen": "**Prinzip 2 — Ein Zugangsweg ist kein Zugangsweg.** Sauberster Zweitweg: Funk-Handsender 868 (101064), unabhängig vom Smartphone, bis ca. 75 m, CR2032, kein Neuanlernen nach Batteriewechsel. Satz für den Kunden: „Nehmen Sie den Schlüssel trotzdem mit — nicht weil ich dem Finger misstraue, sondern weil Sie sonst nur einen Weg ins Fahrzeug haben.“"
+      "mitnehmen": "**Prinzip 2 - Ein Zugangsweg ist kein Zugangsweg.** Sauberster Zweitweg: Funk-Handsender 868 (101064), unabhängig vom Smartphone, bis ca. 75 m, CR2032, kein Neuanlernen nach Batteriewechsel. Satz für den Kunden: „Nehmen Sie den Schlüssel trotzdem mit - nicht weil ich dem Finger misstraue, sondern weil Sie sonst nur einen Weg ins Fahrzeug haben.“"
     }
   ]
 }

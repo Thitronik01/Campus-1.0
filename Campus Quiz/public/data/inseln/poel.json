@@ -30,10 +30,10 @@
         {
           "fuer": ["c"],
           "titel": "Werkskundendienst",
-          "text": "Genau der Reflex, den diese Insel abgewöhnen soll. Es ist eine der häufigsten telefonischen Anfragen — und sie ist zwei Klicks entfernt."
+          "text": "Genau der Reflex, den diese Insel abgewöhnen soll. Es ist eine der häufigsten telefonischen Anfragen - und sie ist zwei Klicks entfernt."
         }
       ],
-      "mitnehmen": "Alles, was ein Kunde bekommen darf, ist öffentlich. Wenn du es nicht findest, suchst du an der falschen Stelle — nicht im falschen Bereich."
+      "mitnehmen": "Alles, was ein Kunde bekommen darf, ist öffentlich. Wenn du es nicht findest, suchst du an der falschen Stelle - nicht im falschen Bereich."
     },
     {
       "id": "POE-02",
@@ -65,7 +65,7 @@
     {
       "id": "POE-03",
       "type": "single",
-      "category": "Grenzfall",
+      "category": "Geschützte Einbauunterlagen",
       "prompt": "Du brauchst die fahrzeugspezifische Einbauunterlage mit Steckerbelegung für einen Sprinter VS30. Wo bekommst du sie?",
       "options": [
         { "id": "a", "text": "Öffentlicher Downloadbereich, Rubrik Alarmanlagen" },
@@ -79,7 +79,7 @@
         {
           "fuer": ["a"],
           "titel": "Öffentlicher Downloadbereich",
-          "text": "Wer dort sucht, sucht vergeblich — und das fühlt sich an wie ein Fehler der Website. Es ist Absicht: Diese Unterlagen gehören in Fachhand, nicht in die Hände dessen, der am Samstag selbst schrauben will."
+          "text": "Wer dort sucht, sucht vergeblich - und das fühlt sich an wie ein Fehler der Website. Es ist Absicht: Diese Unterlagen gehören in Fachhand, nicht in die Hände dessen, der am Samstag selbst schrauben will."
         }
       ],
       "mitnehmen": "Nicht auffindbar heißt hier nicht „gibt es nicht“, sondern „nicht für alle“. Der Anruf unter -112 ist an dieser Stelle der richtige Weg, nicht der faule."
@@ -128,7 +128,7 @@
         {
           "fuer": ["c"],
           "titel": "Nur über den Außendienst",
-          "text": "Funktioniert auch — dauert aber Tage statt Minuten und bindet jemanden, der besser verkauft."
+          "text": "Funktioniert auch - dauert aber Tage statt Minuten und bindet jemanden, der besser verkauft."
         }
       ],
       "mitnehmen": "Der Login lohnt sich einmalig und spart dauerhaft. Vieles, was Händler telefonisch anfragen, liegt dort bereits fertig."
@@ -136,10 +136,10 @@
     {
       "id": "POE-05",
       "type": "single",
-      "category": "Sicherheitsrelevant",
+      "category": "Rückrufprüfung",
       "prompt": "Ein Kunde bringt eine G.A.S.-pro III mit Seriennummer 1286-010 in die Werkstatt. Was tust du?",
       "options": [
-        { "id": "a", "text": "Normal einbauen — der Rückruf betraf nur CO-Geräte" },
+        { "id": "a", "text": "Normal einbauen - der Rückruf betraf nur CO-Geräte" },
         { "id": "b", "text": "Rückrufseite prüfen, Gerät anmelden, kostenloses Update" },
         { "id": "c", "text": "Sensor tauschen und Gerät weiterverkaufen" },
         { "id": "d", "text": "Gerät entsorgen und Ersatz berechnen" }
@@ -155,10 +155,10 @@
         {
           "fuer": ["d"],
           "titel": "Entsorgen",
-          "text": "Übervorsichtig und teuer. Das Gerät ist reparabel, das Update kostenlos — der Kunde verliert nichts außer ein paar Tagen."
+          "text": "Übervorsichtig und teuer. Das Gerät ist reparabel, das Update kostenlos - der Kunde verliert nichts außer ein paar Tagen."
         }
       ],
-      "mitnehmen": "Bei jeder Seriennummer im Rückrufbereich gilt: erst Rückrufseite, dann Schraubendreher. Kostenlos ist nur das Update — der Einbau eines betroffenen Geräts ohne Prüfung ist es später nicht."
+      "mitnehmen": "Bei jeder Seriennummer im Rückrufbereich gilt: erst Rückrufseite, dann Schraubendreher. Kostenlos ist nur das Update - der Einbau eines betroffenen Geräts ohne Prüfung ist es später nicht."
     },
     {
       "id": "POE-07",
@@ -177,7 +177,7 @@
         {
           "fuer": ["d"],
           "titel": "Werkseinbau Eckernförde",
-          "text": "Eine Möglichkeit, aber für einen Kunden aus Bayern selten die naheliegende — und wer sie als einzige nennt, verschenkt einen Auftrag an einen Kollegen in der Nähe des Kunden."
+          "text": "Eine Möglichkeit, aber für einen Kunden aus Bayern selten die naheliegende - und wer sie als einzige nennt, verschenkt einen Auftrag an einen Kollegen in der Nähe des Kunden."
         }
       ],
       "mitnehmen": "Der Händlerfinder ist auch dein eigener Vertriebskanal. Wer ihn kennt, wird über ihn gefunden."
@@ -196,7 +196,7 @@
         { "id": "f", "text": "Ein professioneller Einbau macht jeden späteren Defekt unmöglich" }
       ],
       "correct": ["a", "b", "c", "d"],
-      "feedback": "Der Wert des Werkstatttermins liegt in Prüfung, fachgerechtem Einbau, Systemtest, Übergabe und Dokumentation — nicht nur in der Montagezeit.",
+      "feedback": "Der Wert des Werkstatttermins liegt in Prüfung, fachgerechtem Einbau, Systemtest, Übergabe und Dokumentation - nicht nur in der Montagezeit.",
       "irrtum": [
         {
           "fuer": ["e"],
@@ -217,18 +217,18 @@
       "category": "Bezugsweg",
       "prompt": "Ein Endkunde möchte direkt bei THITRONIK bestellen, weil du das Gerät nicht vorrätig hast. Was gilt?",
       "options": [
-        { "id": "a", "text": "THITRONIK liefert nicht an Endkunden — Bezug läuft über den Fachhandel" },
+        { "id": "a", "text": "THITRONIK liefert nicht an Endkunden - Bezug läuft über den Fachhandel" },
         { "id": "b", "text": "THITRONIK liefert direkt, du erhältst eine Provision" },
         { "id": "c", "text": "Direktbestellung ist ab zwei Geräten möglich" },
         { "id": "d", "text": "Nur Ersatzteile gehen direkt an Endkunden" }
       ],
       "correct": ["a"],
-      "feedback": "Der Bezug läuft ausschließlich über den Fachhandel — Caravaning, Car-HiFi, Bosch-Dienste. Einzige Ausnahme: Direktverkauf im Rahmen des Werkseinbauservice in Eckernförde.",
+      "feedback": "Der Bezug läuft ausschließlich über den Fachhandel - Caravaning, Car-HiFi, Bosch-Dienste. Einzige Ausnahme: Direktverkauf im Rahmen des Werkseinbauservice in Eckernförde.",
       "irrtum": [
         {
           "fuer": ["b"],
           "titel": "Provision",
-          "text": "Klingt nach einer eleganten Lösung für einen unangenehmen Moment. Sie existiert nicht — und die Frage kommt meist genau dann, wenn du gerade nicht liefern kannst und dich schwach fühlst."
+          "text": "Klingt nach einer eleganten Lösung für einen unangenehmen Moment. Sie existiert nicht - und die Frage kommt meist genau dann, wenn du gerade nicht liefern kannst und dich schwach fühlst."
         },
         {
           "fuer": ["d"],
@@ -236,7 +236,7 @@
           "text": "Verlockend, weil es harmlos wirkt. Es würde aber die Kette aufbrechen, an der auch dein Servicegeschäft hängt."
         }
       ],
-      "mitnehmen": "Der Fachhandelsweg ist keine Formalie — er ist der Grund, warum Beratung, Einbau und Support beim Fachbetrieb zusammenbleiben. Also bei dir."
+      "mitnehmen": "Der Fachhandelsweg ist keine Formalie - er ist der Grund, warum Beratung, Einbau und Support beim Fachbetrieb zusammenbleiben. Also bei dir."
     },
     {
       "id": "POE-09",

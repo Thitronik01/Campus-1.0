@@ -891,6 +891,18 @@ main { flex: 1 0 auto; }
   pointer-events: none;
 }
 
+/* Das Motiv darf die Fakten nicht überstrahlen. Die zusätzliche Tiefenblende
+   liegt zwischen Bild und Text und hält die Schrift auch im hellen Fahrzeug
+   lesbar, ohne das Bild als Ganzes abzudunkeln. */
+#screen-start[data-island="samsoe"] .start-intro::before {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 24%, rgba(7, 29, 70, .12) 46%, rgba(7, 29, 70, .88) 100%);
+  pointer-events: none;
+}
+
 #screen-start[data-island="samsoe"] .start-intro > :not(.samsoe-start-visual) {
   position: relative;
   z-index: 3;
@@ -1320,18 +1332,35 @@ main { flex: 1 0 auto; }
   line-height: 1.5;
 }
 
-.start-form { display: grid; align-content: start; gap: 14px; padding: clamp(24px, 4vw, 46px); }
+.start-form {
+  display: grid;
+  align-content: center;
+  gap: 14px;
+  padding: clamp(24px, 4vw, 46px);
+}
 
 /* Beide Bloecke setzen display, deshalb muss [hidden] es zuruecknehmen —
    sonst bliebe der zusammengefaltete Teil sichtbar. */
 .start-fields { display: grid; gap: 14px; }
 .start-fields[hidden] { display: none; }
 
-.participant-summary { display: grid; gap: 2px; }
+.participant-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px 12px;
+  align-items: center;
+}
 .participant-summary[hidden] { display: none; }
-.participant-name { margin: 0; color: var(--th-navy); font-size: 1.02rem; font-weight: 800; }
-.participant-meta { margin: 0 0 2px; color: var(--th-muted); font-size: .88rem; line-height: 1.45; }
-.participant-summary .btn { justify-self: start; padding-right: 0; padding-left: 0; }
+.participant-summary .form-title { grid-column: 1; grid-row: 1; }
+.participant-name { grid-column: 1 / -1; grid-row: 2; margin: 0; color: var(--th-navy); font-size: 1.02rem; font-weight: 800; }
+.participant-meta { grid-column: 1 / -1; grid-row: 3; margin: 0 0 2px; color: var(--th-muted); font-size: .88rem; line-height: 1.45; }
+.participant-summary .btn {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  padding-right: 0;
+  padding-left: 0;
+}
 .form-title { margin-bottom: 2px; }
 .form-intro { margin: 0 0 4px; color: var(--th-muted); font-size: .9rem; }
 
@@ -1381,8 +1410,22 @@ main { flex: 1 0 auto; }
 .btn:disabled { cursor: not-allowed; opacity: .45; transform: none; }
 
 .btn-primary { background: var(--th-navy); color: #fff; box-shadow: 0 10px 22px rgba(29, 54, 97, .22); }
+.btn-primary:disabled {
+  border-color: #CCD5DF;
+  background: #E4EAF0;
+  color: #4A5564;
+  box-shadow: none;
+  opacity: 1;
+}
 
 .btn-secondary { border-color: var(--th-line-strong); background: #fff; color: var(--th-navy); }
+
+.btn-danger {
+  border-color: var(--th-red);
+  background: var(--th-red);
+  color: var(--th-white);
+  box-shadow: 0 10px 22px rgba(206, 19, 45, .18);
+}
 
 .btn-tertiary { background: transparent; color: var(--th-navy); text-decoration: underline; text-underline-offset: 3px; }
 
@@ -1508,10 +1551,9 @@ main { flex: 1 0 auto; }
     transform var(--duration-press) var(--ease-out);
 }
 
-/* Sieben kräftige Kachelfarben, aus Entfernung unterscheidbar.
-   Bewusst über feste Klassen statt :nth-child — bei Bildfragen liegt die
-   Kachel in einem Wrapper (wegen der Lupe), und die Position im DOM stimmt
-   dann nicht mehr mit der Antwortnummer überein. */
+/* Die Positionsklassen bleiben stabil, tragen vor der Auswertung aber keine
+   Bedeutungsfarben. Lime und Rot sind im Campus bereits als richtig/falsch
+   gelernt und würden die Wahl sonst ungewollt lenken. */
 .answer.opt-1 { --opt: var(--answer-a); --opt-rgb: var(--answer-a-rgb); --opt-text: var(--answer-a-text); }
 .answer.opt-2 { --opt: var(--answer-b); --opt-rgb: var(--answer-b-rgb); --opt-text: var(--answer-b-text); }
 .answer.opt-3 { --opt: var(--answer-c); --opt-rgb: var(--answer-c-rgb); --opt-text: var(--answer-c-text); }
@@ -1525,8 +1567,8 @@ main { flex: 1 0 auto; }
   position: absolute;
   inset: 0 auto 0 0;
   width: 3px;
-  background: var(--opt);
-  opacity: .28;
+  background: var(--th-blue);
+  opacity: .2;
   transition: width var(--duration-fast) var(--ease-out), opacity var(--duration-fast) ease;
 }
 .answer:active:not(:disabled) { transform: scale(.985); }
@@ -1569,10 +1611,10 @@ main { flex: 1 0 auto; }
   width: 44px;
   height: 44px;
   border-radius: 12px;
-  background: var(--opt);
-  color: var(--opt-text);
+  background: var(--th-navy-deep);
+  color: var(--th-white);
   font-weight: 800;
-  box-shadow: 0 5px 12px rgba(var(--opt-rgb), .2);
+  box-shadow: 0 5px 12px rgba(10, 39, 71, .2);
 }
 .answer.is-selected .answer-letter::after {
   content: "✓";
@@ -1727,6 +1769,23 @@ main { flex: 1 0 auto; }
 .lightbox-caption { margin: 10px 0 0; color: var(--th-muted); font-size: .88rem; }
 .lightbox-close { width: 100%; margin-top: 12px; }
 
+/* --------------------------------------------------------- Abbruchdialog --- */
+
+.confirm-dialog {
+  width: min(calc(100% - 32px), 440px);
+  max-width: none;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: var(--th-white);
+  box-shadow: var(--shadow-md);
+}
+.confirm-dialog::backdrop { background: rgba(10, 39, 71, .68); }
+.confirm-dialog-card { padding: clamp(22px, 5vw, 32px); }
+.confirm-dialog-card h2 { margin-bottom: 8px; }
+.confirm-dialog-card p { margin-bottom: 22px; color: var(--th-muted); line-height: 1.55; }
+.confirm-dialog-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
 /* --- Reihenfolge (order) --- */
 
 .order-list { display: grid; gap: 10px; }
@@ -1795,13 +1854,23 @@ main { flex: 1 0 auto; }
   margin-top: 18px;
   padding: 16px 18px;
   border: 1px solid var(--th-line);
+  border-left-width: 4px;
   border-radius: 18px;
-  animation: enter .2s ease-out both;
+  background: var(--th-white);
+  animation: enter var(--duration-normal) var(--ease-out) both;
 }
-.feedback.is-correct { border-color: var(--success-line); background: var(--success-bg); }
-.feedback.is-wrong { border-color: var(--error-line); background: var(--error-bg); }
+.feedback.is-correct {
+  border-color: var(--success-line);
+  border-left-color: var(--th-lime);
+  background: linear-gradient(180deg, var(--success-bg) 0, var(--th-white) 180px);
+}
+.feedback.is-wrong {
+  border-color: var(--error-line);
+  border-left-color: var(--th-red);
+  background: linear-gradient(180deg, var(--error-bg) 0, var(--th-white) 180px);
+}
 .feedback-title { margin: 0 0 6px; color: var(--th-navy); font-size: 1.06rem; font-weight: 800; }
-.feedback-copy { margin: 0; line-height: 1.5; }
+.feedback-copy { margin: 0; line-height: 1.55; }
 .feedback-solution { margin: 8px 0 0; color: var(--th-navy); font-weight: 700; }
 
 /* --- „Falsch gewählt?" und „Mitnehmen" ---
@@ -1811,7 +1880,13 @@ main { flex: 1 0 auto; }
    Nur der Mitnehmen-Kasten setzt sich bewusst weiß ab — er ist der Satz, den
    der Händler mitnehmen soll, und darf nicht wie eine Fußnote aussehen. */
 
-.irrtum { margin: 14px 0 0; padding-top: 12px; border-top: 1px solid var(--th-line-strong); }
+.irrtum {
+  margin: 16px 0 0;
+  padding: 14px;
+  border: 1px solid var(--th-line);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, .72);
+}
 .irrtum-label,
 .mitnehmen-label {
   margin: 0 0 8px;
@@ -1823,7 +1898,7 @@ main { flex: 1 0 auto; }
 .irrtum-label { color: var(--th-navy); }
 
 .irrtum-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
-.irrtum-item { padding-left: 12px; border-left: 3px solid var(--th-line-strong); font-size: .9rem; line-height: 1.45; }
+.irrtum-item { padding-left: 12px; border-left: 3px solid var(--th-line-strong); font-size: .93rem; line-height: 1.5; }
 .irrtum-item b { color: var(--th-navy); font-weight: 700; }
 
 /* Der Irrtum, in den der Teilnehmer selbst getappt ist. Die Markierung ist
@@ -1833,15 +1908,16 @@ main { flex: 1 0 auto; }
 .irrtum-item.is-mine b { color: var(--th-red); }
 
 .mitnehmen {
-  margin: 14px 0 0;
-  padding: 12px 14px;
+  margin: 16px 0 0;
+  padding: 14px 16px;
   border: 1px solid var(--th-line);
   border-left: 4px solid var(--th-blue);
   border-radius: var(--radius-md);
   background: var(--th-white);
+  box-shadow: 0 7px 18px rgba(10, 39, 71, .06);
 }
 .mitnehmen-label { color: var(--th-blue-text); }
-.mitnehmen-text { margin: 0; line-height: 1.5; font-weight: 600; }
+.mitnehmen-text { margin: 0; line-height: 1.55; font-weight: 500; }
 .mitnehmen-text b { color: var(--th-navy); font-weight: 800; }
 
 .review-mitnehmen {
@@ -1994,7 +2070,8 @@ main { flex: 1 0 auto; }
   z-index: 1300;
   left: 50%;
   bottom: 20px;
-  transform: translateX(-50%);
+  opacity: 1;
+  transform: translate(-50%, 0);
   max-width: min(92vw, 460px);
   padding: 13px 18px;
   border-radius: 14px;
@@ -2002,7 +2079,20 @@ main { flex: 1 0 auto; }
   color: #fff;
   font-weight: 700;
   box-shadow: var(--shadow-md);
-  animation: enter .2s ease-out both;
+  transition:
+    opacity 180ms var(--ease-out),
+    transform 180ms var(--ease-out);
+}
+.toast[data-closing="true"] {
+  opacity: 0;
+  transform: translate(-50%, 8px);
+  transition-duration: var(--duration-press);
+}
+@starting-style {
+  .toast {
+    opacity: 0;
+    transform: translate(-50%, 8px);
+  }
 }
 
 /* Hover gehört nur auf Geräte, die tatsächlich hovern können. Auf Touch-
@@ -2022,6 +2112,7 @@ main { flex: 1 0 auto; }
   .field input:hover, .field select:hover { border-color: var(--th-blue); }
   .btn:hover:not(:disabled) { transform: translateY(-1px); }
   .btn-primary:hover:not(:disabled) { background: #172C50; }
+  .btn-danger:hover:not(:disabled) { background: #A70F24; }
   .btn-secondary:hover:not(:disabled) { border-color: var(--th-blue); }
   .btn-ghost:hover:not(:disabled) { background: var(--error-bg); }
   .answer:hover:not(:disabled) {
@@ -2084,10 +2175,21 @@ main { flex: 1 0 auto; }
 
 @media (max-width: 640px) {
   .shell { width: calc(100% - 20px); padding: 12px 0 22px; }
-  .masthead { padding: 10px 13px; border-radius: 16px; }
+  .masthead { flex-wrap: wrap; gap: 8px; padding: 9px 12px 12px; border-radius: 16px; }
   .brand { gap: 10px; }
-  .brand-logo { width: 128px; }
+  .brand-logo { width: 112px; }
   .brand-copy { padding-left: 10px; }
+  .brand-copy small { font-size: .63rem; letter-spacing: .08em; }
+  .brand-copy strong {
+    overflow: visible;
+    font-size: .9rem;
+    line-height: 1.2;
+    text-overflow: clip;
+    white-space: normal;
+  }
+  /* Insel und Teilnehmer stehen auf dem Startbild bereits im Inhalt. Im
+     schmalen Kopf kosteten die beiden Chips eine ganze zusaetzliche Zeile. */
+  .masthead-meta { display: none !important; }
   .screen { border-radius: var(--radius-lg); }
 
   .answers { grid-template-columns: 1fr; gap: 10px; }
@@ -2113,9 +2215,11 @@ main { flex: 1 0 auto; }
   .quiz-actions { flex-direction: column-reverse; align-items: stretch; }
   .quiz-actions .btn { width: 100%; }
   .start-actions .btn, .result-actions .btn { flex: 1 1 auto; }
+  .confirm-dialog-actions { grid-template-columns: 1fr; }
+  .confirm-dialog-actions .btn-danger { grid-row: 1; }
 
   #screen-start[data-island="samsoe"] .start-intro {
-    min-height: 630px;
+    min-height: 450px;
     padding: 26px 22px;
   }
   #screen-start[data-island="samsoe"] .start-intro h1 { font-size: clamp(2rem, 10vw, 2.75rem); }
@@ -2126,8 +2230,8 @@ main { flex: 1 0 auto; }
     min-height: 42px;
   }
   #screen-start .start-intro .facts li::before { width: 42px; height: 42px; }
-  .samsoe-start-vehicle { left: -15%; width: 88%; }
-  .samsoe-start-technician { right: -23%; width: 68%; }
+  .samsoe-start-vehicle { left: -18%; width: 82%; }
+  .samsoe-start-technician { right: -25%; width: 62%; }
   #screen-start[data-island="samsoe"] .start-form { padding: 26px 22px; }
   #screen-start[data-island="hiddensee"] .start-intro { min-height: 680px; }
   .hiddensee-start-contact { bottom: -1%; width: min(108%, 560px); }
@@ -2149,10 +2253,15 @@ main { flex: 1 0 auto; }
   *, *::before, *::after {
     animation-duration: .001ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: .001ms !important;
+    transition-duration: 100ms !important;
+    transition-property: background-color, border-color, color, opacity, box-shadow !important;
     scroll-behavior: auto !important;
   }
   .btn:hover:not(:disabled), .island-card:hover { transform: none; }
+  .btn:active:not(:disabled),
+  .answer:active:not(:disabled),
+  .island-card:active,
+  .island-card:active .i-content { transform: none; }
 }
 
 @media (prefers-reduced-transparency: reduce) {

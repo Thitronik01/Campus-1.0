@@ -31,7 +31,7 @@
         {
           "fuer": ["a"],
           "titel": "Modell, Wunsch, Termin",
-          "text": "Reicht für die Terminvergabe und fühlt sich vollständig an. Es fehlt genau die Information, die entscheidet, ob der Einbau überhaupt geht — und die du später nur noch am zerlegten Fahrzeug bekommst."
+          "text": "Reicht für die Terminvergabe und fühlt sich vollständig an. Es fehlt genau die Information, die entscheidet, ob der Einbau überhaupt geht - und die du später nur noch am zerlegten Fahrzeug bekommst."
         }
       ],
       "mitnehmen": "Die Seriennummer sitzt nach dem Einbau hinter der Verkleidung. Bei der Annahme kostet sie zwei Minuten, im Supportfall einen halben Tag."
@@ -45,10 +45,10 @@
         { "id": "a", "text": "Der Sprinter benötigt grundsätzlich safe.lock" },
         { "id": "b", "text": "Die Fahrzeughupe ist ohne Zündung nicht verfügbar" },
         { "id": "c", "text": "Ein Testalarm ist bei diesem Fahrzeug nicht möglich" },
-        { "id": "d", "text": "Kein Thema — die Hupe funktioniert bei jedem Fahrzeug" }
+        { "id": "d", "text": "Kein Thema - die Hupe funktioniert bei jedem Fahrzeug" }
       ],
       "correct": ["b"],
-      "feedback": "Je nach Anleitung ist eine Back-up-Sirene (100089) oder Zusatzhupe (105339) nötig — und die gehört ins **Angebot**, nicht auf die Rechnung.",
+      "feedback": "Je nach Anleitung ist eine Back-up-Sirene (100089) oder Zusatzhupe (105339) nötig - und die gehört ins **Angebot**, nicht auf die Rechnung.",
       "irrtum": [
         {
           "fuer": ["d"],
@@ -61,11 +61,11 @@
     {
       "id": "LAN-03",
       "type": "single",
-      "category": "Freigabe-Falle",
+      "category": "Freigabestatus Iveco",
       "prompt": "Ein Kunde ruft an: „Ich habe einen Iveco Daily, Modelljahr 2026, wann kann ich kommen?“",
       "options": [
-        { "id": "a", "text": "Termin zusagen — der Daily ist ein Standardfahrzeug" },
-        { "id": "b", "text": "Kein Termin ohne Prüfung — dieses Modelljahr ist nicht freigegeben" },
+        { "id": "a", "text": "Termin zusagen - der Daily ist ein Standardfahrzeug" },
+        { "id": "b", "text": "Kein Termin ohne Prüfung - dieses Modelljahr ist nicht freigegeben" },
         { "id": "c", "text": "Termin zusagen und vor Ort improvisieren" },
         { "id": "d", "text": "Termin zusagen und den Universalanschluss verwenden" }
       ],
@@ -75,7 +75,7 @@
         {
           "fuer": ["d"],
           "titel": "Universalanschluss",
-          "text": "Die klügste der falschen Antworten — es gibt ihn ja wirklich. Er ist aber für ältere Fahrzeuge **ohne** CAN-Bus gedacht, nicht als Notlösung für ein nicht freigegebenes modernes Fahrzeug."
+          "text": "Die klügste der falschen Antworten - es gibt ihn ja wirklich. Er ist aber für ältere Fahrzeuge **ohne** CAN-Bus gedacht, nicht als Notlösung für ein nicht freigegebenes modernes Fahrzeug."
         },
         {
           "fuer": ["a"],
@@ -83,18 +83,18 @@
           "text": "Stimmte jahrelang. Genau das macht Freigabe-Fallen gefährlich: Sie treffen die Erfahrenen."
         }
       ],
-      "mitnehmen": "Ein zugesagter und dann abgesagter Termin kostet mehr Vertrauen als ein ehrliches „das kläre ich und rufe zurück“. Bei neuen Modelljahren gilt Erfahrung nicht — dort gilt nur die aktuelle Freigabe."
+      "mitnehmen": "Ein zugesagter und dann abgesagter Termin kostet mehr Vertrauen als ein ehrliches „das kläre ich und rufe zurück“. Bei neuen Modelljahren gilt Erfahrung nicht - dort gilt nur die aktuelle Freigabe."
     },
     {
       "id": "LAN-04",
       "type": "single",
-      "category": "Testfalle bei der Abnahme",
+      "category": "Testverzögerung Innenlicht",
       "prompt": "Fahrerhaustüren sind über den Innenbeleuchtungseingang angebunden, nicht über den CAN-Bus. Wann kannst du den Testalarm durchführen?",
       "options": [
         { "id": "a", "text": "Sofort nach dem Scharfschalten" },
         { "id": "b", "text": "Frühestens 60 Sekunden nach Aktivierung" },
         { "id": "c", "text": "Erst nach 5 Minuten" },
-        { "id": "d", "text": "Gar nicht — nur CAN-Türen sind testbar" }
+        { "id": "d", "text": "Gar nicht - nur CAN-Türen sind testbar" }
       ],
       "correct": ["b"],
       "feedback": "Die Anlage braucht diese Zeit, bevor sie über diesen Eingang auslöst.",
@@ -107,10 +107,10 @@
         {
           "fuer": ["d"],
           "titel": "Gar nicht testbar",
-          "text": "Wäre bequem, ist aber falsch — und würde bedeuten, das Fahrzeug ungeprüft zu übergeben."
+          "text": "Wäre bequem, ist aber falsch - und würde bedeuten, das Fahrzeug ungeprüft zu übergeben."
         }
       ],
-      "mitnehmen": "Diese eine Minute ist einer der häufigsten Gründe für einen vermeintlichen Mangel bei der Abnahme. Warten ist hier Teil des Tests — **Prinzip 3**."
+      "mitnehmen": "Diese eine Minute ist einer der häufigsten Gründe für einen vermeintlichen Mangel bei der Abnahme. Warten ist hier Teil des Tests - **Prinzip 3**."
     },
     {
       "id": "LAN-06",
@@ -129,7 +129,7 @@
         {
           "fuer": ["a"],
           "titel": "Originalschlüssel immer als Rückfallebene",
-          "text": "Die vernünftigste Annahme der Welt — und in dieser Richtung falsch. Genau diese Asymmetrie ist der Kern der Frage: Ein Weg führt zurück, der andere nicht."
+          "text": "Die vernünftigste Annahme der Welt - und in dieser Richtung falsch. Genau diese Asymmetrie ist der Kern der Frage: Ein Weg führt zurück, der andere nicht."
         },
         {
           "fuer": ["d"],
@@ -137,7 +137,7 @@
           "text": "Wäre ein gravierender Sicherheitsirrtum. Der Campingmodus ist eine Zugangslogik, keine Abschaltung."
         }
       ],
-      "mitnehmen": "Genau dieser Fall führt zu Anrufen vom Stellplatz — abends, wenn niemand mehr erreichbar ist. Einmal bei der Übergabe erklärt, tritt er nicht auf."
+      "mitnehmen": "Genau dieser Fall führt zu Anrufen vom Stellplatz - abends, wenn niemand mehr erreichbar ist. Einmal bei der Übergabe erklärt, tritt er nicht auf."
     },
     {
       "id": "LAN-09",
@@ -146,8 +146,8 @@
       "prompt": "Die Zentrale kam aus dem safe.lock-Upgrade zurück und ist wieder eingebaut. Was ist jetzt zwingend?",
       "options": [
         { "id": "a", "text": "Nur den Master-Handsender neu anlernen" },
-        { "id": "b", "text": "Sämtliches Funk-Zubehör neu anlernen — der Speicher wurde gelöscht" },
-        { "id": "c", "text": "Nichts — der Speicher bleibt beim Upgrade erhalten" },
+        { "id": "b", "text": "Sämtliches Funk-Zubehör neu anlernen - der Speicher wurde gelöscht" },
+        { "id": "c", "text": "Nichts - der Speicher bleibt beim Upgrade erhalten" },
         { "id": "d", "text": "Nur die Seriennummer in der App aktualisieren" }
       ],
       "correct": ["b"],
@@ -156,7 +156,7 @@
         {
           "fuer": ["a"],
           "titel": "Nur den Handsender",
-          "text": "Der gefährlichste Fehler, weil er sich richtig anfühlt. Die Bedienung funktioniert danach einwandfrei — es fehlen aber sämtliche Magnetkontakte. Und das merkt niemand bis zum Ernstfall."
+          "text": "Der gefährlichste Fehler, weil er sich richtig anfühlt. Die Bedienung funktioniert danach einwandfrei - es fehlen aber sämtliche Magnetkontakte. Und das merkt niemand bis zum Ernstfall."
         }
       ],
       "mitnehmen": "Nach dem Upgrade vollständige Ein- und Ausgangstests inklusive Zentralverriegelung. Wer nur prüft, was er gerade angelernt hat, prüft das Falsche."
@@ -178,7 +178,7 @@
         {
           "fuer": ["c"],
           "titel": "Zweites Smartphone",
-          "text": "Klingt nach einer echten Redundanz und ist keine. Beide Geräte teilen dieselbe Technik und dieselben Fehlerquellen — deaktiviertes Bluetooth oder eine verlorene Kopplung sperrt beide gleichzeitig."
+          "text": "Klingt nach einer echten Redundanz und ist keine. Beide Geräte teilen dieselbe Technik und dieselben Fehlerquellen - deaktiviertes Bluetooth oder eine verlorene Kopplung sperrt beide gleichzeitig."
         },
         {
           "fuer": ["d"],
@@ -186,7 +186,7 @@
           "text": "Löst das Zugangsproblem und hebt dafür die gesamte Sicherung auf. Ein sicherer Zugang, der die Anlage sinnlos macht."
         }
       ],
-      "mitnehmen": "**Prinzip 2 — ein Zugangsweg ist kein Zugangsweg**, und zwei gleichartige sind auch nur einer. Sauberste Lösung: ein zuvor geprüfter Funk-Handsender 868 (101064) — unabhängig vom Smartphone, bis ca. 75 m, CR2032, kein Neuanlernen nach Batteriewechsel."
+      "mitnehmen": "**Prinzip 2 - ein Zugangsweg ist kein Zugangsweg**, und zwei gleichartige sind auch nur einer. Sauberste Lösung: ein zuvor geprüfter Funk-Handsender 868 (101064) - unabhängig vom Smartphone, bis ca. 75 m, CR2032, kein Neuanlernen nach Batteriewechsel."
     },
     {
       "id": "LAN-05",
@@ -208,7 +208,7 @@
         {
           "fuer": ["g"],
           "titel": "DIP-Einstellungen durchgehen",
-          "text": "Gut gemeint und fachlich beeindruckend — aber Werkstattwissen. Es überfordert den Kunden und lädt ihn dazu ein, selbst daran zu drehen. Die DIP-Stellung gehört in **deine** Akte."
+          "text": "Gut gemeint und fachlich beeindruckend - aber Werkstattwissen. Es überfordert den Kunden und lädt ihn dazu ein, selbst daran zu drehen. Die DIP-Stellung gehört in **deine** Akte."
         },
         {
           "fuer": ["b"],
@@ -216,7 +216,7 @@
           "text": "Verständlich, weil laut und unangenehm. Aber ein Kunde, der den Alarm noch nie gehört hat, erkennt ihn im Ernstfall nicht als seinen."
         }
       ],
-      "mitnehmen": "Der Kunde muss jeden Bedienweg **einmal selbst** ausgeführt haben. Zusehen reicht nicht — was man nicht selbst gemacht hat, kann man abends auf dem Stellplatz nicht."
+      "mitnehmen": "Der Kunde muss jeden Bedienweg **einmal selbst** ausgeführt haben. Zusehen reicht nicht - was man nicht selbst gemacht hat, kann man abends auf dem Stellplatz nicht."
     },
     {
       "id": "LAN-07",
@@ -226,7 +226,7 @@
       "options": [
         { "id": "a", "text": "„Die Anlage meldet Einbruchereignisse akustisch und optisch.“" },
         { "id": "b", "text": "„Damit kann Ihnen niemand mehr ins Fahrzeug einbrechen.“" },
-        { "id": "c", "text": "„Nicht abgesicherte Öffnungen bleiben ungeschützt — abgesichert sind X, Y und Z.“" },
+        { "id": "c", "text": "„Nicht abgesicherte Öffnungen bleiben ungeschützt - abgesichert sind X, Y und Z.“" },
         { "id": "d", "text": "„Nach einem Alarm bleibt die Überwachung aktiv.“" }
       ],
       "correct": ["b"],
@@ -235,10 +235,10 @@
         {
           "fuer": ["c"],
           "titel": "„Nicht abgesicherte Öffnungen bleiben ungeschützt“",
-          "text": "Klingt nach einem schwachen Verkaufsargument und wird deshalb gern vermieden. Es ist aber die wichtigste Aussage der ganzen Übergabe — und sie schafft Vertrauen, statt es zu kosten."
+          "text": "Klingt nach einem schwachen Verkaufsargument und wird deshalb gern vermieden. Es ist aber die wichtigste Aussage der ganzen Übergabe - und sie schafft Vertrauen, statt es zu kosten."
         }
       ],
-      "mitnehmen": "Zur Einordnung für den Kunden: Der akustische Alarm läuft ca. 30 Sekunden, der optische ca. 180 Sekunden. Die Anlage macht auf den Vorgang aufmerksam — sie hält niemanden auf. Wer das sagt, wird nach einem Schaden nicht zum Beklagten."
+      "mitnehmen": "Zur Einordnung für den Kunden: Der akustische Alarm läuft ca. 30 Sekunden, der optische ca. 180 Sekunden. Die Anlage macht auf den Vorgang aufmerksam - sie hält niemanden auf. Wer das sagt, wird nach einem Schaden nicht zum Beklagten."
     },
     {
       "id": "LAN-10",
@@ -259,7 +259,7 @@
         {
           "fuer": ["d"],
           "titel": "Tests weggelassen",
-          "text": "Der am leichtesten übersehene Punkt. Ohne Testdokumentation lässt sich später nicht unterscheiden, ob etwas nie funktioniert hat oder erst später ausgefallen ist — und genau daran hängt die Frage, wer den nächsten Termin zahlt."
+          "text": "Der am leichtesten übersehene Punkt. Ohne Testdokumentation lässt sich später nicht unterscheiden, ob etwas nie funktioniert hat oder erst später ausgefallen ist - und genau daran hängt die Frage, wer den nächsten Termin zahlt."
         },
         {
           "fuer": ["e"],
@@ -267,7 +267,7 @@
           "text": "Trägt keinen einzigen Supportfall."
         }
       ],
-      "mitnehmen": "Das **Foto der DIP-Stellung** ist der am häufigsten vergessene und im Supportfall wertvollste Teil der Dokumentation — es beantwortet in zwei Sekunden eine Frage, die sonst eine Demontage kostet. Damit schließt sich der Kreis: Deine Akte von heute ist die Fallaufnahme von FEHMARN in zwei Jahren."
+      "mitnehmen": "Das **Foto der DIP-Stellung** ist der am häufigsten vergessene und im Supportfall wertvollste Teil der Dokumentation - es beantwortet in zwei Sekunden eine Frage, die sonst eine Demontage kostet. Damit schließt sich der Kreis: Deine Akte von heute ist die Fallaufnahme von FEHMARN in zwei Jahren."
     }
   ]
 }

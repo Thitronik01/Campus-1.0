@@ -1,0 +1,121 @@
+name: Campus CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: campus-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Campus-Paket prüfen
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Repository laden
+        uses: actions/checkout@v6
+
+      - name: Node.js einrichten
+        uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+
+      - name: Fragen, Logik und Pakete prüfen
+        working-directory: Campus Quiz
+        run: node tools/montag.js --ohne-server
+
+      - name: Geprüftes Gesamtpaket speichern
+        uses: actions/upload-artifact@v4
+        with:
+          name: campus-gesamtpaket
+          path: Campus Gesamtpaket
+          if-no-files-found: error
+          retention-days: 14
+
+  deploy:
+    name: Netlify Produktion
+    needs: validate
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: production
+      url: ${{ steps.netlify_deploy.outputs.url }}
+    env:
+      NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
+    steps:
+      - name: Deployment-Konfiguration prüfen
+        id: deploy_config
+        shell: bash
+        run: |
+          if [[ -n "$NETLIFY_AUTH_TOKEN" && -n "$NETLIFY_SITE_ID" ]]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::notice title=Netlify-Deploy vorbereitet::Für den automatischen Produktionsdeploy fehlen NETLIFY_AUTH_TOKEN und NETLIFY_SITE_ID als GitHub-Secrets."
+            {
+              echo "### Netlify-Deploy vorbereitet"
+              echo
+              echo "Der geprüfte Build ist als Artefakt verfügbar. Der Produktionsdeploy startet automatisch, sobald die Repository-Secrets \`NETLIFY_AUTH_TOKEN\` und \`NETLIFY_SITE_ID\` gesetzt sind."
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Geprüftes Gesamtpaket laden
+        if: steps.deploy_config.outputs.enabled == 'true'
+        uses: actions/download-artifact@v5
+        with:
+          name: campus-gesamtpaket
+          path: Campus Gesamtpaket
+
+      - name: Nach Netlify Production deployen
+        id: netlify_deploy
+        if: steps.deploy_config.outputs.enabled == 'true'
+        working-directory: Campus Gesamtpaket
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          DEPLOY_JSON="$(npx --yes netlify-cli@27.3.0 deploy \
+            --prod \
+            --dir=public \
+            --functions=netlify/functions \
+            --site="$NETLIFY_SITE_ID" \
+            --auth="$NETLIFY_AUTH_TOKEN" \
+            --message="GitHub ${GITHUB_SHA}" \
+            --json)"
+
+          printf '%s\n' "$DEPLOY_JSON"
+
+          DEPLOY_URL="$(printf '%s' "$DEPLOY_JSON" | node -e '
+            let input = "";
+            process.stdin.on("data", chunk => input += chunk);
+            process.stdin.on("end", () => {
+              const result = JSON.parse(input);
+              process.stdout.write(result.deploy_ssl_url || result.deploy_url || result.url || "");
+            });
+          ')"
+
+          if [[ -z "$DEPLOY_URL" ]]; then
+            echo "Netlify hat keine Deploy-URL zurückgegeben." >&2
+            exit 1
+          fi
+
+          echo "url=$DEPLOY_URL" >> "$GITHUB_OUTPUT"
+          {
+            echo "### Netlify-Produktion aktualisiert"
+            echo
+            echo "[$DEPLOY_URL]($DEPLOY_URL)"
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#1D3661">
   <meta name="color-scheme" content="light">
-  <meta name="description" content="THITRONIK Campus — Wissenscheck nach jeder Schulungsinsel.">
+  <meta name="description" content="THITRONIK Campus: Wissenscheck nach jeder Schulungsinsel.">
   <meta name="robots" content="noindex, nofollow">
-  <title>THITRONIK Campus — Wissenscheck</title>
-  <link rel="stylesheet" href="/assets/styles.css?v=1.4.0">
+  <title>THITRONIK Campus: Wissenscheck</title>
+  <link rel="stylesheet" href="/assets/styles.css?v=1.4.1">
 </head>
 <body>
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
@@ -18,7 +18,7 @@
       <div class="brand">
         <a class="brand-home" href="/quiz" aria-label="Zur Campus-Karte">
           <img class="brand-logo" src="/assets/thitronik-logo.png"
-               alt="THITRONIK — Alarmtechnik made in Germany" width="769" height="214">
+               alt="THITRONIK, Alarmtechnik made in Germany" width="769" height="214">
         </a>
         <span class="brand-copy">
           <small>THITRONIK Campus</small>
@@ -46,7 +46,7 @@
       <!-- Sende-Ausgang. Steht über den Bildschirmen und nicht in der
            Campus-Karte: im Einzel-Insel-Paket gibt es diese Karte gar nicht,
            und genau dort wäre der Hinweis sonst unsichtbar. Während einer
-           laufenden Frage bleibt er ausgeblendet — mitten im Quiz ist
+           laufenden Frage bleibt er ausgeblendet - mitten im Quiz ist
            niemand in der Lage, etwas daran zu ändern. -->
       <div class="ausgang" id="ausgang" hidden>
         <p class="ausgang-text" id="ausgang-text" role="status" aria-live="polite"></p>
@@ -95,7 +95,7 @@
 
         <!-- Kein Listeneintrag und keine Insel: Der Tagesabschluss zaehlt
              nicht in "7 von 7" mit. Ein echtes <a>, weil es ein anderes
-             Dokument ist — Mittelklick und "in neuem Tab" sollen gehen. -->
+             Dokument ist - Mittelklick und "in neuem Tab" sollen gehen. -->
         <a class="tagesabschluss" id="tagesabschluss" href="/feedback" hidden>
           <span class="ta-text">
             <span class="ta-kicker" id="ta-kicker">Tagesabschluss</span>
@@ -168,7 +168,7 @@
 
             <div class="start-fields" id="start-fields">
               <h2 class="form-title">Deine Angaben</h2>
-              <p class="form-intro" id="form-intro">Einmal ausfüllen — für die weiteren Inseln bleiben die Angaben gespeichert.</p>
+              <p class="form-intro" id="form-intro">Einmal ausfüllen. Für die weiteren Inseln bleiben die Angaben gespeichert.</p>
 
               <div class="field">
                 <label for="f-name">Name</label>
@@ -275,8 +275,8 @@
             </div>
             <p class="score-rating" id="r-rating"></p>
             <dl class="score-meta">
-              <div><dt>Dauer</dt><dd id="r-duration">–</dd></div>
-              <div><dt>Insel</dt><dd id="r-island">–</dd></div>
+              <div><dt>Dauer</dt><dd id="r-duration">-</dd></div>
+              <div><dt>Insel</dt><dd id="r-island">-</dd></div>
             </dl>
             <p class="save-state" id="r-save" role="status" aria-live="polite"></p>
             <button class="btn btn-secondary btn-small" id="btn-retry-save" type="button" hidden>Erneut speichern</button>
@@ -321,6 +321,19 @@
     </footer>
   </div>
 
+  <!-- Eigener Abbruchdialog statt window.confirm(), damit Sprache,
+       Fokusführung und Trefferflächen zum restlichen Quiz passen. -->
+  <dialog class="confirm-dialog" id="abort-dialog" aria-labelledby="abort-dialog-title">
+    <form method="dialog" class="confirm-dialog-card">
+      <h2 id="abort-dialog-title">Quiz abbrechen?</h2>
+      <p>Deine bisherigen Antworten gehen verloren. Du kannst das Quiz später neu starten.</p>
+      <div class="confirm-dialog-actions">
+        <button class="btn btn-secondary" type="submit" value="cancel" autofocus>Weiterlernen</button>
+        <button class="btn btn-danger" type="submit" value="abort">Quiz abbrechen</button>
+      </div>
+    </form>
+  </dialog>
+
   <!-- Großansicht. Als natives <dialog>, damit Fokusfalle, Esc und der
        inerte Hintergrund vom Browser kommen statt von Hand gebaut zu werden. -->
   <dialog class="lightbox" id="lightbox" aria-label="Bild in Großansicht">
@@ -331,6 +344,6 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
-  <script src="/assets/engine.js?v=1.4.0" defer></script>
+  <script src="/assets/engine.js?v=1.4.1" defer></script>
 </body>
 </html>

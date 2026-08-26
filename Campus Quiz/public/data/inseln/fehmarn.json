@@ -4,7 +4,7 @@
   "title": "Fehlersuche & Support",
   "subtitle": "Erst lesen, dann tauschen",
   "version": "4",
-  "lernziel": "Bevor du tauschst, lies. Jedes Gerät sagt, was los ist — über Blinkcode, Ton, Seriennummer, Spannungsverhalten. Tauschen ist die teuerste Form der Diagnose.",
+  "lernziel": "Bevor du tauschst, lies. Jedes Gerät sagt, was los ist - über Blinkcode, Ton, Seriennummer, Spannungsverhalten. Tauschen ist die teuerste Form der Diagnose.",
   "dauerMinuten": 8,
   "quellen": [
     "referenz/stoerungsbeseitigung.md",
@@ -27,7 +27,7 @@
         { "id": "l4", "text": "Gelbes Pulsieren beider LEDs" }
       ],
       "right": [
-        { "id": "r1", "text": "Vorheizphase — noch nicht betriebsbereit" },
+        { "id": "r1", "text": "Vorheizphase - noch nicht betriebsbereit" },
         { "id": "r2", "text": "Betriebsbereit" },
         { "id": "r3", "text": "Sensorfehler" },
         { "id": "r4", "text": "Unterspannung" }
@@ -41,10 +41,10 @@
         },
         {
           "titel": "Gelb generell als Unterspannung",
-          "text": "Fast richtig — aber die Unterscheidung liegt darin, **wie viele** LEDs reagieren. Eine LED: Sensorfehler. Beide: Unterspannung."
+          "text": "Fast richtig - aber die Unterscheidung liegt darin, **wie viele** LEDs reagieren. Eine LED: Sensorfehler. Beide: Unterspannung."
         }
       ],
-      "mitnehmen": "Wer die Werkstatt vor dem grünen Zustand verlässt, weiß nicht, ob das Gerät überhaupt bereit geworden ist — **Prinzip 3**. Und: Bei Übertemperatur über 60 °C blinkt das Gerät in allen Farben und meldet das **nicht** über die WiPro III."
+      "mitnehmen": "Wer die Werkstatt vor dem grünen Zustand verlässt, weiß nicht, ob das Gerät überhaupt bereit geworden ist - **Prinzip 3**. Und: Bei Übertemperatur über 60 °C blinkt das Gerät in allen Farben und meldet das **nicht** über die WiPro III."
     },
     {
       "id": "FEH-01",
@@ -53,7 +53,7 @@
       "prompt": "Nach dem Unscharfschalten blinkt die Status-LED wiederholt 9× mit 5 s Pause. Was war los?",
       "options": [
         { "id": "a", "text": "Panikalarm über den Handsender" },
-        { "id": "b", "text": "Anti-Jamming-Ereignis — mögliche Funkstörung" },
+        { "id": "b", "text": "Anti-Jamming-Ereignis - mögliche Funkstörung" },
         { "id": "c", "text": "Auslösung über die Funk-Kabelschleife" },
         { "id": "d", "text": "Meldung vom Innenbeleuchtungseingang" }
       ],
@@ -63,10 +63,10 @@
         {
           "fuer": ["d"],
           "titel": "Innenbeleuchtungseingang",
-          "text": "Guter Tipp, falsche Zahl — das ist **11×**. Die beiden liegen im Blinkcode dicht beieinander und werden beim Zählen im Halbdunkel schnell verwechselt. Zweimal zählen lohnt sich."
+          "text": "Guter Tipp, falsche Zahl - das ist **11×**. Die beiden liegen im Blinkcode dicht beieinander und werden beim Zählen im Halbdunkel schnell verwechselt. Zweimal zählen lohnt sich."
         }
       ],
-      "mitnehmen": "Anti-Jamming lässt sich über DIP 7 → ON abschalten. Das macht das Symptom weg, nicht die Ursache — und nimmt der Anlage eine Schutzfunktion. Erst Ort und Zeitpunkt dokumentieren, Störquellen suchen."
+      "mitnehmen": "Anti-Jamming lässt sich über DIP 7 → ON abschalten. Das macht das Symptom weg, nicht die Ursache - und nimmt der Anlage eine Schutzfunktion. Erst Ort und Zeitpunkt dokumentieren, Störquellen suchen."
     },
     {
       "id": "FEH-03",
@@ -99,28 +99,28 @@
       "id": "FEH-02",
       "type": "single",
       "category": "Kundenanruf",
-      "prompt": "„Seit dem Einbau schaltet mein Original-Fahrzeugschlüssel die Alarmanlage nicht mehr scharf — die Zentralverriegelung geht aber normal.“ Ursache?",
+      "prompt": "„Seit dem Einbau schaltet mein Original-Fahrzeugschlüssel die Alarmanlage nicht mehr scharf - die Zentralverriegelung geht aber normal.“ Ursache?",
       "options": [
         { "id": "a", "text": "CAN-High und CAN-Low sind vertauscht" },
-        { "id": "b", "text": "DIP 5 steht auf ON — der Replay-Schutz ist aktiv" },
+        { "id": "b", "text": "DIP 5 steht auf ON - der Replay-Schutz ist aktiv" },
         { "id": "c", "text": "Die Batterie des Fahrzeugschlüssels ist schwach" },
         { "id": "d", "text": "Die WiPro-Zentrale ist defekt und muss getauscht werden" }
       ],
       "correct": ["b"],
-      "feedback": "Genau dieses Bild — ZV funktioniert, Alarmsteuerung nicht — ist das **erwartete** Verhalten bei aktivem Replay-Schutz (wirksam ab SN 0823-014 / SW 5.8).",
+      "feedback": "Genau dieses Bild - ZV funktioniert, Alarmsteuerung nicht - ist das **erwartete** Verhalten bei aktivem Replay-Schutz (wirksam ab SN 0823-014 / SW 5.8).",
       "irrtum": [
         {
           "fuer": ["a"],
           "titel": "CAN vertauscht",
-          "text": "Technisch gute Idee und der richtige zweite Schritt — aber bei vertauschtem CAN funktioniert typischerweise gar nichts, nicht nur die Alarmsteuerung. Das Symptom ist zu selektiv."
+          "text": "Technisch gute Idee und der richtige zweite Schritt - aber bei vertauschtem CAN funktioniert typischerweise gar nichts, nicht nur die Alarmsteuerung. Das Symptom ist zu selektiv."
         },
         {
           "fuer": ["d"],
           "titel": "Zentrale defekt",
-          "text": "Die teuerste Fehldiagnose im Katalog. Ein Gerät, das teilweise korrekt arbeitet, ist selten defekt — es ist meist konfiguriert."
+          "text": "Die teuerste Fehldiagnose im Katalog. Ein Gerät, das teilweise korrekt arbeitet, ist selten defekt - es ist meist konfiguriert."
         }
       ],
-      "mitnehmen": "Ist der Schutz gewollt, steuert der Kunde über Handsender, App oder Pro-finder. **Achtung beim Umstellen:** DIP-Schalter nur spannungsfrei ändern — weder der 20-polige Stecker noch der Pro-finder-Stecker dürfen gesteckt sein."
+      "mitnehmen": "Ist der Schutz gewollt, steuert der Kunde über Handsender, App oder Pro-finder. **Achtung beim Umstellen:** DIP-Schalter nur spannungsfrei ändern - weder der 20-polige Stecker noch der Pro-finder-Stecker dürfen gesteckt sein."
     },
     {
       "id": "FEH-04",
@@ -129,7 +129,7 @@
       "prompt": "Ein Pro-finder sendet eine Spannungswarnung und reagiert danach auf keine SMS mehr. Was ist passiert?",
       "options": [
         { "id": "a", "text": "Das Modem ist defekt, Gerät einsenden" },
-        { "id": "b", "text": "Tiefentladeschutz — das Gerät geht in Standby" },
+        { "id": "b", "text": "Tiefentladeschutz - das Gerät geht in Standby" },
         { "id": "c", "text": "Die SIM-Karte ist abgelaufen" },
         { "id": "d", "text": "Die Sicherung hat ausgelöst und muss neu gesetzt werden" }
       ],
@@ -139,7 +139,7 @@
         {
           "fuer": ["a"],
           "titel": "Modem defekt, einsenden",
-          "text": "Der teuerste mögliche Weg zum selben Ergebnis — das Gerät kommt geprüft und unverändert zurück. Der entscheidende Hinweis stand im ersten Halbsatz der Frage: Es hat **vorher gewarnt**. Ein defektes Modem warnt nicht, es schweigt einfach."
+          "text": "Der teuerste mögliche Weg zum selben Ergebnis - das Gerät kommt geprüft und unverändert zurück. Der entscheidende Hinweis stand im ersten Halbsatz der Frage: Es hat **vorher gewarnt**. Ein defektes Modem warnt nicht, es schweigt einfach."
         }
       ],
       "mitnehmen": "Wenn ein Gerät vor dem Ausfall gewarnt hat, hat es meist genau das getan, wofür es gebaut wurde. Erst laden, dann urteilen."
@@ -161,7 +161,7 @@
         {
           "fuer": ["b"],
           "titel": "Löschen und neu anlernen",
-          "text": "Führt zum selben Ergebnis — mit erheblich mehr Aufwand und dem zusätzlichen Risiko, dabei einen Kontakt zu vergessen. Genau dieser vergessene Kontakt fällt erst im Ernstfall auf."
+          "text": "Führt zum selben Ergebnis - mit erheblich mehr Aufwand und dem zusätzlichen Risiko, dabei einen Kontakt zu vergessen. Genau dieser vergessene Kontakt fällt erst im Ernstfall auf."
         },
         {
           "fuer": ["c"],
@@ -178,7 +178,7 @@
       "prompt": "Ein Kollege will die G.A.S.-pro III „mal eben mit dem Feuerzeug testen“. Was sagst du?",
       "options": [
         { "id": "a", "text": "Kurz und aus 1 m Abstand ist unbedenklich" },
-        { "id": "b", "text": "Nicht durchführen — dieser Test ist nicht vorgesehen" },
+        { "id": "b", "text": "Nicht durchführen - dieser Test ist nicht vorgesehen" },
         { "id": "c", "text": "Nur bei der CO-Variante zulässig" },
         { "id": "d", "text": "Nur bei geöffnetem Fenster" }
       ],
@@ -188,7 +188,7 @@
         {
           "fuer": ["a"],
           "titel": "Kurz und aus Abstand",
-          "text": "Der pragmatische Werkstattreflex — man will dem Kunden ja etwas zeigen. Der Test kann den Sensor beeinflussen und sagt über die tatsächliche Funktion nichts Belastbares aus."
+          "text": "Der pragmatische Werkstattreflex - man will dem Kunden ja etwas zeigen. Der Test kann den Sensor beeinflussen und sagt über die tatsächliche Funktion nichts Belastbares aus."
         },
         {
           "fuer": ["d"],
@@ -196,7 +196,7 @@
           "text": "Behandelt es als Belüftungsfrage. Das Problem ist nicht die Gaskonzentration im Raum, sondern was der Sensor daraus macht."
         }
       ],
-      "mitnehmen": "Meldet der Selbsttest einen Fehler, zeigt sich das eindeutig: 1 Ton pro Sekunde und die betroffene Sensor-LED blinkt gelb. Dem Kunden zeigst du den grünen Normalzustand — das ist der Nachweis, den es braucht."
+      "mitnehmen": "Meldet der Selbsttest einen Fehler, zeigt sich das eindeutig: 1 Ton pro Sekunde und die betroffene Sensor-LED blinkt gelb. Dem Kunden zeigst du den grünen Normalzustand - das ist der Nachweis, den es braucht."
     },
     {
       "id": "FEH-09",
@@ -215,10 +215,10 @@
         {
           "fuer": ["b"],
           "titel": "Nur die Masternummer",
-          "text": "Passt scheinbar perfekt zur Beobachtung — und führt dazu, dass man dem Kunden eine Einschränkung erklärt, die es nicht gibt. Der vermeintliche Fehler entsteht beim Testen selbst."
+          "text": "Passt scheinbar perfekt zur Beobachtung - und führt dazu, dass man dem Kunden eine Einschränkung erklärt, die es nicht gibt. Der vermeintliche Fehler entsteht beim Testen selbst."
         }
       ],
-      "mitnehmen": "Einen kontrollierten Test vollständig durchlaufen lassen, dann bekommt jede Nummer ihre SMS. Gehört so auch in die Fahrzeugübergabe — Masternummer zuerst."
+      "mitnehmen": "Einen kontrollierten Test vollständig durchlaufen lassen, dann bekommt jede Nummer ihre SMS. Gehört so auch in die Fahrzeugübergabe - Masternummer zuerst."
     },
     {
       "id": "FEH-08",
@@ -237,7 +237,7 @@
         {
           "fuer": ["a", "b"],
           "titel": "„a an“ oder „a 30“",
-          "text": "Schalten **ohne** Geschwindigkeitsprüfung. Zur Fahrzeugstilllegung unzulässig — im schlimmsten Fall wird ein fahrendes Fahrzeug abgeschaltet, mit einem Menschen darin und anderen daneben."
+          "text": "Schalten **ohne** Geschwindigkeitsprüfung. Zur Fahrzeugstilllegung unzulässig - im schlimmsten Fall wird ein fahrendes Fahrzeug abgeschaltet, mit einem Menschen darin und anderen daneben."
         },
         {
           "fuer": ["d"],
@@ -245,7 +245,7 @@
           "text": "Zu passiv, aber der Reflex ist nicht falsch: Der erste Schritt ist tatsächlich, sich ein Bild zu verschaffen."
         }
       ],
-      "mitnehmen": "Der richtige Befehl ist nur die halbe Antwort. Diebstahl der Polizei melden, Ortungsdaten dorthin geben — und **nicht selbst zum Fahrzeug fahren**. Am anderen Ende steht kein Kunde, sondern ein Täter. Abschalteinrichtungen: 101283 (einpolig) / 105821 (mehrpolig)."
+      "mitnehmen": "Der richtige Befehl ist nur die halbe Antwort. Diebstahl der Polizei melden, Ortungsdaten dorthin geben - und **nicht selbst zum Fahrzeug fahren**. Am anderen Ende steht kein Kunde, sondern ein Täter. Abschalteinrichtungen: 101283 (einpolig) / 105821 (mehrpolig)."
     },
     {
       "id": "FEH-10",
@@ -266,15 +266,15 @@
         {
           "fuer": ["e"],
           "titel": "SIM-PIN mitangekreuzt",
-          "text": "Gut gemeint — man will alles liefern, was helfen könnte. Für die Diagnose wird sie nicht gebraucht, und was nicht im Ticket steht, kann auch nicht abhandenkommen."
+          "text": "Gut gemeint - man will alles liefern, was helfen könnte. Für die Diagnose wird sie nicht gebraucht, und was nicht im Ticket steht, kann auch nicht abhandenkommen."
         },
         {
           "fuer": ["d"],
           "titel": "Blinkcode weggelassen",
-          "text": "Der wertvollste Einzelhinweis überhaupt. Er sagt, was das Gerät selbst über den Fehler weiß — genau die Information, die aus der Ferne sonst fehlt."
+          "text": "Der wertvollste Einzelhinweis überhaupt. Er sagt, was das Gerät selbst über den Fehler weiß - genau die Information, die aus der Ferne sonst fehlt."
         }
       ],
-      "mitnehmen": "Das ist die Insel in einem Satz: Alles, was du vor dem Anruf sammelst, ersetzt drei Rückfragen danach. Und „möglichst wörtlich“ heißt wörtlich — nicht „irgendwas mit gelb“."
+      "mitnehmen": "Das ist die Insel in einem Satz: Alles, was du vor dem Anruf sammelst, ersetzt drei Rückfragen danach. Und „möglichst wörtlich“ heißt wörtlich - nicht „irgendwas mit gelb“."
     },
     {
       "id": "FEH-11",

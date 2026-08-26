@@ -15,6 +15,7 @@
   <img alt="Stack" src="https://img.shields.io/badge/Stack-Netlify%20%2B%20Supabase-3BA9D3?style=flat-square">
   <img alt="Framework" src="https://img.shields.io/badge/Framework-keins-AFCA05?style=flat-square">
   <img alt="Stand" src="https://img.shields.io/badge/Stand-vor%20dem%20ersten%20Deploy-CE132D?style=flat-square">
+  <a href="https://github.com/Thitronik01/Campus-1.0/actions/workflows/campus.yml"><img alt="Campus CI/CD" src="https://github.com/Thitronik01/Campus-1.0/actions/workflows/campus.yml/badge.svg"></a>
 </p>
 
 ---
@@ -164,6 +165,30 @@ node tools/build-insel.js samsoe
 ```
 
 Alle sieben Einzelpakete auf einmal: `node tools/build-insel.js alle`
+
+### CI/CD über GitHub Actions
+
+Der Workflow [`.github/workflows/campus.yml`](.github/workflows/campus.yml)
+läuft bei jedem Pull Request gegen `main` und bei jedem Push auf `main`.
+
+1. Er prüft alle 73 Fragen und die Bewertungslogik.
+2. Er baut und prüft das Gesamtpaket sowie alle Einzelpakete.
+3. Er speichert `Campus Gesamtpaket/` für 14 Tage als geprüftes Artefakt.
+4. Bei einem Push auf `main` deployt er genau dieses Artefakt nach Netlify.
+
+Für Schritt 4 müssen in den GitHub Repository-Secrets zwei Werte hinterlegt
+sein:
+
+| Secret | Inhalt |
+|---|---|
+| `NETLIFY_AUTH_TOKEN` | persönlicher Netlify-Zugriffstoken für den Deploy |
+| `NETLIFY_SITE_ID` | API-ID der Netlify-Site für das Campus-Gesamtpaket |
+
+Fehlen die Secrets, bleibt die Pipeline bewusst grün: Tests, Build und das
+herunterladbare Artefakt funktionieren trotzdem. Im Job steht dann ein klarer
+Hinweis, dass nur der Produktionsdeploy übersprungen wurde. Datenbankmigrationen
+gehören ausdrücklich nicht in diesen Workflow und bleiben ein kontrollierter,
+manueller Schritt.
 
 ---
 
