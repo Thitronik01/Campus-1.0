@@ -56,6 +56,7 @@
   const QUIZ_KEY = 'thitronik.campus.2026.participant';
 
   const demoMode = new URLSearchParams(window.location.search).get('demo') === '1';
+  const SUBMIT_ENDPOINT = '/.netlify/functions/submit-feedback';
 
   /* itemLabel-Strings exakt wie in v11. Nicht ohne Anpassung der Auswertung
      aendern. */
@@ -830,6 +831,37 @@
     }
   }
 
+  async function saveFeedback(payload) {
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), 18000);
+
+    try {
+      const response = await fetch(SUBMIT_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        signal: controller.signal
+      });
+
+      let result = {};
+      try { result = await response.json(); } catch { /* lesbare Fehlermeldung folgt unten */ }
+
+      if (response.ok) return { storage: 'supabase', result };
+      /* Das separat hochladbare Feedback-Paket enthält absichtlich keine
+         Function. Ein 404 bedeutet dort nicht "Feedback verloren", sondern
+         "statischer Pilot": Netlify Forms übernimmt wie bisher. */
+      if (response.status === 404 || (result && result.fallback === 'netlify_forms')) {
+        return { storage: 'netlify_forms', result: await saveToNetlify(payload) };
+      }
+
+      const error = new Error(result.error || `Feedback-Dienst HTTP ${response.status}`);
+      error.httpStatus = response.status;
+      throw error;
+    } finally {
+      window.clearTimeout(timeout);
+    }
+  }
+
   function messageForError(error) {
     if (error && error.name === 'AbortError') {
       return 'Die Speicherung hat zu lange gedauert. Bitte prüf deine Verbindung und send erneut. Deine Eingaben bleiben erhalten.';
@@ -875,7 +907,7 @@
     setStatus('Dein Feedback wird gespeichert.');
 
     try {
-      await saveToNetlify(payload);
+      await saveFeedback(payload);
       const participantName = payload.participantName;
       dropDraft();
       delete form.dataset.submissionId;

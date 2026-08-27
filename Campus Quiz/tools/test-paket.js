@@ -253,6 +253,8 @@ async function ruf(payload) {
     /name="campus-quiz-result"/.test(seite) && /data-netlify="true"/.test(seite));
 
   if (katalog.feedback) {
+    pruefe("Feedback-Function ist im Gesamtpaket enthalten",
+      fs.existsSync(path.join(paket, "netlify", "functions", "submit-feedback.js")));
     const feedbackDatei = path.join(paket, "public", "feedback", "index.html");
     pruefe("Feedbackbogen ist im Gesamtpaket enthalten", fs.existsSync(feedbackDatei));
     if (fs.existsSync(feedbackDatei)) {

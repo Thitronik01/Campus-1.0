@@ -176,6 +176,10 @@ const funktion = lauf(path.join("tools", "test-function.js"), []);
 schritt("Bewertungslogik", funktion,
   (funktion.ausgabe.match(/^\d+ bestanden.*$/m) || [""])[0]);
 
+const feedbackFunktion = lauf(path.join("tools", "test-feedback-function.js"), []);
+schritt("Feedback-Backend", feedbackFunktion,
+  (feedbackFunktion.ausgabe.match(/^\d+ bestanden.*$/m) || [""])[0]);
+
 /** Zählt die Prüfungen eines Paket-Durchlaufs zusammen und meldet die erste
  *  Insel, die durchfällt — eine Liste mit sieben Zeilen liest morgens niemand. */
 function paketPruefen(bezeichnung, ordnerFuer) {
@@ -234,12 +238,15 @@ if (fehlgeschlagen) {
 console.log(`  ${gruen("Alles grün.")}`);
 
 // Die Datenbank ist bewusst der spätere Ausbauschritt. Bis dahin ist der
-// Netlify-Forms-Pilot kein Fehlerzustand, sondern der veröffentlichbare Stand.
+// Netlify-Forms-Pilot ein Sicherheitsnetz; danach laufen Quiz und Feedback
+// automatisch über die geschützten Functions nach Supabase.
 const migration = path.join(QUELLE, "supabase_campus_quiz_migration.sql");
 if (fs.existsSync(migration)) {
-  console.log(`\n  ${gruen("Pilotbereit:")} Netlify Forms sammelt Quiz und Feedback ohne Datenbank.`);
-  console.log(grau("         Supabase kann nach der Fragenabstimmung zugeschaltet werden:"));
+  console.log(`\n  ${gruen("Pilotbereit:")} Quiz und Feedback nutzen bis Supabase das Forms-Sicherheitsnetz.`);
+  console.log(grau("         Supabase kann nach der Fragenabstimmung ohne Frontend-Umbau zugeschaltet werden:"));
   console.log(grau(`         → ${path.relative(PROJEKT, migration)}`));
+  console.log(grau("         → Feedbackbogen\\supabase_v11_migration.sql"));
+  console.log(grau("         → Feedbackbogen\\supabase_v14_migration.sql"));
 }
 
 if (OHNE_SERVER) {

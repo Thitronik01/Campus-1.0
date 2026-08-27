@@ -209,15 +209,20 @@ Typografie oder Tonalität.
 
 ## Pilotphase und späteres Backend
 
-Aktuell speichert der Bogen über das statisch erkannte Netlify-Formular
-`campus-feedback`. Damit kann die fachliche Abstimmung ohne Datenbank starten;
-die Einsendungen stehen im Netlify-Dashboard und lassen sich als CSV exportieren.
+Im gemeinsamen Campus-Paket sendet der Bogen zuerst an die Netlify Function
+`submit-feedback`. Sie prüft die Nutzlast serverseitig und ruft anschließend
+die vorhandene Supabase-RPC `submit_campus_feedback` auf. Der Supabase Secret
+Key bleibt dadurch vollständig außerhalb des Browsers.
+
+Solange `SUPABASE_URL` und `SUPABASE_SECRET_KEY` in Netlify noch fehlen, fällt
+der Bogen automatisch auf das statisch erkannte Formular `campus-feedback`
+zurück. Damit kann die fachliche Abstimmung ohne Datenbank starten; die
+Einsendungen stehen im Netlify-Dashboard und lassen sich als CSV exportieren.
 Die vollständige strukturierte Nutzlast liegt zusätzlich im Feld `payload`.
 
-Die vorhandenen Supabase-Migrationen und die folgenden Abschnitte dokumentieren
-den früheren Stand und den vorgesehenen späteren Datenbankausbau. Vor einem
-erneuten Wechsel auf Supabase muss die Anbindung bewusst wieder implementiert
-und gegen die dann aktuelle Formularstruktur getestet werden.
+Sobald Migration und Umgebungsvariablen vorhanden sind, läuft derselbe Bogen
+ohne Frontend-Umbau direkt über Supabase. Der externe Langdock-Agent liest wie
+bisher die Supabase-Tabellen und -Views und muss Netlify Forms nicht verwenden.
 
 ### Was v14 gegenüber v11–v13 am Payload ändert
 
@@ -271,9 +276,10 @@ Behoben am 13.08.2026 durch Abschnitt 0 von `supabase_v14_migration.sql`.
 ### Auswertung
 
 Die Auswertung läuft über einen **Langdock-Agenten**, der außerhalb dieses
-Repos liegt und direkt auf Supabase zugreift. Er ist im Code nirgends
-referenziert und muss bei Payload- oder Skalenänderungen von Hand nachgezogen
-werden.
+Repos liegt und direkt auf Supabase zugreift. Die Function ändert daran nichts:
+Sie schreibt in die bestehende RPC und damit in dieselben Tabellen und Views.
+Bei Payload- oder Skalenänderungen muss der Agent weiterhin von Hand
+nachgezogen werden.
 
 Ohne die Abschnitte 1 und 2 der Migration bleiben die Zahlen rechnerisch
 richtig, aber irreführend: `anzahl_note_1` zählt weiter Zeilen mit `rating = 1`,
@@ -298,10 +304,16 @@ select item_label, count(*) as stimmen
 
 ## Deployment
 
-Der fertige Ordner für Netlify liegt unter `netlify-v14/`. Diesen Ordner
-**komplett** hochladen, nicht nur `index.html` — sonst fehlen Bilder und Stile.
-Er enthält `_headers` mit Caching- und Sicherheitsheadern: `index.html` wird
-immer frisch geprüft, die versionierten Dateien werden lange gecacht.
+Der produktive Weg ist das gemeinsame Git-Deployment aus dem Repository. Es
+liefert den Bogen unter `/feedback/` zusammen mit der serverseitigen Function
+aus. Der Ordner `netlify-v14/` bleibt ein statisches Einzelpaket für Vorschau
+oder den datenbanklosen Netlify-Forms-Pilot; ein reiner Drag-and-drop-Deploy
+dieses Ordners enthält keine Supabase-Function.
+
+`netlify-v14/` immer **komplett** hochladen, nicht nur `index.html` — sonst
+fehlen Bilder und Stile. Er enthält `_headers` mit Caching- und
+Sicherheitsheadern: `index.html` wird immer frisch geprüft, die versionierten
+Dateien werden lange gecacht.
 
 Nach jeder Änderung neu bauen:
 
@@ -362,12 +374,10 @@ Relevante Commits: `1709bb5` (v11–v13), `6f4a4d1` (v13.1 und v14).
 
 ## Bekannte offene Punkte
 
-- **Abschnitte 1 und 2 von `supabase_v14_migration.sql` sind noch nicht
-  eingespielt.** Nur Abschnitt 0 ist angewendet. Bis dahin steht die
-  Händlernummer ausschließlich im `raw_payload` (abfragbar über
-  `raw_payload->>'dealerNumber'`), und die skalenbewussten Auswertungsspalten
-  fehlen.
-- **Der Langdock-Agent kennt die neue Skalenrichtung noch nicht.** Solange er
+- **Vor Produktivstart muss `supabase_v14_migration.sql` vollständig in der
+  gewählten Supabase-Datenbank ausgeführt und getestet werden.** Bis dahin ist
+  Netlify Forms nur der Pilot-Zwischenspeicher.
+- **Der Langdock-Agent muss die neue Skalenrichtung kennen.** Solange er
   v11- und v14-Zeilen in einen Durchschnitt mischt, ist das Ergebnis
   bedeutungslos — eine 4,2 heißt in den alten Daten schlecht, in den neuen gut.
 - Der Bogen wurde nie auf einem echten Telefon getestet, nur emuliert. Geprüft

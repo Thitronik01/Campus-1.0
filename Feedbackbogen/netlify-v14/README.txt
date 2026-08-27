@@ -11,7 +11,7 @@ Inhalt
 ------
 index.html        Der Feedbackbogen (aus index-v14.html)
 styles-v14.css    Stile
-app-v14.js        Logik und Speicherung ueber Netlify Forms
+app-v14.js        Logik; im Campus-Gesamtpaket via Function zu Supabase
 rays-v14.js       Lichtstrahlen im Kopfbereich und in der Danke-Ansicht.
                   Reine Dekoration. Faellt die Datei weg oder kann der Browser
                   kein WebGL, bleibt es beim bisherigen Hintergrund.
@@ -31,10 +31,15 @@ beides nicht vermischt, tragen v14-Einsendungen form_version
 
 Pilot-Speicherung
 -----------------
-Gespeichert wird ueber Netlify Forms. Nach dem ersten Deploy in Netlify unter
-Forms die Formularerkennung aktivieren und noch einmal deployen. Danach steht
-campus-feedback im Netlify-Dashboard und kann als CSV exportiert werden.
-Fuer die Pilotphase ist keine Datenbank noetig.
+Dieses statische Einzelpaket speichert ueber Netlify Forms. Nach dem ersten
+Deploy in Netlify unter Forms die Formularerkennung aktivieren und noch einmal
+deployen. Danach steht campus-feedback im Netlify-Dashboard und kann als CSV
+exportiert werden. Fuer die Pilotphase ist keine Datenbank noetig.
+
+Der produktive Supabase-Weg steckt im Campus-Gesamtpaket: Dort prueft die
+Netlify Function submit-feedback die Daten und ruft die bestehende Supabase-RPC
+auf. Sobald SUPABASE_URL und SUPABASE_SECRET_KEY gesetzt sind, ist kein Umbau
+am sichtbaren Bogen noetig. Langdock liest weiterhin direkt aus Supabase.
 
 Die Haendlernummer wird in Netlify Forms als eigenes Feld und zusaetzlich im
 vollstaendigen JSON-Payload gespeichert. Beim spaeteren Wechsel zu Supabase

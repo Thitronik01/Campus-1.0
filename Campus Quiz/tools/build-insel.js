@@ -446,6 +446,8 @@ function baueGesamt() {
   // --- Function unverändert: sie kennt bereits alle sieben Inseln --------
   kopiere(path.join(WURZEL, "netlify", "functions", "submit-quiz.js"),
     path.join(ziel, "netlify", "functions", "submit-quiz.js"));
+  kopiere(path.join(WURZEL, "netlify", "functions", "submit-feedback.js"),
+    path.join(ziel, "netlify", "functions", "submit-feedback.js"));
 
   // --- netlify.toml -------------------------------------------------------
   schreib(path.join(ziel, "netlify.toml"), netlifyToml(
@@ -647,10 +649,16 @@ gesendet" statt „abgeschlossen".
 Das heißt auch: Wer den Fehler oben behebt und die Teilnehmer die Seite noch
 einmal aufrufen lässt, bekommt die liegengebliebenen Ergebnisse nachträglich.
 
-### Später Supabase aktivieren
+### Später Supabase und Langdock aktivieren
 
-Nach der Fragenabstimmung die Migration \`Campus Quiz/supabase_campus_quiz_migration.sql\`
-ausführen und in Netlify \`SUPABASE_URL\` sowie \`SUPABASE_SECRET_KEY\` setzen.
+Nach der Fragenabstimmung die Quiz-Migration
+\`Campus Quiz/supabase_campus_quiz_migration.sql\` sowie zunächst
+\`Feedbackbogen/supabase_v11_migration.sql\` und danach
+\`Feedbackbogen/supabase_v14_migration.sql\` ausführen und in Netlify
+\`SUPABASE_URL\` sowie \`SUPABASE_SECRET_KEY\` setzen. Danach schreiben Quiz
+und Feedback automatisch nach Supabase; am sichtbaren Bogen ist kein Umbau
+nötig. Langdock liest weiterhin direkt aus den Supabase-Views.
+
 Der Secret Key gehört ausschließlich in die Netlify-Umgebungsvariablen.
 
 ---

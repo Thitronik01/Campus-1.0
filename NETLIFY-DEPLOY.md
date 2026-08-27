@@ -5,8 +5,9 @@ Dieses Repository ist für eine gemeinsame Netlify-Site vorbereitet:
 - `/quiz` zeigt die Campus-Karte mit allen sieben Wissensinseln.
 - `/quiz/<insel>` öffnet die jeweilige Insel direkt.
 - `/feedback/` ist der Tagesabschluss.
-- Quiz-Ergebnisse und Feedback werden in der Pilotphase über Netlify Forms gesammelt.
-- Sobald Supabase später eingerichtet ist, speichert die Quiz-Function dort und behält Netlify Forms als Ausweichweg.
+- Quiz-Ergebnisse und Feedback werden immer zuerst an geschützte Netlify Functions gesendet.
+- Solange Supabase noch nicht eingerichtet ist, dienen Netlify Forms nur als Pilot-Sicherheitsnetz.
+- Sobald Supabase eingerichtet ist, speichern beide Functions automatisch dort. Langdock kann anschließend direkt auf den vorhandenen Supabase-Views auswerten.
 
 ## Empfohlener Weg: Git-Deployment
 
@@ -26,15 +27,22 @@ Für die Pilotphase sind keine Datenbank und keine Umgebungsvariablen nötig.
 4. In Netlify unter **Forms** müssen danach diese Formulare erscheinen:
    - `campus-quiz-result`
    - `campus-feedback`
-5. Eine CSV exportieren und prüfen, ob Name, Händlernummer, Insel und Ergebnis beziehungsweise Feedback enthalten sind.
+5. Für den datenbanklosen Pilotstand eine CSV exportieren und prüfen, ob Name, Händlernummer, Insel und Ergebnis beziehungsweise Feedback enthalten sind.
 
 ## Später: Supabase aktivieren
 
 Erst nach der Abstimmung der Fragen:
 
 1. `Campus Quiz/supabase_campus_quiz_migration.sql` in Supabase ausführen.
-2. In Netlify `SUPABASE_URL` und `SUPABASE_SECRET_KEY` als Umgebungsvariablen setzen.
-3. Neu deployen.
+2. `Feedbackbogen/supabase_v11_migration.sql` als Feedback-Grundlage und danach `Feedbackbogen/supabase_v14_migration.sql` ausführen.
+3. In Netlify `SUPABASE_URL` und `SUPABASE_SECRET_KEY` als Umgebungsvariablen setzen.
+4. Neu deployen.
+
+Danach ist kein Umbau an Quiz oder Feedbackbogen nötig: Die Functions erkennen
+die Konfiguration und schreiben direkt nach Supabase. Netlify Forms bleibt nur
+der Ausweichweg, falls Supabase nicht konfiguriert oder vorübergehend nicht
+erreichbar ist. Der Langdock-Agent greift weiterhin auf Supabase zu; er braucht
+keinen Zugang zu Netlify Forms.
 
 Der Secret Key gehört ausschließlich in die Netlify-Umgebungsvariablen und nie in Browser-Code oder Git.
 
