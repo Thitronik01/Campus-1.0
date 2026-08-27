@@ -11,7 +11,7 @@ Inhalt
 ------
 index.html        Der Feedbackbogen (aus index-v14.html)
 styles-v14.css    Stile
-app-v14.js        Logik und Anbindung an Supabase
+app-v14.js        Logik und Speicherung ueber Netlify Forms
 rays-v14.js       Lichtstrahlen im Kopfbereich und in der Danke-Ansicht.
                   Reine Dekoration. Faellt die Datei weg oder kann der Browser
                   kein WebGL, bleibt es beim bisherigen Hintergrund.
@@ -29,16 +29,16 @@ Die Zahl wird so gespeichert, wie sie angekreuzt wurde. Damit die Auswertung
 beides nicht vermischt, tragen v14-Einsendungen form_version
 "campus-2026-haendler-v14"; die Views gruppieren danach.
 
-Backend
--------
-Gespeichert wird ueber die bestehende RPC public.submit_campus_feedback(jsonb)
-im Supabase-Projekt mhzlayhnyqlxdyiceyqz. Der Publishable Key steht im
-Browser-Code, das ist beabsichtigt: die Tabellen bleiben per Row Level
-Security gesperrt.
+Pilot-Speicherung
+-----------------
+Gespeichert wird ueber Netlify Forms. Nach dem ersten Deploy in Netlify unter
+Forms die Formularerkennung aktivieren und noch einmal deployen. Danach steht
+campus-feedback im Netlify-Dashboard und kann als CSV exportiert werden.
+Fuer die Pilotphase ist keine Datenbank noetig.
 
-Die Haendlernummer braucht supabase_v14_migration.sql, um eine eigene Spalte
-zu bekommen. Ohne die Migration wird sie trotzdem gespeichert, aber nur
-innerhalb von raw_payload. Der Bogen funktioniert in beiden Faellen.
+Die Haendlernummer wird in Netlify Forms als eigenes Feld und zusaetzlich im
+vollstaendigen JSON-Payload gespeichert. Beim spaeteren Wechsel zu Supabase
+steht dafuer supabase_v14_migration.sql bereit.
 
 Test ohne Speichern
 -------------------

@@ -40,10 +40,7 @@
   const draftClear = document.getElementById('draftClear');
   const missingBox = document.getElementById('missingBox');
   const missingList = document.getElementById('missingList');
-
-  const SUPABASE_URL = 'https://mhzlayhnyqlxdyiceyqz.supabase.co';
-  const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_bJN8jgtj-Lx6mRyE2hWBgQ_8alccYFG';
-  const SUPABASE_RPC = 'submit_campus_feedback';
+  const netlifyPayload = document.getElementById('netlifyPayload');
   /* Eigener Schluessel fuer v14, und das ist kein Schoenheitsfehler: ein
      liegengebliebener v13-Entwurf enthaelt Noten der alten Richtung. Unter
      demselben Schluessel wiederhergestellt wuerde aus einer 1 ("war sehr gut")
@@ -482,7 +479,7 @@
   function collectDraft() {
     const draft = { __panel: current, __isles: islandOrder.slice() };
     for (const el of form.elements) {
-      if (!el.name || el.name === 'website') continue;
+      if (!el.name || ['website', 'form-name', 'payload'].includes(el.name)) continue;
       if (el.type === 'radio') {
         if (el.checked) draft[el.name] = el.value;
       } else if (el.type === 'checkbox') {
@@ -801,25 +798,29 @@
     };
   }
 
-  async function saveToSupabase(payload) {
+  async function saveToNetlify(payload) {
     const controller = new AbortController();
     const timeout = window.setTimeout(() => controller.abort(), 18000);
 
     try {
-      const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${SUPABASE_RPC}`, {
+      if (netlifyPayload) netlifyPayload.value = JSON.stringify(payload);
+      const fields = new URLSearchParams();
+      for (const [name, value] of new FormData(form).entries()) {
+        fields.append(name, String(value));
+      }
+
+      const response = await fetch(form.action || window.location.pathname, {
         method: 'POST',
         headers: {
-          apikey: SUPABASE_PUBLISHABLE_KEY,
-          'Content-Type': 'application/json',
-          Accept: 'application/json'
+          'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: JSON.stringify({ payload }),
+        body: fields.toString(),
         signal: controller.signal
       });
 
       const text = await response.text();
       if (!response.ok) {
-        const error = new Error(`Supabase RPC HTTP ${response.status}${text ? `: ${text}` : ''}`);
+        const error = new Error(`Netlify Forms HTTP ${response.status}${text ? `: ${text}` : ''}`);
         error.httpStatus = response.status;
         throw error;
       }
@@ -835,7 +836,7 @@
     }
     const status = error && error.httpStatus;
     if (status === 401 || status === 403) {
-      return 'Die Verbindung zur Feedback-Datenbank wurde abgewiesen. Bitte wend dich kurz an das THITRONIK Team.';
+      return 'Die Speicherung wurde abgewiesen. Bitte wend dich kurz an das THITRONIK Team.';
     }
     if (status === 404) {
       return 'Der Feedback-Dienst ist momentan nicht erreichbar. Bitte wend dich kurz an das THITRONIK Team.';
@@ -874,13 +875,13 @@
     setStatus('Dein Feedback wird gespeichert.');
 
     try {
-      await saveToSupabase(payload);
+      await saveToNetlify(payload);
       const participantName = payload.participantName;
       dropDraft();
       delete form.dataset.submissionId;
       showDone(participantName);
     } catch (error) {
-      console.error('Supabase-Speicherfehler:', error);
+      console.error('Feedback-Speicherfehler:', error);
       setStatus(messageForError(error), 'error');
       if (statusEl) statusEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
     } finally {

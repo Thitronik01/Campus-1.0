@@ -201,6 +201,7 @@ ${kommentar}
     X-Frame-Options = "DENY"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Content-Security-Policy = "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'self'"
 
 [[headers]]
   for = "/index.html"
@@ -405,10 +406,9 @@ function baueGesamt() {
   kopiere(path.join(WURZEL, "public", "assets", "thitronik-logo.png"), path.join(oeff, "assets", "thitronik-logo.png"));
 
   // --- Daten: vollständiger Katalog, alle Fragensätze --------------------
-  // Das Feld "feedback" entsteht erst hier. Die Quelle und die Einzelpakete
-  // enthalten den Bogen nicht, und die Engine zeigt den Weg dorthin nur,
-  // wenn der Katalog ihn nennt — so kann die Verknüpfung nicht ins Leere
-  // zeigen, ohne dass jemand daran denken muss.
+  // Der Gesamtstand liefert den Feedbackbogen tatsächlich mit aus. Das Feld
+  // wird hier nochmals eindeutig auf den Paketpfad gesetzt; Einzelpakete
+  // erhalten beim Eindampfen des Katalogs bewusst keinen Feedback-Link.
   schreib(path.join(oeff, "data", "inseln.json"),
     JSON.stringify({ ...katalog, feedback: `/${BOGEN_ZIEL}/` }, null, 2) + "\n");
 
@@ -479,25 +479,19 @@ Fertiges Netlify-Paket für die Schulungsinsel ${satz.code}.
 
 ## Hochladen
 
-1. Auf [app.netlify.com](https://app.netlify.com) einloggen
-2. **Add new site → Deploy manually**
-3. **Diesen kompletten Ordner** ins Feld ziehen — nicht nur \`public/\`.
-   Sonst fehlt die Function und es wird nichts gespeichert.
+Für Quiz-Speicherung muss die Netlify Function mit veröffentlicht werden.
+Darum entweder das Repository als Git-Projekt mit Netlify verbinden oder in
+diesem Ordner mit der Netlify CLI \`netlify deploy --build --prod\` ausführen.
+Ein reines Drag-and-drop von \`public/\` veröffentlicht nur die statischen
+Dateien und reicht für diesen Stand nicht aus.
 
-### Danach zwingend: die zwei Umgebungsvariablen
+### Pilotphase ohne Datenbank
 
-**Site configuration → Environment variables → Add a variable**
+Unter **Forms → Enable form detection** die Formularerkennung aktivieren und
+danach einmal neu deployen. Die Quiz-Ergebnisse stehen dann in Netlify unter
+**Forms** und lassen sich als CSV exportieren.
 
-| Name | Wert |
-|---|---|
-| \`SUPABASE_URL\` | \`https://mhzlayhnyqlxdyiceyqz.supabase.co\` |
-| \`SUPABASE_SECRET_KEY\` | Der Secret Key aus den Supabase-Projekteinstellungen |
-
-Danach **einmal neu deployen** — Umgebungsvariablen greifen erst beim nächsten
-Bau.
-
-> Der Secret Key gehört ausschließlich hierhin, nie in den Browser-Code. Er
-> umgeht Row Level Security.
+Für diesen Stand sind keine Umgebungsvariablen und keine Datenbank nötig.
 
 ---
 
@@ -511,13 +505,14 @@ Dann **einmal ohne** \`?demo=1\`. Unter dem Ergebnis muss stehen:
 
 > Ergebnis gespeichert. Danke!
 
-Steht dort etwas anderes, ist es eine dieser drei Ursachen:
+In Netlify unter **Forms** muss anschließend \`campus-quiz-result\` erscheinen.
+Fehlt eine Einsendung, sind dies die häufigsten Ursachen:
 
 | Meldung | Ursache |
 |---|---|
-| „Backend ist noch nicht vollständig konfiguriert" | Umgebungsvariablen fehlen oder es wurde danach nicht neu deployt |
-| „Die Datenbank hat die Speicherung abgelehnt" | Die Tabelle \`campus_quiz_submissions\` fehlt — Migration einspielen |
-| „Noch keine Verbindung" | Die Function wurde nicht mitdeployt: der komplette Ordner muss hoch, nicht nur \`public/\` |
+| Formular fehlt im Dashboard | Formularerkennung aktivieren und neu deployen |
+| „Noch keine Verbindung" | Die Function oder Netlify Forms ist nicht erreichbar |
+| Einsendung liegt im Sende-Ausgang | Seite nach wiederhergestellter Verbindung erneut öffnen und „Jetzt senden" wählen |
 
 **Ein Ergebnis geht dabei nicht verloren.** Es liegt auf dem Gerät, bis der
 Server bestätigt hat, und wird von selbst nachgesendet — beim nächsten Aufruf
@@ -526,18 +521,13 @@ oben ein Hinweisband mit „Jetzt senden", und die Insel meldet „noch nicht
 gesendet" statt „abgeschlossen".
 
 Das heißt auch: Wer den Fehler oben behebt und die Teilnehmer die Seite noch
-einmal aufrufen lässt, bekommt die liegengebliebenen Ergebnisse nachträglich
-noch in die Datenbank.
+einmal aufrufen lässt, bekommt die liegengebliebenen Ergebnisse nachträglich.
 
-Zum Nachsehen in Supabase:
+### Später Supabase aktivieren
 
-\`\`\`sql
-select created_at, participant, dealer, dealer_number, percent, duration_seconds
-  from public.campus_quiz_submissions
- where island = '${satz.island}'
- order by created_at desc
- limit 10;
-\`\`\`
+Nach der Fragenabstimmung die Migration \`Campus Quiz/supabase_campus_quiz_migration.sql\`
+ausführen und in Netlify \`SUPABASE_URL\` sowie \`SUPABASE_SECRET_KEY\` setzen.
+Der Secret Key gehört ausschließlich in die Netlify-Umgebungsvariablen.
 
 ---
 
@@ -612,25 +602,19 @@ und der gilt **pro Domain**. Sieben Sites sind sieben Domains.
 
 ## Hochladen
 
-1. Auf [app.netlify.com](https://app.netlify.com) einloggen
-2. **Add new site → Deploy manually**
-3. **Diesen kompletten Ordner** ins Feld ziehen — nicht nur \`public/\`.
-   Sonst fehlt die Function und es wird nichts gespeichert.
+Für Quiz-Speicherung muss die Netlify Function mit veröffentlicht werden.
+Darum entweder das Repository als Git-Projekt mit Netlify verbinden oder in
+diesem Ordner mit der Netlify CLI \`netlify deploy --build --prod\` ausführen.
+Ein reines Drag-and-drop von \`public/\` veröffentlicht nur die statischen
+Dateien und reicht für diesen Stand nicht aus.
 
-### Danach zwingend: die zwei Umgebungsvariablen
+### Pilotphase ohne Datenbank
 
-**Site configuration → Environment variables → Add a variable**
+Unter **Forms → Enable form detection** die Formularerkennung aktivieren und
+danach einmal neu deployen. Die Quiz-Ergebnisse und der Feedbackbogen stehen
+dann in Netlify unter **Forms** und lassen sich als CSV exportieren.
 
-| Name | Wert |
-|---|---|
-| \`SUPABASE_URL\` | \`https://mhzlayhnyqlxdyiceyqz.supabase.co\` |
-| \`SUPABASE_SECRET_KEY\` | Der Secret Key aus den Supabase-Projekteinstellungen |
-
-Danach **einmal neu deployen** — Umgebungsvariablen greifen erst beim nächsten
-Bau.
-
-> Der Secret Key gehört ausschließlich hierhin, nie in den Browser-Code. Er
-> umgeht Row Level Security.
+Für diesen Stand sind keine Umgebungsvariablen und keine Datenbank nötig.
 
 ---
 
@@ -644,13 +628,15 @@ Dann **einmal ohne** \`?demo=1\`. Unter dem Ergebnis muss stehen:
 
 > Ergebnis gespeichert. Danke!
 
-Steht dort etwas anderes, ist es eine dieser drei Ursachen:
+In Netlify unter **Forms** müssen anschließend \`campus-quiz-result\` und
+\`campus-feedback\` erscheinen. Fehlt eine Einsendung, sind dies die
+häufigsten Ursachen:
 
 | Meldung | Ursache |
 |---|---|
-| „Backend ist noch nicht vollständig konfiguriert" | Umgebungsvariablen fehlen oder es wurde danach nicht neu deployt |
-| „Die Datenbank hat die Speicherung abgelehnt" | Die Tabelle \`campus_quiz_submissions\` fehlt — Migration einspielen |
-| „Noch keine Verbindung" | Die Function wurde nicht mitdeployt: der komplette Ordner muss hoch, nicht nur \`public/\` |
+| Formular fehlt im Dashboard | Formularerkennung aktivieren und neu deployen |
+| „Noch keine Verbindung" | Die Function oder Netlify Forms ist nicht erreichbar |
+| Einsendung liegt im Sende-Ausgang | Seite nach wiederhergestellter Verbindung erneut öffnen und „Jetzt senden" wählen |
 
 **Ein Ergebnis geht dabei nicht verloren.** Es liegt auf dem Gerät, bis der
 Server bestätigt hat, und wird von selbst nachgesendet — beim nächsten Aufruf
@@ -659,17 +645,13 @@ oben ein Hinweisband mit „Jetzt senden", und die Insel meldet „noch nicht
 gesendet" statt „abgeschlossen".
 
 Das heißt auch: Wer den Fehler oben behebt und die Teilnehmer die Seite noch
-einmal aufrufen lässt, bekommt die liegengebliebenen Ergebnisse nachträglich
-noch in die Datenbank.
+einmal aufrufen lässt, bekommt die liegengebliebenen Ergebnisse nachträglich.
 
-Zum Nachsehen in Supabase:
+### Später Supabase aktivieren
 
-\`\`\`sql
-select created_at, island_code, participant, dealer_number, percent
-  from public.campus_quiz_submissions
- order by created_at desc
- limit 20;
-\`\`\`
+Nach der Fragenabstimmung die Migration \`Campus Quiz/supabase_campus_quiz_migration.sql\`
+ausführen und in Netlify \`SUPABASE_URL\` sowie \`SUPABASE_SECRET_KEY\` setzen.
+Der Secret Key gehört ausschließlich in die Netlify-Umgebungsvariablen.
 
 ---
 

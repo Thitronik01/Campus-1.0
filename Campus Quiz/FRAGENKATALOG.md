@@ -11,11 +11,10 @@
 
 | Fragetyp | Anzahl |
 |---|---:|
-| Einfachauswahl | 56 |
-| Mehrfachauswahl | 11 |
-| Zuordnung | 3 |
+| Einfachauswahl | 58 |
+| Mehrfachauswahl | 9 |
+| Zuordnung | 4 |
 | Reihenfolge | 2 |
-| Richtig/Falsch | 1 |
 
 ## Inhalt
 
@@ -33,17 +32,17 @@
 | | |
 |---|---|
 | Fragen | 10 |
-| Fragensatz-Version | 4 |
+| Fragensatz-Version | 5 |
 | Art | Neuheiten verstehen, passend beraten |
 | Lernziel | CampLock und VanLock sicher abgrenzen, den Fingerprint ehrlich beraten und die neuen Funklösungen gegen Wassereinbruch passend einsetzen. |
 
 **Quellen im Produktwissen:** `produkte/camplock-fingerprint.md`, `produkte/vanlock-fingerprint.md`, `produkte/funk-wassermelder.md`, `produkte/funk-magnetkontakt.md`, `referenz/zugang-bedienung.md`
 
-> **Redaktioneller Hinweis (erscheint nicht im Quiz):** Fragenkatalog v4. VEJRØ bündelt Produktneuheiten: CampLock/VanLock, Funk-Wassermelder 868 und wasserdichter Funk-Magnetkontakt. VanLock-Einsatzbereich sowie alle Werte der Produktneuheiten vor jeder Schulung gegen den aktuellen Freigabestand prüfen.
+> **Redaktioneller Hinweis (erscheint nicht im Quiz):** Fragenkatalog v5. VEJRØ bündelt Produktneuheiten: CampLock/VanLock Fingerprint V002+, Funk-Wassermelder 868 und wasserdichter Funk-Magnetkontakt. Fingerprint-Kompatibilität und Sicherheitshinweis vom 27.07.2026 vor jeder Schulung gegen den aktuellen Freigabestand prüfen.
 
 #### 1. Ein Kunde hat einen Kastenwagen ohne Hartal-Aufbautür und möchte biometrischen Zugang. Was empfiehlst du?
 
-`VEJ-01` · Einfachauswahl · Kundensituation
+`VEJ-01` · Einfachauswahl · CampLock oder VanLock
 
 - CampLock Fingerprint
 - **VanLock Fingerprint** ✓
@@ -56,7 +55,7 @@
 
 - *CampLock oder CampLock mit Adapter:* Der Unterschied sitzt nicht in der Befestigung, sondern im Sensor und in der Türanbindung. Einen Adapter, der CampLock auf andere Türen bringt, gibt es nicht.
   <br>↳ bezogen auf: „CampLock Fingerprint“ · „CampLock Fingerprint mit Montageadapter“
-- *Umbau auf Hartal-Tür:* Technisch absurd teuer — und unnötig, weil es für genau diesen Fall ein eigenes Produkt gibt.
+- *Umbau auf Hartal-Tür:* Technisch absurd teuer - und unnötig, weil es für genau diesen Fall ein eigenes Produkt gibt.
   <br>↳ bezogen auf: „Erst nach Umbau auf eine Hartal-Tür möglich“
 
 **Mitnehmen:** Erste Frage am Fahrzeug ist nie „welcher Fingerprint“, sondern „welche Tür“.
@@ -69,38 +68,38 @@
 - **Die Gehäusepfeile von Sender und Magnet zueinander ausrichten** ✓
 - **Im geschlossenen Zustand höchstens 22 mm Abstand einplanen** ✓
 - Grundsätzlich den Montageadapter des Standardkontakts verwenden
-- Den Sender dauerhaft unter Wasser montieren — IP67 erlaubt das
+- Den Sender dauerhaft unter Wasser montieren - IP67 erlaubt das
 
-**Auflösung:** Für feuchte- und spritzwasserbelastete Öffnungen ist die wasserdichte Ausführung vorgesehen. Pfeile zueinander, geschlossen maximal 22 mm — und IP67 bedeutet nicht Dauereintauchen.
+**Auflösung:** Für feuchte- und spritzwasserbelastete Öffnungen ist die wasserdichte Ausführung vorgesehen. Pfeile zueinander, geschlossen maximal 22 mm - und IP67 bedeutet nicht Dauereintauchen.
 
 **Falsch gewählt?**
 
 - *Standardadapter übernommen:* Die Montageregeln der Standardausführung dürfen nicht ungeprüft auf die wasserdichte Ausführung übertragen werden.
   <br>↳ bezogen auf: „Grundsätzlich den Montageadapter des Standardkontakts verwenden“
 - *IP67 mit Dauereintauchen verwechselt:* IP67 schützt gegen zeitweiliges Untertauchen unter definierten Bedingungen. Es ist keine Freigabe für dauerhafte Montage unter Wasser oder den direkten Hochdruckstrahl.
-  <br>↳ bezogen auf: „Den Sender dauerhaft unter Wasser montieren — IP67 erlaubt das“
+  <br>↳ bezogen auf: „Den Sender dauerhaft unter Wasser montieren - IP67 erlaubt das“
 
-**Mitnehmen:** Produktvariante zuerst nach dem Einbauort auswählen, danach nach ihrer eigenen Anleitung montieren — nicht nach der Regel eines ähnlich aussehenden Kontakts.
+**Mitnehmen:** Produktvariante zuerst nach dem Einbauort auswählen, danach nach ihrer eigenen Anleitung montieren - nicht nach der Regel eines ähnlich aussehenden Kontakts.
 
-#### 3. Eine vierköpfige Familie soll Zugang bekommen, jede Person mit zwei Fingern. Reicht der Speicher?
+#### 3. Welches Produkt wählst du für eine Dachbox oder Außenklappe, die regelmäßig Spritzwasser ausgesetzt ist?
 
-`VEJ-05` · Einfachauswahl · Speicher in der Praxis
+`VEJ-05` · Einfachauswahl · Produkt erkennen
 
-- Nein — es passen nur 8 Finger insgesamt
-- **Ja — 16 Finger sind anlernbar, davon 2 als Master** ✓
-- Ja, aber nur wenn auf Master-Finger verzichtet wird
-- Ja — die Zahl ist unbegrenzt
+- `/media/vejro/vej-produkt-camplock.webp` — Runder CampLock Fingerprint-Sensor
+- `/media/vejro/vej-produkt-wassermelder.webp` — Funk-Wassermelder mit kabelgebundenem Fühler
+- **`/media/vejro/vej-produkt-magnetkontakt-wasserdicht.webp` — Wasserdichter Funk-Magnetkontakt mit Sender und Magnet** ✓
+- `/media/vejro/vej-produkt-magnetkontakt-standard.webp` — Standard-Funk-Magnetkontakt mit Sender und Magnet
 
-**Auflösung:** 16 anlernbare Finger, davon 2 Master. Vier Personen × zwei Finger sind acht — der Speicher ist hier nicht die Grenze.
+**Auflösung:** Für eine direkt feuchte- oder spritzwasserbelastete Außenöffnung ist die wasserdichte Ausführung vorgesehen. Der Wassermelder erkennt dagegen austretendes Wasser an einem tiefen Punkt; der Standardkontakt gehört an geschützte Öffnungen.
 
 **Falsch gewählt?**
 
-- *Auf Master verzichten:* Ohne Master lässt sich später kein Nutzer anlegen oder löschen. Die zwei Master sind keine optionale Zugabe, sie sind die Verwaltung.
-  <br>↳ bezogen auf: „Ja, aber nur wenn auf Master-Finger verzichtet wird“
-- *Unbegrenzt:* Verlockend, weil der Speicher in der Praxis nie knapp wird. Bei einem Vermietfahrzeug mit wechselnden Nutzern wird er es aber sehr wohl.
-  <br>↳ bezogen auf: „Ja — die Zahl ist unbegrenzt“
+- *Wassermelder statt Öffnungskontakt:* Der Wassermelder erkennt Wasser an seinen Fühlerkontakten. Er überwacht nicht, ob eine Klappe geöffnet wird.
+  <br>↳ bezogen auf: „Funk-Wassermelder 868“
+- *Standardkontakt gewählt:* Bei direkter Spritzwasserbelastung wird nicht die ähnlich aussehende Standardausführung übernommen, sondern die dafür freigegebene wasserdichte Variante.
+  <br>↳ bezogen auf: „Funk-Magnetkontakt 868 Standard“
 
-**Mitnehmen:** Speicher ist selten das Problem — die Verteilung schon. Zwei Finger pro Person, damit ein Pflaster nicht den Urlaub kostet.
+**Mitnehmen:** Nicht nach Produktname oder Form entscheiden, sondern nach Aufgabe und Einbauumgebung: Öffnung erkennen, Wasser erkennen oder Zugang bedienen.
 
 #### 4. Wo platzierst du beim Funk-Wassermelder 868 Sendeeinheit und Fühler?
 
@@ -122,65 +121,71 @@
 
 **Mitnehmen:** Beim Wassermelder haben Sender und Fühler bewusst zwei verschiedene Einbauorte: Elektronik trocken, Messpunkt tief.
 
-#### 5. Bringe die Inbetriebnahme in die richtige Reihenfolge.
+#### 5. Bringe den vollständigen Funktionstest des eingebauten Funk-Wassermelders in die richtige Reihenfolge.
 
-`VEJ-04` · Reihenfolge · Reihenfolge
+`VEJ-04` · Reihenfolge · Funk-Wassermelder prüfen
 
-1. Fahrzeug- und Türkompatibilität klären
-2. Steuergerät und Sensor montieren, mit 12/24 V versorgen
-3. WiPro und Fingerprint in den Anlernmodus versetzen und koppeln
-4. Zwei Master-Finger einlernen
-5. Nutzerfinger einlernen
-6. Funktionstest an der geschlossenen Tür, zweiten Zugangsweg mitprüfen
+**Bild zur Frage:** `/media/vejro/vej-produkt-wassermelder.webp` — Funk-Wassermelder mit Sendeeinheit und Fühler
 
-**Auflösung:** Kompatibilität → Montage → Anlernmodus und Kopplung → Master → Nutzer → Test. Die Master-Finger kommen immer vor den Nutzerfingern: Ohne sie lässt sich später niemand verwalten.
+1. WiPro III scharf schalten
+2. Beide Fühlerkontakte mit einem feuchten Tuch elektrisch überbrücken
+3. Lokalen Alarm am Fahrzeug bestätigen
+4. Falls Pro-finder verbaut ist: Alarm-SMS an den vorgesehenen Zielrufnummern bestätigen
+5. Fühlerkontakte wieder vollständig freigeben und trocknen
+6. Alarm beenden und Prüfergebnis dokumentieren
 
-**Falsch gewählt?**
-
-- *Kompatibilität später:* Der teuerste aller Fehler. Ist die Tür ungeeignet, sitzt bereits ein Loch in der Verkleidung.
-- *Test vor dem Anlernen:* Ein Test ohne angelernte Finger prüft nur, ob Strom anliegt.
-
-**Mitnehmen:** Der Funktionstest gehört an die **geschlossene** Tür. Offen getestet heißt gar nicht getestet — Prinzip 3.
-
-#### 6. Ein Ehepaar bekommt das System. Wie legst du die beiden Master-Finger an?
-
-`VEJ-10` · Einfachauswahl · Übergabe
-
-- Beide Master auf denselben Finger des Halters
-- **Je ein Master pro Person, an unterschiedlichen Händen** ✓
-- Beide Master auf die linke Hand des Halters
-- Master überspringen, direkt Nutzerfinger anlernen
-
-**Auflösung:** Die Master-Finger steuern die Verwaltung. Verteilt auf zwei Personen und zwei Hände bleibt sie auch dann verfügbar, wenn eine Person nicht da ist oder sich die Hand verletzt.
+**Auflösung:** Scharfschalten → Fühler auslösen → lokalen Alarm prüfen → optionalen Fernalarm prüfen → Fühler freigeben → Alarm beenden und dokumentieren. Nur so wird die gesamte zugesagte Meldekette geprüft.
 
 **Falsch gewählt?**
 
-- *Beide beim Halter:* Der häufigste Fall in der Praxis, weil der Halter beim Einbau danebensteht und die zweite Person nicht. Genau deshalb bewusst nachfragen, wer noch fährt.
-  <br>↳ bezogen auf: „Beide Master auf denselben Finger des Halters“
-- *Beide auf eine Hand:* Fühlt sich ordentlich an, ist aber ein einziger Ausfallpunkt. Ein Gipsarm sperrt dann die gesamte Verwaltung.
-  <br>↳ bezogen auf: „Beide Master auf die linke Hand des Halters“
+- *Nur die Funkverbindung geprüft:* Anlernen bestätigt den Funkempfang, nicht den Alarmweg vom nassen Fühler bis zur Sirene und gegebenenfalls zur Zielrufnummer.
+- *Fernmeldung vorausgesetzt:* Eine Alarm-SMS gehört nur dann zum Test, wenn ein Pro-finder eingebaut und entsprechend eingerichtet ist.
 
-**Mitnehmen:** Frag bei der Übergabe: „Wer fährt das Fahrzeug außer Ihnen?“ — diese eine Frage verhindert den halben Reklamationsanteil dieser Insel.
+**Mitnehmen:** Ein bestandener Test endet nicht beim Piepen: Jede zugesagte Meldestrecke wird ausgelöst, empfangen und dokumentiert.
 
-#### 7. Ein Kunde meldet: „Morgens am Meer erkennt das Gerät meinen Finger oft nicht.“ Wahrscheinlichste Ursache?
+#### 6. Bei der Übergabe fragt der Kunde, ob der Fahrzeugschlüssel dank Fingerprint künftig zu Hause bleiben kann. Was gilt nach dem aktuellen Sicherheitshinweis?
 
-`VEJ-07` · Einfachauswahl · Reklamationsfall
+`VEJ-10` · Einfachauswahl · Aktueller Sicherheitshinweis
 
-- **Feuchte, salzige oder verschmutzte Fingerkuppen** ✓
-- Zu niedrige Bordspannung am Steuergerät
-- Der Sensor ist defekt und muss getauscht werden
-- Der Finger wurde bei anderer Temperatur eingelernt
+**Bild zur Frage:** `/media/vejro/vej-produkt-camplock.webp` — CampLock Fingerprint-Sensor
 
-**Auflösung:** Feuchtigkeit und Salz auf der Fingerkuppe verändern das Bild, das der Sensor liest. „Morgens am Meer“ ist die Beschreibung der Ursache, nicht nur der Umstände.
+- Ja - nach erfolgreichem Test ersetzt der Fingerprint den Schlüssel vollständig
+- **Nein - Fahrzeugschlüssel mitführen und den aktuellen Update-Stand beachten** ✓
+- Ja - sofern zwei Master-Finger angelernt sind
+- Nur bei VanLock muss der Schlüssel mitgeführt werden
+
+**Auflösung:** THITRONIK weist aktuell darauf hin, den Fahrzeugschlüssel mitzuführen. Bei CampLock und VanLock Fingerprint kann es in seltenen Fällen zu einer nicht korrekt ausgeführten Zentralverriegelung und damit zu einem Aussperren kommen; der angekündigte Softwarestand ist zu beachten.
 
 **Falsch gewählt?**
 
-- *Sensor defekt:* Der teuerste Reflex im Sortiment. Ein Sensor, der zeitweise und wetterabhängig nicht erkennt, ist fast nie defekt — ein defekter Sensor erkennt gar nicht.
-  <br>↳ bezogen auf: „Der Sensor ist defekt und muss getauscht werden“
-- *Bordspannung:* Klingt technisch fundiert, passt aber nicht zum Muster: Zu wenig Spannung wirkt nicht nur morgens und nicht nur bei einer Person.
-  <br>↳ bezogen auf: „Zu niedrige Bordspannung am Steuergerät“
+- *Fingerprint als alleinigen Zugang behandelt:* Auch ein korrekt eingerichteter Fingerprint und mehrere Master-Finger ersetzen den unabhängigen mechanischen Zugang nicht.
+  <br>↳ bezogen auf: „Ja - nach erfolgreichem Test ersetzt der Fingerprint den Schlüssel vollständig“ · „Ja - sofern zwei Master-Finger angelernt sind“
+- *Hinweis nur auf VanLock begrenzt:* Der veröffentlichte Hinweis betrifft CampLock und VanLock Fingerprint.
+  <br>↳ bezogen auf: „Nur bei VanLock muss der Schlüssel mitgeführt werden“
 
-**Mitnehmen:** Vor jedem Austausch die Frage stellen: „Passiert das immer oder nur manchmal?“ Manchmal heißt fast nie Defekt.
+**Mitnehmen:** Aktuelle Produkthinweise gehören in die Übergabe. Bis zur technischen Lösung bleibt der Fahrzeugschlüssel der unabhängige Zugangsweg.
+
+#### 7. Ein Kunde möchte den Funk-Wassermelder 868 ohne WiPro III als eigenständigen akustischen Wasserwarner einsetzen. Was sagst du?
+
+`VEJ-07` · Einfachauswahl · Systemgrenze Wassermelder
+
+**Bild zur Frage:** `/media/vejro/vej-produkt-wassermelder.webp` — Funk-Wassermelder 868
+
+- Das geht - der Melder besitzt eine eigene Sirene
+- Das geht nur mit einer zusätzlichen SIM-Karte
+- **Das geht nicht - der Melder ist Funk-Zubehör und benötigt eine kompatible WiPro III** ✓
+- Das geht nur, wenn der Fühler direkt an 12 V angeschlossen wird
+
+**Auflösung:** Der Funk-Wassermelder ist Zubehör zur Alarmanlage und hat keine eigene akustische Alarmierung. Die WiPro III übernimmt den lokalen Alarm; ein Pro-finder kann die Meldung zusätzlich weiterleiten.
+
+**Falsch gewählt?**
+
+- *Eigene Sirene angenommen:* Der Fühler erkennt Wasser und der Sender funkt das Ereignis. Die akustische Reaktion kommt von der eingebundenen Alarmanlage.
+  <br>↳ bezogen auf: „Das geht - der Melder besitzt eine eigene Sirene“
+- *Pro-finder zur Voraussetzung gemacht:* Der Pro-finder ist für die Fernmeldung optional. Die notwendige Basis für den Funk-Wassermelder ist die kompatible WiPro III.
+  <br>↳ bezogen auf: „Das geht nur mit einer zusätzlichen SIM-Karte“
+
+**Mitnehmen:** Zubehör nie isoliert versprechen: Sensor, Funkweg, Alarmzentrale und optionale Fernmeldung sind getrennte Bausteine.
 
 #### 8. In welchen Situationen ist ein Fingerprint allein nicht die passende Empfehlung? Wähle alle zutreffenden.
 
@@ -203,45 +208,45 @@
 
 **Mitnehmen:** Grenzen anzusprechen kostet im Gespräch zwei Minuten. Nachträglich kostet es einen Werkstatttermin.
 
-#### 9. Kunde mit WiPro III (ohne safe.lock): „Mit dem Finger mache ich dann das ganze Fahrzeug auf.“ Was stimmt?
+#### 9. Vor dir liegen CampLock oder VanLock Fingerprint in Ausführung V002+ und eine vorhandene WiPro III ohne safe.lock. Darfst du die Funktion zusagen?
 
-`VEJ-02` · Einfachauswahl · Systemgrenze
+`VEJ-02` · Einfachauswahl · Varianten und Freigabestand
 
-- Richtig — der Finger entriegelt Aufbautür und Fahrzeug
-- **Nur die Aufbautür — die Fahrzeug-Zentralverriegelung braucht safe.lock** ✓
-- Nur das Fahrzeug — die Aufbautür bleibt am Originalschloss
-- Weder noch — ohne safe.lock arbeitet CampLock gar nicht
+- Ja - jede WiPro III ist mit V002+ kompatibel
+- **Nein - die aktuelle V002+-Anleitung nennt WiPro III safe.lock; Produktstand und passende Anleitung zuerst eindeutig zuordnen** ✓
+- Ja - wenn ein Pro-finder ergänzt wird
+- Ja - sofern nur die Aufbautür geöffnet werden soll
 
-**Auflösung:** Zwei getrennte Vorgänge. Die **Aufbautür** bedient CampLock selbst. Die **Fahrzeug-Zentralverriegelung** wird nur bei WiPro III safe.lock mit passender ZV-Anbindung mitgeführt. Scharf-/Unscharfschalten der Alarmanlage geht auch mit der Standard-WiPro III.
+**Auflösung:** Für CampLock und VanLock Fingerprint V002+ beschreibt die aktuelle Anleitung den Betrieb als Zubehör zu WiPro III safe.lock. Vor einer Zusage werden Ausführung, Serien-/Revisionsstand, Fahrzeug und zugehörige aktuelle Anleitung zusammen geprüft.
 
 **Falsch gewählt?**
 
-- *Beides geht:* Der häufigste Irrtum im ganzen Sortiment — und er entsteht nicht aus Unwissen, sondern weil der Kunde es so erwartet und man ihm nicht widersprechen will. Genau deshalb ist es der Beratungsfehler Nr. 1.
-  <br>↳ bezogen auf: „Richtig — der Finger entriegelt Aufbautür und Fahrzeug“
-- *CampLock arbeitet ohne safe.lock gar nicht:* Übervorsichtig gedacht. Die Aufbautür und die Alarmsteuerung funktionieren sehr wohl — nur eben nicht die Fahrzeug-ZV.
-  <br>↳ bezogen auf: „Weder noch — ohne safe.lock arbeitet CampLock gar nicht“
+- *Älteren Funktionsstand übertragen:* Bei ähnlich benannten Produktständen darf eine frühere Kompatibilitätsaussage nicht auf V002+ übertragen werden. Entscheidend ist die Anleitung der konkreten Ausführung.
+  <br>↳ bezogen auf: „Ja - jede WiPro III ist mit V002+ kompatibel“ · „Ja - sofern nur die Aufbautür geöffnet werden soll“
+- *Pro-finder als Kompatibilitätsadapter behandelt:* Der Pro-finder ergänzt Ortung und Fernmeldung. Er ersetzt keine geforderte safe.lock-Zentrale.
+  <br>↳ bezogen auf: „Ja - wenn ein Pro-finder ergänzt wird“
 
-**Mitnehmen:** **Prinzip 1 — Scharf/Unscharf ≠ Auf/Zu.** Diese Trennung begegnet dir heute noch dreimal: bei der KeyCard, bei BT-connect und im Campingmodus. Ein Satz für den Kunden: „Der Finger öffnet Ihre Aufbautür und schaltet die Anlage. Das ganze Fahrzeug entriegeln — dafür brauchen wir safe.lock.“
+**Mitnehmen:** Bei Produktneuheiten gehört die Revision zum Produktnamen. Erst konkrete Ausführung und aktuelle Anleitung zusammenbringen, dann versprechen.
 
 #### 10. Kunde: „Super, dann kann ich den Fahrzeugschlüssel ja zu Hause lassen.“ Deine beste Antwort?
 
-`VEJ-06` · Einfachauswahl · Verkaufsgespräch
+`VEJ-06` · Einfachauswahl · Unabhängiger Zweitzugang
 
 - Ja, der Fingerprint ersetzt den Schlüssel
-- **Nein — immer einen zweiten, unabhängigen Zugangsweg vorsehen** ✓
+- **Nein - immer einen zweiten, unabhängigen Zugangsweg vorsehen** ✓
 - Ja, sofern zusätzlich ein Pro-finder verbaut ist
 - Ja, sobald safe.lock verbaut ist
 
-**Auflösung:** Jeder Bedienweg hat einen Ausfallmodus. Nasse Finger, leerer Akku, verlorene Kopplung — keiner davon darf dazu führen, dass der Kunde vor dem Fahrzeug steht.
+**Auflösung:** Jeder Bedienweg hat einen Ausfallmodus. Nasse Finger, leerer Akku, verlorene Kopplung - keiner davon darf dazu führen, dass der Kunde vor dem Fahrzeug steht.
 
 **Falsch gewählt?**
 
 - *Mit Pro-finder ja:* Naheliegend, aber der Pro-finder ist der **Fernsteuerungs**weg und braucht Mobilfunk. Ohne Netz auf dem Stellplatz ist er kein Zugang. Ein Backup, das dieselbe Voraussetzung wie das Original hat, ist keines.
   <br>↳ bezogen auf: „Ja, sofern zusätzlich ein Pro-finder verbaut ist“
-- *Mit safe.lock ja:* safe.lock erweitert, was der Fingerprint kann — es macht ihn nicht ausfallsicher.
+- *Mit safe.lock ja:* safe.lock erweitert, was der Fingerprint kann - es macht ihn nicht ausfallsicher.
   <br>↳ bezogen auf: „Ja, sobald safe.lock verbaut ist“
 
-**Mitnehmen:** **Prinzip 2 — Ein Zugangsweg ist kein Zugangsweg.** Sauberster Zweitweg: Funk-Handsender 868 (101064), unabhängig vom Smartphone, bis ca. 75 m, CR2032, kein Neuanlernen nach Batteriewechsel. Satz für den Kunden: „Nehmen Sie den Schlüssel trotzdem mit — nicht weil ich dem Finger misstraue, sondern weil Sie sonst nur einen Weg ins Fahrzeug haben.“
+**Mitnehmen:** **Prinzip 2 - Ein Zugangsweg ist kein Zugangsweg.** Sauberster Zweitweg: Funk-Handsender 868 (101064), unabhängig vom Smartphone, bis ca. 75 m, CR2032, kein Neuanlernen nach Batteriewechsel. Satz für den Kunden: „Nehmen Sie den Schlüssel trotzdem mit - nicht weil ich dem Finger misstraue, sondern weil Sie sonst nur einen Weg ins Fahrzeug haben.“
 
 ---
 
@@ -250,13 +255,13 @@
 | | |
 |---|---|
 | Fragen | 10 |
-| Fragensatz-Version | 4 |
+| Fragensatz-Version | 5 |
 | Art | Das digitale Werkzeug für Beratung und Werkstatt |
 | Lernziel | Den THITRONIK-Händlerbereich als tägliches Arbeitsmittel nutzen: Kundenunterlagen sauber von geschützten Einbaudaten trennen, Aufträge fundiert vorbereiten und den eigenen Werkstattservice stärken. |
 
 **Quellen im Produktwissen:** `Öffentliche Website-Struktur (Stand 13.08.2026)`, `_intern/werkseinbau-eckernfoerde.md`, `produkte/gas-pro-iii.md`
 
-> **Redaktioneller Hinweis (erscheint nicht im Quiz):** Fragenkatalog v4. POEL erklärt den Händlerbereich und stärkt den professionellen Einbau durch den Fachbetrieb. Vor dem Einsatz die konkreten Menüpunkte nach dem Login und den Serienbereich 1286-008 bis 1286-012 der Rückrufaktion in POE-05 gegenprüfen.
+> **Redaktioneller Hinweis (erscheint nicht im Quiz):** Fragenkatalog v5. POEL trainiert die Navigation zwischen öffentlichem Support, geschütztem Händlerbereich und aktuellen Produktinformationen. Menünamen und Dokumentenstände vor jeder Schulung gegen die Website prüfen.
 
 #### 1. Ein Kunde braucht die Konformitätserklärung nach 2014/53/EU für seinen Funk-Magnetkontakt. Wo findest du sie?
 
@@ -271,10 +276,10 @@
 
 **Falsch gewählt?**
 
-- *Werkskundendienst:* Genau der Reflex, den diese Insel abgewöhnen soll. Es ist eine der häufigsten telefonischen Anfragen — und sie ist zwei Klicks entfernt.
+- *Werkskundendienst:* Genau der Reflex, den diese Insel abgewöhnen soll. Es ist eine der häufigsten telefonischen Anfragen - und sie ist zwei Klicks entfernt.
   <br>↳ bezogen auf: „Beim Werkskundendienst anfordern“
 
-**Mitnehmen:** Alles, was ein Kunde bekommen darf, ist öffentlich. Wenn du es nicht findest, suchst du an der falschen Stelle — nicht im falschen Bereich.
+**Mitnehmen:** Alles, was ein Kunde bekommen darf, ist öffentlich. Wenn du es nicht findest, suchst du an der falschen Stelle - nicht im falschen Bereich.
 
 #### 2. Du sendest dem Kunden eine Bedienungsanleitung und bereitest intern die fahrzeugspezifische Steckerbelegung vor. Welche Aufteilung ist richtig?
 
@@ -298,7 +303,7 @@
 
 #### 3. Du brauchst die fahrzeugspezifische Einbauunterlage mit Steckerbelegung für einen Sprinter VS30. Wo bekommst du sie?
 
-`POE-03` · Einfachauswahl · Grenzfall
+`POE-03` · Einfachauswahl · Geschützte Einbauunterlagen
 
 - Öffentlicher Downloadbereich, Rubrik Alarmanlagen
 - **Über den geschützten Händlerbereich bzw. THITRONIK direkt** ✓
@@ -309,7 +314,7 @@
 
 **Falsch gewählt?**
 
-- *Öffentlicher Downloadbereich:* Wer dort sucht, sucht vergeblich — und das fühlt sich an wie ein Fehler der Website. Es ist Absicht: Diese Unterlagen gehören in Fachhand, nicht in die Hände dessen, der am Samstag selbst schrauben will.
+- *Öffentlicher Downloadbereich:* Wer dort sucht, sucht vergeblich - und das fühlt sich an wie ein Fehler der Website. Es ist Absicht: Diese Unterlagen gehören in Fachhand, nicht in die Hände dessen, der am Samstag selbst schrauben will.
   <br>↳ bezogen auf: „Öffentlicher Downloadbereich, Rubrik Alarmanlagen“
 
 **Mitnehmen:** Nicht auffindbar heißt hier nicht „gibt es nicht“, sondern „nicht für alle“. Der Anruf unter -112 ist an dieser Stelle der richtige Weg, nicht der faule.
@@ -347,30 +352,34 @@
 
 **Falsch gewählt?**
 
-- *Nur über den Außendienst:* Funktioniert auch — dauert aber Tage statt Minuten und bindet jemanden, der besser verkauft.
+- *Nur über den Außendienst:* Funktioniert auch - dauert aber Tage statt Minuten und bindet jemanden, der besser verkauft.
   <br>↳ bezogen auf: „Nur über den Außendienst“
 
 **Mitnehmen:** Der Login lohnt sich einmalig und spart dauerhaft. Vieles, was Händler telefonisch anfragen, liegt dort bereits fertig.
 
-#### 6. Ein Kunde bringt eine G.A.S.-pro III mit Seriennummer 1286-010 in die Werkstatt. Was tust du?
+#### 6. Ordne jede benötigte Information dem schnellsten aktuellen Fundort zu.
 
-`POE-05` · Einfachauswahl · Sicherheitsrelevant
+`POE-05` · Zuordnung · Dokumenten-Navigation
 
-- Normal einbauen — der Rückruf betraf nur CO-Geräte
-- **Rückrufseite prüfen, Gerät anmelden, kostenloses Update** ✓
-- Sensor tauschen und Gerät weiterverkaufen
-- Gerät entsorgen und Ersatz berechnen
+**Bild zur Frage:** `/media/poel/poe-start-haendlerbereich.webp` — Arbeitsplatz mit THITRONIK-Händlerunterlagen
 
-**Auflösung:** Der Serienbereich **1286-008 bis 1286-012** ist in Kombination mit dem Zusatzsensor **101289** von der freiwilligen Rückrufaktion betroffen. Das Update ist kostenlos.
+| Zuzuordnen | Richtig |
+|---|---|
+| CampLock/VanLock V002+ Kurzanleitung | Öffentlicher Support → Downloads → Alarmanlagen → Anleitungen |
+| Konformitätserklärung oder WiPro Upgrade-/Update-Formular | Öffentlicher Support → Downloads → Alarmanlagen → Sonstiges |
+| Fahrzeugspezifische Stecker- und Pinbelegung | Geschützter Händlerbereich / Werkstattunterlagen |
+| Aktueller Sicherheits- oder Rückrufhinweis | Offizielle News-, Hinweis- oder Rückrufseite |
+
+Weitere Auswahlmöglichkeiten, die zu nichts passen: Produktkonfigurator
+
+**Auflösung:** Anleitungen und sonstige Formulare sind öffentlich gegliedert; fahrzeugspezifische Anschlussdaten bleiben geschützt; zeitkritische Sicherheitsinformationen werden über die aktuelle offizielle Hinweis- oder Rückrufseite geprüft.
 
 **Falsch gewählt?**
 
-- *Normal einbauen:* Der Gedanke „das betraf doch die anderen Geräte“ ist genau die Lücke, die eine Rückrufaktion aufspüren soll. Bei sicherheitsrelevanten Geräten wird nicht aus dem Gedächtnis entschieden.
-  <br>↳ bezogen auf: „Normal einbauen — der Rückruf betraf nur CO-Geräte“
-- *Entsorgen:* Übervorsichtig und teuer. Das Gerät ist reparabel, das Update kostenlos — der Kunde verliert nichts außer ein paar Tagen.
-  <br>↳ bezogen auf: „Gerät entsorgen und Ersatz berechnen“
+- *Konfigurator als Dokumentenarchiv genutzt:* Der Konfigurator unterstützt die Zusammenstellung eines Systems. Er ersetzt weder aktuelle Anleitungen noch geschützte Werkstattunterlagen oder Sicherheitshinweise.
+- *Öffentliche und geschützte Unterlagen vermischt:* Kundenfähige Dokumente werden öffentlich bereitgestellt; fahrzeugspezifische Anschlussdetails gehören in den geschützten Arbeitsbereich des Fachbetriebs.
 
-**Mitnehmen:** Bei jeder Seriennummer im Rückrufbereich gilt: erst Rückrufseite, dann Schraubendreher. Kostenlos ist nur das Update — der Einbau eines betroffenen Geräts ohne Prüfung ist es später nicht.
+**Mitnehmen:** Nicht nur wissen, was gesucht wird, sondern wo es gepflegt wird. So landet automatisch der aktuelle Stand auf dem Werkstattauftrag.
 
 #### 7. Ein Endkunde aus Bayern fragt, wo er den Einbau machen lassen kann. Worauf verweist du?
 
@@ -385,52 +394,50 @@
 
 **Falsch gewählt?**
 
-- *Werkseinbau Eckernförde:* Eine Möglichkeit, aber für einen Kunden aus Bayern selten die naheliegende — und wer sie als einzige nennt, verschenkt einen Auftrag an einen Kollegen in der Nähe des Kunden.
+- *Werkseinbau Eckernförde:* Eine Möglichkeit, aber für einen Kunden aus Bayern selten die naheliegende - und wer sie als einzige nennt, verschenkt einen Auftrag an einen Kollegen in der Nähe des Kunden.
   <br>↳ bezogen auf: „Den Werkseinbau in Eckernförde“
 
 **Mitnehmen:** Der Händlerfinder ist auch dein eigener Vertriebskanal. Wer ihn kennt, wird über ihn gefunden.
 
-#### 8. Ein Kunde möchte das Gerät nur abholen und selbst einbauen. Welche Argumente sprechen für einen professionellen Einbautermin in deinem Fachbetrieb? Wähle alle zutreffenden.
+#### 8. Eine WiPro III soll zum Upgrade oder Update eingesendet werden. Wo findest du das aktuelle Formular?
 
-`POE-08` · Mehrfachauswahl · Eigener Werkstatttermin
+`POE-08` · Einfachauswahl · Formular finden
 
-- **Fahrzeugkompatibilität und aktuelle Einbauunterlage werden vorab geprüft** ✓
-- **Einbauort, Funkstrecke und Anschluss werden am konkreten Fahrzeug bewertet** ✓
-- **Das Gesamtsystem wird nach dem Einbau getestet und verständlich übergeben** ✓
-- **Verbaute Komponenten, Seriennummern und Prüfergebnisse werden dokumentiert** ✓
-- Nur ein Fachbetrieb darf THITRONIK-Produkte überhaupt einschalten
-- Ein professioneller Einbau macht jeden späteren Defekt unmöglich
+- **Support → Downloads → Alarmanlagen → Sonstiges** ✓
+- Konfigurator → Ergebnis-PDF
+- Händlerfinder → eigener Betrieb
+- FAQ → Mobilfunk
 
-**Auflösung:** Der Wert des Werkstatttermins liegt in Prüfung, fachgerechtem Einbau, Systemtest, Übergabe und Dokumentation — nicht nur in der Montagezeit.
+**Auflösung:** Das aktuelle WiPro III Upgrade-/Update-Formular liegt im öffentlichen Support unter Downloads → Alarmanlagen → Sonstiges.
 
 **Falsch gewählt?**
 
-- *Unzulässiges Ausschließlichkeitsargument:* Verkaufe die Qualität deiner Arbeit, nicht eine pauschale Behauptung. Entscheidend sind Fahrzeugkenntnis, Unterlagen, Prüfung und sichere Übergabe.
-  <br>↳ bezogen auf: „Nur ein Fachbetrieb darf THITRONIK-Produkte überhaupt einschalten“
-- *Fehlerfreiheit versprochen:* Auch ein professioneller Einbau macht Technik nicht unfehlbar. Er reduziert Risiken und schafft eine dokumentierte Basis für Wartung und Diagnose.
-  <br>↳ bezogen auf: „Ein professioneller Einbau macht jeden späteren Defekt unmöglich“
+- *Konfigurator gewählt:* Der Konfigurator erstellt eine Systemempfehlung. Serviceformulare werden im Downloadbereich gepflegt.
+  <br>↳ bezogen auf: „Konfigurator → Ergebnis-PDF“
+- *Falschen Website-Bereich gewählt:* Händlerfinder und FAQ lösen andere Aufgaben. Für ein auszufüllendes Serviceformular führt der Weg direkt zu den Downloads.
+  <br>↳ bezogen auf: „Händlerfinder → eigener Betrieb“ · „FAQ → Mobilfunk“
 
-**Mitnehmen:** Der professionelle Besuch beginnt mit Beratung und endet erst nach dokumentiertem Funktionstest und Einweisung. Genau darin liegt der Mehrwert deines Betriebs.
+**Mitnehmen:** Bei Formularen immer frisch herunterladen. Eine gespeicherte alte Kopie kann Pflichtfelder oder aktuelle Versandhinweise missen.
 
-#### 9. Ein Endkunde möchte direkt bei THITRONIK bestellen, weil du das Gerät nicht vorrätig hast. Was gilt?
+#### 9. Im Downloadbereich findest du verschiedene CampLock/VanLock-Fingerprint-Anleitungen. Wie wählst du die richtige aus?
 
-`POE-10` · Einfachauswahl · Bezugsweg
+`POE-10` · Einfachauswahl · Passende Anleitung wählen
 
-- **THITRONIK liefert nicht an Endkunden — Bezug läuft über den Fachhandel** ✓
-- THITRONIK liefert direkt, du erhältst eine Provision
-- Direktbestellung ist ab zwei Geräten möglich
-- Nur Ersatzteile gehen direkt an Endkunden
+- Immer die Datei mit dem neuesten Upload-Datum öffnen
+- **Produktvariante und Serien-/Revisionsstand am Gerät prüfen und genau die dazu gekennzeichnete Anleitung verwenden** ✓
+- CampLock- und VanLock-Anleitungen sind vollständig austauschbar
+- Die kürzeste Anleitung ist die aktuelle Werkstattfassung
 
-**Auflösung:** Der Bezug läuft ausschließlich über den Fachhandel — Caravaning, Car-HiFi, Bosch-Dienste. Einzige Ausnahme: Direktverkauf im Rahmen des Werkseinbauservice in Eckernförde.
+**Auflösung:** Die Kennzeichnung der konkreten Produktausführung entscheidet. Bei Fingerprint-Produkten können sich Reihenfolge, Kompatibilität und Inbetriebnahme zwischen frühen und V002+-Ständen unterscheiden.
 
 **Falsch gewählt?**
 
-- *Provision:* Klingt nach einer eleganten Lösung für einen unangenehmen Moment. Sie existiert nicht — und die Frage kommt meist genau dann, wenn du gerade nicht liefern kannst und dich schwach fühlst.
-  <br>↳ bezogen auf: „THITRONIK liefert direkt, du erhältst eine Provision“
-- *Ersatzteile direkt:* Verlockend, weil es harmlos wirkt. Es würde aber die Kette aufbrechen, an der auch dein Servicegeschäft hängt.
-  <br>↳ bezogen auf: „Nur Ersatzteile gehen direkt an Endkunden“
+- *Nur nach Datum gewählt:* Die neueste Datei kann für eine andere Revision gedacht sein. Der Abgleich beginnt am verbauten Produkt, nicht in der Dateiliste.
+  <br>↳ bezogen auf: „Immer die Datei mit dem neuesten Upload-Datum öffnen“
+- *Dokumente nach Ähnlichkeit gewählt:* Ähnlicher Name oder Umfang ist kein Revisionsnachweis. Nur die eindeutige Kennzeichnung verbindet Gerät und Anleitung.
+  <br>↳ bezogen auf: „CampLock- und VanLock-Anleitungen sind vollständig austauschbar“ · „Die kürzeste Anleitung ist die aktuelle Werkstattfassung“
 
-**Mitnehmen:** Der Fachhandelsweg ist keine Formalie — er ist der Grund, warum Beratung, Einbau und Support beim Fachbetrieb zusammenbleiben. Also bei dir.
+**Mitnehmen:** Dokumentenstand heißt nicht automatisch neuestes Datum, sondern passendster freigegebener Stand für genau dieses Gerät.
 
 #### 10. Der Kunde bringt eine ältere Einbauanleitung mit, im Händlerbereich liegt eine neuere Fassung. Was ist der professionelle Umgang damit?
 
@@ -459,20 +466,20 @@
 | | |
 |---|---|
 | Fragen | 12 |
-| Fragensatz-Version | 4 |
+| Fragensatz-Version | 5 |
 | Art | Anlernen, montieren, abzweigen und crimpen |
 | Lernziel | Funk-Magnetkontakte zuverlässig anlernen und montieren sowie elektrische Abgriffe mit dem passenden Verbinder und Werkzeug fachgerecht ausführen. |
 
 **Quellen im Produktwissen:** `produkte/funk-magnetkontakt.md`, `fahrzeuge/ford-transit-6g.md`, `referenz/fahrzeugkompatibilitaet.md`
 
-> **Redaktioneller Hinweis (erscheint nicht im Quiz):** Fragenkatalog v4. HIDDENSEE umfasst Funk-Magnetkontakte, gelgefüllte Abzweigverbinder und fachgerechte Crimpverbindungen. HID-01, HID-05 und HID-09 gewinnen später durch echte Werkstattfotos. Die Auslöseschwelle über 30 mm in HID-03 vor Einsatz fachlich bestätigen.
+> **Redaktioneller Hinweis (erscheint nicht im Quiz):** Fragenkatalog v5. HIDDENSEE umfasst Funk-Magnetkontakte, gelgefüllte Abzweigverbinder und fachgerechte Crimpverbindungen. Die Abstandsangaben der Kontaktvarianten sowie konkrete Verbinderfreigaben vor jeder Schulung gegen den aktuellen Anleitungsstand prüfen.
 
-#### 1. Ein Funk-Magnetkontakt ließ sich problemlos anlernen — beim Öffnen der Klappe passiert aber nichts. Woran liegt es?
+#### 1. Ein Funk-Magnetkontakt ließ sich problemlos anlernen - beim Öffnen der Klappe passiert aber nichts. Woran liegt es?
 
-`HID-01` · Einfachauswahl · Der Klassiker
+`HID-01` · Einfachauswahl · Anlernen und Funktionstest
 
 - Die Batterie ist zu schwach zum Senden
-- **Die Platine liegt falsch herum — Sende-LED zeigt zum Magneten** ✓
+- **Die Platine liegt falsch herum - Sende-LED zeigt zum Magneten** ✓
 - Der Kontakt wurde an der Zentrale nicht gespeichert
 - Die Anlage war beim Test nicht scharf geschaltet
 
@@ -480,19 +487,19 @@
 
 **Falsch gewählt?**
 
-- *Nicht gespeichert:* Der Denkfehler steckt schon in der Frage — „ließ sich problemlos anlernen“. Genau das macht diesen Fehler so tückisch: Die Anlern-Bestätigung kommt, und man glaubt, alles sei gut.
+- *Nicht gespeichert:* Der Denkfehler steckt schon in der Frage - „ließ sich problemlos anlernen“. Genau das macht diesen Fehler so tückisch: Die Anlern-Bestätigung kommt, und man glaubt, alles sei gut.
   <br>↳ bezogen auf: „Der Kontakt wurde an der Zentrale nicht gespeichert“
 - *Anlage nicht scharf:* Ein guter Reflex und immer wert zu prüfen. Bei einem frisch montierten Kontakt in falscher Lage bleibt der Alarm aber auch scharf geschaltet aus.
   <br>↳ bezogen auf: „Die Anlage war beim Test nicht scharf geschaltet“
 
-**Mitnehmen:** Die Anlern-Bestätigung beweist gar nichts. Nur der Testalarm mit scharfer Anlage tut es — **Prinzip 3**.
+**Mitnehmen:** Die Anlern-Bestätigung beweist gar nichts. Nur der Testalarm mit scharfer Anlage tut es - **Prinzip 3**.
 
-#### 2. In den Unterlagen stehen unterschiedliche Maximalabstände zwischen Sender und Magnet — 22 mm und 25 mm. Wie legst du die Montage aus?
+#### 2. In den Unterlagen stehen unterschiedliche Maximalabstände zwischen Sender und Magnet - 22 mm und 25 mm. Wie legst du die Montage aus?
 
 `HID-02` · Einfachauswahl · Umgang mit Quellen
 
-- Auf 25 mm — das ist der höhere Wert
-- **Auf 22 mm — den kleineren der genannten Werte** ✓
+- Auf 25 mm - das ist der höhere Wert
+- **Auf 22 mm - den kleineren der genannten Werte** ✓
 - Auf den Mittelwert, rund 23 mm
 - Unkritisch, solange der Kontakt im geschlossenen Zustand schließt
 
@@ -500,16 +507,16 @@
 
 **Falsch gewählt?**
 
-- *25 mm:* Nicht falsch gelernt — dieser Wert steht tatsächlich in der Produktanleitung. Aber er gilt nicht für alle Ausführungen, und du weißt beim Einbau nicht immer, welche Unterlage der Kunde später zitiert.
-  <br>↳ bezogen auf: „Auf 25 mm — das ist der höhere Wert“
-- *Mittelwert:* Der schlechteste aller Wege. Bei widersprüchlichen Spezifikationen gibt es kein „ungefähr richtig“ — es gibt nur innerhalb oder außerhalb.
+- *25 mm:* Nicht falsch gelernt - dieser Wert steht tatsächlich in der Produktanleitung. Aber er gilt nicht für alle Ausführungen, und du weißt beim Einbau nicht immer, welche Unterlage der Kunde später zitiert.
+  <br>↳ bezogen auf: „Auf 25 mm - das ist der höhere Wert“
+- *Mittelwert:* Der schlechteste aller Wege. Bei widersprüchlichen Spezifikationen gibt es kein „ungefähr richtig“ - es gibt nur innerhalb oder außerhalb.
   <br>↳ bezogen auf: „Auf den Mittelwert, rund 23 mm“
 
-**Mitnehmen:** Bei abweichenden Quellenangaben immer konservativ auslegen. Und danach den Reichweitentest fahren — der schlägt jeden Papierwert.
+**Mitnehmen:** Bei abweichenden Quellenangaben immer konservativ auslegen. Und danach den Reichweitentest fahren - der schlägt jeden Papierwert.
 
 #### 3. Bei der wasserdichten Ausführung: Ab welchem Abstand gilt der Kontakt sicher als „offen“?
 
-`HID-03` · Einfachauswahl · Falle
+`HID-03` · Einfachauswahl · Öffnungsabstand
 
 - Ab 22 mm
 - **Ab mehr als 30 mm** ✓
@@ -522,14 +529,14 @@
 
 - *22 mm:* Der wahrscheinlichste Fehlgriff, weil 22 mm die Zahl ist, die man sich zu dieser Ausführung merkt. Genau darin liegt die Falle: Zwei Werte, die im selben Datenblatt stehen und Gegenteiliges bedeuten.
   <br>↳ bezogen auf: „Ab 22 mm“
-- *Sichtbar getrennt:* Beim Funktionstest reicht das oft nicht. Zwei Finger breit auseinander sind je nach Handgröße 20 mm — und damit noch „geschlossen“.
+- *Sichtbar getrennt:* Beim Funktionstest reicht das oft nicht. Zwei Finger breit auseinander sind je nach Handgröße 20 mm - und damit noch „geschlossen“.
   <br>↳ bezogen auf: „Sobald die Teile sichtbar getrennt sind“
 
 **Mitnehmen:** Beim Test großzügig trennen, nicht andeutungsweise. Ein halber Test ist ein falsches Ergebnis mit Brief und Siegel.
 
 #### 4. Welche Regel gilt für welche Ausführung?
 
-`HID-04` · Zuordnung · Nicht vermischen
+`HID-04` · Zuordnung · Kontaktvarianten
 
 | Zuzuordnen | Richtig |
 |---|---|
@@ -542,13 +549,13 @@
 
 **Falsch gewählt?**
 
-- *Regeln vertauscht:* Der häufigste Fehler an dieser Station. Beide Ausführungen sehen ähnlich aus und heißen fast gleich — aber die Ausrichtungsregel der einen ist bei der anderen nutzlos.
+- *Regeln vertauscht:* Der häufigste Fehler an dieser Station. Beide Ausführungen sehen ähnlich aus und heißen fast gleich - aber die Ausrichtungsregel der einen ist bei der anderen nutzlos.
 
-**Mitnehmen:** Erst die Ausführung bestimmen, dann die Regel anwenden. Nie umgekehrt. Und bei der wasserdichten Ausführung dran denken: Die Schrauben sind **nicht** im Lieferumfang — das merkt man sonst auf der Hebebühne.
+**Mitnehmen:** Erst die Ausführung bestimmen, dann die Regel anwenden. Nie umgekehrt. Und bei der wasserdichten Ausführung dran denken: Die Schrauben sind **nicht** im Lieferumfang - das merkt man sonst auf der Hebebühne.
 
 #### 5. Der Kontakt an der metallischen Heckgarage arbeitet unzuverlässig. Erste Maßnahme?
 
-`HID-05` · Einfachauswahl · Werkstattfall
+`HID-05` · Einfachauswahl · Funkreichweite
 
 - Batterie tauschen
 - Kontakt löschen und neu anlernen
@@ -559,75 +566,81 @@
 
 **Falsch gewählt?**
 
-- *Neu anlernen:* Der Standardreflex bei Funkproblemen. Aber „unzuverlässig“ heißt: Er funktioniert manchmal — also ist er angelernt. Anlernen behebt keine Reichweitenprobleme.
+- *Neu anlernen:* Der Standardreflex bei Funkproblemen. Aber „unzuverlässig“ heißt: Er funktioniert manchmal - also ist er angelernt. Anlernen behebt keine Reichweitenprobleme.
   <br>↳ bezogen auf: „Kontakt löschen und neu anlernen“
 - *Zweiter Kontakt:* Verdoppelt das Problem statt es zu lösen. Beide sitzen dann auf demselben Metall.
   <br>↳ bezogen auf: „Zweiten Kontakt parallel montieren“
 
 **Mitnehmen:** „Manchmal“ zeigt fast immer auf die Funkstrecke, „nie“ auf Anlernen oder Ausrichtung. Diese Unterscheidung spart dir die halbe Fehlersuche.
 
-#### 6. Beim Öffnen einer Klappe ertönt ca. 2 Sekunden ein Ton aus der Zentrale, die rote Sende-LED bleibt rund 30 Sekunden an. Was bedeutet das?
+#### 6. Ein elektrischer Abzweig funktioniert im Stand, fällt aber bei Fahrt über Bodenwellen sporadisch aus. Was prüfst du zuerst?
 
-`HID-06` · Einfachauswahl · Batteriediagnose
+`HID-06` · Einfachauswahl · Verbindungsfehler diagnostizieren
 
-- Der Kontakt ist nicht angelernt
-- **Die CR2032 des zuletzt betätigten Senders ist schwach** ✓
-- Die Zentrale meldet einen Störsender
-- Normale Sendebestätigung nach dem Anlernen
+**Bild zur Frage:** `/media/hiddensee/hid-gelverbinder.webp` — Gelgefüllte Abzweigverbinder mit Leitungen
 
-**Auflösung:** Batteriewarnung unterhalb von ca. 2,6 V. Sie betrifft **immer nur den zuletzt betätigten Sender**.
+- **Verbindergröße, vollständigen Leitersitz, definierte Verpressung, Zugprobe und Zugentlastung** ✓
+- Nur den Softwarestand der WiPro III
+- Die Batterie jedes Funk-Magnetkontakts
+- Ob der Kunde die App neu installiert hat
+
+**Auflösung:** Ein erschütterungsabhängiger Ausfall passt zuerst zu einem mechanisch unzuverlässigen Leitungsabgriff: falscher Querschnitt, unvollständiger Sitz, ungeeignetes Werkzeug oder fehlende Zugentlastung.
 
 **Falsch gewählt?**
 
-- *Normale Sendebestätigung:* Gefährlichster Irrtum, weil er zu Nichtstun führt. Wer die Warnung für normal hält, schickt den Kunden mit einem Sender los, der in wenigen Wochen verstummt.
-  <br>↳ bezogen auf: „Normale Sendebestätigung nach dem Anlernen“
-- *Störsender:* Verwechslung mit dem Anti-Jamming-Alarm der WiPro. Der zeigt sich im Blinkcode der Status-LED, nicht als Ton beim Öffnen einer Klappe.
-  <br>↳ bezogen auf: „Die Zentrale meldet einen Störsender“
+- *Mechanisches Muster übersehen:* Softwarestände ändern sich nicht mit der Bodenwelle. Das reproduzierbare Bewegungsmuster lenkt die erste Prüfung an Verbindung und Verlegung.
+  <br>↳ bezogen auf: „Nur den Softwarestand der WiPro III“
+- *Anderes Teilsystem geprüft:* Funkbatterien und App erklären keinen ausschließlich erschütterungsabhängigen kabelgebundenen Abzweig.
+  <br>↳ bezogen auf: „Die Batterie jedes Funk-Magnetkontakts“ · „Ob der Kunde die App neu installiert hat“
 
-**Mitnehmen:** Wurden alle Kontakte gleichzeitig verbaut, stehen die übrigen kurz davor — Lebensdauer rund 2 Jahre. Gleich alle Knopfzellen ähnlichen Alters mitplanen, statt den Kunden dreimal kommen zu lassen.
+**Mitnehmen:** Symptom und Einbauart zusammen denken: Bei Bewegungsaussetzern zuerst mechanischen Sitz und Zugentlastung prüfen, bevor Teile getauscht werden.
 
 #### 7. An einer Aufbautür: Welches Teil kommt wohin?
 
 `HID-09` · Einfachauswahl · Montagelogik
 
-- Sendergehäuse an den festen Rahmen, Magnet ans Türblatt
-- Umgekehrt — der Sender muss mit der Tür mitschwingen
-- **Beliebig, solange der Abstand stimmt** ✓
+- **Sendergehäuse an den festen Rahmen, Magnet ans Türblatt** ✓
+- Umgekehrt - der Sender muss mit der Tür mitschwingen
+- Beliebig, solange der Abstand stimmt
 - Beide auf dem Türblatt, versetzt zueinander
 
-**Auflösung:** Für die Funktion ist es beliebig, ob Sender oder Magnet am beweglichen Teil sitzt. Entscheidend sind der korrekte Abstand, die Ausrichtung der jeweiligen Ausführung und eine dauerhaft sichere Befestigung.
+**Auflösung:** Das Sendergehäuse gehört vorzugsweise auf den festen Rahmen, der Magnet auf das bewegliche Tür- oder Klappenblatt. So wird die schwerere Elektronik nicht bei jeder Bewegung mitbeschleunigt und bleibt besser geschützt.
 
 **Falsch gewählt?**
 
-- *Eine feste Seite vorgeschrieben:* Die elektrische Kontaktfunktion schreibt nicht vor, welches Bauteil am Rahmen oder Türblatt sitzt. Die konkrete Montage muss lediglich Abstand, Ausrichtung und mechanische Belastung sicher beherrschen.
-  <br>↳ bezogen auf: „Sendergehäuse an den festen Rahmen, Magnet ans Türblatt“ · „Umgekehrt — der Sender muss mit der Tür mitschwingen“
+- *Sender ans bewegliche Teil gesetzt:* Die reine Schaltfunktion kann dabei zunächst arbeiten, die fachgerechte Standardmontage setzt das Sendergehäuse jedoch auf den festen Rahmen und den Magneten auf das bewegliche Blatt.
+  <br>↳ bezogen auf: „Umgekehrt - der Sender muss mit der Tür mitschwingen“ · „Beliebig, solange der Abstand stimmt“
 - *Beide Teile auf derselben Seite:* Sender und Magnet müssen sich beim Öffnen voneinander entfernen. Sitzen beide auf dem Türblatt, ändert sich ihr Abstand nicht zuverlässig.
   <br>↳ bezogen auf: „Beide auf dem Türblatt, versetzt zueinander“
 
-**Mitnehmen:** Rahmen oder Türblatt ist funktional frei wählbar — Abstand, Ausrichtung und eine robuste Befestigung sind es nicht.
+**Mitnehmen:** Feste Seite für den Sender, bewegliche Seite für den Magneten - danach Abstand und Ausrichtung der konkreten Ausführung prüfen.
 
-#### 8. „Jede Fahrzeugtür braucht einen Funk-Magnetkontakt.“
+#### 8. Ein Kollege will feindrähtige Litzen vor dem Crimpen verzinnen, damit sie kompakter werden. Wie reagierst du?
 
-`HID-07` · Richtig/Falsch · Richtig oder falsch
+`HID-07` · Einfachauswahl · Crimpvorbereitung
 
-- Richtig
-- **Falsch** ✓
+- **Nicht verzinnen; passenden Verbinder und definiertes Crimpwerkzeug für den vorgesehenen Leiter verwenden** ✓
+- Vollständig verzinnen und mit einer Kombizange flach drücken
+- Nur die vordere Hälfte verzinnen, damit der Leiter flexibel bleibt
+- Zusätzlich Sekundenkleber in den Verbinder geben
 
-**Auflösung:** Türen, deren Öffnung im Kombi-Instrument angezeigt wird, werden bei korrekt angeschlossener WiPro III bereits über den CAN-Bus überwacht.
+**Auflösung:** Verzinnte Litzen können unter dauerhaftem Pressdruck nachgeben. Eine belastbare Crimpung entsteht mit passendem Leiterzustand, Verbinder und dafür vorgesehenem Werkzeug.
 
 **Falsch gewählt?**
 
-- *Richtig:* Sicherheitsdenken — lieber einen zu viel. Hier führt es zu unnötigen Kosten für den Kunden, mehr Batterien im Wartungsplan und mehr Bauteilen, die ausfallen können.
-  <br>↳ bezogen auf: „Richtig“
+- *Verzinnen als Verstärkung missverstanden:* Lötzinn macht aus einer nicht passenden Crimpkombination keine passende. Unter Druck kann die Verbindung mit der Zeit an Klemmkraft verlieren.
+  <br>↳ bezogen auf: „Vollständig verzinnen und mit einer Kombizange flach drücken“ · „Nur die vordere Hälfte verzinnen, damit der Leiter flexibel bleibt“
+- *Klebstoff statt Verbindungstechnik:* Klebstoff ersetzt weder den definierten elektrischen Kontakt noch die mechanische Kontrolle der Crimpung.
+  <br>↳ bezogen auf: „Zusätzlich Sekundenkleber in den Verbinder geben“
 
-**Mitnehmen:** Schneller Praxistest am Fahrzeug: Tür öffnen und aufs Display schauen. Wird sie dort angezeigt, ist kein Kontakt nötig. Diese fünf Sekunden ersetzen jede Diskussion.
+**Mitnehmen:** Crimpen ist ein abgestimmtes System aus Leiter, Verbinder und Werkzeug. Zusätze nach Gefühl verschlechtern die Reproduzierbarkeit.
 
 #### 9. Es ist November, die Werkstatt ist auf 8 °C runtergekühlt. Du sollst Klebepads verarbeiten. Was gilt?
 
-`HID-08` · Einfachauswahl · Praxis, Winter
+`HID-08` · Einfachauswahl · Klebemontage bei Kälte
 
 - Kein Problem, Pads sind temperaturunabhängig
-- **Nicht kleben — unter 15 °C Oberflächentemperatur nicht verarbeiten** ✓
+- **Nicht kleben - unter 15 °C Oberflächentemperatur nicht verarbeiten** ✓
 - Pad kurz mit Heißluft erwärmen und sofort belasten
 - Zusätzlich Sekundenkleber auftragen
 
@@ -635,34 +648,36 @@
 
 **Falsch gewählt?**
 
-- *Mit Heißluft erwärmen:* Der cleverste der falschen Wege — und der verlockendste, weil er den Termin rettet. Das Pad wird warm, klebt sofort scheinbar gut, und die Endfestigkeit erreicht es trotzdem nie. Der Fehler zeigt sich Wochen später beim Kunden.
+- *Mit Heißluft erwärmen:* Der cleverste der falschen Wege - und der verlockendste, weil er den Termin rettet. Das Pad wird warm, klebt sofort scheinbar gut, und die Endfestigkeit erreicht es trotzdem nie. Der Fehler zeigt sich Wochen später beim Kunden.
   <br>↳ bezogen auf: „Pad kurz mit Heißluft erwärmen und sofort belasten“
 - *Temperaturunabhängig:* Der Fehler mit der längsten Latenz im ganzen Katalog. Der Kontakt hält den ganzen Winter und fällt im Frühjahr ab.
   <br>↳ bezogen auf: „Kein Problem, Pads sind temperaturunabhängig“
 
-**Mitnehmen:** Zwei Dinge gehören dazu: Endfestigkeit erst nach ca. **24 Stunden**, und die Fläche muss sauber, trocken und fettfrei sein. Ein zu kalt oder zu schmutzig geklebter Kontakt fällt nicht sofort ab — er fällt dann ab, wenn niemand mehr an den Einbau denkt.
+**Mitnehmen:** Zwei Dinge gehören dazu: Endfestigkeit erst nach ca. **24 Stunden**, und die Fläche muss sauber, trocken und fettfrei sein. Ein zu kalt oder zu schmutzig geklebter Kontakt fällt nicht sofort ab - er fällt dann ab, wenn niemand mehr an den Einbau denkt.
 
 #### 10. Bringe die Montageschritte des Funk-Magnetkontakts in die richtige Reihenfolge.
 
-`HID-10` · Reihenfolge · Reihenfolge
+`HID-10` · Reihenfolge · Montageablauf
 
 1. WiPro III in den Anlernmodus versetzen und Funk-Magnetkontakt anlernen
 2. Reichweitentest am geplanten Ort
 3. Endgültig kleben oder verschrauben
 4. Testalarm mit scharfer Anlage
 
-**Auflösung:** Jeder Schritt setzt den vorherigen voraus — und jeder prüft etwas anderes. Der Reichweitentest prüft den **Ort**, der Testalarm die **Funktion**.
+**Auflösung:** Jeder Schritt setzt den vorherigen voraus - und jeder prüft etwas anderes. Der Reichweitentest prüft den **Ort**, der Testalarm die **Funktion**.
 
 **Falsch gewählt?**
 
 - *Erst kleben, dann testen:* Der teuerste Ablauf. Stimmt der Ort nicht, brauchst du ein neues Pad, eine neu vorbereitete Fläche und wieder 24 Stunden.
-- *Testalarm weggelassen:* Dann bleibt der Klassiker mit der falsch herum liegenden Platine unentdeckt — angelernt, montiert, und im Ernstfall passiert nichts.
+- *Testalarm weggelassen:* Dann bleibt der Klassiker mit der falsch herum liegenden Platine unentdeckt - angelernt, montiert, und im Ernstfall passiert nichts.
 
-**Mitnehmen:** **Prinzip 3 — montiert ist nicht funktionsfähig.** Zwei Tests, zwei verschiedene Fragen: „Kommt das Signal von hier an?“ und „Löst die Anlage wirklich aus?“ Keiner ersetzt den anderen.
+**Mitnehmen:** **Prinzip 3 - montiert ist nicht funktionsfähig.** Zwei Tests, zwei verschiedene Fragen: „Kommt das Signal von hier an?“ und „Löst die Anlage wirklich aus?“ Keiner ersetzt den anderen.
 
 #### 11. Du willst an einer Fahrzeugleitung einen gelgefüllten Abzweigverbinder setzen. Was muss vor dem Verpressen feststehen?
 
 `HID-11` · Einfachauswahl · Gelgefüllter Abzweigverbinder
+
+**Bild zur Frage:** `/media/hiddensee/hid-gelverbinder.webp` — Blaue gelgefüllte Abzweigverbinder mit Leitungen
 
 - **Stecker, Pin, Leitungsfarbe und gemessenes Signal stimmen mit der fahrzeugspezifischen Unterlage überein** ✓
 - Die Leitungsfarbe ähnelt der Farbe in einem anderen Fahrzeugmodell
@@ -709,13 +724,13 @@
 | | |
 |---|---|
 | Fragen | 10 |
-| Fragensatz-Version | 7 |
+| Fragensatz-Version | 8 |
 | Art | Wo kommt was hin? |
 | Lernziel | Physik bestimmt den Einbauort, nicht der freie Platz. Wer das verstanden hat, muss keine Liste auswendig lernen. |
 
 **Quellen im Produktwissen:** `produkte/pro-finder.md`, `produkte/gas-pro-iii.md`, `produkte/nfc-modul.md`, `produkte/funk-rauchmelder.md`, `produkte/wipro-iii.md`, `fahrzeuge/*`
 
-> **Redaktioneller Hinweis (erscheint nicht im Quiz):** Fragenkatalog v6. SAM-02, SAM-03 und SAM-10 arbeiten mit echten Produkt- beziehungsweise Einbaufotos. SAM-10 zeigt acht Produkte einschließlich des T.S.A. Funk-Rauchmelders. SAM-04 prüft die Qualitätskriterien für den Einbauort einer WiPro III. Fachlich zu bestätigen: die max. 7 m Gesamtlänge des Zusatzsensorkabels in SAM-08 sowie der konkrete gemeinsame Versorgungspunkt von WiPro III und Pro-finder in SAM-09.
+> **Redaktioneller Hinweis (erscheint nicht im Quiz):** Fragenkatalog v8. SAM-02, SAM-03 und SAM-10 arbeiten mit echten Produkt- beziehungsweise Einbaufotos; SAM-09 ergänzt die physikalisch begründete Ausrichtung der externen GPS-Antenne. Einbauabstände und Kabellängen vor jeder Schulung gegen den aktuellen Anleitungsstand prüfen.
 
 #### 1. Ordne jedem Gerät den vorgesehenen Einbauort zu.
 
@@ -723,8 +738,8 @@
 
 | Zuzuordnen | Richtig |
 |---|---|
-| G.A.S.-pro III (Propan, Butan, KO-Gase) | Senkrecht im Wohnraum, ca. 10–20 cm über dem Boden |
-| G.A.S.-pro III CO | Senkrecht, ca. 10–20 cm unter der Decke |
+| G.A.S.-pro III (Propan, Butan, KO-Gase) | Senkrecht im Wohnraum, ca. 10-20 cm über dem Boden |
+| G.A.S.-pro III CO | Senkrecht, ca. 10-20 cm unter der Decke |
 | T.S.A. Funk-Rauchmelder | An der Decke oder seitlich nahe der Decke |
 | NFC Modul | Innen an einer geeigneten Scheibe, von außen erreichbar |
 
@@ -735,7 +750,7 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 **Falsch gewählt?**
 
 - *Gas und CO vertauscht:* Der folgenreichste Fehler dieser Insel. Ein tief montierter CO-Sensor meldet zu spät, ein hoch montierter Gassensor gar nicht.
-- *Gaswarner in den Bodenstauraum:* Nah dran gedacht — unten ist richtig, aber der Sensor muss den **Wohnraum** überwachen, nicht einen abgetrennten Stauraum.
+- *Gaswarner in den Bodenstauraum:* Nah dran gedacht - unten ist richtig, aber der Sensor muss den **Wohnraum** überwachen, nicht einen abgetrennten Stauraum.
 
 **Mitnehmen:** Wenn du den Ort vergessen hast, frag dich: Wohin bewegt sich das, was das Gerät finden soll? Die Antwort ist der Einbauort.
 
@@ -750,11 +765,11 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 - `/media/samsoe/sam-gas-c.webp` — Gaswarner oben an der Bedienkonsole über der Fahrerhaustür
 - **`/media/samsoe/sam-gas-d.webp` — Gaswarner bodennah an der Verkleidung eines Sitzkastens** ✓
 
-**Auflösung:** Senkrechte Fläche, etwa 10–20 cm über dem Boden, im überwachten Wohnraum.
+**Auflösung:** Senkrechte Fläche, etwa 10-20 cm über dem Boden, im überwachten Wohnraum.
 
 **Falsch gewählt?**
 
-- *Der Kleiderschrank:* Die Höhe stimmt manchmal sogar — aber ein geschlossener Schrank ist ein eigener Luftraum. Was dort gemessen wird, sagt über den Wohnraum nichts.
+- *Der Kleiderschrank:* Die Höhe stimmt manchmal sogar - aber ein geschlossener Schrank ist ein eigener Luftraum. Was dort gemessen wird, sagt über den Wohnraum nichts.
   <br>↳ bezogen auf: „Gaswarner im Inneren eines Kleiderschranks, darüber hängen Kleiderbügel“
 - *Die Bedienkonsole über der Fahrerhaustür:* Sieht nach ordentlicher Werkstattarbeit aus und ist gut erreichbar. Für einen Sensor, der schweres Gas finden soll, ist es der denkbar schlechteste Ort.
   <br>↳ bezogen auf: „Gaswarner oben an der Bedienkonsole über der Fahrerhaustür“
@@ -778,7 +793,7 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 **Falsch gewählt?**
 
-- *Das hochkant stehende Modul:* Platzsparend und sauber verlegt — aber eine hochkant stehende GPS-Antenne verliert einen Großteil ihres Empfangs. Und niemand merkt es beim Einbau.
+- *Das hochkant stehende Modul:* Platzsparend und sauber verlegt - aber eine hochkant stehende GPS-Antenne verliert einen Großteil ihres Empfangs. Und niemand merkt es beim Einbau.
   <br>↳ bezogen auf: „Modul mit Antennenanschluss, hochkant hinter einer Verkleidung“
 
 **Mitnehmen:** Der Pro-finder wird versteckt montiert, aber nicht vergraben: trockener Innenraum, gegen Zugriff gesichert, für den Service erreichbar. Beim Einbau immer zuerst schauen, wo „GPS inside“ steht.
@@ -807,23 +822,23 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 #### 5. Die Antennenleitung der WiPro III (Pin 10, weiß) ist deutlich zu lang für den gewählten Einbauort. Was tust du?
 
-`SAM-05` · Einfachauswahl · Falle
+`SAM-05` · Einfachauswahl · Antennenleitung
 
 - Auf 20 cm kürzen
 - Sauber aufwickeln und mit Kabelbinder fixieren
-- **Weder kürzen noch aufwickeln — Verlegung anpassen** ✓
+- **Weder kürzen noch aufwickeln - Verlegung anpassen** ✓
 - Mit Lautsprecherkabel verlängern
 
 **Auflösung:** Die Leitung **ist** die Antenne. Ihre Länge ist Teil der Funktion, nicht eine Zugabe fürs Verlegen.
 
 **Falsch gewählt?**
 
-- *Aufwickeln:* Der mit Abstand häufigste Fehler — und der, der wie sauberes Arbeiten aussieht. Ein aufgewickeltes Kabel ist eine Spule und verändert das Sendeverhalten. Die Anlage arbeitet dann mit verringerter Reichweite und meldet keinen Fehler.
+- *Aufwickeln:* Der mit Abstand häufigste Fehler - und der, der wie sauberes Arbeiten aussieht. Ein aufgewickeltes Kabel ist eine Spule und verändert das Sendeverhalten. Die Anlage arbeitet dann mit verringerter Reichweite und meldet keinen Fehler.
   <br>↳ bezogen auf: „Sauber aufwickeln und mit Kabelbinder fixieren“
 - *Kürzen:* Konsequent zu Ende gedacht, aber irreversibel. Danach ist die Zentrale nur noch mit Ersatzkabelbaum zu retten.
   <br>↳ bezogen auf: „Auf 20 cm kürzen“
 
-**Mitnehmen:** Antennenleitungen werden gestreckt verlegt — nie gekürzt, nie aufgewickelt. Passt es nicht, ändert sich der Montageort, nicht das Kabel.
+**Mitnehmen:** Antennenleitungen werden gestreckt verlegt - nie gekürzt, nie aufgewickelt. Passt es nicht, ändert sich der Montageort, nicht das Kabel.
 
 #### 6. Wo wird das NFC Modul montiert?
 
@@ -834,11 +849,11 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 - Neben der WiPro-Zentrale im Schrank
 - Im Fahrerhaus unter dem Armaturenbrett
 
-**Auflösung:** Innen an der Scheibe — geschützt vor Wetter und Zugriff, aber von außen bedienbar.
+**Auflösung:** Innen an der Scheibe - geschützt vor Wetter und Zugriff, aber von außen bedienbar.
 
 **Falsch gewählt?**
 
-- *Außen an der Karosserie:* Naheliegend, weil es von außen bedient wird. Es wäre aber auch von außen demontierbar — und damit ein Angriffspunkt an einer Sicherheitsanlage.
+- *Außen an der Karosserie:* Naheliegend, weil es von außen bedient wird. Es wäre aber auch von außen demontierbar - und damit ein Angriffspunkt an einer Sicherheitsanlage.
   <br>↳ bezogen auf: „Außen an der Karosserie, IP-geschützt“
 - *Im Schrank neben der Zentrale:* Verwechselt Modul mit Steuergerät. Die Lesestelle muss dort sein, wo der Nutzer steht.
   <br>↳ bezogen auf: „Neben der WiPro-Zentrale im Schrank“
@@ -850,7 +865,7 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 `SAM-07` · Einfachauswahl · Rauchmelder
 
 - Klebepad direkt auf den Stoff drücken, 60 s halten
-- **Nicht auf Stoff kleben — Montageadapter verwenden** ✓
+- **Nicht auf Stoff kleben - Montageadapter verwenden** ✓
 - Durch den Stoffhimmel schrauben
 - In eine Fahrzeugecke setzen
 
@@ -858,7 +873,7 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 **Falsch gewählt?**
 
-- *Aufs Klebepad und fest andrücken:* Hält beim Verlassen der Werkstatt einwandfrei — deshalb ist es so verführerisch. Der Melder fällt später herunter, im schlechtesten Fall unbemerkt.
+- *Aufs Klebepad und fest andrücken:* Hält beim Verlassen der Werkstatt einwandfrei - deshalb ist es so verführerisch. Der Melder fällt später herunter, im schlechtesten Fall unbemerkt.
   <br>↳ bezogen auf: „Klebepad direkt auf den Stoff drücken, 60 s halten“
 - *In eine Ecke setzen:* Ecken sind strömungstechnisch tote Zonen. Rauch kommt dort verzögert an.
   <br>↳ bezogen auf: „In eine Fahrzeugecke setzen“
@@ -874,36 +889,38 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 - Zwei komplette Hauptgeräte sind zwingend
 - Ein Gerät genügt, wenn die Schiebetür offen bleibt
 
-**Auflösung:** Ab **6,5 m Innenlänge** oder bei mehreren Schlafbereichen braucht es einen zweiten Detektionspunkt — ein zweites G.A.S.-pro III CO oder einen zusätzlichen CO-Sensor.
+**Auflösung:** Ab **6,5 m Innenlänge** oder bei mehreren Schlafbereichen braucht es einen zweiten Detektionspunkt - ein zweites G.A.S.-pro III CO oder einen zusätzlichen CO-Sensor.
 
 **Falsch gewählt?**
 
-- *Wenn die Tür offen bleibt:* Setzt auf das Verhalten des Kunden. Genau diese Tür wird nachts geschlossen — also dann, wenn CO am gefährlichsten ist und alle schlafen.
+- *Wenn die Tür offen bleibt:* Setzt auf das Verhalten des Kunden. Genau diese Tür wird nachts geschlossen - also dann, wenn CO am gefährlichsten ist und alle schlafen.
   <br>↳ bezogen auf: „Ein Gerät genügt, wenn die Schiebetür offen bleibt“
 - *Zwei komplette Hauptgeräte zwingend:* Überdimensioniert und unnötig teuer. Ein Zusatzsensor am vorhandenen Gerät genügt oft.
   <br>↳ bezogen auf: „Zwei komplette Hauptgeräte sind zwingend“
 
 **Mitnehmen:** Eine geschlossene Tür trennt den Luftraum. Bei einer Sicherheitsfunktion planst du für den geschlossenen Zustand, nie für den bequemen. Zusatzsensorkabel konservativ auf max. 7 m Gesamtlänge auslegen.
 
-#### 9. WiPro III und Pro-finder werden eingebaut. Was gilt für die Versorgung?
+#### 9. Der Pro-finder braucht wegen eines abgeschirmten Einbauorts eine externe GPS-Antenne. Wie wird ihre Empfangsseite ausgerichtet?
 
-`SAM-09` · Einfachauswahl · Verdrahtung
+`SAM-09` · Einfachauswahl · GPS-Antenne ausrichten
 
-- **Beide an dieselbe Fahrzeugbatterie, Verbindung über RJ11** ✓
-- WiPro an Starter-, Pro-finder an Aufbaubatterie
-- Beide direkt an die Solaranlage
-- Pro-finder über Klemme 15 absichern
+**Bild zur Frage:** `/media/samsoe/sam-produkt-gps-pro.webp` — Externe GPS-pro Antenne
 
-**Auflösung:** Gemeinsame Versorgung heißt gemeinsames Bezugspotenzial. Verbindung untereinander über das dafür vorgesehene RJ11-Kabel.
+- **Horizontal nach oben und mit möglichst freier Sicht durch ein nichtmetallisches Fahrzeugteil** ✓
+- Senkrecht nach unten, damit Wasser ablaufen kann
+- Direkt unter eine geschlossene Metallverkleidung
+- Beliebig - GPS funktioniert unabhängig von der Ausrichtung
+
+**Auflösung:** Die Empfangsseite der GPS-Antenne zeigt horizontal nach oben. Metall unmittelbar über oder um die Antenne schirmt Satellitensignale ab; ein geeigneter nichtmetallischer Bereich verbessert den Empfang.
 
 **Falsch gewählt?**
 
-- *Getrennte Batterien:* Wirkt durchdacht — die Aufbaubatterie hat mehr Reserve. Unterschiedliche Bezugspotenziale erzeugen aber Störungen, die später kaum auffindbar sind und sich als sporadische Fehler zeigen.
-  <br>↳ bezogen auf: „WiPro an Starter-, Pro-finder an Aufbaubatterie“
-- *Klemme 15:* Der Klassiker aus der Kfz-Elektrik. Klemme 15 fällt ab, sobald die Zündung aus ist — also genau dann, wenn eine Diebstahlwarnanlage arbeiten soll.
-  <br>↳ bezogen auf: „Pro-finder über Klemme 15 absichern“
+- *Ausrichtung unterschätzt:* Eine GPS-Antenne hat eine definierte Empfangsseite. Vertikale, nach unten gerichtete oder beliebige Montage verschenkt Empfangsreserve.
+  <br>↳ bezogen auf: „Senkrecht nach unten, damit Wasser ablaufen kann“ · „Beliebig - GPS funktioniert unabhängig von der Ausrichtung“
+- *Unter Metall versteckt:* Ein unauffälliger Ort ist nur dann gut, wenn das Material darüber Satellitensignale nicht abschirmt.
+  <br>↳ bezogen auf: „Direkt unter eine geschlossene Metallverkleidung“
 
-**Mitnehmen:** Alles, was im abgestellten Fahrzeug wachen soll, hängt an Dauerplus. Klemme 15 ist für Geräte, die nur beim Fahren gebraucht werden.
+**Mitnehmen:** Bei Funk- und Satellitentechnik ist der Einbauort Teil der Funktion: Orientierung und Material über der Antenne werden bewusst gewählt und anschließend getestet.
 
 #### 10. Welche Komponenten haben keinen festen Einbauort im Fahrzeug? Wähle alle zutreffenden.
 
@@ -922,12 +939,12 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 **Falsch gewählt?**
 
-- *NFC Modul mitangekreuzt:* Die verständlichste Verwechslung — KeyCard und NFC Modul gehören zusammen und werden gemeinsam verkauft. Aber das Modul ist die **Lesestelle am Fahrzeug**, die Karte ist das Medium in der Hosentasche.
+- *NFC Modul mitangekreuzt:* Die verständlichste Verwechslung - KeyCard und NFC Modul gehören zusammen und werden gemeinsam verkauft. Aber das Modul ist die **Lesestelle am Fahrzeug**, die Karte ist das Medium in der Hosentasche.
   <br>↳ bezogen auf: „NFC Modul“
 - *T.S.A. Funk-Rauchmelder mitangekreuzt:* Der Rauchmelder ist kein persönliches Medium. Sein Einbauort ist funktional vorgegeben: an oder nahe der Decke, damit aufsteigender Rauch früh erkannt wird.
   <br>↳ bezogen auf: „T.S.A. Funk-Rauchmelder“
 
-**Mitnehmen:** Diese Trennung — Medium, Lesestelle, Steuergerät — ist die Grundordnung des ganzen Sortiments. Auf USEDOM begegnet sie dir am Display wieder.
+**Mitnehmen:** Diese Trennung - Medium, Lesestelle, Steuergerät - ist die Grundordnung des ganzen Sortiments. Auf USEDOM begegnet sie dir am Display wieder.
 
 ---
 
@@ -936,13 +953,13 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 | | |
 |---|---|
 | Fragen | 11 |
-| Fragensatz-Version | 4 |
+| Fragensatz-Version | 5 |
 | Art | Erst lesen, dann tauschen |
-| Lernziel | Bevor du tauschst, lies. Jedes Gerät sagt, was los ist — über Blinkcode, Ton, Seriennummer, Spannungsverhalten. Tauschen ist die teuerste Form der Diagnose. |
+| Lernziel | Bevor du tauschst, lies. Jedes Gerät sagt, was los ist - über Blinkcode, Ton, Seriennummer, Spannungsverhalten. Tauschen ist die teuerste Form der Diagnose. |
 
 **Quellen im Produktwissen:** `referenz/stoerungsbeseitigung.md`, `_intern/support-fallaufnahme.md`, `produkte/wipro-iii.md`, `produkte/pro-finder.md`, `referenz/mobilfunk-sim.md`
 
-> **Redaktioneller Hinweis (erscheint nicht im Quiz):** Fragenkatalog v4. Das bestehende FehlerQuiz mit sechs Bildfragen läuft separat; FEHMARN ist die anspruchsvollere Supportebene. Neu: konkrete Bedeutung des gelben Blinkens bei 0699-045, strukturierte Fehleranalyse und belastbare Kriterien für Provider/SIM. Vor Einsatz Blinkcode 9×, Spannungsschwellen und Stillstandsbedingung des kill-Befehls fachlich bestätigen.
+> **Redaktioneller Hinweis (erscheint nicht im Quiz):** Fragenkatalog v5. Das bestehende FehlerQuiz mit sechs Bildfragen läuft separat; FEHMARN ist die anspruchsvollere Supportebene. Neu: Übertemperaturdiagnose an G.A.S.-pro III und ein kontrollierter Referenz-SIM-Test beim Pro-finder. Blinkcodes und Spannungsschwellen vor jeder Schulung gegen den aktuellen Anleitungsstand prüfen.
 
 #### 1. Eine frisch angeschlossene G.A.S.-pro III: Ordne die LED-Signale ihrer Bedeutung zu.
 
@@ -950,7 +967,7 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 | Zuzuordnen | Richtig |
 |---|---|
-| Blaues Pulsieren, ca. 4 Minuten | Vorheizphase — noch nicht betriebsbereit |
+| Blaues Pulsieren, ca. 4 Minuten | Vorheizphase - noch nicht betriebsbereit |
 | Grünes helles Pulsieren | Betriebsbereit |
 | Gelbes Blinken einer Sensor-LED | Sensorfehler |
 | Gelbes Pulsieren beider LEDs | Unterspannung |
@@ -960,16 +977,16 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 **Falsch gewählt?**
 
 - *Blaues Pulsieren als Fehler gelesen:* Führt zum Ausbau eines einwandfreien Geräts. Vier Minuten sind lang, wenn man daneben steht und es nicht weiß.
-- *Gelb generell als Unterspannung:* Fast richtig — aber die Unterscheidung liegt darin, **wie viele** LEDs reagieren. Eine LED: Sensorfehler. Beide: Unterspannung.
+- *Gelb generell als Unterspannung:* Fast richtig - aber die Unterscheidung liegt darin, **wie viele** LEDs reagieren. Eine LED: Sensorfehler. Beide: Unterspannung.
 
-**Mitnehmen:** Wer die Werkstatt vor dem grünen Zustand verlässt, weiß nicht, ob das Gerät überhaupt bereit geworden ist — **Prinzip 3**. Und: Bei Übertemperatur über 60 °C blinkt das Gerät in allen Farben und meldet das **nicht** über die WiPro III.
+**Mitnehmen:** Wer die Werkstatt vor dem grünen Zustand verlässt, weiß nicht, ob das Gerät überhaupt bereit geworden ist - **Prinzip 3**. Und: Bei Übertemperatur über 60 °C blinkt das Gerät in allen Farben und meldet das **nicht** über die WiPro III.
 
 #### 2. Nach dem Unscharfschalten blinkt die Status-LED wiederholt 9× mit 5 s Pause. Was war los?
 
 `FEH-01` · Einfachauswahl · Alarmspeicher lesen
 
 - Panikalarm über den Handsender
-- **Anti-Jamming-Ereignis — mögliche Funkstörung** ✓
+- **Anti-Jamming-Ereignis - mögliche Funkstörung** ✓
 - Auslösung über die Funk-Kabelschleife
 - Meldung vom Innenbeleuchtungseingang
 
@@ -977,10 +994,10 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 **Falsch gewählt?**
 
-- *Innenbeleuchtungseingang:* Guter Tipp, falsche Zahl — das ist **11×**. Die beiden liegen im Blinkcode dicht beieinander und werden beim Zählen im Halbdunkel schnell verwechselt. Zweimal zählen lohnt sich.
+- *Innenbeleuchtungseingang:* Guter Tipp, falsche Zahl - das ist **11×**. Die beiden liegen im Blinkcode dicht beieinander und werden beim Zählen im Halbdunkel schnell verwechselt. Zweimal zählen lohnt sich.
   <br>↳ bezogen auf: „Meldung vom Innenbeleuchtungseingang“
 
-**Mitnehmen:** Anti-Jamming lässt sich über DIP 7 → ON abschalten. Das macht das Symptom weg, nicht die Ursache — und nimmt der Anlage eine Schutzfunktion. Erst Ort und Zeitpunkt dokumentieren, Störquellen suchen.
+**Mitnehmen:** Anti-Jamming lässt sich über DIP 7 → ON abschalten. Das macht das Symptom weg, nicht die Ursache - und nimmt der Anlage eine Schutzfunktion. Erst Ort und Zeitpunkt dokumentieren, Störquellen suchen.
 
 #### 3. Bei einem Pro-finder mit der Seriennummer 0699-045 blinkt die Status-LED gelb. Was bedeutet das?
 
@@ -1002,32 +1019,32 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 **Mitnehmen:** Der Gerätestand entscheidet über die Bedeutung eines Blinkcodes. Deshalb bei jeder Diagnose zuerst die vollständige Seriennummer aufnehmen.
 
-#### 4. „Seit dem Einbau schaltet mein Original-Fahrzeugschlüssel die Alarmanlage nicht mehr scharf — die Zentralverriegelung geht aber normal.“ Ursache?
+#### 4. „Seit dem Einbau schaltet mein Original-Fahrzeugschlüssel die Alarmanlage nicht mehr scharf - die Zentralverriegelung geht aber normal.“ Ursache?
 
 `FEH-02` · Einfachauswahl · Kundenanruf
 
 - CAN-High und CAN-Low sind vertauscht
-- **DIP 5 steht auf ON — der Replay-Schutz ist aktiv** ✓
+- **DIP 5 steht auf ON - der Replay-Schutz ist aktiv** ✓
 - Die Batterie des Fahrzeugschlüssels ist schwach
 - Die WiPro-Zentrale ist defekt und muss getauscht werden
 
-**Auflösung:** Genau dieses Bild — ZV funktioniert, Alarmsteuerung nicht — ist das **erwartete** Verhalten bei aktivem Replay-Schutz (wirksam ab SN 0823-014 / SW 5.8).
+**Auflösung:** Genau dieses Bild - ZV funktioniert, Alarmsteuerung nicht - ist das **erwartete** Verhalten bei aktivem Replay-Schutz (wirksam ab SN 0823-014 / SW 5.8).
 
 **Falsch gewählt?**
 
-- *CAN vertauscht:* Technisch gute Idee und der richtige zweite Schritt — aber bei vertauschtem CAN funktioniert typischerweise gar nichts, nicht nur die Alarmsteuerung. Das Symptom ist zu selektiv.
+- *CAN vertauscht:* Technisch gute Idee und der richtige zweite Schritt - aber bei vertauschtem CAN funktioniert typischerweise gar nichts, nicht nur die Alarmsteuerung. Das Symptom ist zu selektiv.
   <br>↳ bezogen auf: „CAN-High und CAN-Low sind vertauscht“
-- *Zentrale defekt:* Die teuerste Fehldiagnose im Katalog. Ein Gerät, das teilweise korrekt arbeitet, ist selten defekt — es ist meist konfiguriert.
+- *Zentrale defekt:* Die teuerste Fehldiagnose im Katalog. Ein Gerät, das teilweise korrekt arbeitet, ist selten defekt - es ist meist konfiguriert.
   <br>↳ bezogen auf: „Die WiPro-Zentrale ist defekt und muss getauscht werden“
 
-**Mitnehmen:** Ist der Schutz gewollt, steuert der Kunde über Handsender, App oder Pro-finder. **Achtung beim Umstellen:** DIP-Schalter nur spannungsfrei ändern — weder der 20-polige Stecker noch der Pro-finder-Stecker dürfen gesteckt sein.
+**Mitnehmen:** Ist der Schutz gewollt, steuert der Kunde über Handsender, App oder Pro-finder. **Achtung beim Umstellen:** DIP-Schalter nur spannungsfrei ändern - weder der 20-polige Stecker noch der Pro-finder-Stecker dürfen gesteckt sein.
 
 #### 5. Ein Pro-finder sendet eine Spannungswarnung und reagiert danach auf keine SMS mehr. Was ist passiert?
 
 `FEH-04` · Einfachauswahl · Spannung
 
 - Das Modem ist defekt, Gerät einsenden
-- **Tiefentladeschutz — das Gerät geht in Standby** ✓
+- **Tiefentladeschutz - das Gerät geht in Standby** ✓
 - Die SIM-Karte ist abgelaufen
 - Die Sicherung hat ausgelöst und muss neu gesetzt werden
 
@@ -1035,7 +1052,7 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 **Falsch gewählt?**
 
-- *Modem defekt, einsenden:* Der teuerste mögliche Weg zum selben Ergebnis — das Gerät kommt geprüft und unverändert zurück. Der entscheidende Hinweis stand im ersten Halbsatz der Frage: Es hat **vorher gewarnt**. Ein defektes Modem warnt nicht, es schweigt einfach.
+- *Modem defekt, einsenden:* Der teuerste mögliche Weg zum selben Ergebnis - das Gerät kommt geprüft und unverändert zurück. Der entscheidende Hinweis stand im ersten Halbsatz der Frage: Es hat **vorher gewarnt**. Ein defektes Modem warnt nicht, es schweigt einfach.
   <br>↳ bezogen auf: „Das Modem ist defekt, Gerät einsenden“
 
 **Mitnehmen:** Wenn ein Gerät vor dem Ausfall gewarnt hat, hat es meist genau das getan, wofür es gebaut wurde. Erst laden, dann urteilen.
@@ -1053,7 +1070,7 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 **Falsch gewählt?**
 
-- *Löschen und neu anlernen:* Führt zum selben Ergebnis — mit erheblich mehr Aufwand und dem zusätzlichen Risiko, dabei einen Kontakt zu vergessen. Genau dieser vergessene Kontakt fällt erst im Ernstfall auf.
+- *Löschen und neu anlernen:* Führt zum selben Ergebnis - mit erheblich mehr Aufwand und dem zusätzlichen Risiko, dabei einen Kontakt zu vergessen. Genau dieser vergessene Kontakt fällt erst im Ernstfall auf.
   <br>↳ bezogen auf: „Alle Kontakte löschen und neu anlernen“
 - *Werkseinstellung:* Löscht auch alles andere, inklusive Handsender und Konfiguration. Ein sehr großer Hammer für ein sehr kleines Problem.
   <br>↳ bezogen auf: „Die Zentrale auf Werkseinstellung zurücksetzen“
@@ -1065,7 +1082,7 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 `FEH-05` · Einfachauswahl · Sicherheitsgrenze
 
 - Kurz und aus 1 m Abstand ist unbedenklich
-- **Nicht durchführen — dieser Test ist nicht vorgesehen** ✓
+- **Nicht durchführen - dieser Test ist nicht vorgesehen** ✓
 - Nur bei der CO-Variante zulässig
 - Nur bei geöffnetem Fenster
 
@@ -1073,12 +1090,12 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 **Falsch gewählt?**
 
-- *Kurz und aus Abstand:* Der pragmatische Werkstattreflex — man will dem Kunden ja etwas zeigen. Der Test kann den Sensor beeinflussen und sagt über die tatsächliche Funktion nichts Belastbares aus.
+- *Kurz und aus Abstand:* Der pragmatische Werkstattreflex - man will dem Kunden ja etwas zeigen. Der Test kann den Sensor beeinflussen und sagt über die tatsächliche Funktion nichts Belastbares aus.
   <br>↳ bezogen auf: „Kurz und aus 1 m Abstand ist unbedenklich“
 - *Bei geöffnetem Fenster:* Behandelt es als Belüftungsfrage. Das Problem ist nicht die Gaskonzentration im Raum, sondern was der Sensor daraus macht.
   <br>↳ bezogen auf: „Nur bei geöffnetem Fenster“
 
-**Mitnehmen:** Meldet der Selbsttest einen Fehler, zeigt sich das eindeutig: 1 Ton pro Sekunde und die betroffene Sensor-LED blinkt gelb. Dem Kunden zeigst du den grünen Normalzustand — das ist der Nachweis, den es braucht.
+**Mitnehmen:** Meldet der Selbsttest einen Fehler, zeigt sich das eindeutig: 1 Ton pro Sekunde und die betroffene Sensor-LED blinkt gelb. Dem Kunden zeigst du den grünen Normalzustand - das ist der Nachweis, den es braucht.
 
 #### 8. „Meine Frau bekommt die Alarm-SMS, ich nie.“ Woran liegt es?
 
@@ -1093,30 +1110,32 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 **Falsch gewählt?**
 
-- *Nur die Masternummer:* Passt scheinbar perfekt zur Beobachtung — und führt dazu, dass man dem Kunden eine Einschränkung erklärt, die es nicht gibt. Der vermeintliche Fehler entsteht beim Testen selbst.
+- *Nur die Masternummer:* Passt scheinbar perfekt zur Beobachtung - und führt dazu, dass man dem Kunden eine Einschränkung erklärt, die es nicht gibt. Der vermeintliche Fehler entsteht beim Testen selbst.
   <br>↳ bezogen auf: „Nur die Masternummer bekommt Alarm-SMS“
 
-**Mitnehmen:** Einen kontrollierten Test vollständig durchlaufen lassen, dann bekommt jede Nummer ihre SMS. Gehört so auch in die Fahrzeugübergabe — Masternummer zuerst.
+**Mitnehmen:** Einen kontrollierten Test vollständig durchlaufen lassen, dann bekommt jede Nummer ihre SMS. Gehört so auch in die Fahrzeugübergabe - Masternummer zuerst.
 
-#### 9. Ein Fahrzeug wurde gestohlen, eine Abschalteinrichtung ist verbaut. Welcher Befehl ist zulässig?
+#### 9. Eine G.A.S.-pro III blinkt plötzlich in allen Farben. Was ist die passende erste Reaktion?
 
-`FEH-08` · Einfachauswahl · Höchste Sicherheitsstufe
+`FEH-08` · Einfachauswahl · G.A.S.-pro III diagnostizieren
 
-- a an
-- a 30
-- **kill** ✓
-- status genügt
+**Bild zur Frage:** `/media/fehmarn/feh-fehlersuche.webp` — Systematische Fehlersuche an Fahrzeugkomponenten
 
-**Auflösung:** **kill** wartet, bis die GPS-Geschwindigkeit mindestens 5 Sekunden durchgehend 0 km/h beträgt, und schaltet erst dann Ausgang A.
+- **Übertemperatur über etwa 60 °C vermuten, Wärmequelle und Einbauort prüfen, abkühlen lassen und Wiederholung dokumentieren** ✓
+- Sofort beide Sensoren ersetzen
+- Eine SMS an den Pro-finder senden, damit er die Temperatur zurücksetzt
+- Den Zustand als normale Vorheizphase ignorieren
+
+**Auflösung:** Blinken in allen Farben weist auf Übertemperatur oberhalb von etwa 60 °C hin. Zuerst werden Wärmeeintrag, Einbauort und Belüftung geprüft; nach dem Abkühlen folgt ein kontrollierter Funktionstest. Wiederholt sich der Zustand ohne erkennbare Wärmequelle, wird der Fall mit Gerätedaten eskaliert.
 
 **Falsch gewählt?**
 
-- *„a an“ oder „a 30“:* Schalten **ohne** Geschwindigkeitsprüfung. Zur Fahrzeugstilllegung unzulässig — im schlimmsten Fall wird ein fahrendes Fahrzeug abgeschaltet, mit einem Menschen darin und anderen daneben.
-  <br>↳ bezogen auf: „a an“ · „a 30“
-- *„status“ genügt:* Zu passiv, aber der Reflex ist nicht falsch: Der erste Schritt ist tatsächlich, sich ein Bild zu verschaffen.
-  <br>↳ bezogen auf: „status genügt“
+- *Bauteiltausch vor Ursachenprüfung:* Ein klarer Temperaturcode ist zunächst kein Beweis für einen defekten Sensor. Ein ungeeigneter heißer Einbauort würde auch das Ersatzgerät wieder treffen.
+  <br>↳ bezogen auf: „Sofort beide Sensoren ersetzen“
+- *Zustand falsch eingeordnet:* Die Vorheizphase pulsiert blau. Ein Farbwechsel aller LEDs ist ein eigener Diagnosehinweis und wird nicht per Fernbefehl zurückgesetzt.
+  <br>↳ bezogen auf: „Eine SMS an den Pro-finder senden, damit er die Temperatur zurücksetzt“ · „Den Zustand als normale Vorheizphase ignorieren“
 
-**Mitnehmen:** Der richtige Befehl ist nur die halbe Antwort. Diebstahl der Polizei melden, Ortungsdaten dorthin geben — und **nicht selbst zum Fahrzeug fahren**. Am anderen Ende steht kein Kunde, sondern ein Täter. Abschalteinrichtungen: 101283 (einpolig) / 105821 (mehrpolig).
+**Mitnehmen:** Blinkmuster erst sauber benennen, dann Ursache prüfen. Bei Temperaturhinweisen gehört der Einbauort in die Diagnose, nicht nur das Gerät.
 
 #### 10. Welche Angaben solltest du für eine belastbare Fehleranalyse zusammentragen? Wähle alle zutreffenden.
 
@@ -1133,34 +1152,32 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 **Falsch gewählt?**
 
-- *SIM-PIN mitangekreuzt:* Gut gemeint — man will alles liefern, was helfen könnte. Für die Diagnose wird sie nicht gebraucht, und was nicht im Ticket steht, kann auch nicht abhandenkommen.
+- *SIM-PIN mitangekreuzt:* Gut gemeint - man will alles liefern, was helfen könnte. Für die Diagnose wird sie nicht gebraucht, und was nicht im Ticket steht, kann auch nicht abhandenkommen.
   <br>↳ bezogen auf: „SIM-PIN und Kundenpasswörter“
-- *Blinkcode weggelassen:* Der wertvollste Einzelhinweis überhaupt. Er sagt, was das Gerät selbst über den Fehler weiß — genau die Information, die aus der Ferne sonst fehlt.
+- *Blinkcode weggelassen:* Der wertvollste Einzelhinweis überhaupt. Er sagt, was das Gerät selbst über den Fehler weiß - genau die Information, die aus der Ferne sonst fehlt.
   <br>↳ bezogen auf: „LED- und Blinkcode, Signalton, SMS-Wortlaut möglichst wörtlich“
 
-**Mitnehmen:** Das ist die Insel in einem Satz: Alles, was du vor dem Anruf sammelst, ersetzt drei Rückfragen danach. Und „möglichst wörtlich“ heißt wörtlich — nicht „irgendwas mit gelb“.
+**Mitnehmen:** Das ist die Insel in einem Satz: Alles, was du vor dem Anruf sammelst, ersetzt drei Rückfragen danach. Und „möglichst wörtlich“ heißt wörtlich - nicht „irgendwas mit gelb“.
 
-#### 11. Welche Kriterien muss ein empfehlenswerter Mobilfunktarif für den Pro-finder erfüllen? Wähle alle zutreffenden.
+#### 11. Die Pro-finder-SIM kann im Smartphone telefonieren und SMS senden, im Fahrzeug kommt trotzdem keine Kommunikation zustande. Welcher nächste Schritt trennt die Ursachen am besten?
 
-`FEH-11` · Mehrfachauswahl · Provider & SIM
+`FEH-11` · Einfachauswahl · SIM-Fehler eingrenzen
 
-- **Klassische SMS und Telefonie sind freigeschaltet** ✓
-- **Die SIM besitzt eine eindeutig erreichbare eigene Rufnummer** ✓
-- **Das Hostnetz bietet am Fahrzeugstandort und in den geplanten Reiseländern passende Abdeckung und Roaming** ✓
-- **SIM-Format und PIN-Regel passen zum Gerätestand; die vorbereitete Karte wird im Fahrzeug getestet** ✓
-- Ein reiner Datentarif ohne SMS und Telefonie genügt
-- Der Markenname des Providers allein garantiert die Kompatibilität dauerhaft
+- **Seriennummer, LED-Zustand, Versorgung und Standort dokumentieren und mit einer bekannten Referenz-SIM im Pro-finder gegenprüfen** ✓
+- Die WiPro III sofort ersetzen
+- Die gleiche SIM noch einmal im Smartphone testen und den Fall schließen
+- Beliebige SMS-Befehle senden, bis einer beantwortet wird
 
-**Auflösung:** Eine belastbare Empfehlung richtet sich nach Diensten, Hostnetz, Einsatzland und Gerätestand. Prepaid und Vertrag sind grundsätzlich möglich; eine starre Providerliste wäre wegen wechselnder Tarife und Netze nicht dauerhaft zuverlässig.
+**Auflösung:** Der Smartphone-Test beweist nur, dass die SIM grundsätzlich Dienste nutzen kann. Eine bekannte Referenz-SIM im Pro-finder trennt SIM/Tarif/Netz von Gerät, Versorgung, Gerätestand und Einbauort; vollständige Gerätedaten machen das Ergebnis supportfähig.
 
 **Falsch gewählt?**
 
-- *Reine Daten-SIM gewählt:* Der Pro-finder steuert und meldet über klassische SMS und Telefonie. Mobile Daten ersetzen diese Dienste nicht.
-  <br>↳ bezogen auf: „Ein reiner Datentarif ohne SMS und Telefonie genügt“
-- *Nur nach Providernamen entschieden:* Tarife, Hostnetze und Roamingbedingungen ändern sich. Entscheidend ist die konkrete SIM mit ihren Diensten am vorgesehenen Einsatzort.
-  <br>↳ bezogen auf: „Der Markenname des Providers allein garantiert die Kompatibilität dauerhaft“
+- *Zentrale ohne Trennung getauscht:* Ohne Kreuztest ist nicht klar, ob SIM, Tarif, Empfang, Pro-finder, Versorgung oder Konfiguration die Kommunikation verhindert.
+  <br>↳ bezogen auf: „Die WiPro III sofort ersetzen“
+- *Kein neuer Diagnosewert gewonnen:* Ein weiterer Smartphone-Test oder zufällige Befehle verändern die offene Frage nicht. Der Referenztausch setzt eine kontrollierte Vergleichsbedingung.
+  <br>↳ bezogen auf: „Die gleiche SIM noch einmal im Smartphone testen und den Fall schließen“ · „Beliebige SMS-Befehle senden, bis einer beantwortet wird“
 
-**Mitnehmen:** Empfohlen wird kein Logo, sondern eine nachweislich passende und getestete Verbindung: SMS, Telefonie, erreichbare Rufnummer und geeignetes Netz.
+**Mitnehmen:** Ein guter nächster Schritt verändert genau eine Variable. Referenz-SIM, dokumentierter Gerätezustand und gleicher Standort machen aus Vermutung eine Diagnose.
 
 ---
 
@@ -1169,15 +1186,15 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 | | |
 |---|---|
 | Fragen | 10 |
-| Fragensatz-Version | 4 |
+| Fragensatz-Version | 5 |
 | Art | Vom Einzelprodukt zum System |
-| Lernziel | Wer die vier Ebenen trennt — Zentrale, Fernsteuerung, Lesestelle, Medium —, beantwortet fast jede Kundenfrage von selbst. |
+| Lernziel | Wer die vier Ebenen trennt - Zentrale, Fernsteuerung, Lesestelle, Medium -, beantwortet fast jede Kundenfrage von selbst. |
 
 **Quellen im Produktwissen:** `referenz/systemueberblick.md`, `produkte/bt-connect.md`, `produkte/nfc-modul.md`, `referenz/zugang-bedienung.md`
 
-> **Redaktioneller Hinweis (erscheint nicht im Quiz):** Fragenkatalog v4. USEDOM erklärt das Verkaufsdisplay über Kundensituationen statt über reines Produkt-Zuordnen. Produktbilder liegen in Wissen/03_Medien/produkte/ und können USE-04 später visuell ergänzen. Fachlich zu bestätigen: die Artikelnummern 101286 / 101287 in USE-07 und die 94 dB der internen Sirene in USE-06.
+> **Redaktioneller Hinweis (erscheint nicht im Quiz):** Fragenkatalog v5. USEDOM erklärt Verkaufsdisplay und Konfigurator über Kundenwunsch, Systembausteine und Angebotsvorbereitung. USE-01 nutzt ausschließlich echte Produktbilder. Artikelnummern und Leistungswerte vor jeder Schulung gegen den aktuellen Produktstand prüfen.
 
-#### 1. Ein Kunde zeigt auf BT-connect, Pro-finder und NFC Modul: „Das ist doch dreimal dasselbe — das Fahrzeug ohne Schlüssel bedienen.“ Welche Erklärung trennt die Produkte sauber?
+#### 1. Ein Kunde zeigt auf BT-connect, Pro-finder und NFC Modul: „Das ist doch dreimal dasselbe - das Fahrzeug ohne Schlüssel bedienen.“ Welche Erklärung trennt die Produkte sauber?
 
 `USE-04` · Einfachauswahl · Gespräch am Display
 
@@ -1201,30 +1218,30 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 `USE-01` · Mehrfachauswahl · Bedarfsanalyse
 
-- **WiPro III (safe.lock je nach Fahrzeug)** ✓
-- **Pro-finder** ✓
-- **NFC Modul** ✓
-- **KeyCard, KeyTag oder KeyStrap** ✓
-- G.A.S.-pro III
-- T.S.A. Funk-Rauchmelder
+- **`/media/usedom/use-produkt-wipro-iii.webp` — WiPro III Alarmzentrale mit Zubehör** ✓
+- **`/media/usedom/use-produkt-pro-finder.webp` — Pro-finder Ortungs- und Kommunikationsmodul** ✓
+- **`/media/usedom/use-produkt-nfc-modul.webp` — Schwarzes NFC Modul als Lesestelle** ✓
+- **`/media/usedom/use-produkt-keycard.webp` — THITRONIK KeyCard als Zugangsmedium** ✓
+- `/media/usedom/use-produkt-gas-pro-iii.webp` — G.A.S.-pro III Gaswarner
+- `/media/usedom/use-produkt-tsa-funk-rauchmelder.webp` — T.S.A. Funk-Rauchmelder
 
-**Auflösung:** Drei Kundenwünsche, drei Bausteine — plus das Zugangsmedium.
+**Auflösung:** Drei Kundenwünsche, drei Bausteine - plus das Zugangsmedium.
 
 **Falsch gewählt?**
 
-- *Zugangsmedium vergessen:* Der häufigste Fehler im Angebot. Das NFC Modul ist nur die Lesestelle — ohne KeyCard, KeyTag oder KeyStrap öffnet niemand etwas. Der Kunde merkt es am Tag der Übergabe.
+- *Zugangsmedium vergessen:* Der häufigste Fehler im Angebot. Das NFC Modul ist nur die Lesestelle - ohne KeyCard, KeyTag oder KeyStrap öffnet niemand etwas. Der Kunde merkt es am Tag der Übergabe.
   <br>↳ bezogen auf: „KeyCard, KeyTag oder KeyStrap“
-- *Gaswarner mitangekreuzt:* Sinnvolles Produkt, aber es deckt keinen der drei genannten Wünsche ab. Zusatzverkauf ja — aber nicht in dieser Position.
+- *Gaswarner mitangekreuzt:* Sinnvolles Produkt, aber es deckt keinen der drei genannten Wünsche ab. Zusatzverkauf ja - aber nicht in dieser Position.
   <br>↳ bezogen auf: „G.A.S.-pro III“
 
-**Mitnehmen:** Geh die Kundenwünsche einzeln durch und hak sie am Angebot ab. Drei Wünsche, drei Häkchen — plus die Frage: „Womit macht er es auf?“
+**Mitnehmen:** Geh die Kundenwünsche einzeln durch und hak sie am Angebot ab. Drei Wünsche, drei Häkchen - plus die Frage: „Womit macht er es auf?“
 
 #### 3. Kunde: „Ich nehme nur das BT-connect, eine Alarmanlage brauche ich nicht.“ Geht das?
 
 `USE-02` · Einfachauswahl · Abhängigkeit
 
-- Geht — BT-connect arbeitet eigenständig
-- **Geht nicht — BT-connect setzt eine WiPro III voraus** ✓
+- Geht - BT-connect arbeitet eigenständig
+- **Geht nicht - BT-connect setzt eine WiPro III voraus** ✓
 - Geht nur zusammen mit dem Pro-finder
 - Geht nur zusammen mit dem NFC Modul
 
@@ -1232,17 +1249,17 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 **Falsch gewählt?**
 
-- *Geht eigenständig:* Der Kunde hört „Bluetooth-Modul fürs Wohnmobil“ und denkt an ein eigenständiges Produkt wie einen Tracker. Der Name legt das nahe — genau deshalb muss die Abhängigkeit aktiv erklärt werden.
-  <br>↳ bezogen auf: „Geht — BT-connect arbeitet eigenständig“
+- *Geht eigenständig:* Der Kunde hört „Bluetooth-Modul fürs Wohnmobil“ und denkt an ein eigenständiges Produkt wie einen Tracker. Der Name legt das nahe - genau deshalb muss die Abhängigkeit aktiv erklärt werden.
+  <br>↳ bezogen auf: „Geht - BT-connect arbeitet eigenständig“
 
 **Mitnehmen:** Frag dich bei jedem Zubehör: Ist das ein **Bedienweg** oder ein **System**? Bedienwege brauchen immer etwas, das sie bedienen. Bis zu 9 Geräte lassen sich koppeln, Smartwatch inklusive.
 
 #### 4. Kunde: „Mit BT-connect kann ich also aus dem Restaurant am Hafen mein Wohnmobil scharfschalten?“
 
-`USE-03` · Einfachauswahl · Reichweiten-Falle
+`USE-03` · Einfachauswahl · Bluetooth-Reichweite
 
 - Ja, bis 50 m zuverlässig
-- **Nein — BT-connect wirkt nur im Bluetooth-Nahbereich** ✓
+- **Nein - BT-connect wirkt nur im Bluetooth-Nahbereich** ✓
 - Ja, wenn das Handy im WLAN eingebucht ist
 - Ja, sobald safe.lock verbaut ist
 
@@ -1250,18 +1267,18 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 **Falsch gewählt?**
 
-- *Wenn das Handy im WLAN ist:* Klingt modern und plausibel — das Modul hat aber keine Internetverbindung. Das WLAN des Kunden hilft seinem Telefon, nicht dem Fahrzeug.
+- *Wenn das Handy im WLAN ist:* Klingt modern und plausibel - das Modul hat aber keine Internetverbindung. Das WLAN des Kunden hilft seinem Telefon, nicht dem Fahrzeug.
   <br>↳ bezogen auf: „Ja, wenn das Handy im WLAN eingebucht ist“
-- *Ja, bis 50 m:* Die ehrlichste der falschen Antworten, weil sie eine Grenze nennt. Nur ist der Hafen weiter weg als 50 m — und genau darum ging es dem Kunden.
+- *Ja, bis 50 m:* Die ehrlichste der falschen Antworten, weil sie eine Grenze nennt. Nur ist der Hafen weiter weg als 50 m - und genau darum ging es dem Kunden.
   <br>↳ bezogen auf: „Ja, bis 50 m zuverlässig“
 
-**Mitnehmen:** Diese Erwartung entsteht im Verkaufsgespräch schnell und fällt dem Kunden erst im Urlaub auf. Besser jetzt klarstellen — und den Pro-finder gleich mit anbieten. Aus einem enttäuschten Kunden wird so ein größerer Auftrag.
+**Mitnehmen:** Diese Erwartung entsteht im Verkaufsgespräch schnell und fällt dem Kunden erst im Urlaub auf. Besser jetzt klarstellen - und den Pro-finder gleich mit anbieten. Aus einem enttäuschten Kunden wird so ein größerer Auftrag.
 
 #### 5. Ein Kunde hat keine WiPro und will nur Gaswarnung. Was zeigst du?
 
 `USE-06` · Einfachauswahl · Gaswarnung ohne Alarmanlage
 
-- G.A.S.-connect — die günstigste Lösung
+- G.A.S.-connect - die günstigste Lösung
 - **G.A.S.-pro III, G.A.S. oder G.A.S.-plug** ✓
 - Ohne WiPro ist keine Gaswarnung möglich
 - Nur den externen Zusatzsensor
@@ -1270,37 +1287,39 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 **Falsch gewählt?**
 
-- *G.A.S.-connect:* Der gefährlichste Fehlgriff dieser Insel, weil er über den Preis kommt. G.A.S.-connect (105750) hat **keine eigene Sirene** und ist Funkzubehör für die WiPro III. Als Standalone-Lösung verkauft, warnt es niemanden — der Kunde merkt es nur nie, weil hoffentlich nie etwas passiert.
-  <br>↳ bezogen auf: „G.A.S.-connect — die günstigste Lösung“
+- *G.A.S.-connect:* Der gefährlichste Fehlgriff dieser Insel, weil er über den Preis kommt. G.A.S.-connect (105750) hat **keine eigene Sirene** und ist Funkzubehör für die WiPro III. Als Standalone-Lösung verkauft, warnt es niemanden - der Kunde merkt es nur nie, weil hoffentlich nie etwas passiert.
+  <br>↳ bezogen auf: „G.A.S.-connect - die günstigste Lösung“
 
 **Mitnehmen:** Bei Sicherheitsprodukten ist die erste Frage nie der Preis, sondern: **Wer wird gewarnt und wodurch?** Kein eigener Signalgeber heißt: Es braucht etwas anderes, das den Alarm ausgibt.
 
-#### 6. Ein Kunde verliert seinen KeyTag. Was bedeutet das für die übrigen Medien?
+#### 6. Welche Angaben brauchst du vor dem Start im Konfigurator, damit aus dem Ergebnis ein belastbarer Angebotsentwurf wird?
 
-`USE-08` · Einfachauswahl · Zugangsmedien verwalten
+`USE-08` · Einfachauswahl · Konfiguration vorbereiten
 
-- Nur der verlorene Tag wird gelöscht
-- **Kompletter Tag-Reset — alle Medien müssen neu angelernt werden** ✓
-- Der Tag wird über die App gesperrt
-- Nichts — verlorene Medien verfallen automatisch
+**Bild zur Frage:** `/media/usedom/use-konfigurator.webp` — THITRONIK-Konfigurator mit Fahrzeugauswahl
 
-**Auflösung:** Einzelne Medien lassen sich **nicht selektiv löschen**. Bei Verlust ist ein kompletter Reset fällig, danach werden alle übrigen Medien neu angelernt. Insgesamt speicherbar: 14 Medien, die mitgelieferte KeyCard zählt mit.
+- **Basisfahrzeug und Modelljahr, Fahrzeugaufbau/Nutzung, gewünschte Absicherung und gewünschte Bedien- beziehungsweise Meldewege** ✓
+- Nur das verfügbare Kundenbudget
+- Nur Länge und Farbe des Fahrzeugs
+- Keine Angaben - der Konfigurator erkennt das Fahrzeug automatisch
+
+**Auflösung:** Der Konfigurator strukturiert eine Empfehlung, aber die Eingabe beginnt mit dem konkreten Fahrzeug und dem tatsächlichen Kundenbedarf. Diese Angaben entscheiden über Zentrale, Sensorik, Zugangs- und Meldewege.
 
 **Falsch gewählt?**
 
-- *Über die App sperren:* Die Erwartung aus der Smartphone-Welt. Das NFC Modul ist eine autarke Lesestelle ohne Verbindung zur App — es weiß nichts von einem verlorenen Tag.
-  <br>↳ bezogen auf: „Der Tag wird über die App gesperrt“
-- *Nur den verlorenen löschen:* Wäre komfortabel und ist genau das, was der Kunde annimmt. Wer es zusagt, verspricht etwas, das erst beim Verlust auffliegt.
-  <br>↳ bezogen auf: „Nur der verlorene Tag wird gelöscht“
+- *Zu wenig Bedarf aufgenommen:* Budget oder Fahrzeugmaß allein erklärt weder Kompatibilität noch Schutzziel. Das Ergebnis wäre eine Produktliste ohne belastbare Zuordnung.
+  <br>↳ bezogen auf: „Nur das verfügbare Kundenbudget“ · „Nur Länge und Farbe des Fahrzeugs“
+- *Automatische Fahrzeugerkennung angenommen:* Der Konfigurator arbeitet mit den eingegebenen Angaben. Fehlende oder ungenaue Fahrzeugdaten werden nicht durch das Werkzeug geheilt.
+  <br>↳ bezogen auf: „Keine Angaben - der Konfigurator erkennt das Fahrzeug automatisch“
 
-**Mitnehmen:** Sag es bei der Übergabe, nicht beim Verlust. Und: Wer alle Medien ohnehin einmal neu anlernen muss, kauft bei dieser Gelegenheit oft gleich einen zweiten Satz.
+**Mitnehmen:** Erst Bedarf und Fahrzeug klären, dann konfigurieren. Ein Werkzeug kann nur so belastbar sein wie seine Eingaben.
 
 #### 7. Kunde: „Der Gaswarner erkennt dann auch Kohlenmonoxid von meiner Heizung?“
 
-`USE-07` · Einfachauswahl · CO-Falle
+`USE-07` · Einfachauswahl · Gas und Kohlenmonoxid
 
 - Ja, alle G.A.S.-Geräte erkennen CO
-- **Nein — Gas- und CO-Erkennung sind getrennte Geräte** ✓
+- **Nein - Gas- und CO-Erkennung sind getrennte Geräte** ✓
 - Ja, sobald das Gerät an der WiPro angebunden ist
 - CO wird vom Rauchmelder mit abgedeckt
 
@@ -1308,9 +1327,9 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 **Falsch gewählt?**
 
-- *Der Rauchmelder deckt es ab:* Der verbreitetste Irrtum überhaupt — auch unter Fachleuten. Rauchmelder erkennen Partikel, CO ist ein geruchloses Gas ohne Rauchentwicklung. Ein Kunde, der sich darauf verlässt, hat keinen Schutz.
+- *Der Rauchmelder deckt es ab:* Der verbreitetste Irrtum überhaupt - auch unter Fachleuten. Rauchmelder erkennen Partikel, CO ist ein geruchloses Gas ohne Rauchentwicklung. Ein Kunde, der sich darauf verlässt, hat keinen Schutz.
   <br>↳ bezogen auf: „CO wird vom Rauchmelder mit abgedeckt“
-- *Mit WiPro-Anbindung ja:* Verwechselt Funkanbindung mit Sensorik. Die Anbindung leitet weiter, was der Sensor erkennt — sie erkennt nichts selbst.
+- *Mit WiPro-Anbindung ja:* Verwechselt Funkanbindung mit Sensorik. Die Anbindung leitet weiter, was der Sensor erkennt - sie erkennt nichts selbst.
   <br>↳ bezogen auf: „Ja, sobald das Gerät an der WiPro angebunden ist“
 
 **Mitnehmen:** Eine falsche Zusage ist hier sicherheitsrelevant: Der Kunde verlässt sich auf einen Schutz, den das Gerät nicht bietet. Fürs Servicegespräch: CO-Sensoren haben ein Verfallsdatum auf dem Typenschild und müssen vor dessen Ablauf durch THITRONIK ersetzt werden (kostenpflichtig).
@@ -1328,12 +1347,12 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 **Falsch gewählt?**
 
-- *Zu teuer:* Macht aus einer Konstruktionsentscheidung ein Sparargument — und aus einem Vorteil einen Mangel. Der Kunde hört: „Da wurde gespart.“
+- *Zu teuer:* Macht aus einer Konstruktionsentscheidung ein Sparargument - und aus einem Vorteil einen Mangel. Der Kunde hört: „Da wurde gespart.“
   <br>↳ bezogen auf: „Bewegungsmelder sind für diese Preisklasse zu teuer“
 - *Vollständig fehlalarmfrei:* Verlockend im Verkaufsgespräch und deshalb gefährlich. Diese Zusage ist unzulässig; keine Alarmanlage ist fehlalarmfrei.
   <br>↳ bezogen auf: „Dadurch ist die Anlage vollständig fehlalarmfrei“
 
-**Mitnehmen:** Der zweite Vorteil zieht im Gespräch oft stärker: Die Anlage kann scharf bleiben, **während Personen im Fahrzeug sind** — beim Schlafen auf dem Stellplatz. Das kann keine Anlage mit Bewegungsmelder.
+**Mitnehmen:** Der zweite Vorteil zieht im Gespräch oft stärker: Die Anlage kann scharf bleiben, **während Personen im Fahrzeug sind** - beim Schlafen auf dem Stellplatz. Das kann keine Anlage mit Bewegungsmelder.
 
 #### 9. Was machst du mit dem Konfigurator-Ergebnis?
 
@@ -1348,19 +1367,19 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 **Falsch gewählt?**
 
-- *Ungeprüft als Zusage:* Der Konfigurator kennt das konkrete Fahrzeug nicht. Hupe ohne Zündung, Sleep Mode, Freigabestatus des Modelljahrs — nichts davon steht dort drin. Genau diese Punkte sprengen später das Angebot.
+- *Ungeprüft als Zusage:* Der Konfigurator kennt das konkrete Fahrzeug nicht. Hupe ohne Zündung, Sleep Mode, Freigabestatus des Modelljahrs - nichts davon steht dort drin. Genau diese Punkte sprengen später das Angebot.
   <br>↳ bezogen auf: „Ungeprüft als verbindliche Zusage an den Kunden geben“
 - *Nie dem Kunden zeigen:* Verschenkt ein gutes Verkaufsinstrument. Das PDF macht ein Angebot nachvollziehbar.
   <br>↳ bezogen auf: „Nur intern verwenden, nie dem Kunden zeigen“
 
-**Mitnehmen:** Dein Fahrzeugwissen entscheidet, ob das Ergebnis am konkreten Fahrzeug trägt. Interne Einbauunterlagen gehören nicht in Kundenhand — siehe POEL.
+**Mitnehmen:** Dein Fahrzeugwissen entscheidet, ob das Ergebnis am konkreten Fahrzeug trägt. Interne Einbauunterlagen gehören nicht in Kundenhand - siehe POEL.
 
 #### 10. Kunde: „Mit der KeyCard schließe ich mein Fahrzeug auf und zu, oder?“
 
-`USE-05` · Einfachauswahl · Die wichtigste Abgrenzung
+`USE-05` · Einfachauswahl · KeyCard und Zentralverriegelung
 
 - Ja, in beiden Richtungen
-- **Scharf/Unscharf ja — Zentralverriegelung nur mit safe.lock** ✓
+- **Scharf/Unscharf ja - Zentralverriegelung nur mit safe.lock** ✓
 - Nein, die KeyCard kann ausschließlich entriegeln
 - Nur in Verbindung mit BT-connect
 
@@ -1373,7 +1392,7 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 - *Nur mit BT-connect:* Vermischt zwei unabhängige Bedienwege. Sie ergänzen einander, sie bedingen einander nicht.
   <br>↳ bezogen auf: „Nur in Verbindung mit BT-connect“
 
-**Mitnehmen:** **Prinzip 1 — Scharf/Unscharf ≠ Auf/Zu.** Heute ist es dir schon auf VEJRØ begegnet und es kommt auf LANGELAND wieder. Satz für den Kunden: „Die Karte schaltet Ihre Anlage. Ob sie auch die Türen öffnet, hängt davon ab, ob wir safe.lock verbaut haben — schauen wir uns Ihr Fahrzeug an.“
+**Mitnehmen:** **Prinzip 1 - Scharf/Unscharf ≠ Auf/Zu.** Heute ist es dir schon auf VEJRØ begegnet und es kommt auf LANGELAND wieder. Satz für den Kunden: „Die Karte schaltet Ihre Anlage. Ob sie auch die Türen öffnet, hängt davon ab, ob wir safe.lock verbaut haben - schauen wir uns Ihr Fahrzeug an.“
 
 ---
 
@@ -1382,13 +1401,13 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 | | |
 |---|---|
 | Fragen | 10 |
-| Fragensatz-Version | 4 |
+| Fragensatz-Version | 5 |
 | Art | Der Prozess vor und nach dem Schraubendreher |
 | Lernziel | Ein Fahrzeug vollständig und freigabebewusst annehmen, den Einbau prüfbar dokumentieren und dem Kunden System, Grenzen und Bedienwege sicher übergeben. |
 
 **Quellen im Produktwissen:** `referenz/fahrzeugkompatibilitaet.md`, `produkte/wipro-iii.md`, `referenz/zugang-bedienung.md`, `_intern/support-fallaufnahme.md`
 
-> **Redaktioneller Hinweis (erscheint nicht im Quiz):** Fragenkatalog v4. Die vom Fachreview bestätigten Annahme- und Übergabefragen wurden inhaltlich erhalten und sprachlich auf den vollständigen Werkstattprozess ausgerichtet. Die 60 Sekunden in LAN-04 und der Freigabestand zum Iveco Daily in LAN-03 sind vor jeder Schulung gegen den aktuellen Stand zu prüfen.
+> **Redaktioneller Hinweis (erscheint nicht im Quiz):** Fragenkatalog v5. LANGELAND deckt Annahme, Erwartungsmanagement, vollständige Übergabe und Dokumentation ab. LAN-09 macht die vollständige Prüfung aller zugesagten Meldewege zur Übergabebedingung. Zeitwerte und Fahrzeugfreigaben vor jeder Schulung gegen den aktuellen Stand prüfen.
 
 #### 1. Ein Kunde bringt sein Fahrzeug zur Erweiterung eines bestehenden Systems. Was gehört zwingend in die Annahme?
 
@@ -1403,7 +1422,7 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 **Falsch gewählt?**
 
-- *Modell, Wunsch, Termin:* Reicht für die Terminvergabe und fühlt sich vollständig an. Es fehlt genau die Information, die entscheidet, ob der Einbau überhaupt geht — und die du später nur noch am zerlegten Fahrzeug bekommst.
+- *Modell, Wunsch, Termin:* Reicht für die Terminvergabe und fühlt sich vollständig an. Es fehlt genau die Information, die entscheidet, ob der Einbau überhaupt geht - und die du später nur noch am zerlegten Fahrzeug bekommst.
   <br>↳ bezogen auf: „Fahrzeugmodell, Kundenwunsch und gewünschter Termin“
 
 **Mitnehmen:** Die Seriennummer sitzt nach dem Einbau hinter der Verkleidung. Bei der Annahme kostet sie zwei Minuten, im Supportfall einen halben Tag.
@@ -1415,23 +1434,23 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 - Der Sprinter benötigt grundsätzlich safe.lock
 - **Die Fahrzeughupe ist ohne Zündung nicht verfügbar** ✓
 - Ein Testalarm ist bei diesem Fahrzeug nicht möglich
-- Kein Thema — die Hupe funktioniert bei jedem Fahrzeug
+- Kein Thema - die Hupe funktioniert bei jedem Fahrzeug
 
-**Auflösung:** Je nach Anleitung ist eine Back-up-Sirene (100089) oder Zusatzhupe (105339) nötig — und die gehört ins **Angebot**, nicht auf die Rechnung.
+**Auflösung:** Je nach Anleitung ist eine Back-up-Sirene (100089) oder Zusatzhupe (105339) nötig - und die gehört ins **Angebot**, nicht auf die Rechnung.
 
 **Falsch gewählt?**
 
 - *Kein Thema:* Betrifft weit mehr Fahrzeuge, als man denkt: alle Sprinter, VW T5 Facelift, T6 und T6.1, alle Crafter/MAN TGE sowie Iveco Daily ab MJ 2019. Wer das nicht auf dem Schirm hat, verkauft regelmäßig Anlagen, die im Ernstfall stumm bleiben.
-  <br>↳ bezogen auf: „Kein Thema — die Hupe funktioniert bei jedem Fahrzeug“
+  <br>↳ bezogen auf: „Kein Thema - die Hupe funktioniert bei jedem Fahrzeug“
 
 **Mitnehmen:** Ein Zusatzteil, das erst auf der Rechnung auftaucht, ist ein Konflikt. Dasselbe Teil im Angebot ist eine Selbstverständlichkeit. Beim VS30 zusätzlich: ILS-LED-Scheinwerfer erfordern einen 220-Ω-Widerstand.
 
 #### 3. Ein Kunde ruft an: „Ich habe einen Iveco Daily, Modelljahr 2026, wann kann ich kommen?“
 
-`LAN-03` · Einfachauswahl · Freigabe-Falle
+`LAN-03` · Einfachauswahl · Freigabestatus Iveco
 
-- Termin zusagen — der Daily ist ein Standardfahrzeug
-- **Kein Termin ohne Prüfung — dieses Modelljahr ist nicht freigegeben** ✓
+- Termin zusagen - der Daily ist ein Standardfahrzeug
+- **Kein Termin ohne Prüfung - dieses Modelljahr ist nicht freigegeben** ✓
 - Termin zusagen und vor Ort improvisieren
 - Termin zusagen und den Universalanschluss verwenden
 
@@ -1439,21 +1458,21 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 **Falsch gewählt?**
 
-- *Universalanschluss:* Die klügste der falschen Antworten — es gibt ihn ja wirklich. Er ist aber für ältere Fahrzeuge **ohne** CAN-Bus gedacht, nicht als Notlösung für ein nicht freigegebenes modernes Fahrzeug.
+- *Universalanschluss:* Die klügste der falschen Antworten - es gibt ihn ja wirklich. Er ist aber für ältere Fahrzeuge **ohne** CAN-Bus gedacht, nicht als Notlösung für ein nicht freigegebenes modernes Fahrzeug.
   <br>↳ bezogen auf: „Termin zusagen und den Universalanschluss verwenden“
 - *Standardfahrzeug:* Stimmte jahrelang. Genau das macht Freigabe-Fallen gefährlich: Sie treffen die Erfahrenen.
-  <br>↳ bezogen auf: „Termin zusagen — der Daily ist ein Standardfahrzeug“
+  <br>↳ bezogen auf: „Termin zusagen - der Daily ist ein Standardfahrzeug“
 
-**Mitnehmen:** Ein zugesagter und dann abgesagter Termin kostet mehr Vertrauen als ein ehrliches „das kläre ich und rufe zurück“. Bei neuen Modelljahren gilt Erfahrung nicht — dort gilt nur die aktuelle Freigabe.
+**Mitnehmen:** Ein zugesagter und dann abgesagter Termin kostet mehr Vertrauen als ein ehrliches „das kläre ich und rufe zurück“. Bei neuen Modelljahren gilt Erfahrung nicht - dort gilt nur die aktuelle Freigabe.
 
 #### 4. Fahrerhaustüren sind über den Innenbeleuchtungseingang angebunden, nicht über den CAN-Bus. Wann kannst du den Testalarm durchführen?
 
-`LAN-04` · Einfachauswahl · Testfalle bei der Abnahme
+`LAN-04` · Einfachauswahl · Testverzögerung Innenlicht
 
 - Sofort nach dem Scharfschalten
 - **Frühestens 60 Sekunden nach Aktivierung** ✓
 - Erst nach 5 Minuten
-- Gar nicht — nur CAN-Türen sind testbar
+- Gar nicht - nur CAN-Türen sind testbar
 
 **Auflösung:** Die Anlage braucht diese Zeit, bevor sie über diesen Eingang auslöst.
 
@@ -1461,10 +1480,10 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 - *Sofort:* Der wahrscheinlichste Fehler, weil man am Ende des Einbaus zügig fertig werden will. Ergebnis: Eine korrekt arbeitende Anlage wird für defekt gehalten, und es beginnt eine Fehlersuche, die es nicht braucht.
   <br>↳ bezogen auf: „Sofort nach dem Scharfschalten“
-- *Gar nicht testbar:* Wäre bequem, ist aber falsch — und würde bedeuten, das Fahrzeug ungeprüft zu übergeben.
-  <br>↳ bezogen auf: „Gar nicht — nur CAN-Türen sind testbar“
+- *Gar nicht testbar:* Wäre bequem, ist aber falsch - und würde bedeuten, das Fahrzeug ungeprüft zu übergeben.
+  <br>↳ bezogen auf: „Gar nicht - nur CAN-Türen sind testbar“
 
-**Mitnehmen:** Diese eine Minute ist einer der häufigsten Gründe für einen vermeintlichen Mangel bei der Abnahme. Warten ist hier Teil des Tests — **Prinzip 3**.
+**Mitnehmen:** Diese eine Minute ist einer der häufigsten Gründe für einen vermeintlichen Mangel bei der Abnahme. Warten ist hier Teil des Tests - **Prinzip 3**.
 
 #### 5. Fahrzeug mit safe.lock im Campingmodus. Welchen Hinweis gibst du dem Kunden zwingend mit?
 
@@ -1479,30 +1498,34 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 **Falsch gewählt?**
 
-- *Originalschlüssel immer als Rückfallebene:* Die vernünftigste Annahme der Welt — und in dieser Richtung falsch. Genau diese Asymmetrie ist der Kern der Frage: Ein Weg führt zurück, der andere nicht.
+- *Originalschlüssel immer als Rückfallebene:* Die vernünftigste Annahme der Welt - und in dieser Richtung falsch. Genau diese Asymmetrie ist der Kern der Frage: Ein Weg führt zurück, der andere nicht.
   <br>↳ bezogen auf: „Der Originalschlüssel funktioniert immer als Rückfallebene“
 - *Alarm im Campingmodus inaktiv:* Wäre ein gravierender Sicherheitsirrtum. Der Campingmodus ist eine Zugangslogik, keine Abschaltung.
   <br>↳ bezogen auf: „Im Campingmodus ist der Alarm inaktiv“
 
-**Mitnehmen:** Genau dieser Fall führt zu Anrufen vom Stellplatz — abends, wenn niemand mehr erreichbar ist. Einmal bei der Übergabe erklärt, tritt er nicht auf.
+**Mitnehmen:** Genau dieser Fall führt zu Anrufen vom Stellplatz - abends, wenn niemand mehr erreichbar ist. Einmal bei der Übergabe erklärt, tritt er nicht auf.
 
-#### 6. Die Zentrale kam aus dem safe.lock-Upgrade zurück und ist wieder eingebaut. Was ist jetzt zwingend?
+#### 6. Die App schaltet die Anlage korrekt, aber die Alarm-SMS des Pro-finders hat die zweite vereinbarte Zielrufnummer noch nicht erreicht. Der Kunde möchte losfahren. Was tust du?
 
-`LAN-09` · Einfachauswahl · Nach einem safe.lock-Upgrade
+`LAN-09` · Einfachauswahl · Übergabe erst nach Volltest
 
-- Nur den Master-Handsender neu anlernen
-- **Sämtliches Funk-Zubehör neu anlernen — der Speicher wurde gelöscht** ✓
-- Nichts — der Speicher bleibt beim Upgrade erhalten
-- Nur die Seriennummer in der App aktualisieren
+**Bild zur Frage:** `/media/langeland/lan-start-schluesseluebergabe.webp` — Dokumentierte Fahrzeugübergabe mit Schlüssel
 
-**Auflösung:** Beim Upgrade wird der Speicher geleert.
+- Übergeben - die funktionierende App beweist das Gesamtsystem
+- **Übergabe noch nicht abschließen; Alarmweg und alle vereinbarten Zielrufnummern vollständig testen, Ursache klären und Ergebnis dokumentieren** ✓
+- Die zweite Zielrufnummer aus dem Auftrag streichen
+- Dem Kunden sagen, die SMS könne später von selbst kommen
+
+**Auflösung:** Ein funktionierender Bedienweg beweist keinen anderen Meldeweg. Die Übergabe ist erst vollständig, wenn jede zugesagte Funktion einmal real ausgelöst, empfangen und nachvollziehbar dokumentiert wurde.
 
 **Falsch gewählt?**
 
-- *Nur den Handsender:* Der gefährlichste Fehler, weil er sich richtig anfühlt. Die Bedienung funktioniert danach einwandfrei — es fehlen aber sämtliche Magnetkontakte. Und das merkt niemand bis zum Ernstfall.
-  <br>↳ bezogen auf: „Nur den Master-Handsender neu anlernen“
+- *Bedienweg mit Meldeweg verwechselt:* Die App bestätigt die Steuerung der Anlage, nicht den SMS-Versand an jede gespeicherte Rufnummer.
+  <br>↳ bezogen auf: „Übergeben - die funktionierende App beweist das Gesamtsystem“
+- *Offene Funktion zur Kundensache gemacht:* Die vereinbarte Fernmeldung gehört zum Auftrag. Ein ungeklärter oder gestrichener Zielweg ist keine abgeschlossene Übergabe.
+  <br>↳ bezogen auf: „Die zweite Zielrufnummer aus dem Auftrag streichen“ · „Dem Kunden sagen, die SMS könne später von selbst kommen“
 
-**Mitnehmen:** Nach dem Upgrade vollständige Ein- und Ausgangstests inklusive Zentralverriegelung. Wer nur prüft, was er gerade angelernt hat, prüft das Falsche.
+**Mitnehmen:** Übergabe bedeutet: Kunde kann es bedienen, jede zugesagte Funktion wurde real geprüft und das Ergebnis liegt in der Akte.
 
 #### 7. Der Kunde bedient alles nur über die App. Was empfiehlst du?
 
@@ -1517,12 +1540,12 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 **Falsch gewählt?**
 
-- *Zweites Smartphone:* Klingt nach einer echten Redundanz und ist keine. Beide Geräte teilen dieselbe Technik und dieselben Fehlerquellen — deaktiviertes Bluetooth oder eine verlorene Kopplung sperrt beide gleichzeitig.
+- *Zweites Smartphone:* Klingt nach einer echten Redundanz und ist keine. Beide Geräte teilen dieselbe Technik und dieselben Fehlerquellen - deaktiviertes Bluetooth oder eine verlorene Kopplung sperrt beide gleichzeitig.
   <br>↳ bezogen auf: „Ein zweites Smartphone koppeln“
 - *Schlüssel im Fahrzeug:* Löst das Zugangsproblem und hebt dafür die gesamte Sicherung auf. Ein sicherer Zugang, der die Anlage sinnlos macht.
   <br>↳ bezogen auf: „Den Originalschlüssel im Fahrzeug deponieren“
 
-**Mitnehmen:** **Prinzip 2 — ein Zugangsweg ist kein Zugangsweg**, und zwei gleichartige sind auch nur einer. Sauberste Lösung: ein zuvor geprüfter Funk-Handsender 868 (101064) — unabhängig vom Smartphone, bis ca. 75 m, CR2032, kein Neuanlernen nach Batteriewechsel.
+**Mitnehmen:** **Prinzip 2 - ein Zugangsweg ist kein Zugangsweg**, und zwei gleichartige sind auch nur einer. Sauberste Lösung: ein zuvor geprüfter Funk-Handsender 868 (101064) - unabhängig vom Smartphone, bis ca. 75 m, CR2032, kein Neuanlernen nach Batteriewechsel.
 
 #### 8. Ein Kunde holt sein Fahrzeug nach Einbau von WiPro III und Pro-finder ab. Was gehört in die Übergabe? Wähle alle zutreffenden.
 
@@ -1540,12 +1563,12 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 **Falsch gewählt?**
 
-- *DIP-Einstellungen durchgehen:* Gut gemeint und fachlich beeindruckend — aber Werkstattwissen. Es überfordert den Kunden und lädt ihn dazu ein, selbst daran zu drehen. Die DIP-Stellung gehört in **deine** Akte.
+- *DIP-Einstellungen durchgehen:* Gut gemeint und fachlich beeindruckend - aber Werkstattwissen. Es überfordert den Kunden und lädt ihn dazu ein, selbst daran zu drehen. Die DIP-Stellung gehört in **deine** Akte.
   <br>↳ bezogen auf: „Alle DIP-Schaltereinstellungen mit dem Kunden durchgehen“
 - *Testalarm weggelassen:* Verständlich, weil laut und unangenehm. Aber ein Kunde, der den Alarm noch nie gehört hat, erkennt ihn im Ernstfall nicht als seinen.
   <br>↳ bezogen auf: „Einen echten Testalarm zeigen, den der Kunde selbst auslöst“
 
-**Mitnehmen:** Der Kunde muss jeden Bedienweg **einmal selbst** ausgeführt haben. Zusehen reicht nicht — was man nicht selbst gemacht hat, kann man abends auf dem Stellplatz nicht.
+**Mitnehmen:** Der Kunde muss jeden Bedienweg **einmal selbst** ausgeführt haben. Zusehen reicht nicht - was man nicht selbst gemacht hat, kann man abends auf dem Stellplatz nicht.
 
 #### 9. Welche Aussage darfst du bei der Übergabe nicht machen?
 
@@ -1553,17 +1576,17 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 - „Die Anlage meldet Einbruchereignisse akustisch und optisch.“
 - **„Damit kann Ihnen niemand mehr ins Fahrzeug einbrechen.“** ✓
-- „Nicht abgesicherte Öffnungen bleiben ungeschützt — abgesichert sind X, Y und Z.“
+- „Nicht abgesicherte Öffnungen bleiben ungeschützt - abgesichert sind X, Y und Z.“
 - „Nach einem Alarm bleibt die Überwachung aktiv.“
 
 **Auflösung:** Eine Alarmanlage meldet, sie verhindert nicht. Die Zusage ist inhaltlich falsch und im Schadensfall ein Problem.
 
 **Falsch gewählt?**
 
-- *„Nicht abgesicherte Öffnungen bleiben ungeschützt“:* Klingt nach einem schwachen Verkaufsargument und wird deshalb gern vermieden. Es ist aber die wichtigste Aussage der ganzen Übergabe — und sie schafft Vertrauen, statt es zu kosten.
-  <br>↳ bezogen auf: „„Nicht abgesicherte Öffnungen bleiben ungeschützt — abgesichert sind X, Y und Z.““
+- *„Nicht abgesicherte Öffnungen bleiben ungeschützt“:* Klingt nach einem schwachen Verkaufsargument und wird deshalb gern vermieden. Es ist aber die wichtigste Aussage der ganzen Übergabe - und sie schafft Vertrauen, statt es zu kosten.
+  <br>↳ bezogen auf: „„Nicht abgesicherte Öffnungen bleiben ungeschützt - abgesichert sind X, Y und Z.““
 
-**Mitnehmen:** Zur Einordnung für den Kunden: Der akustische Alarm läuft ca. 30 Sekunden, der optische ca. 180 Sekunden. Die Anlage macht auf den Vorgang aufmerksam — sie hält niemanden auf. Wer das sagt, wird nach einem Schaden nicht zum Beklagten.
+**Mitnehmen:** Zur Einordnung für den Kunden: Der akustische Alarm läuft ca. 30 Sekunden, der optische ca. 180 Sekunden. Die Anlage macht auf den Vorgang aufmerksam - sie hält niemanden auf. Wer das sagt, wird nach einem Schaden nicht zum Beklagten.
 
 #### 10. Was gehört nach der Übergabe in die Akte? Wähle alle zutreffenden.
 
@@ -1580,9 +1603,9 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 **Falsch gewählt?**
 
-- *Tests weggelassen:* Der am leichtesten übersehene Punkt. Ohne Testdokumentation lässt sich später nicht unterscheiden, ob etwas nie funktioniert hat oder erst später ausgefallen ist — und genau daran hängt die Frage, wer den nächsten Termin zahlt.
+- *Tests weggelassen:* Der am leichtesten übersehene Punkt. Ohne Testdokumentation lässt sich später nicht unterscheiden, ob etwas nie funktioniert hat oder erst später ausgefallen ist - und genau daran hängt die Frage, wer den nächsten Termin zahlt.
   <br>↳ bezogen auf: „Durchgeführte Tests und deren Ergebnis“
 - *Nur die Rechnungsnummer:* Trägt keinen einzigen Supportfall.
   <br>↳ bezogen auf: „Nur die Rechnungsnummer“
 
-**Mitnehmen:** Das **Foto der DIP-Stellung** ist der am häufigsten vergessene und im Supportfall wertvollste Teil der Dokumentation — es beantwortet in zwei Sekunden eine Frage, die sonst eine Demontage kostet. Damit schließt sich der Kreis: Deine Akte von heute ist die Fallaufnahme von FEHMARN in zwei Jahren.
+**Mitnehmen:** Das **Foto der DIP-Stellung** ist der am häufigsten vergessene und im Supportfall wertvollste Teil der Dokumentation - es beantwortet in zwei Sekunden eine Frage, die sonst eine Demontage kostet. Damit schließt sich der Kreis: Deine Akte von heute ist die Fallaufnahme von FEHMARN in zwei Jahren.

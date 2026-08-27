@@ -1,10 +1,11 @@
 # THITRONIK Campus Feedbackbogen
 
 Feedbackbogen für Händlerinnen und Händler zum THITRONIK Campus 2026.
-Statische Seite, kein Framework, Speicherung über eine Supabase-RPC.
+Statische Seite, kein Framework. In der Mitarbeiter-Pilotphase speichert sie
+über Netlify Forms; eine spätere Supabase-Anbindung ist vorbereitet.
 
-**Aktueller und einziger Stand: v14.** Seit dem 13.08.2026 live auf Netlify,
-mit einer echten Einsendung gegen die Produktivdatenbank bestätigt.
+**Aktueller und einziger Stand: v14.** Der Bogen wird in das Campus-Gesamtpaket
+unter `/feedback/` eingebaut und teilt dort Teilnehmerdaten mit dem Quiz.
 
 Ältere Stände (v11 bis v13) liegen nicht mehr im Arbeitsverzeichnis. Sie sind
 vollständig in der Git-Historie erhalten, siehe [Versionsgeschichte](#versionsgeschichte).
@@ -17,7 +18,7 @@ vollständig in der Git-Historie erhalten, siehe [Versionsgeschichte](#versionsg
 |---|---|
 | `index-v14.html` | Der Bogen. **Wird generiert**, nicht von Hand bearbeiten. |
 | `styles-v14.css` | Stile |
-| `app-v14.js` | Logik, Validierung, Payload, Supabase |
+| `app-v14.js` | Logik, Validierung, Entwurf und Netlify-Forms-Payload |
 | `rays-v14.js` | Lichtstrahlen im Hintergrund, reine Dekoration |
 | `netlify-v14/` | Fertiges Deploy-Paket. **Wird generiert.** |
 | `THITRONIK_Campus_Feedbackbogen_v14_Standalone.html` | Einzeldatei, per Doppelklick lauffähig. **Wird generiert.** |
@@ -55,8 +56,8 @@ Sechs Schritte, ein Abschnitt pro Bildschirm, mobile first.
 ### Vorschaumodus
 
 `?demo=1` prüft den kompletten Durchlauf und zeigt die Danke-Ansicht, speichert
-aber absichtlich nichts. **Für Tests immer verwenden**, sonst landen Testdaten in
-der Produktivdatenbank.
+aber absichtlich nichts. **Für Tests immer verwenden**, sonst landen Testdaten
+nach dem Deploy in Netlify Forms.
 
 ---
 
@@ -206,13 +207,17 @@ Typografie oder Tonalität.
 
 ---
 
-## Backend
+## Pilotphase und späteres Backend
 
-Gespeichert wird ausschließlich über die Security-Definer-RPC
-`public.submit_campus_feedback(jsonb)` im Supabase-Projekt `mhzlayhnyqlxdyiceyqz`.
-Die Tabellen `campus_feedback` und `campus_feedback_ratings` bleiben per Row
-Level Security gesperrt. Der Publishable Key steht im Browser-Code, das ist so
-vorgesehen.
+Aktuell speichert der Bogen über das statisch erkannte Netlify-Formular
+`campus-feedback`. Damit kann die fachliche Abstimmung ohne Datenbank starten;
+die Einsendungen stehen im Netlify-Dashboard und lassen sich als CSV exportieren.
+Die vollständige strukturierte Nutzlast liegt zusätzlich im Feld `payload`.
+
+Die vorhandenen Supabase-Migrationen und die folgenden Abschnitte dokumentieren
+den früheren Stand und den vorgesehenen späteren Datenbankausbau. Vor einem
+erneuten Wechsel auf Supabase muss die Anbindung bewusst wieder implementiert
+und gegen die dann aktuelle Formularstruktur getestet werden.
 
 ### Was v14 gegenüber v11–v13 am Payload ändert
 

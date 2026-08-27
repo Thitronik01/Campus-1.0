@@ -59,6 +59,7 @@ fs.writeFileSync(path.join(OUT, '_headers'), `/*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: DENY
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'self'
 
 /index.html
   Cache-Control: public, max-age=0, must-revalidate
@@ -91,9 +92,9 @@ beides nicht vermischt, tragen v14-Einsendungen form_version
 ` : '';
 
 const nummerAbschnitt = versionsNummer >= 14 ? `
-Die Haendlernummer braucht supabase_v14_migration.sql, um eine eigene Spalte
-zu bekommen. Ohne die Migration wird sie trotzdem gespeichert, aber nur
-innerhalb von raw_payload. Der Bogen funktioniert in beiden Faellen.
+Die Haendlernummer wird in Netlify Forms als eigenes Feld und zusaetzlich im
+vollstaendigen JSON-Payload gespeichert. Beim spaeteren Wechsel zu Supabase
+steht dafuer supabase_v14_migration.sql bereit.
 ` : '';
 
 const titel = `THITRONIK Campus 2026 Feedbackbogen - Netlify-Paket (${V})`;
@@ -110,7 +111,7 @@ Inhalt
 ------
 index.html        Der Feedbackbogen (aus index-${V}.html)
 styles-${V}.css    Stile
-app-${V}.js        Logik und Anbindung an Supabase
+app-${V}.js        Logik und Speicherung ueber Netlify Forms
 rays-${V}.js       Lichtstrahlen im Kopfbereich und in der Danke-Ansicht.
                   Reine Dekoration. Faellt die Datei weg oder kann der Browser
                   kein WebGL, bleibt es beim bisherigen Hintergrund.
@@ -121,12 +122,12 @@ Der Ordner assets/v12 heisst absichtlich so. Die Bilder wurden fuer v12
 optimiert und werden unveraendert mitgenutzt. Ein Umbenennen wuerde die
 Pfade in HTML und CSS auseinanderlaufen lassen.
 ${skalaAbschnitt}
-Backend
--------
-Gespeichert wird ueber die bestehende RPC public.submit_campus_feedback(jsonb)
-im Supabase-Projekt mhzlayhnyqlxdyiceyqz. Der Publishable Key steht im
-Browser-Code, das ist beabsichtigt: die Tabellen bleiben per Row Level
-Security gesperrt.
+Pilot-Speicherung
+-----------------
+Gespeichert wird ueber Netlify Forms. Nach dem ersten Deploy in Netlify unter
+Forms die Formularerkennung aktivieren und noch einmal deployen. Danach steht
+campus-feedback im Netlify-Dashboard und kann als CSV exportiert werden.
+Fuer die Pilotphase ist keine Datenbank noetig.
 ${nummerAbschnitt}
 Test ohne Speichern
 -------------------

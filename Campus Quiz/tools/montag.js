@@ -153,6 +153,10 @@ try {
 
 if (!SCHNELL) {
   titel("Pakete bauen");
+  const feedbackQuelle = path.join(PROJEKT, "Feedbackbogen");
+  schritt("Feedbackbogen erzeugen", lauf(path.join("tools", "build-index-v14.js"), [], feedbackQuelle));
+  schritt("Feedbackbogen als Einzeldatei", lauf(path.join("tools", "build-standalone.js"), [], feedbackQuelle));
+  schritt("Feedbackbogen für Netlify", lauf(path.join("tools", "build-netlify.js"), [], feedbackQuelle));
   schritt("Gesamtpaket", lauf(path.join("tools", "build-insel.js"), ["gesamt"]));
   schritt("sieben Einzelpakete", lauf(path.join("tools", "build-insel.js"), ["alle"]));
 } else {
@@ -229,13 +233,12 @@ if (fehlgeschlagen) {
 
 console.log(`  ${gruen("Alles grün.")}`);
 
-// Was noch aussteht, steht in der README — hier nur, was heute im Weg ist.
+// Die Datenbank ist bewusst der spätere Ausbauschritt. Bis dahin ist der
+// Netlify-Forms-Pilot kein Fehlerzustand, sondern der veröffentlichbare Stand.
 const migration = path.join(QUELLE, "supabase_campus_quiz_migration.sql");
 if (fs.existsSync(migration)) {
-  console.log(`\n  ${gelb("Offen:")} Die Datenbank-Migration ist noch nicht eingespielt.`);
-  console.log(grau("         Bis dahin nimmt Supabase nichts an. Die Ergebnisse bleiben"));
-  console.log(grau("         auf den Geräten im Sende-Ausgang liegen und gehen von selbst"));
-  console.log(grau("         raus, sobald die Tabelle steht."));
+  console.log(`\n  ${gruen("Pilotbereit:")} Netlify Forms sammelt Quiz und Feedback ohne Datenbank.`);
+  console.log(grau("         Supabase kann nach der Fragenabstimmung zugeschaltet werden:"));
   console.log(grau(`         → ${path.relative(PROJEKT, migration)}`));
 }
 
@@ -255,12 +258,12 @@ console.log(grau(`  Ordner           ${path.relative(PROJEKT, ZIEL)}`));
 console.log("");
 console.log(`  ${fett("Sende-Ausgang ansehen:")} ohne ?demo=1 durchspielen.`);
 console.log(grau("    Der Entwicklungsserver kennt die Netlify-Function nicht und antwortet"));
-console.log(grau("    mit 501 — es geht also nichts an Supabase. Die Engine legt das Ergebnis"));
+console.log(grau("    mit 501 — es geht also nichts an Netlify. Die Engine legt das Ergebnis"));
 console.log(grau("    in den Ausgang, die Inselkachel meldet \"noch nicht gesendet\"."));
 console.log("");
 console.log(`  ${fett("Sonst immer")} ${fett(`http://localhost:${PORT}/quiz?demo=1`)} — speichert absichtlich nichts.`);
-console.log(grau("    Ohne demo=1 landen Testdaten in der Produktivdatenbank, sobald die"));
-console.log(grau("    Seite deployt ist und die Migration läuft."));
+console.log(grau("    Ohne demo=1 landen Testdaten nach dem Deploy in Netlify Forms oder"));
+console.log(grau("    später — wenn eingerichtet — in Supabase."));
 console.log(`\n  ${grau("Beenden mit Strg+C")}\n`);
 
 const server = spawn(process.execPath, [path.join("tools", "dev-server.js"), ZIEL], {

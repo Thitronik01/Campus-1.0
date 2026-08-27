@@ -3,7 +3,7 @@
   "code": "USEDOM",
   "title": "Verkaufsdisplay & Konfigurator",
   "subtitle": "Vom Einzelprodukt zum System",
-  "version": "4",
+  "version": "5",
   "lernziel": "Wer die vier Ebenen trennt - Zentrale, Fernsteuerung, Lesestelle, Medium -, beantwortet fast jede Kundenfrage von selbst.",
   "dauerMinuten": 7,
   "quellen": [
@@ -12,7 +12,7 @@
     "produkte/nfc-modul.md",
     "referenz/zugang-bedienung.md"
   ],
-  "internerHinweis": "Fragenkatalog v4. USEDOM erklärt das Verkaufsdisplay über Kundensituationen statt über reines Produkt-Zuordnen. Produktbilder liegen in Wissen/03_Medien/produkte/ und können USE-04 später visuell ergänzen. Fachlich zu bestätigen: die Artikelnummern 101286 / 101287 in USE-07 und die 94 dB der internen Sirene in USE-06.",
+  "internerHinweis": "Fragenkatalog v5. USEDOM erklärt Verkaufsdisplay und Konfigurator über Kundenwunsch, Systembausteine und Angebotsvorbereitung. USE-01 nutzt ausschließlich echte Produktbilder. Artikelnummern und Leistungswerte vor jeder Schulung gegen den aktuellen Produktstand prüfen.",
   "questions": [
     {
       "id": "USE-04",
@@ -45,14 +45,16 @@
       "id": "USE-01",
       "type": "multi",
       "category": "Bedarfsanalyse",
+      "layout": "product",
+      "shuffleOptions": false,
       "prompt": "Kunde: „Ich will eine Alarmanlage, Ortung bei Diebstahl und bequem ohne Schlüssel öffnen.“ Welche Komponenten brauchst du? Wähle alle zutreffenden.",
       "options": [
-        { "id": "a", "text": "WiPro III (safe.lock je nach Fahrzeug)" },
-        { "id": "b", "text": "Pro-finder" },
-        { "id": "c", "text": "NFC Modul" },
-        { "id": "d", "text": "KeyCard, KeyTag oder KeyStrap" },
-        { "id": "e", "text": "G.A.S.-pro III" },
-        { "id": "f", "text": "T.S.A. Funk-Rauchmelder" }
+        { "id": "a", "text": "WiPro III (safe.lock je nach Fahrzeug)", "image": "/media/usedom/use-produkt-wipro-iii.webp", "imageAlt": "WiPro III Alarmzentrale mit Zubehör" },
+        { "id": "b", "text": "Pro-finder", "image": "/media/usedom/use-produkt-pro-finder.webp", "imageAlt": "Pro-finder Ortungs- und Kommunikationsmodul" },
+        { "id": "c", "text": "NFC Modul", "image": "/media/usedom/use-produkt-nfc-modul.webp", "imageAlt": "Schwarzes NFC Modul als Lesestelle" },
+        { "id": "d", "text": "KeyCard, KeyTag oder KeyStrap", "image": "/media/usedom/use-produkt-keycard.webp", "imageAlt": "THITRONIK KeyCard als Zugangsmedium" },
+        { "id": "e", "text": "G.A.S.-pro III", "image": "/media/usedom/use-produkt-gas-pro-iii.webp", "imageAlt": "G.A.S.-pro III Gaswarner" },
+        { "id": "f", "text": "T.S.A. Funk-Rauchmelder", "image": "/media/usedom/use-produkt-tsa-funk-rauchmelder.webp", "imageAlt": "T.S.A. Funk-Rauchmelder" }
       ],
       "correct": ["a", "b", "c", "d"],
       "feedback": "Drei Kundenwünsche, drei Bausteine - plus das Zugangsmedium.",
@@ -144,29 +146,30 @@
     {
       "id": "USE-08",
       "type": "single",
-      "category": "Zugangsmedien verwalten",
-      "prompt": "Ein Kunde verliert seinen KeyTag. Was bedeutet das für die übrigen Medien?",
+      "category": "Konfiguration vorbereiten",
+      "media": { "src": "/media/usedom/use-konfigurator.webp", "alt": "THITRONIK-Konfigurator mit Fahrzeugauswahl", "layout": "landscape" },
+      "prompt": "Welche Angaben brauchst du vor dem Start im Konfigurator, damit aus dem Ergebnis ein belastbarer Angebotsentwurf wird?",
       "options": [
-        { "id": "a", "text": "Nur der verlorene Tag wird gelöscht" },
-        { "id": "b", "text": "Kompletter Tag-Reset - alle Medien müssen neu angelernt werden" },
-        { "id": "c", "text": "Der Tag wird über die App gesperrt" },
-        { "id": "d", "text": "Nichts - verlorene Medien verfallen automatisch" }
+        { "id": "a", "text": "Basisfahrzeug und Modelljahr, Fahrzeugaufbau/Nutzung, gewünschte Absicherung und gewünschte Bedien- beziehungsweise Meldewege" },
+        { "id": "b", "text": "Nur das verfügbare Kundenbudget" },
+        { "id": "c", "text": "Nur Länge und Farbe des Fahrzeugs" },
+        { "id": "d", "text": "Keine Angaben - der Konfigurator erkennt das Fahrzeug automatisch" }
       ],
-      "correct": ["b"],
-      "feedback": "Einzelne Medien lassen sich **nicht selektiv löschen**. Bei Verlust ist ein kompletter Reset fällig, danach werden alle übrigen Medien neu angelernt. Insgesamt speicherbar: 14 Medien, die mitgelieferte KeyCard zählt mit.",
+      "correct": ["a"],
+      "feedback": "Der Konfigurator strukturiert eine Empfehlung, aber die Eingabe beginnt mit dem konkreten Fahrzeug und dem tatsächlichen Kundenbedarf. Diese Angaben entscheiden über Zentrale, Sensorik, Zugangs- und Meldewege.",
       "irrtum": [
         {
-          "fuer": ["c"],
-          "titel": "Über die App sperren",
-          "text": "Die Erwartung aus der Smartphone-Welt. Das NFC Modul ist eine autarke Lesestelle ohne Verbindung zur App - es weiß nichts von einem verlorenen Tag."
+          "fuer": ["b", "c"],
+          "titel": "Zu wenig Bedarf aufgenommen",
+          "text": "Budget oder Fahrzeugmaß allein erklärt weder Kompatibilität noch Schutzziel. Das Ergebnis wäre eine Produktliste ohne belastbare Zuordnung."
         },
         {
-          "fuer": ["a"],
-          "titel": "Nur den verlorenen löschen",
-          "text": "Wäre komfortabel und ist genau das, was der Kunde annimmt. Wer es zusagt, verspricht etwas, das erst beim Verlust auffliegt."
+          "fuer": ["d"],
+          "titel": "Automatische Fahrzeugerkennung angenommen",
+          "text": "Der Konfigurator arbeitet mit den eingegebenen Angaben. Fehlende oder ungenaue Fahrzeugdaten werden nicht durch das Werkzeug geheilt."
         }
       ],
-      "mitnehmen": "Sag es bei der Übergabe, nicht beim Verlust. Und: Wer alle Medien ohnehin einmal neu anlernen muss, kauft bei dieser Gelegenheit oft gleich einen zweiten Satz."
+      "mitnehmen": "Erst Bedarf und Fahrzeug klären, dann konfigurieren. Ein Werkzeug kann nur so belastbar sein wie seine Eingaben."
     },
     {
       "id": "USE-07",

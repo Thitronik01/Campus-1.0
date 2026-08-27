@@ -146,7 +146,10 @@ const html = `<!doctype html>
 
   <header class="masthead">
     <div class="shell masthead__bar">
-      <img class="masthead__logo" src="assets/thitronik-logo.png" alt="THITRONIK" width="485" height="118">
+      <a class="masthead__home" href="/quiz" aria-label="Zur Campus-Karte">
+        <img class="masthead__logo" src="assets/thitronik-logo.png" alt="THITRONIK" width="485" height="118">
+        <span>Zur Campus-Karte</span>
+      </a>
       <span class="masthead__tag">Campus 2026</span>
     </div>
   </header>
@@ -190,6 +193,8 @@ ${stepList}
           <li><b>&#8617;</b> jederzeit zur&uuml;ck</li>
         </ul>
 
+        <p class="intro__privacy">Dein Entwurf bleibt auf diesem Ger&auml;t. Erst beim Absenden wird dein Feedback &uuml;bertragen.</p>
+
         <p class="draft" id="draftNote" hidden>
           <span>Wir haben deinen Entwurf gefunden. Du machst dort weiter, wo du aufgeh&ouml;rt hast.</span>
           <button type="button" id="draftClear">Neu beginnen</button>
@@ -199,7 +204,11 @@ ${stepList}
       </div>
     </section>
 
-    <form id="feedbackForm" class="form" autocomplete="on" data-form-version="campus-2026-haendler-v14" novalidate>
+    <form id="feedbackForm" class="form" name="campus-feedback" method="POST" action="/feedback/"
+      data-netlify="true" data-netlify-honeypot="website" autocomplete="on"
+      data-form-version="campus-2026-haendler-v14" novalidate>
+      <input type="hidden" name="form-name" value="campus-feedback">
+      <input type="hidden" id="netlifyPayload" name="payload">
       <div class="hp" aria-hidden="true">
         <label for="website">Website</label>
         <input id="website" name="website" type="text" autocomplete="off" tabindex="-1">
@@ -376,6 +385,7 @@ ${cateringMarkup}
           <p class="missing__head">Diese Angaben fehlen noch:</p>
           <ul class="missing__list" id="missingList"></ul>
         </div>
+        <p class="send__note">Deine R&uuml;ckmeldung wird sicher im Campus-Projekt gespeichert und nur f&uuml;r die Auswertung verwendet.</p>
         <p class="send__status" id="statusMessage" role="status" aria-live="polite"></p>
       </section>
     </form>
@@ -409,6 +419,7 @@ ${cateringMarkup}
         <p>Zeig diese Best&auml;tigung vorne an der Garderobe, als Screenshot oder direkt auf deinem
           Smartphone. Dort erh&auml;ltst du deine pers&ouml;nliche Urkunde.</p>
       </div>
+      <a class="done__back" href="/quiz">Zur&uuml;ck zur Campus-Karte</a>
     </div>
   </div>
 

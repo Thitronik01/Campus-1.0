@@ -3,7 +3,7 @@
   "code": "VEJRØ",
   "title": "Produktneuheiten: Zugang & Wasserschutz",
   "subtitle": "Neuheiten verstehen, passend beraten",
-  "version": "4",
+  "version": "5",
   "lernziel": "CampLock und VanLock sicher abgrenzen, den Fingerprint ehrlich beraten und die neuen Funklösungen gegen Wassereinbruch passend einsetzen.",
   "dauerMinuten": 7,
   "quellen": [
@@ -13,7 +13,7 @@
     "produkte/funk-magnetkontakt.md",
     "referenz/zugang-bedienung.md"
   ],
-  "internerHinweis": "Fragenkatalog v4. VEJRØ bündelt Produktneuheiten: CampLock/VanLock, Funk-Wassermelder 868 und wasserdichter Funk-Magnetkontakt. VanLock-Einsatzbereich sowie alle Werte der Produktneuheiten vor jeder Schulung gegen den aktuellen Freigabestand prüfen.",
+  "internerHinweis": "Fragenkatalog v5. VEJRØ bündelt Produktneuheiten: CampLock/VanLock Fingerprint V002+, Funk-Wassermelder 868 und wasserdichter Funk-Magnetkontakt. Fingerprint-Kompatibilität und Sicherheitshinweis vom 27.07.2026 vor jeder Schulung gegen den aktuellen Freigabestand prüfen.",
   "questions": [
     {
       "id": "VEJ-01",
@@ -73,29 +73,31 @@
     {
       "id": "VEJ-05",
       "type": "single",
-      "category": "Speicher in der Praxis",
-      "prompt": "Eine vierköpfige Familie soll Zugang bekommen, jede Person mit zwei Fingern. Reicht der Speicher?",
+      "category": "Produkt erkennen",
+      "layout": "product",
+      "shuffleOptions": false,
+      "prompt": "Welches Produkt wählst du für eine Dachbox oder Außenklappe, die regelmäßig Spritzwasser ausgesetzt ist?",
       "options": [
-        { "id": "a", "text": "Nein - es passen nur 8 Finger insgesamt" },
-        { "id": "b", "text": "Ja - 16 Finger sind anlernbar, davon 2 als Master" },
-        { "id": "c", "text": "Ja, aber nur wenn auf Master-Finger verzichtet wird" },
-        { "id": "d", "text": "Ja - die Zahl ist unbegrenzt" }
+        { "id": "a", "text": "CampLock Fingerprint", "image": "/media/vejro/vej-produkt-camplock.webp", "imageAlt": "Runder CampLock Fingerprint-Sensor" },
+        { "id": "b", "text": "Funk-Wassermelder 868", "image": "/media/vejro/vej-produkt-wassermelder.webp", "imageAlt": "Funk-Wassermelder mit kabelgebundenem Fühler" },
+        { "id": "c", "text": "Funk-Magnetkontakt 868 wasserdicht", "image": "/media/vejro/vej-produkt-magnetkontakt-wasserdicht.webp", "imageAlt": "Wasserdichter Funk-Magnetkontakt mit Sender und Magnet" },
+        { "id": "d", "text": "Funk-Magnetkontakt 868 Standard", "image": "/media/vejro/vej-produkt-magnetkontakt-standard.webp", "imageAlt": "Standard-Funk-Magnetkontakt mit Sender und Magnet" }
       ],
-      "correct": ["b"],
-      "feedback": "16 anlernbare Finger, davon 2 Master. Vier Personen × zwei Finger sind acht - der Speicher ist hier nicht die Grenze.",
+      "correct": ["c"],
+      "feedback": "Für eine direkt feuchte- oder spritzwasserbelastete Außenöffnung ist die wasserdichte Ausführung vorgesehen. Der Wassermelder erkennt dagegen austretendes Wasser an einem tiefen Punkt; der Standardkontakt gehört an geschützte Öffnungen.",
       "irrtum": [
         {
-          "fuer": ["c"],
-          "titel": "Auf Master verzichten",
-          "text": "Ohne Master lässt sich später kein Nutzer anlegen oder löschen. Die zwei Master sind keine optionale Zugabe, sie sind die Verwaltung."
+          "fuer": ["b"],
+          "titel": "Wassermelder statt Öffnungskontakt",
+          "text": "Der Wassermelder erkennt Wasser an seinen Fühlerkontakten. Er überwacht nicht, ob eine Klappe geöffnet wird."
         },
         {
           "fuer": ["d"],
-          "titel": "Unbegrenzt",
-          "text": "Verlockend, weil der Speicher in der Praxis nie knapp wird. Bei einem Vermietfahrzeug mit wechselnden Nutzern wird er es aber sehr wohl."
+          "titel": "Standardkontakt gewählt",
+          "text": "Bei direkter Spritzwasserbelastung wird nicht die ähnlich aussehende Standardausführung übernommen, sondern die dafür freigegebene wasserdichte Variante."
         }
       ],
-      "mitnehmen": "Speicher ist selten das Problem - die Verteilung schon. Zwei Finger pro Person, damit ein Pflaster nicht den Urlaub kostet."
+      "mitnehmen": "Nicht nach Produktname oder Form entscheiden, sondern nach Aufgabe und Einbauumgebung: Öffnung erkennen, Wasser erkennen oder Zugang bedienen."
     },
     {
       "id": "VEJ-08",
@@ -127,83 +129,86 @@
     {
       "id": "VEJ-04",
       "type": "order",
-      "category": "Fingerprint in Betrieb nehmen",
-      "prompt": "Bringe die Inbetriebnahme in die richtige Reihenfolge.",
+      "category": "Funk-Wassermelder prüfen",
+      "media": { "src": "/media/vejro/vej-produkt-wassermelder.webp", "alt": "Funk-Wassermelder mit Sendeeinheit und Fühler", "layout": "product" },
+      "prompt": "Bringe den vollständigen Funktionstest des eingebauten Funk-Wassermelders in die richtige Reihenfolge.",
       "items": [
-        { "id": "o1", "text": "Fahrzeug- und Türkompatibilität klären" },
-        { "id": "o2", "text": "Steuergerät und Sensor montieren, mit 12/24 V versorgen" },
-        { "id": "o3", "text": "WiPro und Fingerprint in den Anlernmodus versetzen und koppeln" },
-        { "id": "o4", "text": "Zwei Master-Finger einlernen" },
-        { "id": "o5", "text": "Nutzerfinger einlernen" },
-        { "id": "o6", "text": "Funktionstest an der geschlossenen Tür, zweiten Zugangsweg mitprüfen" }
+        { "id": "o1", "text": "WiPro III scharf schalten" },
+        { "id": "o2", "text": "Beide Fühlerkontakte mit einem feuchten Tuch elektrisch überbrücken" },
+        { "id": "o3", "text": "Lokalen Alarm am Fahrzeug bestätigen" },
+        { "id": "o4", "text": "Falls Pro-finder verbaut ist: Alarm-SMS an den vorgesehenen Zielrufnummern bestätigen" },
+        { "id": "o5", "text": "Fühlerkontakte wieder vollständig freigeben und trocknen" },
+        { "id": "o6", "text": "Alarm beenden und Prüfergebnis dokumentieren" }
       ],
       "correct": ["o1", "o2", "o3", "o4", "o5", "o6"],
-      "feedback": "Kompatibilität → Montage → Anlernmodus und Kopplung → Master → Nutzer → Test. Die Master-Finger kommen immer vor den Nutzerfingern: Ohne sie lässt sich später niemand verwalten.",
+      "feedback": "Scharfschalten → Fühler auslösen → lokalen Alarm prüfen → optionalen Fernalarm prüfen → Fühler freigeben → Alarm beenden und dokumentieren. Nur so wird die gesamte zugesagte Meldekette geprüft.",
       "irrtum": [
         {
-          "titel": "Kompatibilität später",
-          "text": "Der teuerste aller Fehler. Ist die Tür ungeeignet, sitzt bereits ein Loch in der Verkleidung."
+          "titel": "Nur die Funkverbindung geprüft",
+          "text": "Anlernen bestätigt den Funkempfang, nicht den Alarmweg vom nassen Fühler bis zur Sirene und gegebenenfalls zur Zielrufnummer."
         },
         {
-          "titel": "Test vor dem Anlernen",
-          "text": "Ein Test ohne angelernte Finger prüft nur, ob Strom anliegt."
+          "titel": "Fernmeldung vorausgesetzt",
+          "text": "Eine Alarm-SMS gehört nur dann zum Test, wenn ein Pro-finder eingebaut und entsprechend eingerichtet ist."
         }
       ],
-      "mitnehmen": "Der Funktionstest gehört an die **geschlossene** Tür. Offen getestet heißt gar nicht getestet - Prinzip 3."
+      "mitnehmen": "Ein bestandener Test endet nicht beim Piepen: Jede zugesagte Meldestrecke wird ausgelöst, empfangen und dokumentiert."
     },
     {
       "id": "VEJ-10",
       "type": "single",
-      "category": "Master-Finger",
-      "prompt": "Ein Ehepaar bekommt das System. Wie legst du die beiden Master-Finger an?",
+      "category": "Aktueller Sicherheitshinweis",
+      "media": { "src": "/media/vejro/vej-produkt-camplock.webp", "alt": "CampLock Fingerprint-Sensor", "layout": "product" },
+      "prompt": "Bei der Übergabe fragt der Kunde, ob der Fahrzeugschlüssel dank Fingerprint künftig zu Hause bleiben kann. Was gilt nach dem aktuellen Sicherheitshinweis?",
       "options": [
-        { "id": "a", "text": "Beide Master auf denselben Finger des Halters" },
-        { "id": "b", "text": "Je ein Master pro Person, an unterschiedlichen Händen" },
-        { "id": "c", "text": "Beide Master auf die linke Hand des Halters" },
-        { "id": "d", "text": "Master überspringen, direkt Nutzerfinger anlernen" }
+        { "id": "a", "text": "Ja - nach erfolgreichem Test ersetzt der Fingerprint den Schlüssel vollständig" },
+        { "id": "b", "text": "Nein - Fahrzeugschlüssel mitführen und den aktuellen Update-Stand beachten" },
+        { "id": "c", "text": "Ja - sofern zwei Master-Finger angelernt sind" },
+        { "id": "d", "text": "Nur bei VanLock muss der Schlüssel mitgeführt werden" }
       ],
       "correct": ["b"],
-      "feedback": "Die Master-Finger steuern die Verwaltung. Verteilt auf zwei Personen und zwei Hände bleibt sie auch dann verfügbar, wenn eine Person nicht da ist oder sich die Hand verletzt.",
+      "feedback": "THITRONIK weist aktuell darauf hin, den Fahrzeugschlüssel mitzuführen. Bei CampLock und VanLock Fingerprint kann es in seltenen Fällen zu einer nicht korrekt ausgeführten Zentralverriegelung und damit zu einem Aussperren kommen; der angekündigte Softwarestand ist zu beachten.",
       "irrtum": [
         {
-          "fuer": ["a"],
-          "titel": "Beide beim Halter",
-          "text": "Der häufigste Fall in der Praxis, weil der Halter beim Einbau danebensteht und die zweite Person nicht. Genau deshalb bewusst nachfragen, wer noch fährt."
+          "fuer": ["a", "c"],
+          "titel": "Fingerprint als alleinigen Zugang behandelt",
+          "text": "Auch ein korrekt eingerichteter Fingerprint und mehrere Master-Finger ersetzen den unabhängigen mechanischen Zugang nicht."
         },
         {
-          "fuer": ["c"],
-          "titel": "Beide auf eine Hand",
-          "text": "Fühlt sich ordentlich an, ist aber ein einziger Ausfallpunkt. Ein Gipsarm sperrt dann die gesamte Verwaltung."
+          "fuer": ["d"],
+          "titel": "Hinweis nur auf VanLock begrenzt",
+          "text": "Der veröffentlichte Hinweis betrifft CampLock und VanLock Fingerprint."
         }
       ],
-      "mitnehmen": "Frag bei der Übergabe: „Wer fährt das Fahrzeug außer Ihnen?“ - diese eine Frage verhindert den halben Reklamationsanteil dieser Insel."
+      "mitnehmen": "Aktuelle Produkthinweise gehören in die Übergabe. Bis zur technischen Lösung bleibt der Fahrzeugschlüssel der unabhängige Zugangsweg."
     },
     {
       "id": "VEJ-07",
       "type": "single",
-      "category": "Reklamationsfall",
-      "prompt": "Ein Kunde meldet: „Morgens am Meer erkennt das Gerät meinen Finger oft nicht.“ Wahrscheinlichste Ursache?",
+      "category": "Systemgrenze Wassermelder",
+      "media": { "src": "/media/vejro/vej-produkt-wassermelder.webp", "alt": "Funk-Wassermelder 868", "layout": "product" },
+      "prompt": "Ein Kunde möchte den Funk-Wassermelder 868 ohne WiPro III als eigenständigen akustischen Wasserwarner einsetzen. Was sagst du?",
       "options": [
-        { "id": "a", "text": "Feuchte, salzige oder verschmutzte Fingerkuppen" },
-        { "id": "b", "text": "Zu niedrige Bordspannung am Steuergerät" },
-        { "id": "c", "text": "Der Sensor ist defekt und muss getauscht werden" },
-        { "id": "d", "text": "Der Finger wurde bei anderer Temperatur eingelernt" }
+        { "id": "a", "text": "Das geht - der Melder besitzt eine eigene Sirene" },
+        { "id": "b", "text": "Das geht nur mit einer zusätzlichen SIM-Karte" },
+        { "id": "c", "text": "Das geht nicht - der Melder ist Funk-Zubehör und benötigt eine kompatible WiPro III" },
+        { "id": "d", "text": "Das geht nur, wenn der Fühler direkt an 12 V angeschlossen wird" }
       ],
-      "correct": ["a"],
-      "feedback": "Feuchtigkeit und Salz auf der Fingerkuppe verändern das Bild, das der Sensor liest. „Morgens am Meer“ ist die Beschreibung der Ursache, nicht nur der Umstände.",
+      "correct": ["c"],
+      "feedback": "Der Funk-Wassermelder ist Zubehör zur Alarmanlage und hat keine eigene akustische Alarmierung. Die WiPro III übernimmt den lokalen Alarm; ein Pro-finder kann die Meldung zusätzlich weiterleiten.",
       "irrtum": [
         {
-          "fuer": ["c"],
-          "titel": "Sensor defekt",
-          "text": "Der teuerste Reflex im Sortiment. Ein Sensor, der zeitweise und wetterabhängig nicht erkennt, ist fast nie defekt - ein defekter Sensor erkennt gar nicht."
+          "fuer": ["a"],
+          "titel": "Eigene Sirene angenommen",
+          "text": "Der Fühler erkennt Wasser und der Sender funkt das Ereignis. Die akustische Reaktion kommt von der eingebundenen Alarmanlage."
         },
         {
           "fuer": ["b"],
-          "titel": "Bordspannung",
-          "text": "Klingt technisch fundiert, passt aber nicht zum Muster: Zu wenig Spannung wirkt nicht nur morgens und nicht nur bei einer Person."
+          "titel": "Pro-finder zur Voraussetzung gemacht",
+          "text": "Der Pro-finder ist für die Fernmeldung optional. Die notwendige Basis für den Funk-Wassermelder ist die kompatible WiPro III."
         }
       ],
-      "mitnehmen": "Vor jedem Austausch die Frage stellen: „Passiert das immer oder nur manchmal?“ Manchmal heißt fast nie Defekt."
+      "mitnehmen": "Zubehör nie isoliert versprechen: Sensor, Funkweg, Alarmzentrale und optionale Fernmeldung sind getrennte Bausteine."
     },
     {
       "id": "VEJ-09",
@@ -236,29 +241,29 @@
     {
       "id": "VEJ-02",
       "type": "single",
-      "category": "Systemgrenze",
-      "prompt": "Kunde mit WiPro III (ohne safe.lock): „Mit dem Finger mache ich dann das ganze Fahrzeug auf.“ Was stimmt?",
+      "category": "Varianten und Freigabestand",
+      "prompt": "Vor dir liegen CampLock oder VanLock Fingerprint in Ausführung V002+ und eine vorhandene WiPro III ohne safe.lock. Darfst du die Funktion zusagen?",
       "options": [
-        { "id": "a", "text": "Richtig - der Finger entriegelt Aufbautür und Fahrzeug" },
-        { "id": "b", "text": "Nur die Aufbautür - die Fahrzeug-Zentralverriegelung braucht safe.lock" },
-        { "id": "c", "text": "Nur das Fahrzeug - die Aufbautür bleibt am Originalschloss" },
-        { "id": "d", "text": "Weder noch - ohne safe.lock arbeitet CampLock gar nicht" }
+        { "id": "a", "text": "Ja - jede WiPro III ist mit V002+ kompatibel" },
+        { "id": "b", "text": "Nein - die aktuelle V002+-Anleitung nennt WiPro III safe.lock; Produktstand und passende Anleitung zuerst eindeutig zuordnen" },
+        { "id": "c", "text": "Ja - wenn ein Pro-finder ergänzt wird" },
+        { "id": "d", "text": "Ja - sofern nur die Aufbautür geöffnet werden soll" }
       ],
       "correct": ["b"],
-      "feedback": "Zwei getrennte Vorgänge. Die **Aufbautür** bedient CampLock selbst. Die **Fahrzeug-Zentralverriegelung** wird nur bei WiPro III safe.lock mit passender ZV-Anbindung mitgeführt. Scharf-/Unscharfschalten der Alarmanlage geht auch mit der Standard-WiPro III.",
+      "feedback": "Für CampLock und VanLock Fingerprint V002+ beschreibt die aktuelle Anleitung den Betrieb als Zubehör zu WiPro III safe.lock. Vor einer Zusage werden Ausführung, Serien-/Revisionsstand, Fahrzeug und zugehörige aktuelle Anleitung zusammen geprüft.",
       "irrtum": [
         {
-          "fuer": ["a"],
-          "titel": "Beides geht",
-          "text": "Der häufigste Irrtum im ganzen Sortiment - und er entsteht nicht aus Unwissen, sondern weil der Kunde es so erwartet und man ihm nicht widersprechen will. Genau deshalb ist es der Beratungsfehler Nr. 1."
+          "fuer": ["a", "d"],
+          "titel": "Älteren Funktionsstand übertragen",
+          "text": "Bei ähnlich benannten Produktständen darf eine frühere Kompatibilitätsaussage nicht auf V002+ übertragen werden. Entscheidend ist die Anleitung der konkreten Ausführung."
         },
         {
-          "fuer": ["d"],
-          "titel": "CampLock arbeitet ohne safe.lock gar nicht",
-          "text": "Übervorsichtig gedacht. Die Aufbautür und die Alarmsteuerung funktionieren sehr wohl - nur eben nicht die Fahrzeug-ZV."
+          "fuer": ["c"],
+          "titel": "Pro-finder als Kompatibilitätsadapter behandelt",
+          "text": "Der Pro-finder ergänzt Ortung und Fernmeldung. Er ersetzt keine geforderte safe.lock-Zentrale."
         }
       ],
-      "mitnehmen": "**Prinzip 1 - Scharf/Unscharf ≠ Auf/Zu.** Diese Trennung begegnet dir heute noch dreimal: bei der KeyCard, bei BT-connect und im Campingmodus. Ein Satz für den Kunden: „Der Finger öffnet Ihre Aufbautür und schaltet die Anlage. Das ganze Fahrzeug entriegeln - dafür brauchen wir safe.lock.“"
+      "mitnehmen": "Bei Produktneuheiten gehört die Revision zum Produktnamen. Erst konkrete Ausführung und aktuelle Anleitung zusammenbringen, dann versprechen."
     },
     {
       "id": "VEJ-06",

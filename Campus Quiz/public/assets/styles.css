@@ -358,6 +358,39 @@ main { flex: 1 0 auto; }
 
 .island-intro .lead { margin-bottom: 0; text-wrap: pretty; }
 
+.campus-highlights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.campus-highlights li {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 36px;
+  padding: 7px 11px;
+  border: 1px solid rgba(29, 54, 97, .12);
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, .78);
+  color: var(--th-navy);
+  font-size: .78rem;
+  font-weight: 720;
+  backdrop-filter: blur(8px);
+}
+.campus-highlights strong { font-size: .94rem; line-height: 1; }
+.campus-highlights svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .campus-map-art,
 .map-compass { display: none; }
 
@@ -399,7 +432,26 @@ main { flex: 1 0 auto; }
 .tagesabschluss:hover { border-color: var(--th-blue); box-shadow: var(--shadow-md); }
 .tagesabschluss:active { transform: scale(.995); }
 
-.ta-text { display: grid; gap: 3px; }
+.ta-icon {
+  display: grid;
+  flex: 0 0 52px;
+  width: 52px;
+  height: 52px;
+  place-items: center;
+  border-radius: 16px;
+  background: var(--info-bg);
+  color: var(--th-navy);
+}
+.ta-icon svg {
+  width: 27px;
+  height: 27px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ta-text { display: grid; flex: 1 1 300px; gap: 3px; min-width: 0; }
 .ta-kicker {
   color: var(--th-blue-text);
   font-size: .72rem;
@@ -431,9 +483,11 @@ main { flex: 1 0 auto; }
   background: linear-gradient(180deg, var(--th-white), #F9FCEB);
 }
 .tagesabschluss.is-ready .ta-kicker { color: var(--th-lime-text); }
+.tagesabschluss.is-ready .ta-icon { background: var(--success-bg); }
 
 @media (max-width: 560px) {
-  .tagesabschluss { align-items: stretch; flex-direction: column; }
+  .tagesabschluss { align-items: flex-start; }
+  .ta-icon { flex-basis: 44px; width: 44px; height: 44px; border-radius: 14px; }
   .ta-cta { justify-content: center; }
 }
 

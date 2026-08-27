@@ -1,7 +1,8 @@
 # THITRONIK Campus — Wissenscheck
 
 Die digitale Wissenskontrolle nach jeder Schulungsinsel. Statische Seite, kein
-Framework, Speicherung über eine Netlify-Function nach Supabase.
+Framework. Die Netlify-Function bewertet serverseitig; in der Pilotphase
+speichert Netlify Forms, später kann Supabase zugeschaltet werden.
 
 **Eine Engine, sieben Fragensätze.** Nicht sieben Anwendungen — das ist die
 zentrale Entscheidung dieses Projekts und der Grund, warum es überhaupt neu
@@ -22,7 +23,7 @@ gebaut wurde.
 | `BILDER-WUNSCHLISTE.md` | Was an Bildern fehlt, über alle Inseln — mit Angabe, was generierbar ist und was ein echtes Foto braucht |
 | `FOTOLISTE-HIDDENSEE.md` | Dasselbe ausführlich für HIDDENSEE, mit Aufnahmehinweisen |
 | `tools/bilder-aufbereiten.js` | Rechnet Bilder auf WebP unter 150 KB um |
-| `netlify/functions/submit-quiz.js` | Nimmt Ergebnisse an, bewertet serverseitig, schreibt nach Supabase |
+| `netlify/functions/submit-quiz.js` | Bewertet serverseitig; schreibt nach Supabase oder gibt den geprüften Netlify-Forms-Ausweichweg frei |
 | `supabase_campus_quiz_migration.sql` | Tabelle und Auswertungs-Views. **Noch nicht eingespielt.** |
 | `tools/build-insel.js` | **Baut je Insel einen fertigen Netlify-Ordner.** Siehe unten. |
 | `tools/check-fragen.js` | Prüft die Fragensätze. Vor jedem Deploy laufen lassen. |
@@ -36,7 +37,13 @@ eine JSON-Datei zu ändern — sonst nichts.
 
 ---
 
-## Die Insel-Pakete — was hochgeladen wird
+## Veröffentlichung
+
+Für den weitesten Stand wird **eine gemeinsame Netlify-Site** aus dem
+Repository gebaut. Die verbindliche Konfiguration liegt eine Ebene höher in
+`netlify.toml`; die kurze Anleitung steht in `NETLIFY-DEPLOY.md`.
+
+Die folgenden Einzelpakete bleiben als technischer Ausweichweg erhalten.
 
 Dieser Ordner ist die **Quelle**, nicht das Deployment. Zum Hochladen wird je
 Insel ein eigenständiger Ordner erzeugt:
@@ -51,9 +58,10 @@ node tools/build-insel.js alle
 
 Das Ergebnis landet neben diesem Ordner als `Campus 1.0/Samsø Quiz/` und
 enthält alles, was Netlify braucht: `netlify.toml`, `public/` mit Engine,
-Stilen, Logo, Fragensatz und Bildern, dazu `netlify/functions/`. Der komplette
-Ordner wird bei Netlify ins Feld gezogen — jedes Paket wird eine eigene Site
-mit eigener Adresse und eigenem QR-Code.
+Stilen, Logo, Fragensatz und Bildern, dazu `netlify/functions/`. Zum
+Veröffentlichen mit Function die Netlify CLI oder ein Git-Deployment verwenden.
+Ein reines Drag-and-drop von `public/` liefert nur statische Dateien und reicht
+für die Speicherung nicht aus.
 
 **Warum erzeugt statt von Hand kopiert.** Sieben Kopien der Engine wären
 sieben Stellen, an denen dieselbe Änderung nachgezogen werden muss — genau das
@@ -90,10 +98,9 @@ Ordner ablösen will, räumt ihn vorher weg.
 node tools/test-paket.js "../Samsø Quiz" samsoe
 ```
 
-Prüft die Function des Pakets ohne Datenbank: Bewertung aller vorkommenden
-Fragetypen, und ob ein manipuliertes Ergebnis abgewiesen wird. Je nach
-Fragetypen 14 bis 16 Prüfungen. Über alle sieben Pakete: **103 Prüfungen, alle
-bestanden.**
+Prüft Bewertung, Manipulationsschutz, Cache-Buster und die statisch erkannten
+Netlify-Formulare. Der aktuelle Komplettlauf umfasst **166 Prüfungen der sieben
+Einzelpakete und 187 Prüfungen des Gesamtpakets**.
 
 Das Gesamtpaket wird mit demselben Werkzeug geprüft, einmal je Insel:
 
@@ -536,14 +543,11 @@ ob weiter versucht wird:
 | `5xx`, `408`, `429` | Server war da, konnte aber nicht | bleibt liegen, nächster Anlauf später |
 | übrige `4xx` | Absage an genau diesen Datensatz | wird als abgelehnt markiert, **keine** Automatik mehr |
 
-Der `5xx`-Fall ist ausdrücklich der [noch nicht eingespielten
-Migration](#offene-punkte) gewidmet: Solange die Tabelle fehlt, antwortet die
-Function mit „Die Datenbank hat die Speicherung abgelehnt." Die Ergebnisse
-bleiben dann auf den Geräten liegen und gehen von selbst raus, sobald die
-Migration läuft — vorausgesetzt, dieselben Geräte rufen die Seite noch einmal
-auf. Der Satz auf dem Ergebnisbild nennt in diesem Fall den Servergrund und
-spricht **nicht** von fehlendem Empfang; sonst sucht die halbe Schulung den
-Fehler beim Mobilfunk.
+Fehlen die Supabase-Variablen oder ist die Datenbank nicht erreichbar, liefert
+die Function nach erfolgreicher Prüfung einen klaren Netlify-Forms-Ausweichweg.
+Der Browser speichert das Pilot-Ergebnis dann in `campus-quiz-result`. Ist auch
+Netlify Forms nicht erreichbar, bleibt der Eintrag im Sende-Ausgang und wird
+später erneut versucht.
 
 Ein `400` wird nicht im Minutentakt wiederholt — daran ändert sich nichts.
 Der Eintrag bleibt trotzdem stehen, sichtbar und rot, mit der Bitte, sich bei
@@ -592,7 +596,14 @@ Auswertung — die kommt aus der Datenbank.
 
 ---
 
-## Backend
+## Pilotbetrieb und späteres Backend
+
+Vor der Datenbankphase werden gültige Quiz-Ergebnisse in Netlify Forms
+gesammelt. Netlify zeigt sie im Site-Dashboard und exportiert sie als CSV. Die
+Function prüft und bewertet jede Einsendung trotzdem serverseitig; manipulierte
+Prozentwerte aus dem Browser werden weiterhin ignoriert.
+
+### Später: Supabase
 
 Supabase-Projekt `mhzlayhnyqlxdyiceyqz`, Tabelle `campus_quiz_submissions`.
 

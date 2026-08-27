@@ -13,7 +13,7 @@
 
 (function () {
   const EVENT_SLUG = "campus-2026";
-  const ENGINE_VERSION = "1.4.0";
+  const ENGINE_VERSION = "1.5.0";
   const SUBMIT_ENDPOINT = "/.netlify/functions/submit-quiz";
 
   const LS_PARTICIPANT = "thitronik.campus.2026.participant";
@@ -150,6 +150,7 @@
     rReview: $("r-review"),
     btnRetrySave: $("btn-retry-save"),
     btnWrongOnly: $("btn-wrong-only"),
+    btnFeedback: $("btn-feedback"),
     btnNextIsland: $("btn-next-island"),
     btnRepeat: $("btn-repeat"),
 
@@ -1446,15 +1447,32 @@
   /** Was heute noch aussteht. Der Knopf daneben heißt "Nächste Insel" -
    *  dann darf daneben auch stehen, welche das überhaupt noch sein können. */
   function paintRest() {
-    if (istEinzelinsel()) { el.rRest.hidden = true; return; }
+    if (istEinzelinsel()) {
+      el.rRest.hidden = true;
+      if (el.btnFeedback) el.btnFeedback.hidden = true;
+      el.btnWrongOnly.classList.add("btn-primary");
+      el.btnWrongOnly.classList.remove("btn-secondary");
+      return;
+    }
 
     const done = loadDone();
     const offen = state.catalog.inseln.filter((i) => !done[i.slug]);
+    const tagesabschlussBereit = offen.length === 0 && Boolean(state.catalog.feedback);
 
     el.rRest.textContent = offen.length
       ? `Noch offen: ${offen.map((i) => i.code).join(", ")}`
-      : "Alle Inseln durch - das war der letzte Wissenscheck. Danke!";
+      : "Alle Inseln geschafft. Schließ den Tag jetzt mit deiner Rückmeldung ab.";
     el.rRest.hidden = false;
+
+    if (el.btnFeedback) {
+      el.btnFeedback.hidden = !tagesabschlussBereit;
+      if (tagesabschlussBereit) el.btnFeedback.href = state.catalog.feedback;
+    }
+    // Auf dem letzten Ergebnis ist der Tagesabschluss die eine primäre
+    // Handlung. Eine eventuelle Wiederholung bleibt erreichbar, tritt aber
+    // visuell dahinter zurück.
+    el.btnWrongOnly.classList.toggle("btn-primary", !tagesabschlussBereit);
+    el.btnWrongOnly.classList.toggle("btn-secondary", tagesabschlussBereit);
   }
 
   function renderTopics() {
@@ -1601,6 +1619,20 @@
     const body = await response.json().catch(() => ({}));
     if (response.ok) return "ok";
 
+    // Vor der späteren Datenbankphase nimmt Netlify Forms die bereits
+    // serverseitig geprüften Ergebnisse als Pilotdaten an. Die Function
+    // liefert dafür ausschließlich die berechnete Zusammenfassung zurück;
+    // die korrekten Antworten selbst bleiben weiterhin im Servercode.
+    if (body.fallback === "netlify_forms") {
+      try {
+        await sendeNetlifyPilot(eintrag.payload, body.pilot || {});
+        return "ok";
+      } catch {
+        eintrag.fehler = "Netlify Forms ist noch nicht aktiviert oder nicht erreichbar.";
+        return "netz";
+      }
+    }
+
     // 5xx, 408 und 429 gehen vorbei - hierher gehört auch der Fall, dass die
     // Migration noch nicht eingespielt ist: sobald die Tabelle steht, kommen
     // die liegengebliebenen Ergebnisse von selbst durch. Ein 400 dagegen ist
@@ -1609,6 +1641,35 @@
     const spaeter = response.status >= 500 || response.status === 408 || response.status === 429;
     eintrag.fehler = body.error || `Fehler ${response.status}`;
     return spaeter ? "netz" : "abgelehnt";
+  }
+
+  async function sendeNetlifyPilot(payload, pilot) {
+    const fields = new URLSearchParams({
+      "form-name": "campus-quiz-result",
+      session_id: payload.session_id,
+      event: payload.event,
+      island: payload.island,
+      quiz_version: payload.quiz_version,
+      engine_version: payload.engine_version,
+      participant: payload.participant,
+      dealer: payload.dealer,
+      dealer_number: payload.dealer_number,
+      area: payload.area,
+      started_at: payload.started_at,
+      finished_at: payload.finished_at,
+      page_url: payload.page_url,
+      score: String(pilot.score ?? ""),
+      total: String(pilot.total ?? ""),
+      percent: String(pilot.percent ?? ""),
+      answers_json: JSON.stringify(payload.answers)
+    });
+
+    const response = await fetch("/", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: fields.toString()
+    });
+    if (!response.ok) throw new Error(`Netlify Forms: HTTP ${response.status}`);
   }
 
   /** Arbeitet den Ausgang ab. Läuft beim Seitenaufruf, nach jeder Runde,

@@ -3,7 +3,7 @@
   "code": "LANGELAND",
   "title": "Fahrzeugannahme & Fahrzeugübergabe",
   "subtitle": "Der Prozess vor und nach dem Schraubendreher",
-  "version": "4",
+  "version": "5",
   "lernziel": "Ein Fahrzeug vollständig und freigabebewusst annehmen, den Einbau prüfbar dokumentieren und dem Kunden System, Grenzen und Bedienwege sicher übergeben.",
   "dauerMinuten": 7,
   "quellen": [
@@ -12,7 +12,7 @@
     "referenz/zugang-bedienung.md",
     "_intern/support-fallaufnahme.md"
   ],
-  "internerHinweis": "Fragenkatalog v4. Die vom Fachreview bestätigten Annahme- und Übergabefragen wurden inhaltlich erhalten und sprachlich auf den vollständigen Werkstattprozess ausgerichtet. Die 60 Sekunden in LAN-04 und der Freigabestand zum Iveco Daily in LAN-03 sind vor jeder Schulung gegen den aktuellen Stand zu prüfen.",
+  "internerHinweis": "Fragenkatalog v5. LANGELAND deckt Annahme, Erwartungsmanagement, vollständige Übergabe und Dokumentation ab. LAN-09 macht die vollständige Prüfung aller zugesagten Meldewege zur Übergabebedingung. Zeitwerte und Fahrzeugfreigaben vor jeder Schulung gegen den aktuellen Stand prüfen.",
   "questions": [
     {
       "id": "LAN-01",
@@ -142,24 +142,30 @@
     {
       "id": "LAN-09",
       "type": "single",
-      "category": "Nach einem safe.lock-Upgrade",
-      "prompt": "Die Zentrale kam aus dem safe.lock-Upgrade zurück und ist wieder eingebaut. Was ist jetzt zwingend?",
+      "category": "Übergabe erst nach Volltest",
+      "media": { "src": "/media/langeland/lan-start-schluesseluebergabe.webp", "alt": "Dokumentierte Fahrzeugübergabe mit Schlüssel", "layout": "landscape" },
+      "prompt": "Die App schaltet die Anlage korrekt, aber die Alarm-SMS des Pro-finders hat die zweite vereinbarte Zielrufnummer noch nicht erreicht. Der Kunde möchte losfahren. Was tust du?",
       "options": [
-        { "id": "a", "text": "Nur den Master-Handsender neu anlernen" },
-        { "id": "b", "text": "Sämtliches Funk-Zubehör neu anlernen - der Speicher wurde gelöscht" },
-        { "id": "c", "text": "Nichts - der Speicher bleibt beim Upgrade erhalten" },
-        { "id": "d", "text": "Nur die Seriennummer in der App aktualisieren" }
+        { "id": "a", "text": "Übergeben - die funktionierende App beweist das Gesamtsystem" },
+        { "id": "b", "text": "Übergabe noch nicht abschließen; Alarmweg und alle vereinbarten Zielrufnummern vollständig testen, Ursache klären und Ergebnis dokumentieren" },
+        { "id": "c", "text": "Die zweite Zielrufnummer aus dem Auftrag streichen" },
+        { "id": "d", "text": "Dem Kunden sagen, die SMS könne später von selbst kommen" }
       ],
       "correct": ["b"],
-      "feedback": "Beim Upgrade wird der Speicher geleert.",
+      "feedback": "Ein funktionierender Bedienweg beweist keinen anderen Meldeweg. Die Übergabe ist erst vollständig, wenn jede zugesagte Funktion einmal real ausgelöst, empfangen und nachvollziehbar dokumentiert wurde.",
       "irrtum": [
         {
           "fuer": ["a"],
-          "titel": "Nur den Handsender",
-          "text": "Der gefährlichste Fehler, weil er sich richtig anfühlt. Die Bedienung funktioniert danach einwandfrei - es fehlen aber sämtliche Magnetkontakte. Und das merkt niemand bis zum Ernstfall."
+          "titel": "Bedienweg mit Meldeweg verwechselt",
+          "text": "Die App bestätigt die Steuerung der Anlage, nicht den SMS-Versand an jede gespeicherte Rufnummer."
+        },
+        {
+          "fuer": ["c", "d"],
+          "titel": "Offene Funktion zur Kundensache gemacht",
+          "text": "Die vereinbarte Fernmeldung gehört zum Auftrag. Ein ungeklärter oder gestrichener Zielweg ist keine abgeschlossene Übergabe."
         }
       ],
-      "mitnehmen": "Nach dem Upgrade vollständige Ein- und Ausgangstests inklusive Zentralverriegelung. Wer nur prüft, was er gerade angelernt hat, prüft das Falsche."
+      "mitnehmen": "Übergabe bedeutet: Kunde kann es bedienen, jede zugesagte Funktion wurde real geprüft und das Ergebnis liegt in der Akte."
     },
     {
       "id": "LAN-08",

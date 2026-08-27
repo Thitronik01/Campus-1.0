@@ -1,6 +1,7 @@
 {
   "event": "campus-2026",
   "titel": "THITRONIK Campus",
+  "feedback": "/feedback/",
   "inseln": [
     {
       "slug": "vejro",

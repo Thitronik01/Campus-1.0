@@ -6,8 +6,8 @@
 
      node tools/dev-server.js        (Port 8788)
 
-   Speichern wird hier nicht getestet: dafür braucht es die Netlify-Function
-   und die Supabase-Umgebungsvariablen. Lokal deshalb mit ?demo=1 arbeiten.
+   Speichern wird hier nicht getestet: Netlify Forms und Functions stehen nur
+   im Deployment bereit. Lokal deshalb mit ?demo=1 arbeiten.
    ========================================================================== */
 
 const http = require("http");
@@ -44,11 +44,27 @@ http.createServer((req, res) => {
     return;
   }
 
+  // Ein normaler POST darf lokal nicht wie eine erfolgreiche Speicherung
+  // aussehen. Insbesondere der Feedbackbogen würde sonst die ausgelieferte
+  // HTML-Seite als vermeintliche Netlify-Forms-Bestätigung akzeptieren.
+  if (req.method !== "GET" && req.method !== "HEAD") {
+    res.writeHead(501, { "Content-Type": "text/plain; charset=utf-8" });
+    res.end("Speichern ist lokal nicht verfügbar — bitte ?demo=1 verwenden.");
+    return;
+  }
+
   // Netlify-Redirect nachbilden: /quiz und /quiz/<insel> liefern index.html
   if (/^\/quiz(\/[a-z0-9-]+)?\/?$/i.test(pathname)) pathname = "/index.html";
   if (pathname === "/") pathname = "/index.html";
 
-  let file = path.join(ROOT, path.normalize(pathname).replace(/^([/\\])+/, ""));
+  let activeRoot = ROOT;
+  const feedbackImPaket = path.join(ROOT, "feedback");
+  if ((pathname === "/feedback" || pathname.startsWith("/feedback/")) && !fs.existsSync(feedbackImPaket)) {
+    activeRoot = path.resolve(__dirname, "..", "..", "Feedbackbogen", "netlify-v14");
+    pathname = pathname.replace(/^\/feedback\/?/, "/");
+  }
+
+  let file = path.join(activeRoot, path.normalize(pathname).replace(/^([/\\])+/, ""));
   // Verzeichnisse liefern ihre index.html, wie Netlify es tut. Ohne das
   // waere /feedback/ hier ein Lesefehler auf einem Ordner, waehrend es im
   // Deployment funktioniert — die Probe waere dann keine mehr.
@@ -56,7 +72,7 @@ http.createServer((req, res) => {
     if (fs.statSync(file).isDirectory()) file = path.join(file, "index.html");
   } catch { /* gibt es nicht, faellt unten als 404 heraus */ }
 
-  if (!file.startsWith(ROOT)) {
+  if (!file.startsWith(activeRoot)) {
     res.writeHead(403).end("Verboten");
     return;
   }

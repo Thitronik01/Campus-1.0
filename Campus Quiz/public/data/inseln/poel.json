@@ -3,7 +3,7 @@
   "code": "POEL",
   "title": "Händlerbereich",
   "subtitle": "Das digitale Werkzeug für Beratung und Werkstatt",
-  "version": "4",
+  "version": "5",
   "lernziel": "Den THITRONIK-Händlerbereich als tägliches Arbeitsmittel nutzen: Kundenunterlagen sauber von geschützten Einbaudaten trennen, Aufträge fundiert vorbereiten und den eigenen Werkstattservice stärken.",
   "dauerMinuten": 7,
   "quellen": [
@@ -11,7 +11,7 @@
     "_intern/werkseinbau-eckernfoerde.md",
     "produkte/gas-pro-iii.md"
   ],
-  "internerHinweis": "Fragenkatalog v4. POEL erklärt den Händlerbereich und stärkt den professionellen Einbau durch den Fachbetrieb. Vor dem Einsatz die konkreten Menüpunkte nach dem Login und den Serienbereich 1286-008 bis 1286-012 der Rückrufaktion in POE-05 gegenprüfen.",
+  "internerHinweis": "Fragenkatalog v5. POEL trainiert die Navigation zwischen öffentlichem Support, geschütztem Händlerbereich und aktuellen Produktinformationen. Menünamen und Dokumentenstände vor jeder Schulung gegen die Website prüfen.",
   "questions": [
     {
       "id": "POE-01",
@@ -135,30 +135,36 @@
     },
     {
       "id": "POE-05",
-      "type": "single",
-      "category": "Rückrufprüfung",
-      "prompt": "Ein Kunde bringt eine G.A.S.-pro III mit Seriennummer 1286-010 in die Werkstatt. Was tust du?",
-      "options": [
-        { "id": "a", "text": "Normal einbauen - der Rückruf betraf nur CO-Geräte" },
-        { "id": "b", "text": "Rückrufseite prüfen, Gerät anmelden, kostenloses Update" },
-        { "id": "c", "text": "Sensor tauschen und Gerät weiterverkaufen" },
-        { "id": "d", "text": "Gerät entsorgen und Ersatz berechnen" }
+      "type": "match",
+      "category": "Dokumenten-Navigation",
+      "media": { "src": "/media/poel/poe-start-haendlerbereich.webp", "alt": "Arbeitsplatz mit THITRONIK-Händlerunterlagen", "layout": "landscape" },
+      "prompt": "Ordne jede benötigte Information dem schnellsten aktuellen Fundort zu.",
+      "left": [
+        { "id": "l1", "text": "CampLock/VanLock V002+ Kurzanleitung" },
+        { "id": "l2", "text": "Konformitätserklärung oder WiPro Upgrade-/Update-Formular" },
+        { "id": "l3", "text": "Fahrzeugspezifische Stecker- und Pinbelegung" },
+        { "id": "l4", "text": "Aktueller Sicherheits- oder Rückrufhinweis" }
       ],
-      "correct": ["b"],
-      "feedback": "Der Serienbereich **1286-008 bis 1286-012** ist in Kombination mit dem Zusatzsensor **101289** von der freiwilligen Rückrufaktion betroffen. Das Update ist kostenlos.",
+      "right": [
+        { "id": "r1", "text": "Öffentlicher Support → Downloads → Alarmanlagen → Anleitungen" },
+        { "id": "r2", "text": "Öffentlicher Support → Downloads → Alarmanlagen → Sonstiges" },
+        { "id": "r3", "text": "Geschützter Händlerbereich / Werkstattunterlagen" },
+        { "id": "r4", "text": "Offizielle News-, Hinweis- oder Rückrufseite" },
+        { "id": "r5", "text": "Produktkonfigurator" }
+      ],
+      "correct": { "l1": "r1", "l2": "r2", "l3": "r3", "l4": "r4" },
+      "feedback": "Anleitungen und sonstige Formulare sind öffentlich gegliedert; fahrzeugspezifische Anschlussdaten bleiben geschützt; zeitkritische Sicherheitsinformationen werden über die aktuelle offizielle Hinweis- oder Rückrufseite geprüft.",
       "irrtum": [
         {
-          "fuer": ["a"],
-          "titel": "Normal einbauen",
-          "text": "Der Gedanke „das betraf doch die anderen Geräte“ ist genau die Lücke, die eine Rückrufaktion aufspüren soll. Bei sicherheitsrelevanten Geräten wird nicht aus dem Gedächtnis entschieden."
+          "titel": "Konfigurator als Dokumentenarchiv genutzt",
+          "text": "Der Konfigurator unterstützt die Zusammenstellung eines Systems. Er ersetzt weder aktuelle Anleitungen noch geschützte Werkstattunterlagen oder Sicherheitshinweise."
         },
         {
-          "fuer": ["d"],
-          "titel": "Entsorgen",
-          "text": "Übervorsichtig und teuer. Das Gerät ist reparabel, das Update kostenlos - der Kunde verliert nichts außer ein paar Tagen."
+          "titel": "Öffentliche und geschützte Unterlagen vermischt",
+          "text": "Kundenfähige Dokumente werden öffentlich bereitgestellt; fahrzeugspezifische Anschlussdetails gehören in den geschützten Arbeitsbereich des Fachbetriebs."
         }
       ],
-      "mitnehmen": "Bei jeder Seriennummer im Rückrufbereich gilt: erst Rückrufseite, dann Schraubendreher. Kostenlos ist nur das Update - der Einbau eines betroffenen Geräts ohne Prüfung ist es später nicht."
+      "mitnehmen": "Nicht nur wissen, was gesucht wird, sondern wo es gepflegt wird. So landet automatisch der aktuelle Stand auf dem Werkstattauftrag."
     },
     {
       "id": "POE-07",
@@ -184,59 +190,57 @@
     },
     {
       "id": "POE-08",
-      "type": "multi",
-      "category": "Eigener Werkstatttermin",
-      "prompt": "Ein Kunde möchte das Gerät nur abholen und selbst einbauen. Welche Argumente sprechen für einen professionellen Einbautermin in deinem Fachbetrieb? Wähle alle zutreffenden.",
+      "type": "single",
+      "category": "Formular finden",
+      "prompt": "Eine WiPro III soll zum Upgrade oder Update eingesendet werden. Wo findest du das aktuelle Formular?",
       "options": [
-        { "id": "a", "text": "Fahrzeugkompatibilität und aktuelle Einbauunterlage werden vorab geprüft" },
-        { "id": "b", "text": "Einbauort, Funkstrecke und Anschluss werden am konkreten Fahrzeug bewertet" },
-        { "id": "c", "text": "Das Gesamtsystem wird nach dem Einbau getestet und verständlich übergeben" },
-        { "id": "d", "text": "Verbaute Komponenten, Seriennummern und Prüfergebnisse werden dokumentiert" },
-        { "id": "e", "text": "Nur ein Fachbetrieb darf THITRONIK-Produkte überhaupt einschalten" },
-        { "id": "f", "text": "Ein professioneller Einbau macht jeden späteren Defekt unmöglich" }
+        { "id": "a", "text": "Support → Downloads → Alarmanlagen → Sonstiges" },
+        { "id": "b", "text": "Konfigurator → Ergebnis-PDF" },
+        { "id": "c", "text": "Händlerfinder → eigener Betrieb" },
+        { "id": "d", "text": "FAQ → Mobilfunk" }
       ],
-      "correct": ["a", "b", "c", "d"],
-      "feedback": "Der Wert des Werkstatttermins liegt in Prüfung, fachgerechtem Einbau, Systemtest, Übergabe und Dokumentation - nicht nur in der Montagezeit.",
+      "correct": ["a"],
+      "feedback": "Das aktuelle WiPro III Upgrade-/Update-Formular liegt im öffentlichen Support unter Downloads → Alarmanlagen → Sonstiges.",
       "irrtum": [
         {
-          "fuer": ["e"],
-          "titel": "Unzulässiges Ausschließlichkeitsargument",
-          "text": "Verkaufe die Qualität deiner Arbeit, nicht eine pauschale Behauptung. Entscheidend sind Fahrzeugkenntnis, Unterlagen, Prüfung und sichere Übergabe."
+          "fuer": ["b"],
+          "titel": "Konfigurator gewählt",
+          "text": "Der Konfigurator erstellt eine Systemempfehlung. Serviceformulare werden im Downloadbereich gepflegt."
         },
         {
-          "fuer": ["f"],
-          "titel": "Fehlerfreiheit versprochen",
-          "text": "Auch ein professioneller Einbau macht Technik nicht unfehlbar. Er reduziert Risiken und schafft eine dokumentierte Basis für Wartung und Diagnose."
+          "fuer": ["c", "d"],
+          "titel": "Falschen Website-Bereich gewählt",
+          "text": "Händlerfinder und FAQ lösen andere Aufgaben. Für ein auszufüllendes Serviceformular führt der Weg direkt zu den Downloads."
         }
       ],
-      "mitnehmen": "Der professionelle Besuch beginnt mit Beratung und endet erst nach dokumentiertem Funktionstest und Einweisung. Genau darin liegt der Mehrwert deines Betriebs."
+      "mitnehmen": "Bei Formularen immer frisch herunterladen. Eine gespeicherte alte Kopie kann Pflichtfelder oder aktuelle Versandhinweise missen."
     },
     {
       "id": "POE-10",
       "type": "single",
-      "category": "Bezugsweg",
-      "prompt": "Ein Endkunde möchte direkt bei THITRONIK bestellen, weil du das Gerät nicht vorrätig hast. Was gilt?",
+      "category": "Passende Anleitung wählen",
+      "prompt": "Im Downloadbereich findest du verschiedene CampLock/VanLock-Fingerprint-Anleitungen. Wie wählst du die richtige aus?",
       "options": [
-        { "id": "a", "text": "THITRONIK liefert nicht an Endkunden - Bezug läuft über den Fachhandel" },
-        { "id": "b", "text": "THITRONIK liefert direkt, du erhältst eine Provision" },
-        { "id": "c", "text": "Direktbestellung ist ab zwei Geräten möglich" },
-        { "id": "d", "text": "Nur Ersatzteile gehen direkt an Endkunden" }
+        { "id": "a", "text": "Immer die Datei mit dem neuesten Upload-Datum öffnen" },
+        { "id": "b", "text": "Produktvariante und Serien-/Revisionsstand am Gerät prüfen und genau die dazu gekennzeichnete Anleitung verwenden" },
+        { "id": "c", "text": "CampLock- und VanLock-Anleitungen sind vollständig austauschbar" },
+        { "id": "d", "text": "Die kürzeste Anleitung ist die aktuelle Werkstattfassung" }
       ],
-      "correct": ["a"],
-      "feedback": "Der Bezug läuft ausschließlich über den Fachhandel - Caravaning, Car-HiFi, Bosch-Dienste. Einzige Ausnahme: Direktverkauf im Rahmen des Werkseinbauservice in Eckernförde.",
+      "correct": ["b"],
+      "feedback": "Die Kennzeichnung der konkreten Produktausführung entscheidet. Bei Fingerprint-Produkten können sich Reihenfolge, Kompatibilität und Inbetriebnahme zwischen frühen und V002+-Ständen unterscheiden.",
       "irrtum": [
         {
-          "fuer": ["b"],
-          "titel": "Provision",
-          "text": "Klingt nach einer eleganten Lösung für einen unangenehmen Moment. Sie existiert nicht - und die Frage kommt meist genau dann, wenn du gerade nicht liefern kannst und dich schwach fühlst."
+          "fuer": ["a"],
+          "titel": "Nur nach Datum gewählt",
+          "text": "Die neueste Datei kann für eine andere Revision gedacht sein. Der Abgleich beginnt am verbauten Produkt, nicht in der Dateiliste."
         },
         {
-          "fuer": ["d"],
-          "titel": "Ersatzteile direkt",
-          "text": "Verlockend, weil es harmlos wirkt. Es würde aber die Kette aufbrechen, an der auch dein Servicegeschäft hängt."
+          "fuer": ["c", "d"],
+          "titel": "Dokumente nach Ähnlichkeit gewählt",
+          "text": "Ähnlicher Name oder Umfang ist kein Revisionsnachweis. Nur die eindeutige Kennzeichnung verbindet Gerät und Anleitung."
         }
       ],
-      "mitnehmen": "Der Fachhandelsweg ist keine Formalie - er ist der Grund, warum Beratung, Einbau und Support beim Fachbetrieb zusammenbleiben. Also bei dir."
+      "mitnehmen": "Dokumentenstand heißt nicht automatisch neuestes Datum, sondern passendster freigegebener Stand für genau dieses Gerät."
     },
     {
       "id": "POE-09",

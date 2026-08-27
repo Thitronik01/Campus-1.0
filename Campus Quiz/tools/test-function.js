@@ -172,6 +172,20 @@ function buildPayload(mode, overrides = {}) {
   r = await handler({ httpMethod: "POST", body: "kein json" });
   check("Kaputtes JSON → 400", r.statusCode === 400);
 
+  console.log("\nPilotbetrieb ohne Datenbank\n");
+  const urlVorher = process.env.SUPABASE_URL;
+  const keyVorher = process.env.SUPABASE_SECRET_KEY;
+  delete process.env.SUPABASE_URL;
+  delete process.env.SUPABASE_SECRET_KEY;
+  r = await call(buildPayload("richtig"));
+  check("Ohne Datenbank → 503 mit Netlify-Forms-Ausweichweg",
+    r.status === 503 && r.body.fallback === "netlify_forms", JSON.stringify(r.body));
+  check("Pilot-Zusammenfassung wird serverseitig berechnet",
+    r.body.pilot && r.body.pilot.score === island.questions.length && r.body.pilot.percent === 100,
+    JSON.stringify(r.body.pilot));
+  process.env.SUPABASE_URL = urlVorher;
+  process.env.SUPABASE_SECRET_KEY = keyVorher;
+
   console.log(`\n${passed} bestanden, ${failed} fehlgeschlagen.`);
   process.exit(failed ? 1 : 0);
 })();

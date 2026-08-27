@@ -233,20 +233,33 @@ exports.handler = async function handler(event) {
     return jsonResponse(413, { error: "Anfrage ist leer oder zu groß." });
   }
 
-  const supabaseUrl = process.env.SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-  if (!supabaseUrl || !supabaseKey) {
-    console.error("SUPABASE_URL oder Server-Key fehlt in den Netlify-Umgebungsvariablen.");
-    return jsonResponse(500, { error: "Das Backend ist noch nicht vollständig konfiguriert." });
-  }
-
   let payload;
   try {
     payload = normalizePayload(JSON.parse(event.body));
   } catch (error) {
     console.error("Ungültige Einsendung:", error);
     return jsonResponse(400, { error: error instanceof Error ? error.message : "Ungültige Quizdaten." });
+  }
+
+  const pilot = {
+    island_code: payload.island_code,
+    score: payload.score,
+    total: payload.total,
+    percent: payload.percent
+  };
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  // Die Mitarbeiter-Pilotphase darf vor der Datenbank starten. Der Browser
+  // legt den hier bereits validierten Datensatz dann in Netlify Forms ab.
+  if (!supabaseUrl || !supabaseKey) {
+    console.info("Supabase ist noch nicht konfiguriert; Übergabe an Netlify Forms.");
+    return jsonResponse(503, {
+      error: "Die Campus-Datenbank ist noch nicht aktiviert.",
+      code: "BACKEND_NOT_CONFIGURED",
+      fallback: "netlify_forms",
+      pilot
+    });
   }
 
   try {
@@ -276,12 +289,20 @@ exports.handler = async function handler(event) {
     if (!response.ok) {
       const detail = await response.text();
       console.error("Supabase hat abgelehnt:", response.status, detail);
-      return jsonResponse(502, { error: "Die Datenbank hat die Speicherung abgelehnt." });
+      return jsonResponse(502, {
+        error: "Die Datenbank hat die Speicherung abgelehnt.",
+        fallback: "netlify_forms",
+        pilot
+      });
     }
 
     return jsonResponse(201, { ok: true, duplicate: false, percent: payload.percent });
   } catch (error) {
     console.error("Speicherung fehlgeschlagen:", error);
-    return jsonResponse(502, { error: "Die Datenbank war nicht erreichbar." });
+    return jsonResponse(502, {
+      error: "Die Datenbank war nicht erreichbar.",
+      fallback: "netlify_forms",
+      pilot
+    });
   }
 };

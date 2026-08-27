@@ -2,10 +2,12 @@
 title: CampLock Fingerprint - biometrischer Zugang
 sources:
   - https://www.thitronik.de/produkte/produkt/camplock-fingerprint/
+  - https://www.thitronik.de/fileadmin/user_upload/downloads/anleitungen_und_einleger/camplock-fingerprint/camplock-vanlock-fingerprint.pdf
+  - https://www.thitronik.de/news-und-termine/news/wichtige-information-zu-camplock-und-vanlock-fingerprint/
   - https://www.thitronik.de/preise/
   - wiki/zugang-bedienung.md
   - wiki/wipro-iii.md
-updated: 2026-07-07
+updated: 2026-08-27
 confidence: high
 dealerStatus: approved
 lang: de
@@ -17,7 +19,7 @@ CampLock Fingerprint ist der biometrische Zugang fuer Hartal-Aufbautueren mit Ze
 
 ## Kompatibilitaet
 
-- Kompatibel mit WiPro III und WiPro III safe.lock.
+- Die aktuelle gemeinsame Anleitung fuer die Ausfuehrung V002+ beschreibt CampLock Fingerprint als Zubehoer zu WiPro III safe.lock. Fruehere Produktstaende duerfen nicht pauschal auf V002+ uebertragen werden.
 - Entwickelt fuer zahlreiche Hartal-Aufbautueren mit Zentralverriegelung.
 - Scharf/Unscharf ist mit WiPro III moeglich; Ver-/Entriegeln setzt WiPro III safe.lock und eine passende Zentralverriegelungs-Anbindung voraus.
 - Einbau und elektrische Integration gehoeren in fachkundige Haende.
@@ -30,7 +32,7 @@ CampLock Fingerprint ist der biometrische Zugang fuer Hartal-Aufbautueren mit Ze
 | Power supply | 12/24 V DC |
 | Radio range | max. 150 m free field |
 | Frequency | 868,35 MHz |
-| Kompatibilität | WiPro III / WiPro III safe.lock |
+| Kompatibilität | Ausfuehrung V002+: WiPro III safe.lock; konkreten Produktstand pruefen |
 | Dimensions | control unit 100 x 71 x 22 mm; fingerprint sensor D = 41 mm, L = 53 mm |
 | Gewicht | ca. 213 g on product page; catalogue states ca. 156 g |
 | Current draw | 1,2 mA at 12 V DC; product page: 1,7 mA at 24 V DC |
@@ -48,15 +50,16 @@ CampLock Fingerprint ist der biometrische Zugang fuer Hartal-Aufbautueren mit Ze
 
 1. Fahrzeug- und Tuerkompatibilitaet vor Montage klaeren.
 2. Steuergeraet und Fingerprint-Sensor nach Anleitung montieren und mit 12/24 V versorgen.
-3. Fingerprint-System mit WiPro III oder WiPro III safe.lock koppeln.
-4. Zuerst die 2 Master-Finger, danach Nutzerfinger einlernen.
+3. Zuerst die 2 Master-Finger einlernen.
+4. Fingerprint-System nach der Anleitung des konkreten Produktstands mit der WiPro III safe.lock koppeln, danach Nutzerfinger einlernen.
 5. Funktionstest durchfuehren: Entriegeln, Verriegeln, Scharf/Unscharf und bei safe.lock die Zentralverriegelung.
 
 ## Grenzen & typische Fehler
 
-- Fingerabdruck-Bedienung ersetzt keinen geplanten Backup-Weg; Funk-Handsender, NFC oder Originalschluessel sollten verfuegbar bleiben.
+- Fingerabdruck-Bedienung ersetzt keinen geplanten Backup-Weg. Ein mechanischer Alternativzugang muss erhalten bleiben; den Fahrzeugschluessel mitfuehren.
 - Nasse, verschmutzte oder verletzte Finger koennen Erkennung erschweren.
-- Bei WiPro III ohne safe.lock wird die Zentralverriegelung nicht automatisch als Gesamtfahrzeug-Zugang mitgefuehrt.
+- V002+ nicht fuer eine WiPro III ohne safe.lock zusagen; konkrete Ausfuehrung und zugehoerige Anleitung pruefen.
+- Aktueller Sicherheitshinweis vom 27.07.2026: In seltenen Faellen kann die Zentralverriegelung nicht korrekt ausgefuehrt werden und ein Aussperren entstehen. Fahrzeugschluessel mitfuehren und den angekuendigten Softwarestand beachten.
 - CampLock darf nicht pauschal fuer jede Aufbautuer angenommen werden; die Hartal-Kompatibilitaet ist der entscheidende Punkt.
 
 ## FAQ
@@ -68,7 +71,7 @@ Up to 16 fingers, including 2 master fingers.
 Yes, if it is paired correctly with the THITRONIK alarm system.
 
 **Is safe.lock mandatory?**
-Not for arming/disarming alone. Locking/unlocking central locking requires WiPro III safe.lock and a suitable vehicle connection.
+For the current V002+ manual, yes: it describes operation as an accessory to WiPro III safe.lock. Always match the installed product revision to its current manual.
 
 ## Artikelnummern
 
@@ -79,7 +82,7 @@ Not for arming/disarming alone. Locking/unlocking central locking requires WiPro
 
 ## Quellenhinweis
 
-Technische Daten stammen aus der offiziellen THITRONIK Produktseite und der Preisliste; abweichende Gewichtsangaben sind im Artikel transparent ausgewiesen.
+Technische Daten stammen aus der offiziellen THITRONIK Produktseite und der Preisliste. Kompatibilitaet, Inbetriebnahmereihenfolge und der aktuelle Sicherheitshinweis wurden am 27.08.2026 gegen die offizielle V002+-Anleitung und die THITRONIK-Mitteilung vom 27.07.2026 abgeglichen.
 
 ## Querverweise
 

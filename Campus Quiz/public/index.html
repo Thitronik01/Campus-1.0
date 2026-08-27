@@ -8,7 +8,7 @@
   <meta name="description" content="THITRONIK Campus: Wissenscheck nach jeder Schulungsinsel.">
   <meta name="robots" content="noindex, nofollow">
   <title>THITRONIK Campus: Wissenscheck</title>
-  <link rel="stylesheet" href="/assets/styles.css?v=1.4.1">
+  <link rel="stylesheet" href="/assets/styles.css?v=1.5.0">
 </head>
 <body>
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
@@ -60,6 +60,17 @@
             <p class="kicker">Campus 2026</p>
             <h1 id="islands-title">Deine Schulungsexpedition</h1>
             <p class="lead">Wähle eine Insel aus und starte den Wissenscheck.</p>
+            <ul class="campus-highlights" aria-label="Campus-Überblick">
+              <li><strong>7</strong><span>Wissensinseln</span></li>
+              <li>
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m5 12 4 4L19 6"></path></svg>
+                <span>Sofortauflösung</span>
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 4h14v13H9l-4 3V4Z"></path><path d="M8 8h8M8 12h5"></path></svg>
+                <span>Feedback inklusive</span>
+              </li>
+            </ul>
           </div>
 
           <svg class="campus-map-art" id="campus-map-art" viewBox="0 0 1200 760" preserveAspectRatio="none" aria-hidden="true" focusable="false">
@@ -96,7 +107,10 @@
         <!-- Kein Listeneintrag und keine Insel: Der Tagesabschluss zaehlt
              nicht in "7 von 7" mit. Ein echtes <a>, weil es ein anderes
              Dokument ist - Mittelklick und "in neuem Tab" sollen gehen. -->
-        <a class="tagesabschluss" id="tagesabschluss" href="/feedback" hidden>
+        <a class="tagesabschluss" id="tagesabschluss" href="/feedback/" hidden>
+          <span class="ta-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false"><path d="M5 4h14v13H9l-4 3V4Z"></path><path d="M8 8h8M8 12h5"></path></svg>
+          </span>
           <span class="ta-text">
             <span class="ta-kicker" id="ta-kicker">Tagesabschluss</span>
             <span class="ta-title" id="ta-title">Feedbackbogen</span>
@@ -299,6 +313,7 @@
 
             <div class="result-actions">
               <button class="btn btn-primary" id="btn-wrong-only" type="button" hidden>Nur falsche Fragen wiederholen</button>
+              <a class="btn btn-primary" id="btn-feedback" href="/feedback/" hidden>Tag mit Feedback abschließen</a>
               <button class="btn btn-secondary" id="btn-next-island" type="button">Zur Campus-Karte</button>
               <button class="btn btn-tertiary" id="btn-repeat" type="button">Dieses Quiz wiederholen</button>
             </div>
@@ -344,6 +359,20 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
-  <script src="/assets/engine.js?v=1.4.1" defer></script>
+  <!-- Netlify erkennt Formulare beim Build an statischem HTML. Dieses
+       unsichtbare Schema nimmt im Pilotbetrieb gültige Quiz-Ergebnisse an,
+       solange die spätere Supabase-Datenbank noch nicht eingerichtet ist. -->
+  <form name="campus-quiz-result" method="POST" data-netlify="true"
+        data-netlify-honeypot="bot-field" hidden aria-hidden="true">
+    <input name="form-name" value="campus-quiz-result">
+    <input name="bot-field">
+    <input name="session_id"><input name="event"><input name="island">
+    <input name="quiz_version"><input name="engine_version">
+    <input name="participant"><input name="dealer"><input name="dealer_number"><input name="area">
+    <input name="started_at"><input name="finished_at"><input name="page_url">
+    <input name="score"><input name="total"><input name="percent"><input name="answers_json">
+  </form>
+
+  <script src="/assets/engine.js?v=1.5.0" defer></script>
 </body>
 </html>

@@ -3,7 +3,7 @@
   "code": "HIDDENSEE",
   "title": "Funk-Magnetkontakte & Leitungsverbindungen",
   "subtitle": "Anlernen, montieren, abzweigen und crimpen",
-  "version": "4",
+  "version": "5",
   "lernziel": "Funk-Magnetkontakte zuverlässig anlernen und montieren sowie elektrische Abgriffe mit dem passenden Verbinder und Werkzeug fachgerecht ausführen.",
   "dauerMinuten": 9,
   "quellen": [
@@ -11,7 +11,7 @@
     "fahrzeuge/ford-transit-6g.md",
     "referenz/fahrzeugkompatibilitaet.md"
   ],
-  "internerHinweis": "Fragenkatalog v4. HIDDENSEE umfasst Funk-Magnetkontakte, gelgefüllte Abzweigverbinder und fachgerechte Crimpverbindungen. HID-01, HID-05 und HID-09 gewinnen später durch echte Werkstattfotos. Die Auslöseschwelle über 30 mm in HID-03 vor Einsatz fachlich bestätigen.",
+  "internerHinweis": "Fragenkatalog v5. HIDDENSEE umfasst Funk-Magnetkontakte, gelgefüllte Abzweigverbinder und fachgerechte Crimpverbindungen. Die Abstandsangaben der Kontaktvarianten sowie konkrete Verbinderfreigaben vor jeder Schulung gegen den aktuellen Anleitungsstand prüfen.",
   "questions": [
     {
       "id": "HID-01",
@@ -149,29 +149,30 @@
     {
       "id": "HID-06",
       "type": "single",
-      "category": "Batteriediagnose",
-      "prompt": "Beim Öffnen einer Klappe ertönt ca. 2 Sekunden ein Ton aus der Zentrale, die rote Sende-LED bleibt rund 30 Sekunden an. Was bedeutet das?",
+      "category": "Verbindungsfehler diagnostizieren",
+      "media": { "src": "/media/hiddensee/hid-gelverbinder.webp", "alt": "Gelgefüllte Abzweigverbinder mit Leitungen", "layout": "square" },
+      "prompt": "Ein elektrischer Abzweig funktioniert im Stand, fällt aber bei Fahrt über Bodenwellen sporadisch aus. Was prüfst du zuerst?",
       "options": [
-        { "id": "a", "text": "Der Kontakt ist nicht angelernt" },
-        { "id": "b", "text": "Die CR2032 des zuletzt betätigten Senders ist schwach" },
-        { "id": "c", "text": "Die Zentrale meldet einen Störsender" },
-        { "id": "d", "text": "Normale Sendebestätigung nach dem Anlernen" }
+        { "id": "a", "text": "Verbindergröße, vollständigen Leitersitz, definierte Verpressung, Zugprobe und Zugentlastung" },
+        { "id": "b", "text": "Nur den Softwarestand der WiPro III" },
+        { "id": "c", "text": "Die Batterie jedes Funk-Magnetkontakts" },
+        { "id": "d", "text": "Ob der Kunde die App neu installiert hat" }
       ],
-      "correct": ["b"],
-      "feedback": "Batteriewarnung unterhalb von ca. 2,6 V. Sie betrifft **immer nur den zuletzt betätigten Sender**.",
+      "correct": ["a"],
+      "feedback": "Ein erschütterungsabhängiger Ausfall passt zuerst zu einem mechanisch unzuverlässigen Leitungsabgriff: falscher Querschnitt, unvollständiger Sitz, ungeeignetes Werkzeug oder fehlende Zugentlastung.",
       "irrtum": [
         {
-          "fuer": ["d"],
-          "titel": "Normale Sendebestätigung",
-          "text": "Gefährlichster Irrtum, weil er zu Nichtstun führt. Wer die Warnung für normal hält, schickt den Kunden mit einem Sender los, der in wenigen Wochen verstummt."
+          "fuer": ["b"],
+          "titel": "Mechanisches Muster übersehen",
+          "text": "Softwarestände ändern sich nicht mit der Bodenwelle. Das reproduzierbare Bewegungsmuster lenkt die erste Prüfung an Verbindung und Verlegung."
         },
         {
-          "fuer": ["c"],
-          "titel": "Störsender",
-          "text": "Verwechslung mit dem Anti-Jamming-Alarm der WiPro. Der zeigt sich im Blinkcode der Status-LED, nicht als Ton beim Öffnen einer Klappe."
+          "fuer": ["c", "d"],
+          "titel": "Anderes Teilsystem geprüft",
+          "text": "Funkbatterien und App erklären keinen ausschließlich erschütterungsabhängigen kabelgebundenen Abzweig."
         }
       ],
-      "mitnehmen": "Wurden alle Kontakte gleichzeitig verbaut, stehen die übrigen kurz davor - Lebensdauer rund 2 Jahre. Gleich alle Knopfzellen ähnlichen Alters mitplanen, statt den Kunden dreimal kommen zu lassen."
+      "mitnehmen": "Symptom und Einbauart zusammen denken: Bei Bewegungsaussetzern zuerst mechanischen Sitz und Zugentlastung prüfen, bevor Teile getauscht werden."
     },
     {
       "id": "HID-09",
@@ -184,13 +185,13 @@
         { "id": "c", "text": "Beliebig, solange der Abstand stimmt" },
         { "id": "d", "text": "Beide auf dem Türblatt, versetzt zueinander" }
       ],
-      "correct": ["c"],
-      "feedback": "Für die Funktion ist es beliebig, ob Sender oder Magnet am beweglichen Teil sitzt. Entscheidend sind der korrekte Abstand, die Ausrichtung der jeweiligen Ausführung und eine dauerhaft sichere Befestigung.",
+      "correct": ["a"],
+      "feedback": "Das Sendergehäuse gehört vorzugsweise auf den festen Rahmen, der Magnet auf das bewegliche Tür- oder Klappenblatt. So wird die schwerere Elektronik nicht bei jeder Bewegung mitbeschleunigt und bleibt besser geschützt.",
       "irrtum": [
         {
-          "fuer": ["a", "b"],
-          "titel": "Eine feste Seite vorgeschrieben",
-          "text": "Die elektrische Kontaktfunktion schreibt nicht vor, welches Bauteil am Rahmen oder Türblatt sitzt. Die konkrete Montage muss lediglich Abstand, Ausrichtung und mechanische Belastung sicher beherrschen."
+          "fuer": ["b", "c"],
+          "titel": "Sender ans bewegliche Teil gesetzt",
+          "text": "Die reine Schaltfunktion kann dabei zunächst arbeiten, die fachgerechte Standardmontage setzt das Sendergehäuse jedoch auf den festen Rahmen und den Magneten auf das bewegliche Blatt."
         },
         {
           "fuer": ["d"],
@@ -198,23 +199,34 @@
           "text": "Sender und Magnet müssen sich beim Öffnen voneinander entfernen. Sitzen beide auf dem Türblatt, ändert sich ihr Abstand nicht zuverlässig."
         }
       ],
-      "mitnehmen": "Rahmen oder Türblatt ist funktional frei wählbar - Abstand, Ausrichtung und eine robuste Befestigung sind es nicht."
+      "mitnehmen": "Feste Seite für den Sender, bewegliche Seite für den Magneten - danach Abstand und Ausrichtung der konkreten Ausführung prüfen."
     },
     {
       "id": "HID-07",
-      "type": "truefalse",
-      "category": "Absicherung planen",
-      "prompt": "„Jede Fahrzeugtür braucht einen Funk-Magnetkontakt.“",
-      "correct": ["falsch"],
-      "feedback": "Türen, deren Öffnung im Kombi-Instrument angezeigt wird, werden bei korrekt angeschlossener WiPro III bereits über den CAN-Bus überwacht.",
+      "type": "single",
+      "category": "Crimpvorbereitung",
+      "prompt": "Ein Kollege will feindrähtige Litzen vor dem Crimpen verzinnen, damit sie kompakter werden. Wie reagierst du?",
+      "options": [
+        { "id": "a", "text": "Nicht verzinnen; passenden Verbinder und definiertes Crimpwerkzeug für den vorgesehenen Leiter verwenden" },
+        { "id": "b", "text": "Vollständig verzinnen und mit einer Kombizange flach drücken" },
+        { "id": "c", "text": "Nur die vordere Hälfte verzinnen, damit der Leiter flexibel bleibt" },
+        { "id": "d", "text": "Zusätzlich Sekundenkleber in den Verbinder geben" }
+      ],
+      "correct": ["a"],
+      "feedback": "Verzinnte Litzen können unter dauerhaftem Pressdruck nachgeben. Eine belastbare Crimpung entsteht mit passendem Leiterzustand, Verbinder und dafür vorgesehenem Werkzeug.",
       "irrtum": [
         {
-          "fuer": ["richtig"],
-          "titel": "Richtig",
-          "text": "Sicherheitsdenken - lieber einen zu viel. Hier führt es zu unnötigen Kosten für den Kunden, mehr Batterien im Wartungsplan und mehr Bauteilen, die ausfallen können."
+          "fuer": ["b", "c"],
+          "titel": "Verzinnen als Verstärkung missverstanden",
+          "text": "Lötzinn macht aus einer nicht passenden Crimpkombination keine passende. Unter Druck kann die Verbindung mit der Zeit an Klemmkraft verlieren."
+        },
+        {
+          "fuer": ["d"],
+          "titel": "Klebstoff statt Verbindungstechnik",
+          "text": "Klebstoff ersetzt weder den definierten elektrischen Kontakt noch die mechanische Kontrolle der Crimpung."
         }
       ],
-      "mitnehmen": "Schneller Praxistest am Fahrzeug: Tür öffnen und aufs Display schauen. Wird sie dort angezeigt, ist kein Kontakt nötig. Diese fünf Sekunden ersetzen jede Diskussion."
+      "mitnehmen": "Crimpen ist ein abgestimmtes System aus Leiter, Verbinder und Werkzeug. Zusätze nach Gefühl verschlechtern die Reproduzierbarkeit."
     },
     {
       "id": "HID-08",
@@ -272,6 +284,7 @@
       "id": "HID-11",
       "type": "single",
       "category": "Gelgefüllter Abzweigverbinder",
+      "media": { "src": "/media/hiddensee/hid-gelverbinder.webp", "alt": "Blaue gelgefüllte Abzweigverbinder mit Leitungen", "layout": "square" },
       "prompt": "Du willst an einer Fahrzeugleitung einen gelgefüllten Abzweigverbinder setzen. Was muss vor dem Verpressen feststehen?",
       "options": [
         { "id": "a", "text": "Stecker, Pin, Leitungsfarbe und gemessenes Signal stimmen mit der fahrzeugspezifischen Unterlage überein" },

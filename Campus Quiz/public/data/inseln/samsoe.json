@@ -3,7 +3,7 @@
   "code": "SAMSØ",
   "title": "Einbauorte im Fahrzeug",
   "subtitle": "Wo kommt was hin?",
-  "version": "7",
+  "version": "8",
   "lernziel": "Physik bestimmt den Einbauort, nicht der freie Platz. Wer das verstanden hat, muss keine Liste auswendig lernen.",
   "dauerMinuten": 8,
   "quellen": [
@@ -14,7 +14,7 @@
     "produkte/wipro-iii.md",
     "fahrzeuge/*"
   ],
-  "internerHinweis": "Fragenkatalog v6. SAM-02, SAM-03 und SAM-10 arbeiten mit echten Produkt- beziehungsweise Einbaufotos. SAM-10 zeigt acht Produkte einschließlich des T.S.A. Funk-Rauchmelders. SAM-04 prüft die Qualitätskriterien für den Einbauort einer WiPro III. Fachlich zu bestätigen: die max. 7 m Gesamtlänge des Zusatzsensorkabels in SAM-08 sowie der konkrete gemeinsame Versorgungspunkt von WiPro III und Pro-finder in SAM-09.",
+  "internerHinweis": "Fragenkatalog v8. SAM-02, SAM-03 und SAM-10 arbeiten mit echten Produkt- beziehungsweise Einbaufotos; SAM-09 ergänzt die physikalisch begründete Ausrichtung der externen GPS-Antenne. Einbauabstände und Kabellängen vor jeder Schulung gegen den aktuellen Anleitungsstand prüfen.",
   "questions": [
     {
       "id": "SAM-01",
@@ -279,29 +279,30 @@
     {
       "id": "SAM-09",
       "type": "single",
-      "category": "Verdrahtung",
-      "prompt": "WiPro III und Pro-finder werden eingebaut. Was gilt für die Versorgung?",
+      "category": "GPS-Antenne ausrichten",
+      "media": { "src": "/media/samsoe/sam-produkt-gps-pro.webp", "alt": "Externe GPS-pro Antenne", "layout": "product" },
+      "prompt": "Der Pro-finder braucht wegen eines abgeschirmten Einbauorts eine externe GPS-Antenne. Wie wird ihre Empfangsseite ausgerichtet?",
       "options": [
-        { "id": "a", "text": "Beide an dieselbe Fahrzeugbatterie, Verbindung über RJ11" },
-        { "id": "b", "text": "WiPro an Starter-, Pro-finder an Aufbaubatterie" },
-        { "id": "c", "text": "Beide direkt an die Solaranlage" },
-        { "id": "d", "text": "Pro-finder über Klemme 15 absichern" }
+        { "id": "a", "text": "Horizontal nach oben und mit möglichst freier Sicht durch ein nichtmetallisches Fahrzeugteil" },
+        { "id": "b", "text": "Senkrecht nach unten, damit Wasser ablaufen kann" },
+        { "id": "c", "text": "Direkt unter eine geschlossene Metallverkleidung" },
+        { "id": "d", "text": "Beliebig - GPS funktioniert unabhängig von der Ausrichtung" }
       ],
       "correct": ["a"],
-      "feedback": "Gemeinsame Versorgung heißt gemeinsames Bezugspotenzial. Verbindung untereinander über das dafür vorgesehene RJ11-Kabel.",
+      "feedback": "Die Empfangsseite der GPS-Antenne zeigt horizontal nach oben. Metall unmittelbar über oder um die Antenne schirmt Satellitensignale ab; ein geeigneter nichtmetallischer Bereich verbessert den Empfang.",
       "irrtum": [
         {
-          "fuer": ["b"],
-          "titel": "Getrennte Batterien",
-          "text": "Wirkt durchdacht - die Aufbaubatterie hat mehr Reserve. Unterschiedliche Bezugspotenziale erzeugen aber Störungen, die später kaum auffindbar sind und sich als sporadische Fehler zeigen."
+          "fuer": ["b", "d"],
+          "titel": "Ausrichtung unterschätzt",
+          "text": "Eine GPS-Antenne hat eine definierte Empfangsseite. Vertikale, nach unten gerichtete oder beliebige Montage verschenkt Empfangsreserve."
         },
         {
-          "fuer": ["d"],
-          "titel": "Klemme 15",
-          "text": "Der Klassiker aus der Kfz-Elektrik. Klemme 15 fällt ab, sobald die Zündung aus ist - also genau dann, wenn eine Diebstahlwarnanlage arbeiten soll."
+          "fuer": ["c"],
+          "titel": "Unter Metall versteckt",
+          "text": "Ein unauffälliger Ort ist nur dann gut, wenn das Material darüber Satellitensignale nicht abschirmt."
         }
       ],
-      "mitnehmen": "Alles, was im abgestellten Fahrzeug wachen soll, hängt an Dauerplus. Klemme 15 ist für Geräte, die nur beim Fahren gebraucht werden."
+      "mitnehmen": "Bei Funk- und Satellitentechnik ist der Einbauort Teil der Funktion: Orientierung und Material über der Antenne werden bewusst gewählt und anschließend getestet."
     },
     {
       "id": "SAM-10",

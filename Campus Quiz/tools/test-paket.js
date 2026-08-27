@@ -249,6 +249,20 @@ async function ruf(payload) {
     verweise.length > 0 && verweise.every((v) => v === fassung),
     `HTML: ${[...new Set(verweise)].join(", ")} — Engine: ${fassung}`);
 
+  pruefe("Quiz-Pilotformular ist für Netlify erkennbar",
+    /name="campus-quiz-result"/.test(seite) && /data-netlify="true"/.test(seite));
+
+  if (katalog.feedback) {
+    const feedbackDatei = path.join(paket, "public", "feedback", "index.html");
+    pruefe("Feedbackbogen ist im Gesamtpaket enthalten", fs.existsSync(feedbackDatei));
+    if (fs.existsSync(feedbackDatei)) {
+      const feedbackHtml = fs.readFileSync(feedbackDatei, "utf8");
+      pruefe("Feedbackformular ist für Netlify erkennbar",
+        /name="campus-feedback"/.test(feedbackHtml) && /data-netlify="true"/.test(feedbackHtml));
+      pruefe("Feedbackbogen führt zurück zur Campus-Karte", /href="\/quiz"/.test(feedbackHtml));
+    }
+  }
+
   r = await handler({ httpMethod: "GET" });
   pruefe("GET → 405", r.statusCode === 405);
 

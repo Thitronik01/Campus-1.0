@@ -194,6 +194,13 @@ for (const island of catalog.inseln) {
         fail(where(q.id), "Mindestens zwei options nötig.");
         continue;
       }
+      const bildOptionen = q.options.filter((o) => Boolean(o.image));
+      if (bildOptionen.length > 0 && bildOptionen.length !== q.options.length) {
+        fail(
+          where(q.id),
+          `Bildauswahl unvollständig: ${bildOptionen.length} von ${q.options.length} Optionen haben ein Bild — bei Bildantworten brauchen alle Optionen ein Bild.`
+        );
+      }
       const maxOptions = q.layout === "product" ? 8 : 7;
       if (q.options.length > maxOptions) {
         fail(where(q.id), `${q.options.length} Optionen — dieses Antwortlayout unterstützt höchstens ${maxOptions}.`);

@@ -3,7 +3,7 @@
   "code": "FEHMARN",
   "title": "Fehlersuche & Support",
   "subtitle": "Erst lesen, dann tauschen",
-  "version": "4",
+  "version": "5",
   "lernziel": "Bevor du tauschst, lies. Jedes Gerät sagt, was los ist - über Blinkcode, Ton, Seriennummer, Spannungsverhalten. Tauschen ist die teuerste Form der Diagnose.",
   "dauerMinuten": 8,
   "quellen": [
@@ -13,7 +13,7 @@
     "produkte/pro-finder.md",
     "referenz/mobilfunk-sim.md"
   ],
-  "internerHinweis": "Fragenkatalog v4. Das bestehende FehlerQuiz mit sechs Bildfragen läuft separat; FEHMARN ist die anspruchsvollere Supportebene. Neu: konkrete Bedeutung des gelben Blinkens bei 0699-045, strukturierte Fehleranalyse und belastbare Kriterien für Provider/SIM. Vor Einsatz Blinkcode 9×, Spannungsschwellen und Stillstandsbedingung des kill-Befehls fachlich bestätigen.",
+  "internerHinweis": "Fragenkatalog v5. Das bestehende FehlerQuiz mit sechs Bildfragen läuft separat; FEHMARN ist die anspruchsvollere Supportebene. Neu: Übertemperaturdiagnose an G.A.S.-pro III und ein kontrollierter Referenz-SIM-Test beim Pro-finder. Blinkcodes und Spannungsschwellen vor jeder Schulung gegen den aktuellen Anleitungsstand prüfen.",
   "questions": [
     {
       "id": "FEH-06",
@@ -223,29 +223,30 @@
     {
       "id": "FEH-08",
       "type": "single",
-      "category": "Höchste Sicherheitsstufe",
-      "prompt": "Ein Fahrzeug wurde gestohlen, eine Abschalteinrichtung ist verbaut. Welcher Befehl ist zulässig?",
+      "category": "G.A.S.-pro III diagnostizieren",
+      "media": { "src": "/media/fehmarn/feh-fehlersuche.webp", "alt": "Systematische Fehlersuche an Fahrzeugkomponenten", "layout": "landscape" },
+      "prompt": "Eine G.A.S.-pro III blinkt plötzlich in allen Farben. Was ist die passende erste Reaktion?",
       "options": [
-        { "id": "a", "text": "a an" },
-        { "id": "b", "text": "a 30" },
-        { "id": "c", "text": "kill" },
-        { "id": "d", "text": "status genügt" }
+        { "id": "a", "text": "Übertemperatur über etwa 60 °C vermuten, Wärmequelle und Einbauort prüfen, abkühlen lassen und Wiederholung dokumentieren" },
+        { "id": "b", "text": "Sofort beide Sensoren ersetzen" },
+        { "id": "c", "text": "Eine SMS an den Pro-finder senden, damit er die Temperatur zurücksetzt" },
+        { "id": "d", "text": "Den Zustand als normale Vorheizphase ignorieren" }
       ],
-      "correct": ["c"],
-      "feedback": "**kill** wartet, bis die GPS-Geschwindigkeit mindestens 5 Sekunden durchgehend 0 km/h beträgt, und schaltet erst dann Ausgang A.",
+      "correct": ["a"],
+      "feedback": "Blinken in allen Farben weist auf Übertemperatur oberhalb von etwa 60 °C hin. Zuerst werden Wärmeeintrag, Einbauort und Belüftung geprüft; nach dem Abkühlen folgt ein kontrollierter Funktionstest. Wiederholt sich der Zustand ohne erkennbare Wärmequelle, wird der Fall mit Gerätedaten eskaliert.",
       "irrtum": [
         {
-          "fuer": ["a", "b"],
-          "titel": "„a an“ oder „a 30“",
-          "text": "Schalten **ohne** Geschwindigkeitsprüfung. Zur Fahrzeugstilllegung unzulässig - im schlimmsten Fall wird ein fahrendes Fahrzeug abgeschaltet, mit einem Menschen darin und anderen daneben."
+          "fuer": ["b"],
+          "titel": "Bauteiltausch vor Ursachenprüfung",
+          "text": "Ein klarer Temperaturcode ist zunächst kein Beweis für einen defekten Sensor. Ein ungeeigneter heißer Einbauort würde auch das Ersatzgerät wieder treffen."
         },
         {
-          "fuer": ["d"],
-          "titel": "„status“ genügt",
-          "text": "Zu passiv, aber der Reflex ist nicht falsch: Der erste Schritt ist tatsächlich, sich ein Bild zu verschaffen."
+          "fuer": ["c", "d"],
+          "titel": "Zustand falsch eingeordnet",
+          "text": "Die Vorheizphase pulsiert blau. Ein Farbwechsel aller LEDs ist ein eigener Diagnosehinweis und wird nicht per Fernbefehl zurückgesetzt."
         }
       ],
-      "mitnehmen": "Der richtige Befehl ist nur die halbe Antwort. Diebstahl der Polizei melden, Ortungsdaten dorthin geben - und **nicht selbst zum Fahrzeug fahren**. Am anderen Ende steht kein Kunde, sondern ein Täter. Abschalteinrichtungen: 101283 (einpolig) / 105821 (mehrpolig)."
+      "mitnehmen": "Blinkmuster erst sauber benennen, dann Ursache prüfen. Bei Temperaturhinweisen gehört der Einbauort in die Diagnose, nicht nur das Gerät."
     },
     {
       "id": "FEH-10",
@@ -278,32 +279,30 @@
     },
     {
       "id": "FEH-11",
-      "type": "multi",
-      "category": "Provider & SIM",
-      "prompt": "Welche Kriterien muss ein empfehlenswerter Mobilfunktarif für den Pro-finder erfüllen? Wähle alle zutreffenden.",
+      "type": "single",
+      "category": "SIM-Fehler eingrenzen",
+      "prompt": "Die Pro-finder-SIM kann im Smartphone telefonieren und SMS senden, im Fahrzeug kommt trotzdem keine Kommunikation zustande. Welcher nächste Schritt trennt die Ursachen am besten?",
       "options": [
-        { "id": "a", "text": "Klassische SMS und Telefonie sind freigeschaltet" },
-        { "id": "b", "text": "Die SIM besitzt eine eindeutig erreichbare eigene Rufnummer" },
-        { "id": "c", "text": "Das Hostnetz bietet am Fahrzeugstandort und in den geplanten Reiseländern passende Abdeckung und Roaming" },
-        { "id": "d", "text": "SIM-Format und PIN-Regel passen zum Gerätestand; die vorbereitete Karte wird im Fahrzeug getestet" },
-        { "id": "e", "text": "Ein reiner Datentarif ohne SMS und Telefonie genügt" },
-        { "id": "f", "text": "Der Markenname des Providers allein garantiert die Kompatibilität dauerhaft" }
+        { "id": "a", "text": "Seriennummer, LED-Zustand, Versorgung und Standort dokumentieren und mit einer bekannten Referenz-SIM im Pro-finder gegenprüfen" },
+        { "id": "b", "text": "Die WiPro III sofort ersetzen" },
+        { "id": "c", "text": "Die gleiche SIM noch einmal im Smartphone testen und den Fall schließen" },
+        { "id": "d", "text": "Beliebige SMS-Befehle senden, bis einer beantwortet wird" }
       ],
-      "correct": ["a", "b", "c", "d"],
-      "feedback": "Eine belastbare Empfehlung richtet sich nach Diensten, Hostnetz, Einsatzland und Gerätestand. Prepaid und Vertrag sind grundsätzlich möglich; eine starre Providerliste wäre wegen wechselnder Tarife und Netze nicht dauerhaft zuverlässig.",
+      "correct": ["a"],
+      "feedback": "Der Smartphone-Test beweist nur, dass die SIM grundsätzlich Dienste nutzen kann. Eine bekannte Referenz-SIM im Pro-finder trennt SIM/Tarif/Netz von Gerät, Versorgung, Gerätestand und Einbauort; vollständige Gerätedaten machen das Ergebnis supportfähig.",
       "irrtum": [
         {
-          "fuer": ["e"],
-          "titel": "Reine Daten-SIM gewählt",
-          "text": "Der Pro-finder steuert und meldet über klassische SMS und Telefonie. Mobile Daten ersetzen diese Dienste nicht."
+          "fuer": ["b"],
+          "titel": "Zentrale ohne Trennung getauscht",
+          "text": "Ohne Kreuztest ist nicht klar, ob SIM, Tarif, Empfang, Pro-finder, Versorgung oder Konfiguration die Kommunikation verhindert."
         },
         {
-          "fuer": ["f"],
-          "titel": "Nur nach Providernamen entschieden",
-          "text": "Tarife, Hostnetze und Roamingbedingungen ändern sich. Entscheidend ist die konkrete SIM mit ihren Diensten am vorgesehenen Einsatzort."
+          "fuer": ["c", "d"],
+          "titel": "Kein neuer Diagnosewert gewonnen",
+          "text": "Ein weiterer Smartphone-Test oder zufällige Befehle verändern die offene Frage nicht. Der Referenztausch setzt eine kontrollierte Vergleichsbedingung."
         }
       ],
-      "mitnehmen": "Empfohlen wird kein Logo, sondern eine nachweislich passende und getestete Verbindung: SMS, Telefonie, erreichbare Rufnummer und geeignetes Netz."
+      "mitnehmen": "Ein guter nächster Schritt verändert genau eine Variable. Referenz-SIM, dokumentierter Gerätezustand und gleicher Standort machen aus Vermutung eine Diagnose."
     }
   ]
 }

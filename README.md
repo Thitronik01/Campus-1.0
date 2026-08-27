@@ -12,7 +12,7 @@
 <p align="center">
   <img alt="Inseln" src="https://img.shields.io/badge/Inseln-7-1D3661?style=flat-square">
   <img alt="Fragen" src="https://img.shields.io/badge/Fragen-73-1D3661?style=flat-square">
-  <img alt="Stack" src="https://img.shields.io/badge/Stack-Netlify%20%2B%20Supabase-3BA9D3?style=flat-square">
+  <img alt="Stack" src="https://img.shields.io/badge/Stack-Netlify%20Forms%20%2B%20Supabase%20später-3BA9D3?style=flat-square">
   <img alt="Framework" src="https://img.shields.io/badge/Framework-keins-AFCA05?style=flat-square">
   <img alt="Stand" src="https://img.shields.io/badge/Stand-vor%20dem%20ersten%20Deploy-CE132D?style=flat-square">
   <a href="https://github.com/Thitronik01/Campus-1.0/actions/workflows/campus.yml"><img alt="Campus CI/CD" src="https://github.com/Thitronik01/Campus-1.0/actions/workflows/campus.yml/badge.svg"></a>
@@ -139,8 +139,8 @@ node tools/dev-server.js
 Dann [http://localhost:8788/quiz](http://localhost:8788/quiz).
 
 > **Für Tests immer `?demo=1` anhängen.** Damit läuft das Quiz vollständig
-> durch, speichert aber absichtlich nichts — sonst landen Testdaten in der
-> Produktivdatenbank.
+> durch, speichert aber absichtlich nichts — sonst landen Testdaten nach dem
+> Deploy in Netlify Forms oder später in Supabase.
 
 Vor jeder Änderung am Bestand:
 
@@ -196,8 +196,8 @@ manueller Schritt.
 
 | Baustein | Rolle |
 |---|---|
-| **Netlify** | Auslieferung der Seiten und die Function, die Ergebnisse annimmt |
-| **Supabase** | Teilnehmer, Ergebnisse, Feedback, Auswertungs-Views |
+| **Netlify** | Auslieferung, Function und Forms für die datenbankfreie Pilotphase |
+| **Supabase** | Späterer Ausbau für dauerhafte Ergebnisse und Auswertungs-Views |
 | **Browser** | die einzige Anwendung, die der Händler braucht |
 
 Kein Framework, kein Build-Schritt für die Seite selbst, keine App, keine
@@ -225,7 +225,7 @@ der Browser wieder Empfang meldet. Solange etwas aussteht, sagt die Insel
 
 - Ein Gesamtpaket (alle Inseln, eine Site) **und** sieben Einzelpakete, alle direkt hochladbar
 - 73 Fragen, alle fünf Fragetypen, aus dem Produktwissen mit Quellenangabe
-- 103 Paketprüfungen über alle sieben Inseln, dazu 26 Prüfungen der Bewertungslogik
+- 353 Paketprüfungen für Gesamt- und Einzelpakete, dazu 28 Prüfungen der Bewertungslogik
 - Mobil geprüft bei 375 px: kein horizontaler Scroll, alle Trefferflächen ≥ 44 px
 - Arbeitsregeln in [`CLAUDE.md`](CLAUDE.md) — was Quelle ist, was erzeugt, und was vor jedem Commit läuft
 - Sende-Ausgang gegen Funkloch, `500`, `400` und Erfolg durchgespielt — inklusive
@@ -234,8 +234,8 @@ der Browser wieder Empfang meldet. Solange etwas aussteht, sagt die Insel
 
 **Noch offen**
 
-- ⛔ **Die Datenbank-Migration ist nicht eingespielt** — bis dahin nimmt die Datenbank nichts an. Die Ergebnisse bleiben auf den Geräten liegen und gehen von selbst raus, sobald die Tabelle steht; darauf bauen sollte man trotzdem nicht
-- Entscheidung: sieben getrennte Netlify-Sites oder eine mit sieben Routen. Beide Wege sind gebaut, die Empfehlung steht in [`Campus Quiz/README.md`](Campus%20Quiz/README.md)
+- Die Supabase-Migration bewusst erst nach der fachlichen Fragenabstimmung einspielen; bis dahin sammelt Netlify Forms die Pilotdaten
+- Netlify Forms im Site-Dashboard aktivieren und nach dem ersten Deploy noch einmal deployen
 - Weitere Werkstattbilder für Bildfragen, siehe [Wunschliste](Campus%20Quiz/BILDER-WUNSCHLISTE.md)
 - Fachliche Freigabe der Fragen
 

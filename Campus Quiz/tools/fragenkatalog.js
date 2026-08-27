@@ -159,6 +159,12 @@ function frageBlock(frage, nummer) {
     teile.push("");
   }
 
+  if (frage.media && frage.media.src) {
+    const bu = frage.media.caption || frage.media.alt || "";
+    teile.push(`**Bild zur Frage:** \`${frage.media.src}\`${bu ? ` — ${bu}` : ""}`);
+    teile.push("");
+  }
+
   teile.push(antworten(frage));
   teile.push("");
 
