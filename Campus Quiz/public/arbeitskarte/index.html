@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#1D3661">
+  <title>Arbeitskarte Digital v3.0 · THITRONIK Campus</title>
+  <link rel="stylesheet" href="/arbeitskarte/assets/arbeitskarte-v1.css?v=1.0.0">
+</head>
+<body>
+  <a class="skip-link" href="#arbeitskarte-main">Zum Formular springen</a>
+  <header class="ak-topbar">
+    <a class="ak-brand" href="/quiz" aria-label="Zur Campus-Übersicht">
+      <img src="/assets/thitronik-logo.png" alt="THITRONIK" width="248" height="67">
+      <span>Campus</span>
+    </a>
+    <div class="ak-title-block">
+      <p>Werkstatt-Modul</p>
+      <h1>Arbeitskarte Digital <span>v3.0</span></h1>
+    </div>
+    <a class="ak-back" href="/quiz">Campus-Übersicht</a>
+  </header>
+
+  <div class="ak-shell">
+    <section class="ak-command" aria-label="Arbeitskarten-Aktionen">
+      <div class="ak-card-state">
+        <span class="ak-state-dot" aria-hidden="true"></span>
+        <span><strong id="card-state-label">In Arbeit</strong><small id="save-state" role="status" aria-live="polite">Lokal gespeichert</small></span>
+      </div>
+      <div class="ak-actions">
+        <button type="button" class="ak-button ak-button--quiet" id="btn-history">Verlauf</button>
+        <button type="button" class="ak-button ak-button--quiet" id="btn-new">Neue Karte</button>
+        <button type="button" class="ak-button ak-button--quiet ak-button--danger" id="btn-reset">Zurücksetzen</button>
+        <button type="button" class="ak-button ak-button--quiet" id="btn-import">JSON importieren</button>
+        <input type="file" id="import-file" accept="application/json,.json" hidden>
+        <button type="button" class="ak-button ak-button--quiet" id="btn-export">JSON exportieren</button>
+        <button type="button" class="ak-button ak-button--quiet" id="btn-print">Drucken</button>
+        <button type="button" class="ak-button ak-button--primary" id="btn-save">Speichern</button>
+      </div>
+    </section>
+
+    <section class="ak-progress" aria-labelledby="progress-title">
+      <div><span id="progress-title">Fortschritt</span><strong id="progress-label">0 %</strong></div>
+      <div class="ak-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress-track"><span id="progress-fill"></span></div>
+    </section>
+
+    <nav class="ak-tabs" aria-label="Seiten der Arbeitskarte">
+      <button type="button" class="ak-tab is-active" data-tab="auftrag" aria-selected="true">
+        <span class="ak-status-icon" data-status-for="auftrag" aria-hidden="true"></span><span><b>1</b> Auftrag</span>
+      </button>
+      <button type="button" class="ak-tab" data-tab="sichtkontrolle" aria-selected="false">
+        <span class="ak-status-icon" data-status-for="sichtkontrolle" aria-hidden="true"></span><span><b>2</b> Sichtkontrolle</span>
+      </button>
+      <button type="button" class="ak-tab" data-tab="material" aria-selected="false">
+        <span class="ak-status-icon" data-status-for="material" aria-hidden="true"></span><span><b>3</b> Material</span>
+      </button>
+      <button type="button" class="ak-tab" data-tab="uebergabe" aria-selected="false">
+        <span class="ak-status-icon" data-status-for="uebergabe" aria-hidden="true"></span><span><b>4</b> Übergabe</span>
+      </button>
+    </nav>
+
+    <main id="arbeitskarte-main">
+      <div class="ak-error-summary" id="error-summary" role="alert" tabindex="-1" hidden></div>
+
+      <section class="ak-page" data-page="auftrag" aria-labelledby="auftrag-heading">
+        <article class="ak-section ak-section--intro">
+          <div>
+            <p class="ak-eyebrow">Seite 1 von 4</p>
+            <h2 id="auftrag-heading">Auftrag</h2>
+            <p>Fahrzeug annehmen, Einbaudaten erfassen und Besonderheiten direkt am Fahrzeug markieren.</p>
+          </div>
+          <div class="ak-datetime"><span id="current-date"></span><strong id="current-time"></strong></div>
+        </article>
+
+        <article class="ak-section">
+          <fieldset class="ak-fieldset" id="order-type-group">
+            <legend>Auftragsart <span aria-hidden="true">*</span></legend>
+            <p class="ak-help">Mindestens eine Auswahl ist erforderlich.</p>
+            <div class="ak-pill-row">
+              <label class="ak-pill"><input type="checkbox" data-path="orderType.einbau"><span>Einbau</span></label>
+              <label class="ak-pill"><input type="checkbox" data-path="orderType.nachruestung"><span>Nachrüstung</span></label>
+              <label class="ak-pill"><input type="checkbox" data-path="orderType.service"><span>Service</span></label>
+            </div>
+            <p class="ak-field-error" id="error-order-type" hidden>Bitte mindestens eine Auftragsart wählen.</p>
+          </fieldset>
+        </article>
+
+        <div class="ak-grid ak-grid--2">
+          <article class="ak-section">
+            <header><h3>Kundendaten</h3><p>Auftraggeber und Fahrzeug eindeutig zuordnen.</p></header>
+            <div class="ak-form-grid">
+              <label>Firma<input type="text" data-path="kunde.firma" autocomplete="organization"></label>
+              <label>Name <span aria-hidden="true">*</span><input id="kunde-name" type="text" data-path="kunde.name" autocomplete="name" required aria-describedby="error-kunde-name"><small class="ak-field-error" id="error-kunde-name" hidden>Bitte den Kundennamen eintragen.</small></label>
+              <label>Telefon<input type="tel" data-path="kunde.telefon" autocomplete="tel"></label>
+              <label>Kennzeichen<input class="ak-mono" type="text" data-path="kunde.kennzeichen" data-uppercase autocomplete="off" autocapitalize="characters"></label>
+              <label>Fahrzeugtyp<input type="text" data-path="kunde.fahrzeugtyp" placeholder="z. B. Fiat Ducato"></label>
+              <label>Fahrgestellnummer<input class="ak-mono" type="text" data-path="kunde.fahrgestellnummer" data-uppercase autocapitalize="characters"></label>
+            </div>
+          </article>
+          <article class="ak-section">
+            <header><h3>Monteur</h3><p>Bearbeitung, Seriennummern und Funktionskontrolle.</p></header>
+            <div class="ak-form-grid">
+              <label>Name <span aria-hidden="true">*</span><input id="monteur-name" type="text" data-path="monteur.name" required aria-describedby="error-monteur-name"><small class="ak-field-error" id="error-monteur-name" hidden>Bitte den Monteur eintragen.</small></label>
+              <label>Seriennummern<input class="ak-mono" type="text" data-path="monteur.seriennummern"></label>
+            </div>
+            <label class="ak-check-tile"><input type="checkbox" data-path="monteur.funktionenGeprueft"><span><b>Alle Funktionen geprüft</b><small>Montage- und Funktionskontrolle durchgeführt</small></span></label>
+          </article>
+        </div>
+
+        <div class="ak-grid ak-grid--2">
+          <article class="ak-section">
+            <header><h3>OBD &amp; Tacho</h3><p>Eingangs- und Ausgangswerte dokumentieren.</p></header>
+            <div class="ak-form-grid ak-form-grid--3">
+              <label>Eingang<input type="text" data-path="obd.eingang"></label>
+              <label>Ausgang<input type="text" data-path="obd.ausgang"></label>
+              <label>Uhrzeit<input type="time" data-path="obd.uhrzeit"></label>
+            </div>
+            <fieldset class="ak-fieldset ak-fieldset--compact">
+              <legend>Tacho-Fehler</legend>
+              <div class="ak-segmented">
+                <label><input type="radio" name="tacho-fehler" value="ja"><span>Ja</span></label>
+                <label><input type="radio" name="tacho-fehler" value="nein"><span>Nein</span></label>
+              </div>
+            </fieldset>
+            <label>Fehlercode<input class="ak-mono" type="text" data-path="tachoFehler.code" placeholder="Optionaler Code"></label>
+          </article>
+          <article class="ak-section">
+            <header><h3>Hinweise / Bemerkungen</h3><p>Zusatzinformationen zum Auftrag.</p></header>
+            <div class="ak-dictation">
+              <label for="hinweis">Hinweise und Bemerkungen</label>
+              <textarea id="hinweis" data-path="hinweis" rows="5"></textarea>
+              <button type="button" class="ak-button ak-button--quiet" data-dictate="hinweis">Diktieren</button>
+            </div>
+            <label>LED Einbauort<input type="text" data-path="ledEinbauort"></label>
+          </article>
+        </div>
+
+        <article class="ak-section">
+          <header><h3>Fahrzeug-Visualisierung</h3><p>Mit Finger oder Stift direkt auf den vier Fahrzeugansichten markieren.</p></header>
+          <div class="ak-sketch-grid" id="sketch-grid"></div>
+        </article>
+      </section>
+
+      <section class="ak-page" data-page="sichtkontrolle" aria-labelledby="sicht-heading" hidden>
+        <article class="ak-section ak-section--intro">
+          <div><p class="ak-eyebrow">Seite 2 von 4</p><h2 id="sicht-heading">Sichtkontrolle</h2><p>Vorschäden bildlich sichern, Prüfungen abhaken und die Kontrolle quittieren.</p></div>
+        </article>
+        <article class="ak-section">
+          <header><h3>Vorschaden-Fotos</h3><p>Vier Ansichten direkt mit der Tablet- oder Smartphone-Kamera aufnehmen.</p></header>
+          <div class="ak-photo-grid" id="photo-grid"></div>
+        </article>
+        <article class="ak-section">
+          <header><h3>Schadensmeldung / Beschreibung</h3></header>
+          <div class="ak-dictation">
+            <label for="schadensmeldung">Vorschäden beschreiben</label>
+            <textarea id="schadensmeldung" data-path="schadensmeldung" rows="5"></textarea>
+            <button type="button" class="ak-button ak-button--quiet" data-dictate="schadensmeldung">Diktieren</button>
+          </div>
+        </article>
+        <div class="ak-grid ak-grid--3" id="inspection-checklists"></div>
+        <article class="ak-section">
+          <header><h3>Unterschriften</h3><p>Sichtkontrolle durch Monteur und Kunde bestätigen.</p></header>
+          <div class="ak-signature-grid" id="inspection-signatures"></div>
+        </article>
+      </section>
+
+      <section class="ak-page" data-page="material" aria-labelledby="material-heading" hidden>
+        <article class="ak-section ak-section--intro">
+          <div><p class="ak-eyebrow">Seite 3 von 4</p><h2 id="material-heading">Material</h2><p>THITRONIK-Artikel suchen, Mengen erfassen und verbaute Positionen markieren.</p></div>
+          <div class="ak-counter"><strong id="material-installed-count">0</strong><span>verbaut</span></div>
+        </article>
+        <article class="ak-section">
+          <label class="ak-search">Material durchsuchen<input type="search" id="material-search" placeholder="Artikel, Nummer oder Gruppe"></label>
+        </article>
+        <article class="ak-section">
+          <details>
+            <summary>Eigene Position hinzufügen</summary>
+            <form id="material-add-form" class="ak-new-material">
+              <label>Gruppe<select id="new-material-group"></select></label>
+              <label>Artikel<input id="new-material-name" required></label>
+              <label>Art.-Nr.<input id="new-material-number" class="ak-mono"></label>
+              <label>Menge<input id="new-material-count" type="number" min="1" value="1"></label>
+              <label>Notiz<input id="new-material-note"></label>
+              <button class="ak-button ak-button--primary" type="submit">Hinzufügen</button>
+            </form>
+          </details>
+        </article>
+        <div id="material-groups"></div>
+      </section>
+
+      <section class="ak-page" data-page="uebergabe" aria-labelledby="uebergabe-heading" hidden>
+        <article class="ak-section ak-section--intro">
+          <div><p class="ak-eyebrow">Seite 4 von 4</p><h2 id="uebergabe-heading">Übergabe</h2><p>Einweisung abschließen und die Fahrzeugübergabe vom Kunden bestätigen lassen.</p></div>
+          <div class="ak-counter"><strong id="handoff-count">0 / 13</strong><span>erledigt</span></div>
+        </article>
+        <article class="ak-section">
+          <header><h3>Übergabe-Checkliste</h3></header>
+          <div class="ak-check-grid" id="handoff-checklist"></div>
+        </article>
+        <div class="ak-grid ak-grid--2">
+          <article class="ak-section">
+            <header><h3>Sonstiger Vermerk</h3></header>
+            <div class="ak-dictation">
+              <label for="handoff-note">Zusätzliche Anmerkungen</label>
+              <textarea id="handoff-note" data-path="uebergabe.sonstigerVermerk" rows="6"></textarea>
+              <button type="button" class="ak-button ak-button--quiet" data-dictate="handoff-note">Diktieren</button>
+            </div>
+          </article>
+          <article class="ak-section">
+            <header><h3>Ort und Datum</h3></header>
+            <div class="ak-form-grid">
+              <label>Ort<input type="text" data-path="uebergabe.ort"></label>
+              <label>Datum<input type="date" data-path="uebergabe.datum"></label>
+            </div>
+          </article>
+        </div>
+        <article class="ak-section">
+          <header><h3>Abschluss-Unterschriften</h3></header>
+          <div class="ak-signature-grid" id="handoff-signatures"></div>
+        </article>
+        <article class="ak-finalize">
+          <div><h3>Arbeitskarte abschließen</h3><p>Der Abschluss setzt eine Kundenunterschrift bei der Übergabe voraus.</p></div>
+          <button type="button" class="ak-button ak-button--primary" id="btn-finalize">Als abgeschlossen markieren</button>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="signature-dialog" class="ak-dialog">
+    <form method="dialog" class="ak-dialog-head"><div><p>Digitale Unterschrift</p><h2 id="signature-title">Unterschrift</h2></div><button type="submit" class="ak-icon-button" aria-label="Dialog schließen">×</button></form>
+    <p>Bitte mit Finger oder Stift im Feld unterschreiben.</p>
+    <canvas id="signature-canvas" aria-label="Unterschriftsfeld"></canvas>
+    <div class="ak-dialog-actions"><button type="button" class="ak-button ak-button--quiet" id="signature-clear">Leeren</button><button type="button" class="ak-button ak-button--primary" id="signature-save">Unterschrift übernehmen</button></div>
+  </dialog>
+
+  <dialog id="history-dialog" class="ak-dialog ak-dialog--history">
+    <form method="dialog" class="ak-dialog-head"><div><p>Gespeicherte Arbeitskarten</p><h2>Verlauf</h2></div><button type="submit" class="ak-icon-button" aria-label="Dialog schließen">×</button></form>
+    <label>Nach Kunde oder Kennzeichen suchen<input type="search" id="history-search"></label>
+    <div id="history-list" class="ak-history-list"></div>
+  </dialog>
+
+  <div id="toast" class="ak-toast" role="status" aria-live="polite" hidden></div>
+  <div id="print-view" class="ak-print-view" aria-hidden="true"></div>
+  <script type="module" src="/arbeitskarte/assets/app-v1.js?v=1.0.0"></script>
+</body>
+</html>

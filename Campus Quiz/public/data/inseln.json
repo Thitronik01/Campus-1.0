@@ -2,6 +2,7 @@
   "event": "campus-2026",
   "titel": "THITRONIK Campus",
   "feedback": "/feedback/",
+  "arbeitskarte": "/arbeitskarte/",
   "inseln": [
     {
       "slug": "vejro",
@@ -45,7 +46,7 @@
       "code": "FEHMARN",
       "title": "Fehlersuche & Support",
       "thema": "Diagnose",
-      "beschreibung": "Gerätesignale lesen, Fehler strukturiert analysieren und Pro-finder-Mobilfunk sicher beurteilen.",
+      "beschreibung": "Gerätesignale lesen, Fehler strukturiert analysieren und Pro-Finder-Mobilfunk sicher beurteilen.",
       "image": "/media/inseln/fehmarn.webp"
     },
     {

@@ -3,7 +3,7 @@
   "code": "SAMSØ",
   "title": "Einbauorte im Fahrzeug",
   "subtitle": "Wo kommt was hin?",
-  "version": "8",
+  "version": "9",
   "lernziel": "Physik bestimmt den Einbauort, nicht der freie Platz. Wer das verstanden hat, muss keine Liste auswendig lernen.",
   "dauerMinuten": 8,
   "quellen": [
@@ -14,7 +14,7 @@
     "produkte/wipro-iii.md",
     "fahrzeuge/*"
   ],
-  "internerHinweis": "Fragenkatalog v8. SAM-02, SAM-03 und SAM-10 arbeiten mit echten Produkt- beziehungsweise Einbaufotos; SAM-09 ergänzt die physikalisch begründete Ausrichtung der externen GPS-Antenne. Einbauabstände und Kabellängen vor jeder Schulung gegen den aktuellen Anleitungsstand prüfen.",
+  "internerHinweis": "Fragenkatalog v9. SAM-02, SAM-03 und SAM-10 arbeiten mit echten Produkt- beziehungsweise Einbaufotos; SAM-09 ergänzt die physikalisch begründete Ausrichtung der externen GPS-Antenne. Einbauabstände und Kabellängen vor jeder Schulung gegen den aktuellen Anleitungsstand prüfen.",
   "questions": [
     {
       "id": "SAM-01",
@@ -169,33 +169,6 @@
       "mitnehmen": "Einbauort = Schutz + Servicezugang + Funkstrecke. Wenn einer der drei Punkte fehlt, ist der Platz nicht fertig bewertet."
     },
     {
-      "id": "SAM-05",
-      "type": "single",
-      "category": "Antennenleitung",
-      "prompt": "Die Antennenleitung der WiPro III (Pin 10, weiß) ist deutlich zu lang für den gewählten Einbauort. Was tust du?",
-      "options": [
-        { "id": "a", "text": "Auf 20 cm kürzen" },
-        { "id": "b", "text": "Sauber aufwickeln und mit Kabelbinder fixieren" },
-        { "id": "c", "text": "Weder kürzen noch aufwickeln - Verlegung anpassen" },
-        { "id": "d", "text": "Mit Lautsprecherkabel verlängern" }
-      ],
-      "correct": ["c"],
-      "feedback": "Die Leitung **ist** die Antenne. Ihre Länge ist Teil der Funktion, nicht eine Zugabe fürs Verlegen.",
-      "irrtum": [
-        {
-          "fuer": ["b"],
-          "titel": "Aufwickeln",
-          "text": "Der mit Abstand häufigste Fehler - und der, der wie sauberes Arbeiten aussieht. Ein aufgewickeltes Kabel ist eine Spule und verändert das Sendeverhalten. Die Anlage arbeitet dann mit verringerter Reichweite und meldet keinen Fehler."
-        },
-        {
-          "fuer": ["a"],
-          "titel": "Kürzen",
-          "text": "Konsequent zu Ende gedacht, aber irreversibel. Danach ist die Zentrale nur noch mit Ersatzkabelbaum zu retten."
-        }
-      ],
-      "mitnehmen": "Antennenleitungen werden gestreckt verlegt - nie gekürzt, nie aufgewickelt. Passt es nicht, ändert sich der Montageort, nicht das Kabel."
-    },
-    {
       "id": "SAM-06",
       "type": "single",
       "category": "NFC Modul",
@@ -310,7 +283,7 @@
       "category": "Medium oder Gerät",
       "layout": "product",
       "shuffleOptions": false,
-      "prompt": "Welche Komponenten haben keinen festen Einbauort im Fahrzeug? Wähle alle zutreffenden.",
+      "prompt": "Welche Komponenten haben keinen funktional vorgegebenen Installationsort im Fahrzeug? Wähle alle zutreffenden.",
       "options": [
         { "id": "e", "text": "NFC Modul", "image": "/media/samsoe/sam-produkt-nfc-modul.webp", "imageAlt": "Schwarzes THITRONIK NFC Modul" },
         { "id": "b", "text": "KeyCard", "image": "/media/samsoe/sam-produkt-keycard.webp", "imageAlt": "THITRONIK KeyCard" },
@@ -322,7 +295,7 @@
         { "id": "h", "text": "T.S.A. Funk-Rauchmelder", "image": "/media/samsoe/sam-produkt-tsa-funk-rauchmelder.webp", "imageAlt": "Zwei weiße T.S.A. Funk-Rauchmelder von THITRONIK" }
       ],
       "correct": ["a", "b", "c", "d"],
-      "feedback": "Funk-Handsender, KeyCard, KeyTag und KeyStrap sind persönliche Zugangs**medien**. NFC Modul, Pro-finder, G.A.S.-pro III und T.S.A. Funk-Rauchmelder sind Geräte mit genau vorgegebenem Einbauort.",
+      "feedback": "Funk-Handsender, KeyCard, KeyTag und KeyStrap sind persönliche Zugangs**medien**. NFC Modul, Pro-finder, G.A.S.-pro III und T.S.A. Funk-Rauchmelder sind Geräte mit funktional vorgegebenem Installationsort.",
       "irrtum": [
         {
           "fuer": ["e"],

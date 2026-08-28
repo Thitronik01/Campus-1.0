@@ -129,6 +129,13 @@ async function ruf(payload) {
   const typen = [...new Set(insel.questions.map((q) => q.type))];
   console.log(`\n${insel.code} — ${anzahl} Fragen [${typen.join(", ")}]\n`);
 
+  const audioFragen = insel.questions.filter((q) => q.audio && q.audio.src);
+  if (audioFragen.length) {
+    pruefe("Audiodateien und Textalternativen sind im Paket enthalten",
+      audioFragen.every((q) => q.audio.fallbackText &&
+        fs.existsSync(path.join(paket, "public", q.audio.src.replace(/^\//, "")))));
+  }
+
   let r = await ruf(bauen("richtig"));
   pruefe("Alles richtig → 201", r.status === 201, r.body.error);
   pruefe("Alles richtig → 100 %", r.gespeichert?.percent === 100, `${r.gespeichert?.percent}`);
@@ -263,6 +270,19 @@ async function ruf(payload) {
         /name="campus-feedback"/.test(feedbackHtml) && /data-netlify="true"/.test(feedbackHtml));
       pruefe("Feedbackbogen führt zurück zur Campus-Karte", /href="\/quiz"/.test(feedbackHtml));
     }
+  }
+
+  if (katalog.arbeitskarte) {
+    const akRoot = path.join(paket, "public", "arbeitskarte");
+    pruefe("Arbeitskarte ist im Gesamtpaket enthalten",
+      fs.existsSync(path.join(akRoot, "index.html")));
+    pruefe("Arbeitskarten-Logik und Druckansicht sind enthalten",
+      fs.existsSync(path.join(akRoot, "assets", "app-v1.js")) &&
+      fs.existsSync(path.join(akRoot, "assets", "print-v1.js")));
+    const akBilder = ["fahrerseite", "beifahrerseite", "front", "heck"]
+      .map((ansicht) => path.join(paket, "public", "assets", "arbeitskarte", `wohnmobil-${ansicht}.png`));
+    pruefe("Alle vier Fahrzeugansichten sind enthalten", akBilder.every(fs.existsSync));
+    pruefe("Campus-Übersicht verlinkt die Arbeitskarte", /id="arbeitskarte-link"/.test(seite));
   }
 
   r = await handler({ httpMethod: "GET" });

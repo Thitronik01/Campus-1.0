@@ -53,6 +53,9 @@ const GESAMT = "Campus Gesamtpaket";
  *  eingetippt wurden. Quelle ist sein erzeugtes Netlify-Paket. */
 const BOGEN_QUELLE = path.join(PROJEKT, "Feedbackbogen", "netlify-v14");
 const BOGEN_ZIEL = "feedback";
+const ARBEITSKARTE_QUELLE = path.join(WURZEL, "public", "arbeitskarte");
+const ARBEITSKARTE_ASSETS = path.join(WURZEL, "public", "assets", "arbeitskarte");
+const ARBEITSKARTE_ZIEL = "arbeitskarte";
 
 /** _headers gilt nicht mit: seine Pfade sind auf die Wurzel geschrieben
  *  ("/assets/*") und zeigten unter /feedback ins Leere. Die Regeln stehen
@@ -114,6 +117,21 @@ function kopiere(von, nach) {
   fs.copyFileSync(von, nach);
 }
 
+function kopiereVerzeichnis(von, nach, ausgenommen = new Set()) {
+  let anzahl = 0;
+  const lauf = (quelle, ziel) => {
+    for (const eintrag of fs.readdirSync(quelle, { withFileTypes: true })) {
+      if (ausgenommen.has(eintrag.name)) continue;
+      const q = path.join(quelle, eintrag.name);
+      const z = path.join(ziel, eintrag.name);
+      if (eintrag.isDirectory()) lauf(q, z);
+      else { kopiere(q, z); anzahl++; }
+    }
+  };
+  lauf(von, nach);
+  return anzahl;
+}
+
 /** Kopiert den Feedbackbogen rekursiv nach public/feedback/. Seine
  *  Verweise sind relativ ("assets/v12/..."), loesen sich unter dem
  *  Unterverzeichnis also von selbst richtig auf. */
@@ -123,18 +141,15 @@ function kopiereBogen(oeff) {
 ` +
       "  Erst dort bauen: node tools/build-netlify.js");
   }
-  let anzahl = 0;
-  const lauf = (von, nach) => {
-    for (const eintrag of fs.readdirSync(von, { withFileTypes: true })) {
-      if (BOGEN_AUSGENOMMEN.has(eintrag.name)) continue;
-      const q = path.join(von, eintrag.name);
-      const z = path.join(nach, eintrag.name);
-      if (eintrag.isDirectory()) lauf(q, z);
-      else { kopiere(q, z); anzahl++; }
-    }
-  };
-  lauf(BOGEN_QUELLE, path.join(oeff, BOGEN_ZIEL));
-  return anzahl;
+  return kopiereVerzeichnis(BOGEN_QUELLE, path.join(oeff, BOGEN_ZIEL), BOGEN_AUSGENOMMEN);
+}
+
+function kopiereArbeitskarte(oeff) {
+  if (!fs.existsSync(ARBEITSKARTE_QUELLE) || !fs.existsSync(ARBEITSKARTE_ASSETS)) {
+    throw new Error("Die Arbeitskarten-Quelle oder ihre Fahrzeugbilder fehlen.");
+  }
+  return kopiereVerzeichnis(ARBEITSKARTE_QUELLE, path.join(oeff, ARBEITSKARTE_ZIEL)) +
+    kopiereVerzeichnis(ARBEITSKARTE_ASSETS, path.join(oeff, "assets", "arbeitskarte"));
 }
 
 function kopiereGemeinsameMedien(oeff) {
@@ -175,7 +190,7 @@ function leeren(ordner) {
  *  den Kommentar, der erklärt, wohin die Routen führen. Einmal geschrieben,
  *  damit eine Änderung an den Headern nicht an zwei Stellen nachgezogen
  *  werden muss. */
-function netlifyToml(kommentar, { mitBogen = false } = {}) {
+function netlifyToml(kommentar, { mitBogen = false, mitArbeitskarte = false } = {}) {
   return `[build]
   publish = "public"
   functions = "netlify/functions"
@@ -194,13 +209,18 @@ ${kommentar}
   to = "/index.html"
   status = 200
 
-[[headers]]
+${mitArbeitskarte ? `[[redirects]]
+  from = "/arbeitskarte"
+  to = "/arbeitskarte/"
+  status = 301
+
+` : ""}[[headers]]
   for = "/*"
   [headers.values]
     X-Content-Type-Options = "nosniff"
     X-Frame-Options = "DENY"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Permissions-Policy = "${mitArbeitskarte ? "camera=(self), microphone=(self), geolocation=()" : "camera=(), microphone=(), geolocation=()"}"
     Content-Security-Policy = "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'self'"
 
 [[headers]]
@@ -227,7 +247,26 @@ ${kommentar}
   for = "/.netlify/functions/*"
   [headers.values]
     Cache-Control = "no-store"
-${mitBogen ? bogenHeaders() : ""}`;
+${mitBogen ? bogenHeaders() : ""}${mitArbeitskarte ? arbeitskarteHeaders() : ""}`;
+}
+
+function arbeitskarteHeaders() {
+  return `
+[[headers]]
+  for = "/arbeitskarte/"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/arbeitskarte/index.html"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/arbeitskarte/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+`;
 }
 
 /** Die Cache-Regeln des Feedbackbogens, auf /feedback umgeschrieben. Er
@@ -443,6 +482,12 @@ function baueGesamt() {
   // --- Feedbackbogen unter /feedback --------------------------------------
   const bogenDateien = kopiereBogen(oeff);
 
+  // --- Digitale Arbeitskarte unter /arbeitskarte --------------------------
+  // Das Werkstatt-Modul gehört nur ins gemeinsame Campus-Paket. Die vier
+  // Fahrzeugbilder liegen absichtlich im globalen /assets-Bereich, damit
+  // gespeicherte Skizzen auch in der Druckansicht denselben Hintergrund nutzen.
+  const arbeitskarteDateien = kopiereArbeitskarte(oeff);
+
   // --- Function unverändert: sie kennt bereits alle sieben Inseln --------
   kopiere(path.join(WURZEL, "netlify", "functions", "submit-quiz.js"),
     path.join(ziel, "netlify", "functions", "submit-quiz.js"));
@@ -454,13 +499,14 @@ function baueGesamt() {
     `# Gesamtpaket: /quiz zeigt die Inselübersicht, /quiz/<insel> geht direkt\n` +
     `# in eine Insel. Beides liefert dieselbe index.html.\n` +
     `# /feedback ist der Tagesabschluss — ein eigenes Verzeichnis mit eigener\n` +
-    `# index.html, deshalb ohne Rewrite.`, { mitBogen: true }));
+    `# index.html, deshalb ohne Rewrite.\n` +
+    `# /arbeitskarte ist das lokale Werkstatt-Modul.`, { mitBogen: true, mitArbeitskarte: true }));
 
   // --- Marker und Anleitung ----------------------------------------------
   schreib(path.join(ziel, MARKER), markerText("gesamt"));
   schreib(path.join(ziel, "ANLEITUNG.md"), anleitungGesamt(katalog, inseln, bilder, bogenDateien));
 
-  return { ordnerName: GESAMT, ziel, bilder, fragen, inseln: inseln.length, bogenDateien };
+  return { ordnerName: GESAMT, ziel, bilder, fragen, inseln: inseln.length, bogenDateien, arbeitskarteDateien };
 }
 
 // -------------------------------------------------------------- Anleitung --
@@ -680,6 +726,10 @@ eigene Adresse für einen eigenen QR-Code. Er liegt bewusst auf derselben
 Domain wie die Inseln: Nur so stehen ihm abends die Angaben zur Verfügung,
 die morgens im Wissenscheck eingetippt wurden.
 
+Die **Arbeitskarte Digital v3.0** liegt unter \`/arbeitskarte\`. Sie speichert
+Entwürfe und Verlauf zunächst lokal auf dem jeweiligen Gerät und kann komplette
+Karten als JSON ausgeben und wieder einlesen.
+
 ---
 
 ## Was hier drin liegt
@@ -688,6 +738,7 @@ die morgens im Wissenscheck eingetippt wurden.
     netlify/functions/            Nimmt Ergebnisse an und bewertet serverseitig
     public/index.html             Die Seite
     public/assets/                Engine, Stile, Logo
+    public/arbeitskarte/          Digitaler Werkstatt-Workflow
     public/data/                  Inselübersicht und alle ${inseln.length} Fragensätze
     public/media/                 Die Bilder${bilder ? "" : " (in diesem Paket keine)"}
 

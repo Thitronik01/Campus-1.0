@@ -484,6 +484,9 @@ main { flex: 1 0 auto; }
 }
 .tagesabschluss.is-ready .ta-kicker { color: var(--th-lime-text); }
 .tagesabschluss.is-ready .ta-icon { background: var(--success-bg); }
+.campus-tool { border-left: 4px solid var(--th-blue); }
+.campus-tool .ta-kicker { color: var(--th-navy); }
+.campus-tool-icon { background: #e9f6fb; color: var(--th-blue-text); }
 
 @media (max-width: 560px) {
   .tagesabschluss { align-items: flex-start; }
@@ -1577,6 +1580,42 @@ main { flex: 1 0 auto; }
 }
 .q-media figcaption { margin-top: 8px; color: var(--th-muted); font-size: .84rem; }
 .feedback-media img { cursor: zoom-in; }
+
+.q-audio {
+  margin: 0 0 18px;
+  padding: 16px;
+  border: 1px solid var(--th-line);
+  border-left: 4px solid var(--th-blue);
+  border-radius: var(--radius-lg);
+  background: var(--info-bg);
+}
+.q-audio-row { display: flex; align-items: center; gap: 16px; }
+.q-audio-button {
+  min-width: 148px;
+  min-height: var(--tap);
+  border: 0;
+  border-radius: var(--radius-md);
+  padding: 0 18px;
+  background: var(--th-navy);
+  color: var(--th-white);
+  font-weight: 800;
+  cursor: pointer;
+}
+.q-audio-button:hover { background: var(--th-navy-2); }
+.q-audio-button:disabled { cursor: not-allowed; opacity: .48; }
+.q-audio-progress-wrap { display: grid; flex: 1; gap: 5px; min-width: 0; }
+.q-audio progress { width: 100%; height: 9px; accent-color: var(--th-blue); }
+.q-audio output { color: var(--th-muted); font-size: .82rem; font-variant-numeric: tabular-nums; }
+.q-audio-status { min-height: 1.4em; margin: 8px 0 0; color: var(--th-muted); font-size: .86rem; }
+.q-audio-fallback { margin-top: 8px; }
+.q-audio-fallback summary { min-height: var(--tap); display: flex; align-items: center; color: var(--th-navy); font-weight: 750; cursor: pointer; }
+.q-audio-fallback p { margin: 0; color: var(--th-muted); }
+.fact-audio::before { background: var(--th-blue) !important; box-shadow: inset 0 0 0 6px var(--th-blue), inset 0 0 0 7px rgba(17,17,17,.3) !important; }
+
+@media (max-width: 560px) {
+  .q-audio-row { align-items: stretch; flex-direction: column; }
+  .q-audio-button { width: 100%; }
+}
 
 /* --- Antwortkacheln (single / multi / truefalse) --- */
 

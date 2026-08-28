@@ -1,0 +1,18 @@
+{
+  "id": "TEST-AUDIO",
+  "type": "single",
+  "category": "Audio-Test",
+  "audio": {
+    "src": "/media/fehmarn/feh-wipro-hauptalarm.mp3",
+    "fallbackText": "Anhaltender, lauter Sirenenalarm der WiPro III."
+  },
+  "prompt": "Testfrage für den Audio-Player",
+  "options": [
+    { "id": "a", "text": "Testantwort A" },
+    { "id": "b", "text": "Testantwort B" }
+  ],
+  "correct": ["a"],
+  "feedback": "Nur für den technischen Test.",
+  "irrtum": [{ "fuer": ["b"], "titel": "Test", "text": "Technischer Test." }],
+  "mitnehmen": "Technischer Test."
+}

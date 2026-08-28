@@ -19,13 +19,18 @@
   to = "/index.html"
   status = 200
 
+[[redirects]]
+  from = "/arbeitskarte"
+  to = "/arbeitskarte/"
+  status = 301
+
 [[headers]]
   for = "/*"
   [headers.values]
     X-Content-Type-Options = "nosniff"
     X-Frame-Options = "DENY"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Permissions-Policy = "camera=(self), microphone=(self), geolocation=()"
     Content-Security-Policy = "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'self'"
 
 [[headers]]
@@ -45,6 +50,21 @@
 
 [[headers]]
   for = "/media/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/arbeitskarte/"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/arbeitskarte/index.html"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/arbeitskarte/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 

@@ -3,9 +3,9 @@
   "code": "FEHMARN",
   "title": "Fehlersuche & Support",
   "subtitle": "Erst lesen, dann tauschen",
-  "version": "5",
+  "version": "7",
   "lernziel": "Bevor du tauschst, lies. Jedes Gerät sagt, was los ist - über Blinkcode, Ton, Seriennummer, Spannungsverhalten. Tauschen ist die teuerste Form der Diagnose.",
-  "dauerMinuten": 8,
+  "dauerMinuten": 9,
   "quellen": [
     "referenz/stoerungsbeseitigung.md",
     "_intern/support-fallaufnahme.md",
@@ -13,7 +13,7 @@
     "produkte/pro-finder.md",
     "referenz/mobilfunk-sim.md"
   ],
-  "internerHinweis": "Fragenkatalog v5. Das bestehende FehlerQuiz mit sechs Bildfragen läuft separat; FEHMARN ist die anspruchsvollere Supportebene. Neu: Übertemperaturdiagnose an G.A.S.-pro III und ein kontrollierter Referenz-SIM-Test beim Pro-finder. Blinkcodes und Spannungsschwellen vor jeder Schulung gegen den aktuellen Anleitungsstand prüfen.",
+  "internerHinweis": "Fragenkatalog v7. Das bestehende FehlerQuiz mit sechs Bildfragen läuft separat; FEHMARN ist die anspruchsvollere Supportebene. Neu: bestätigter WiPro-III-Hauptalarm als Audiofrage, Übertemperaturdiagnose an G.A.S.-pro III und ein kontrollierter Referenz-SIM-Test beim Pro-Finder. Blinkcodes und Spannungsschwellen vor jeder Schulung gegen den aktuellen Anleitungsstand prüfen.",
   "questions": [
     {
       "id": "FEH-06",
@@ -94,33 +94,6 @@
         }
       ],
       "mitnehmen": "Der Gerätestand entscheidet über die Bedeutung eines Blinkcodes. Deshalb bei jeder Diagnose zuerst die vollständige Seriennummer aufnehmen."
-    },
-    {
-      "id": "FEH-02",
-      "type": "single",
-      "category": "Kundenanruf",
-      "prompt": "„Seit dem Einbau schaltet mein Original-Fahrzeugschlüssel die Alarmanlage nicht mehr scharf - die Zentralverriegelung geht aber normal.“ Ursache?",
-      "options": [
-        { "id": "a", "text": "CAN-High und CAN-Low sind vertauscht" },
-        { "id": "b", "text": "DIP 5 steht auf ON - der Replay-Schutz ist aktiv" },
-        { "id": "c", "text": "Die Batterie des Fahrzeugschlüssels ist schwach" },
-        { "id": "d", "text": "Die WiPro-Zentrale ist defekt und muss getauscht werden" }
-      ],
-      "correct": ["b"],
-      "feedback": "Genau dieses Bild - ZV funktioniert, Alarmsteuerung nicht - ist das **erwartete** Verhalten bei aktivem Replay-Schutz (wirksam ab SN 0823-014 / SW 5.8).",
-      "irrtum": [
-        {
-          "fuer": ["a"],
-          "titel": "CAN vertauscht",
-          "text": "Technisch gute Idee und der richtige zweite Schritt - aber bei vertauschtem CAN funktioniert typischerweise gar nichts, nicht nur die Alarmsteuerung. Das Symptom ist zu selektiv."
-        },
-        {
-          "fuer": ["d"],
-          "titel": "Zentrale defekt",
-          "text": "Die teuerste Fehldiagnose im Katalog. Ein Gerät, das teilweise korrekt arbeitet, ist selten defekt - es ist meist konfiguriert."
-        }
-      ],
-      "mitnehmen": "Ist der Schutz gewollt, steuert der Kunde über Handsender, App oder Pro-finder. **Achtung beim Umstellen:** DIP-Schalter nur spannungsfrei ändern - weder der 20-polige Stecker noch der Pro-finder-Stecker dürfen gesteckt sein."
     },
     {
       "id": "FEH-04",
@@ -303,6 +276,42 @@
         }
       ],
       "mitnehmen": "Ein guter nächster Schritt verändert genau eine Variable. Referenz-SIM, dokumentierter Gerätezustand und gleicher Standort machen aus Vermutung eine Diagnose."
+    },
+    {
+      "id": "FEH-A01",
+      "type": "single",
+      "category": "Alarmton und Alarmspeicher",
+      "audio": {
+        "src": "/media/fehmarn/feh-wipro-hauptalarm.mp3",
+        "fallbackText": "Anhaltender, lauter Sirenenalarm der WiPro III."
+      },
+      "prompt": "Du hörst den Alarmton aus einem Kundenmitschnitt. Beim Unscharfschalten danach hörte der Kunde zusätzlich 1 langen und 2 kurze Töne. Was prüfst du als Nächstes?",
+      "options": [
+        { "id": "a", "text": "Status-LED-Blinkfolge sauber zählen, den gespeicherten Alarmgrund dokumentieren und anschließend dessen Ursache prüfen" },
+        { "id": "b", "text": "Die Sirene ersetzen, weil der Ton einen Defekt des Alarmgebers belegt" },
+        { "id": "c", "text": "Die WiPro III auf Werkseinstellung zurücksetzen, damit der Alarmton gelöscht wird" },
+        { "id": "d", "text": "Den Fall schließen, weil der akustische Alarm beim Unscharfschalten beendet wurde" }
+      ],
+      "correct": ["a"],
+      "feedback": "Die Aufnahme ist der Einbruch-/Hauptalarm der WiPro III. 1 langer und 2 kurze Töne beim Unscharfschalten zeigen einen belegten Alarmspeicher an. Die Status-LED nennt über ihren Blinkcode den Alarmgrund; das Muster wiederholt sich mit 5 Sekunden Pause.",
+      "irrtum": [
+        {
+          "fuer": ["b"],
+          "titel": "Alarmton als Sirenendefekt gelesen",
+          "text": "Die Sirene hat hörbar gearbeitet. Der Ton belegt einen Alarm, nicht einen Defekt des Alarmgebers."
+        },
+        {
+          "fuer": ["c"],
+          "titel": "Diagnoseinformation gelöscht",
+          "text": "Ein Zurücksetzen vor dem Auslesen beseitigt wertvolle Hinweise und verändert mehr als die zu prüfende Ursache."
+        },
+        {
+          "fuer": ["d"],
+          "titel": "Alarm aus mit Problem gelöst verwechselt",
+          "text": "Das Unscharfschalten beendet den Ton, erklärt aber nicht, welcher Eingang oder Sensor den Alarm ausgelöst hat."
+        }
+      ],
+      "mitnehmen": "Erst hören, dann den Alarmspeicher lesen: Der Ton ordnet das Ereignis ein, der Blinkcode führt zur Ursache."
     }
   ]
 }

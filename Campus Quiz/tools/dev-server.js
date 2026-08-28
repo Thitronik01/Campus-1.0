@@ -28,6 +28,8 @@ const MIME = {
   ".json": "application/json; charset=utf-8",
   ".png": "image/png",
   ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".mp3": "audio/mpeg",
   ".webp": "image/webp",
   ".svg": "image/svg+xml"
 };
@@ -74,6 +76,42 @@ http.createServer((req, res) => {
 
   if (!file.startsWith(activeRoot)) {
     res.writeHead(403).end("Verboten");
+    return;
+  }
+
+  // HTML5-Audio fragt MP3-Dateien mit Byte-Ranges ab. Ohne 206-Antwort kann
+  // Chromium zwar abspielen, kennt lokal aber oft keine Dauer; dann bliebe
+  // die Fortschrittsanzeige im Audio-Quiz ohne verwertbaren Endwert.
+  const range = req.headers.range;
+  if (range && path.extname(file).toLowerCase() === ".mp3") {
+    fs.stat(file, (statError, stat) => {
+      if (statError) {
+        res.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
+        res.end("Nicht gefunden: " + pathname);
+        return;
+      }
+      const match = /^bytes=(\d*)-(\d*)$/.exec(range);
+      if (!match) {
+        res.writeHead(416, { "Content-Range": `bytes */${stat.size}` });
+        res.end();
+        return;
+      }
+      const start = match[1] ? Number(match[1]) : 0;
+      const end = match[2] ? Math.min(Number(match[2]), stat.size - 1) : stat.size - 1;
+      if (!Number.isFinite(start) || !Number.isFinite(end) || start > end || start >= stat.size) {
+        res.writeHead(416, { "Content-Range": `bytes */${stat.size}` });
+        res.end();
+        return;
+      }
+      res.writeHead(206, {
+        "Content-Type": "audio/mpeg",
+        "Content-Length": end - start + 1,
+        "Content-Range": `bytes ${start}-${end}/${stat.size}`,
+        "Accept-Ranges": "bytes",
+        "Cache-Control": "no-store"
+      });
+      fs.createReadStream(file, { start, end }).pipe(res);
+    });
     return;
   }
 

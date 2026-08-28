@@ -8,7 +8,7 @@
   <meta name="description" content="THITRONIK Campus: Wissenscheck nach jeder Schulungsinsel.">
   <meta name="robots" content="noindex, nofollow">
   <title>THITRONIK Campus: Wissenscheck</title>
-  <link rel="stylesheet" href="/assets/styles.css?v=1.5.0">
+  <link rel="stylesheet" href="/assets/styles.css?v=1.6.0">
 </head>
 <body>
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
@@ -103,6 +103,18 @@
 
           <ul class="island-map" id="island-grid" aria-label="Schulungsinseln"></ul>
         </div>
+
+        <a class="tagesabschluss campus-tool" id="arbeitskarte-link" href="/arbeitskarte/" hidden>
+          <span class="ta-icon campus-tool-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false"><path d="M8 4h8M9 3h6v3H9z"></path><path d="M6 5h12v16H6z"></path><path d="M9 10h6M9 14h6M9 18h4"></path></svg>
+          </span>
+          <span class="ta-text">
+            <span class="ta-kicker">Werkstatt-Werkzeug</span>
+            <span class="ta-title">Arbeitskarte Digital</span>
+            <span class="ta-desc">Fahrzeugannahme, Vorschäden, Material und Übergabe direkt am Fahrzeug dokumentieren.</span>
+          </span>
+          <span class="ta-cta">Arbeitskarte öffnen</span>
+        </a>
 
         <!-- Kein Listeneintrag und keine Insel: Der Tagesabschluss zaehlt
              nicht in "7 von 7" mit. Ein echtes <a>, weil es ein anderes
@@ -251,6 +263,22 @@
             <figcaption id="q-media-caption"></figcaption>
           </figure>
 
+          <section class="q-audio" id="q-audio" aria-label="Ton zur Frage" hidden>
+            <div class="q-audio-row">
+              <button class="q-audio-button" id="q-audio-button" type="button" aria-pressed="false">Ton abspielen</button>
+              <div class="q-audio-progress-wrap">
+                <progress id="q-audio-progress" max="100" value="0" aria-label="Abspielfortschritt"></progress>
+                <output id="q-audio-time">0:00 / 0:00</output>
+              </div>
+            </div>
+            <p class="q-audio-status" id="q-audio-status" role="status" aria-live="polite"></p>
+            <details class="q-audio-fallback">
+              <summary>Textbeschreibung des Tons</summary>
+              <p id="q-audio-fallback-text"></p>
+            </details>
+            <audio id="q-audio-player" preload="metadata"></audio>
+          </section>
+
           <div id="q-input"></div>
 
           <div class="feedback" id="q-feedback" role="status" aria-live="polite" hidden>
@@ -373,6 +401,6 @@
     <input name="score"><input name="total"><input name="percent"><input name="answers_json">
   </form>
 
-  <script src="/assets/engine.js?v=1.5.0" defer></script>
+  <script src="/assets/engine.js?v=1.6.0" defer></script>
 </body>
 </html>

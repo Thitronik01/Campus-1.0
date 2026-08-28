@@ -1,0 +1,52 @@
+{
+  "sourceFolder": "arbeitskarte",
+  "sourceComponent": "arbeitskarte/page.js",
+  "status": "provided-but-not-drop-in",
+  "reason": "Next.js client component with missing @/lib and @/components imports; needs Vite/React port.",
+  "targetRoute": "/de/arbeitskarte",
+  "visibility": "dealer-accessible",
+  "allowedRoles": ["admin", "editor", "support", "technician", "dealer", "internal"],
+  "recommendedAssetTarget": "public/assets/arbeitskarte",
+  "images": [
+    {
+      "source": "arbeitskarte/Bilder/Whonmobil Fahrerseite Ansicht.png",
+      "recommendedTarget": "public/assets/arbeitskarte/wohnmobil-fahrerseite.png",
+      "view": "fahrerseite",
+      "width": 1536,
+      "height": 1024
+    },
+    {
+      "source": "arbeitskarte/Bilder/Wohnmobil Beifahrerseite Ansicht.png",
+      "recommendedTarget": "public/assets/arbeitskarte/wohnmobil-beifahrerseite.png",
+      "view": "beifahrerseite",
+      "width": 1536,
+      "height": 1024
+    },
+    {
+      "source": "arbeitskarte/Bilder/Wohnmobil Front Ansicht.png",
+      "recommendedTarget": "public/assets/arbeitskarte/wohnmobil-front.png",
+      "view": "front",
+      "width": 1536,
+      "height": 1024
+    },
+    {
+      "source": "arbeitskarte/Bilder/Wohnmobil Hinten Ansicht.png",
+      "recommendedTarget": "public/assets/arbeitskarte/wohnmobil-heck.png",
+      "view": "heck",
+      "width": 1536,
+      "height": 1024
+    }
+  ],
+  "requiredFeatures": [
+    "auftrag",
+    "sichtkontrolle",
+    "materialliste",
+    "uebergabe",
+    "photo-upload",
+    "signature-canvas",
+    "sketch-canvas",
+    "local-save",
+    "json-import-export",
+    "print-view"
+  ]
+}

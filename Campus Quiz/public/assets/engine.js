@@ -13,7 +13,7 @@
 
 (function () {
   const EVENT_SLUG = "campus-2026";
-  const ENGINE_VERSION = "1.5.0";
+  const ENGINE_VERSION = "1.6.0";
   const SUBMIT_ENDPOINT = "/.netlify/functions/submit-quiz";
 
   const LS_PARTICIPANT = "thitronik.campus.2026.participant";
@@ -62,6 +62,7 @@
     campusMap: $("campus-map"),
     campusMapArt: $("campus-map-art"),
     islandGrid: $("island-grid"),
+    arbeitskarteLink: $("arbeitskarte-link"),
     tagesabschluss: $("tagesabschluss"),
     ausgang: $("ausgang"),
     ausgangText: $("ausgang-text"),
@@ -114,6 +115,13 @@
     qMedia: $("q-media"),
     qMediaImg: $("q-media-img"),
     qMediaCaption: $("q-media-caption"),
+    qAudio: $("q-audio"),
+    qAudioButton: $("q-audio-button"),
+    qAudioProgress: $("q-audio-progress"),
+    qAudioTime: $("q-audio-time"),
+    qAudioStatus: $("q-audio-status"),
+    qAudioFallbackText: $("q-audio-fallback-text"),
+    qAudioPlayer: $("q-audio-player"),
     qInput: $("q-input"),
     qFeedback: $("q-feedback"),
     qFeedbackTitle: $("q-feedback-title"),
@@ -182,6 +190,9 @@
   // ------------------------------------------------------------- Helfer ----
 
   function show(name) {
+    if (name !== "quiz" && el.qAudioPlayer) {
+      el.qAudioPlayer.pause();
+    }
     Object.entries(el.screens).forEach(([key, node]) => {
       node.hidden = key !== name;
     });
@@ -283,6 +294,11 @@
     (next.options || []).forEach((option) => { if (option.image) quellen.push(option.image); });
 
     quellen.forEach((src) => { new Image().src = src; });
+    if (next.audio && next.audio.src) {
+      const audio = document.createElement("audio");
+      audio.preload = "metadata";
+      audio.src = next.audio.src;
+    }
   }
 
   function sessionId() {
@@ -632,6 +648,13 @@
       el.tagesabschluss.hidden = true;
     }
 
+    if (state.catalog.arbeitskarte) {
+      el.arbeitskarteLink.href = state.catalog.arbeitskarte;
+      el.arbeitskarteLink.hidden = false;
+    } else {
+      el.arbeitskarteLink.hidden = true;
+    }
+
     el.mastheadTitle.textContent = "Wissenscheck";
     el.mastheadMeta.hidden = true;
     show("islands");
@@ -735,6 +758,9 @@
           ? `ca. ${minuten} Minuten - kein Zeitlimit`
           : "Kein Zeitlimit - es geht nicht um Tempo" },
       { klasse: "fact-aufloesung", text: "Nach jeder Antwort gibt es sofort die Auflösung" }
+      , ...(island.questions.some((q) => q.audio && q.audio.src)
+        ? [{ klasse: "fact-audio", text: "Ton einschalten oder Kopfhörer nutzen - eine Frage enthält Audio" }]
+        : [])
     ].forEach((fakt) => {
       const li = document.createElement("li");
       li.className = fakt.klasse;
@@ -886,6 +912,8 @@
       el.qMedia.hidden = false;
     } else el.qMedia.hidden = true;
 
+    renderAudio(q);
+
     el.qFeedback.hidden = true;
     el.qFeedback.className = "feedback";
     el.qFeedbackMedia.hidden = true;
@@ -903,6 +931,39 @@
     el.screens.quiz.scrollIntoView({ block: "start", behavior: scrollArt() });
 
     preloadNext();
+  }
+
+  function formatAudioTime(seconds) {
+    const safe = Number.isFinite(seconds) ? Math.max(0, Math.floor(seconds)) : 0;
+    return `${Math.floor(safe / 60)}:${String(safe % 60).padStart(2, "0")}`;
+  }
+
+  function paintAudioProgress() {
+    const player = el.qAudioPlayer;
+    const duration = Number.isFinite(player.duration) ? player.duration : 0;
+    const current = Number.isFinite(player.currentTime) ? player.currentTime : 0;
+    el.qAudioProgress.value = duration ? (current / duration) * 100 : 0;
+    el.qAudioTime.textContent = `${formatAudioTime(current)} / ${formatAudioTime(duration)}`;
+  }
+
+  function renderAudio(q) {
+    const player = el.qAudioPlayer;
+    player.pause();
+    player.removeAttribute("src");
+    player.load();
+    el.qAudioButton.textContent = "Ton abspielen";
+    el.qAudioButton.setAttribute("aria-pressed", "false");
+    el.qAudioStatus.textContent = "";
+    el.qAudioProgress.value = 0;
+    el.qAudioTime.textContent = "0:00 / 0:00";
+    if (!q.audio || !q.audio.src) {
+      el.qAudio.hidden = true;
+      return;
+    }
+    player.src = q.audio.src;
+    player.load();
+    el.qAudioFallbackText.textContent = q.audio.fallbackText || "Für diesen Ton ist keine Textbeschreibung hinterlegt.";
+    el.qAudio.hidden = false;
   }
 
   /** Aktueller Antwortstand der laufenden Frage. Von den Renderern gefüllt. */
@@ -1825,6 +1886,40 @@
     if (Date.now() < state.weiterFrei) return;
     advance();
   });
+
+  el.qAudioButton.addEventListener("click", async () => {
+    const player = el.qAudioPlayer;
+    if (!player.src) return;
+    if (!player.paused) {
+      player.pause();
+      el.qAudioButton.textContent = "Ton fortsetzen";
+      el.qAudioButton.setAttribute("aria-pressed", "false");
+      el.qAudioStatus.textContent = "Ton pausiert.";
+      return;
+    }
+    try {
+      await player.play();
+      el.qAudioButton.textContent = "Ton pausieren";
+      el.qAudioButton.setAttribute("aria-pressed", "true");
+      el.qAudioStatus.textContent = "Ton wird abgespielt.";
+    } catch {
+      el.qAudioStatus.textContent = "Der Ton konnte nicht abgespielt werden. Nutze die Textbeschreibung darunter.";
+    }
+  });
+  el.qAudioPlayer.addEventListener("loadedmetadata", paintAudioProgress);
+  el.qAudioPlayer.addEventListener("timeupdate", paintAudioProgress);
+  el.qAudioPlayer.addEventListener("ended", () => {
+    el.qAudioButton.textContent = "Ton noch einmal abspielen";
+    el.qAudioButton.setAttribute("aria-pressed", "false");
+    el.qAudioStatus.textContent = "Ton beendet.";
+    paintAudioProgress();
+  });
+  el.qAudioPlayer.addEventListener("error", () => {
+    if (el.qAudio.hidden) return;
+    el.qAudioButton.disabled = true;
+    el.qAudioStatus.textContent = "Audiodatei nicht verfügbar. Nutze die Textbeschreibung darunter.";
+  });
+  el.qAudioPlayer.addEventListener("canplay", () => { el.qAudioButton.disabled = false; });
 
   el.btnAbort.addEventListener("click", () => {
     if (typeof el.abortDialog.showModal === "function") {

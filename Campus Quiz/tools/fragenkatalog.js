@@ -165,6 +165,11 @@ function frageBlock(frage, nummer) {
     teile.push("");
   }
 
+  if (frage.audio && frage.audio.src) {
+    teile.push(`**Ton zur Frage:** \`${frage.audio.src}\` — ${frage.audio.fallbackText || "ohne Textbeschreibung"}`);
+    teile.push("");
+  }
+
   teile.push(antworten(frage));
   teile.push("");
 

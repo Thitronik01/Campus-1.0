@@ -7,11 +7,11 @@
 **Erzeugt** mit `node tools/fragenkatalog.js` aus den Fragensätzen in
 `public/data/inseln/`. Änderungen gehören dorthin, nicht in diese Datei.
 
-73 Fragen auf 7 Inseln.
+72 Fragen auf 7 Inseln.
 
 | Fragetyp | Anzahl |
 |---|---:|
-| Einfachauswahl | 58 |
+| Einfachauswahl | 57 |
 | Mehrfachauswahl | 9 |
 | Zuordnung | 4 |
 | Reihenfolge | 2 |
@@ -21,7 +21,7 @@
 - [VEJRØ — Produktneuheiten: Zugang & Wasserschutz](#vejrø--produktneuheiten-zugang--wasserschutz) · 10 Fragen
 - [POEL — Händlerbereich](#poel--händlerbereich) · 10 Fragen
 - [HIDDENSEE — Funk-Magnetkontakte & Leitungsverbindungen](#hiddensee--funk-magnetkontakte--leitungsverbindungen) · 12 Fragen
-- [SAMSØ — Einbauorte im Fahrzeug](#samsø--einbauorte-im-fahrzeug) · 10 Fragen
+- [SAMSØ — Einbauorte im Fahrzeug](#samsø--einbauorte-im-fahrzeug) · 9 Fragen
 - [FEHMARN — Fehlersuche & Support](#fehmarn--fehlersuche--support) · 11 Fragen
 - [USEDOM — Verkaufsdisplay & Konfigurator](#usedom--verkaufsdisplay--konfigurator) · 10 Fragen
 - [LANGELAND — Fahrzeugannahme & Fahrzeugübergabe](#langeland--fahrzeugannahme--fahrzeugübergabe) · 10 Fragen
@@ -723,14 +723,14 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Produktkonfigurator
 
 | | |
 |---|---|
-| Fragen | 10 |
-| Fragensatz-Version | 8 |
+| Fragen | 9 |
+| Fragensatz-Version | 9 |
 | Art | Wo kommt was hin? |
 | Lernziel | Physik bestimmt den Einbauort, nicht der freie Platz. Wer das verstanden hat, muss keine Liste auswendig lernen. |
 
 **Quellen im Produktwissen:** `produkte/pro-finder.md`, `produkte/gas-pro-iii.md`, `produkte/nfc-modul.md`, `produkte/funk-rauchmelder.md`, `produkte/wipro-iii.md`, `fahrzeuge/*`
 
-> **Redaktioneller Hinweis (erscheint nicht im Quiz):** Fragenkatalog v8. SAM-02, SAM-03 und SAM-10 arbeiten mit echten Produkt- beziehungsweise Einbaufotos; SAM-09 ergänzt die physikalisch begründete Ausrichtung der externen GPS-Antenne. Einbauabstände und Kabellängen vor jeder Schulung gegen den aktuellen Anleitungsstand prüfen.
+> **Redaktioneller Hinweis (erscheint nicht im Quiz):** Fragenkatalog v9. SAM-02, SAM-03 und SAM-10 arbeiten mit echten Produkt- beziehungsweise Einbaufotos; SAM-09 ergänzt die physikalisch begründete Ausrichtung der externen GPS-Antenne. Einbauabstände und Kabellängen vor jeder Schulung gegen den aktuellen Anleitungsstand prüfen.
 
 #### 1. Ordne jedem Gerät den vorgesehenen Einbauort zu.
 
@@ -820,27 +820,7 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 **Mitnehmen:** Einbauort = Schutz + Servicezugang + Funkstrecke. Wenn einer der drei Punkte fehlt, ist der Platz nicht fertig bewertet.
 
-#### 5. Die Antennenleitung der WiPro III (Pin 10, weiß) ist deutlich zu lang für den gewählten Einbauort. Was tust du?
-
-`SAM-05` · Einfachauswahl · Antennenleitung
-
-- Auf 20 cm kürzen
-- Sauber aufwickeln und mit Kabelbinder fixieren
-- **Weder kürzen noch aufwickeln - Verlegung anpassen** ✓
-- Mit Lautsprecherkabel verlängern
-
-**Auflösung:** Die Leitung **ist** die Antenne. Ihre Länge ist Teil der Funktion, nicht eine Zugabe fürs Verlegen.
-
-**Falsch gewählt?**
-
-- *Aufwickeln:* Der mit Abstand häufigste Fehler - und der, der wie sauberes Arbeiten aussieht. Ein aufgewickeltes Kabel ist eine Spule und verändert das Sendeverhalten. Die Anlage arbeitet dann mit verringerter Reichweite und meldet keinen Fehler.
-  <br>↳ bezogen auf: „Sauber aufwickeln und mit Kabelbinder fixieren“
-- *Kürzen:* Konsequent zu Ende gedacht, aber irreversibel. Danach ist die Zentrale nur noch mit Ersatzkabelbaum zu retten.
-  <br>↳ bezogen auf: „Auf 20 cm kürzen“
-
-**Mitnehmen:** Antennenleitungen werden gestreckt verlegt - nie gekürzt, nie aufgewickelt. Passt es nicht, ändert sich der Montageort, nicht das Kabel.
-
-#### 6. Wo wird das NFC Modul montiert?
+#### 5. Wo wird das NFC Modul montiert?
 
 `SAM-06` · Einfachauswahl · NFC Modul
 
@@ -860,7 +840,7 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 **Mitnehmen:** Einen Nebeneffekt sprichst du von dir aus an: Bei **beheizbaren Frontscheiben** ist mit höherem Verbrauch und kürzerer Batterielebensdauer zu rechnen. Und beim Einbau: Das NFC Modul darf nicht als erstes Zubehör angelernt werden.
 
-#### 7. Das Fahrzeug hat einen Stoffhimmel. Wie montierst du den T.S.A. Funk-Rauchmelder?
+#### 6. Das Fahrzeug hat einen Stoffhimmel. Wie montierst du den T.S.A. Funk-Rauchmelder?
 
 `SAM-07` · Einfachauswahl · Rauchmelder
 
@@ -880,7 +860,7 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 **Mitnehmen:** Bei einem Melder, der Leben schützen soll, gilt keine Lösung, die „erstmal hält“.
 
-#### 8. Ein Liner hat 7,4 m Innenlänge, der Schlafbereich ist durch eine Schiebetür getrennt. Was folgt für die CO-Überwachung?
+#### 7. Ein Liner hat 7,4 m Innenlänge, der Schlafbereich ist durch eine Schiebetür getrennt. Was folgt für die CO-Überwachung?
 
 `SAM-08` · Einfachauswahl · Fahrzeuggröße
 
@@ -900,7 +880,7 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 **Mitnehmen:** Eine geschlossene Tür trennt den Luftraum. Bei einer Sicherheitsfunktion planst du für den geschlossenen Zustand, nie für den bequemen. Zusatzsensorkabel konservativ auf max. 7 m Gesamtlänge auslegen.
 
-#### 9. Der Pro-finder braucht wegen eines abgeschirmten Einbauorts eine externe GPS-Antenne. Wie wird ihre Empfangsseite ausgerichtet?
+#### 8. Der Pro-finder braucht wegen eines abgeschirmten Einbauorts eine externe GPS-Antenne. Wie wird ihre Empfangsseite ausgerichtet?
 
 `SAM-09` · Einfachauswahl · GPS-Antenne ausrichten
 
@@ -922,7 +902,7 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 **Mitnehmen:** Bei Funk- und Satellitentechnik ist der Einbauort Teil der Funktion: Orientierung und Material über der Antenne werden bewusst gewählt und anschließend getestet.
 
-#### 10. Welche Komponenten haben keinen festen Einbauort im Fahrzeug? Wähle alle zutreffenden.
+#### 9. Welche Komponenten haben keinen funktional vorgegebenen Installationsort im Fahrzeug? Wähle alle zutreffenden.
 
 `SAM-10` · Mehrfachauswahl · Medium oder Gerät
 
@@ -935,7 +915,7 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 - `/media/samsoe/sam-produkt-pro-finder.webp` — THITRONIK Pro-finder mit Anschlüssen und Antenne
 - `/media/samsoe/sam-produkt-tsa-funk-rauchmelder.webp` — Zwei weiße T.S.A. Funk-Rauchmelder von THITRONIK
 
-**Auflösung:** Funk-Handsender, KeyCard, KeyTag und KeyStrap sind persönliche Zugangs**medien**. NFC Modul, Pro-finder, G.A.S.-pro III und T.S.A. Funk-Rauchmelder sind Geräte mit genau vorgegebenem Einbauort.
+**Auflösung:** Funk-Handsender, KeyCard, KeyTag und KeyStrap sind persönliche Zugangs**medien**. NFC Modul, Pro-finder, G.A.S.-pro III und T.S.A. Funk-Rauchmelder sind Geräte mit funktional vorgegebenem Installationsort.
 
 **Falsch gewählt?**
 
@@ -953,13 +933,13 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 | | |
 |---|---|
 | Fragen | 11 |
-| Fragensatz-Version | 5 |
+| Fragensatz-Version | 7 |
 | Art | Erst lesen, dann tauschen |
 | Lernziel | Bevor du tauschst, lies. Jedes Gerät sagt, was los ist - über Blinkcode, Ton, Seriennummer, Spannungsverhalten. Tauschen ist die teuerste Form der Diagnose. |
 
 **Quellen im Produktwissen:** `referenz/stoerungsbeseitigung.md`, `_intern/support-fallaufnahme.md`, `produkte/wipro-iii.md`, `produkte/pro-finder.md`, `referenz/mobilfunk-sim.md`
 
-> **Redaktioneller Hinweis (erscheint nicht im Quiz):** Fragenkatalog v5. Das bestehende FehlerQuiz mit sechs Bildfragen läuft separat; FEHMARN ist die anspruchsvollere Supportebene. Neu: Übertemperaturdiagnose an G.A.S.-pro III und ein kontrollierter Referenz-SIM-Test beim Pro-finder. Blinkcodes und Spannungsschwellen vor jeder Schulung gegen den aktuellen Anleitungsstand prüfen.
+> **Redaktioneller Hinweis (erscheint nicht im Quiz):** Fragenkatalog v7. Das bestehende FehlerQuiz mit sechs Bildfragen läuft separat; FEHMARN ist die anspruchsvollere Supportebene. Neu: bestätigter WiPro-III-Hauptalarm als Audiofrage, Übertemperaturdiagnose an G.A.S.-pro III und ein kontrollierter Referenz-SIM-Test beim Pro-Finder. Blinkcodes und Spannungsschwellen vor jeder Schulung gegen den aktuellen Anleitungsstand prüfen.
 
 #### 1. Eine frisch angeschlossene G.A.S.-pro III: Ordne die LED-Signale ihrer Bedeutung zu.
 
@@ -1019,27 +999,7 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 **Mitnehmen:** Der Gerätestand entscheidet über die Bedeutung eines Blinkcodes. Deshalb bei jeder Diagnose zuerst die vollständige Seriennummer aufnehmen.
 
-#### 4. „Seit dem Einbau schaltet mein Original-Fahrzeugschlüssel die Alarmanlage nicht mehr scharf - die Zentralverriegelung geht aber normal.“ Ursache?
-
-`FEH-02` · Einfachauswahl · Kundenanruf
-
-- CAN-High und CAN-Low sind vertauscht
-- **DIP 5 steht auf ON - der Replay-Schutz ist aktiv** ✓
-- Die Batterie des Fahrzeugschlüssels ist schwach
-- Die WiPro-Zentrale ist defekt und muss getauscht werden
-
-**Auflösung:** Genau dieses Bild - ZV funktioniert, Alarmsteuerung nicht - ist das **erwartete** Verhalten bei aktivem Replay-Schutz (wirksam ab SN 0823-014 / SW 5.8).
-
-**Falsch gewählt?**
-
-- *CAN vertauscht:* Technisch gute Idee und der richtige zweite Schritt - aber bei vertauschtem CAN funktioniert typischerweise gar nichts, nicht nur die Alarmsteuerung. Das Symptom ist zu selektiv.
-  <br>↳ bezogen auf: „CAN-High und CAN-Low sind vertauscht“
-- *Zentrale defekt:* Die teuerste Fehldiagnose im Katalog. Ein Gerät, das teilweise korrekt arbeitet, ist selten defekt - es ist meist konfiguriert.
-  <br>↳ bezogen auf: „Die WiPro-Zentrale ist defekt und muss getauscht werden“
-
-**Mitnehmen:** Ist der Schutz gewollt, steuert der Kunde über Handsender, App oder Pro-finder. **Achtung beim Umstellen:** DIP-Schalter nur spannungsfrei ändern - weder der 20-polige Stecker noch der Pro-finder-Stecker dürfen gesteckt sein.
-
-#### 5. Ein Pro-finder sendet eine Spannungswarnung und reagiert danach auf keine SMS mehr. Was ist passiert?
+#### 4. Ein Pro-finder sendet eine Spannungswarnung und reagiert danach auf keine SMS mehr. Was ist passiert?
 
 `FEH-04` · Einfachauswahl · Spannung
 
@@ -1057,7 +1017,7 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 **Mitnehmen:** Wenn ein Gerät vor dem Ausfall gewarnt hat, hat es meist genau das getan, wofür es gebaut wurde. Erst laden, dann urteilen.
 
-#### 6. Nach einem Sicherungswechsel meldet die WiPro einen offenen Magnetkontakt, obwohl alle Klappen zu sind. Was tust du?
+#### 5. Nach einem Sicherungswechsel meldet die WiPro einen offenen Magnetkontakt, obwohl alle Klappen zu sind. Was tust du?
 
 `FEH-07` · Einfachauswahl · Nach Spannungsunterbrechung
 
@@ -1077,7 +1037,7 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 **Mitnehmen:** Nach jeder Spannungsunterbrechung: einmal alles auf und zu. Zwei Minuten Arbeit statt einer halben Stunde.
 
-#### 7. Ein Kollege will die G.A.S.-pro III „mal eben mit dem Feuerzeug testen“. Was sagst du?
+#### 6. Ein Kollege will die G.A.S.-pro III „mal eben mit dem Feuerzeug testen“. Was sagst du?
 
 `FEH-05` · Einfachauswahl · Sicherheitsgrenze
 
@@ -1097,7 +1057,7 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 **Mitnehmen:** Meldet der Selbsttest einen Fehler, zeigt sich das eindeutig: 1 Ton pro Sekunde und die betroffene Sensor-LED blinkt gelb. Dem Kunden zeigst du den grünen Normalzustand - das ist der Nachweis, den es braucht.
 
-#### 8. „Meine Frau bekommt die Alarm-SMS, ich nie.“ Woran liegt es?
+#### 7. „Meine Frau bekommt die Alarm-SMS, ich nie.“ Woran liegt es?
 
 `FEH-09` · Einfachauswahl · Alarmweiterleitung
 
@@ -1115,7 +1075,7 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 **Mitnehmen:** Einen kontrollierten Test vollständig durchlaufen lassen, dann bekommt jede Nummer ihre SMS. Gehört so auch in die Fahrzeugübergabe - Masternummer zuerst.
 
-#### 9. Eine G.A.S.-pro III blinkt plötzlich in allen Farben. Was ist die passende erste Reaktion?
+#### 8. Eine G.A.S.-pro III blinkt plötzlich in allen Farben. Was ist die passende erste Reaktion?
 
 `FEH-08` · Einfachauswahl · G.A.S.-pro III diagnostizieren
 
@@ -1137,7 +1097,7 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 **Mitnehmen:** Blinkmuster erst sauber benennen, dann Ursache prüfen. Bei Temperaturhinweisen gehört der Einbauort in die Diagnose, nicht nur das Gerät.
 
-#### 10. Welche Angaben solltest du für eine belastbare Fehleranalyse zusammentragen? Wähle alle zutreffenden.
+#### 9. Welche Angaben solltest du für eine belastbare Fehleranalyse zusammentragen? Wähle alle zutreffenden.
 
 `FEH-10` · Mehrfachauswahl · Strukturierte Fehleranalyse
 
@@ -1159,7 +1119,7 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 **Mitnehmen:** Das ist die Insel in einem Satz: Alles, was du vor dem Anruf sammelst, ersetzt drei Rückfragen danach. Und „möglichst wörtlich“ heißt wörtlich - nicht „irgendwas mit gelb“.
 
-#### 11. Die Pro-finder-SIM kann im Smartphone telefonieren und SMS senden, im Fahrzeug kommt trotzdem keine Kommunikation zustande. Welcher nächste Schritt trennt die Ursachen am besten?
+#### 10. Die Pro-finder-SIM kann im Smartphone telefonieren und SMS senden, im Fahrzeug kommt trotzdem keine Kommunikation zustande. Welcher nächste Schritt trennt die Ursachen am besten?
 
 `FEH-11` · Einfachauswahl · SIM-Fehler eingrenzen
 
@@ -1178,6 +1138,30 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
   <br>↳ bezogen auf: „Die gleiche SIM noch einmal im Smartphone testen und den Fall schließen“ · „Beliebige SMS-Befehle senden, bis einer beantwortet wird“
 
 **Mitnehmen:** Ein guter nächster Schritt verändert genau eine Variable. Referenz-SIM, dokumentierter Gerätezustand und gleicher Standort machen aus Vermutung eine Diagnose.
+
+#### 11. Du hörst den Alarmton aus einem Kundenmitschnitt. Beim Unscharfschalten danach hörte der Kunde zusätzlich 1 langen und 2 kurze Töne. Was prüfst du als Nächstes?
+
+`FEH-A01` · Einfachauswahl · Alarmton und Alarmspeicher
+
+**Ton zur Frage:** `/media/fehmarn/feh-wipro-hauptalarm.mp3` — Anhaltender, lauter Sirenenalarm der WiPro III.
+
+- **Status-LED-Blinkfolge sauber zählen, den gespeicherten Alarmgrund dokumentieren und anschließend dessen Ursache prüfen** ✓
+- Die Sirene ersetzen, weil der Ton einen Defekt des Alarmgebers belegt
+- Die WiPro III auf Werkseinstellung zurücksetzen, damit der Alarmton gelöscht wird
+- Den Fall schließen, weil der akustische Alarm beim Unscharfschalten beendet wurde
+
+**Auflösung:** Die Aufnahme ist der Einbruch-/Hauptalarm der WiPro III. 1 langer und 2 kurze Töne beim Unscharfschalten zeigen einen belegten Alarmspeicher an. Die Status-LED nennt über ihren Blinkcode den Alarmgrund; das Muster wiederholt sich mit 5 Sekunden Pause.
+
+**Falsch gewählt?**
+
+- *Alarmton als Sirenendefekt gelesen:* Die Sirene hat hörbar gearbeitet. Der Ton belegt einen Alarm, nicht einen Defekt des Alarmgebers.
+  <br>↳ bezogen auf: „Die Sirene ersetzen, weil der Ton einen Defekt des Alarmgebers belegt“
+- *Diagnoseinformation gelöscht:* Ein Zurücksetzen vor dem Auslesen beseitigt wertvolle Hinweise und verändert mehr als die zu prüfende Ursache.
+  <br>↳ bezogen auf: „Die WiPro III auf Werkseinstellung zurücksetzen, damit der Alarmton gelöscht wird“
+- *Alarm aus mit Problem gelöst verwechselt:* Das Unscharfschalten beendet den Ton, erklärt aber nicht, welcher Eingang oder Sensor den Alarm ausgelöst hat.
+  <br>↳ bezogen auf: „Den Fall schließen, weil der akustische Alarm beim Unscharfschalten beendet wurde“
+
+**Mitnehmen:** Erst hören, dann den Alarmspeicher lesen: Der Ton ordnet das Ereignis ein, der Blinkcode führt zur Ursache.
 
 ---
 

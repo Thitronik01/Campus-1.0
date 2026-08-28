@@ -172,6 +172,12 @@ const fragen = lauf(path.join("tools", "check-fragen.js"), []);
 schritt("Fragensätze", fragen,
   (fragen.ausgabe.match(/^\d+ Fragen geprüft\.$/m) || [""])[0]);
 
+const audio = lauf(path.join("tools", "test-audio.mjs"), []);
+schritt("Audio-Fragen", audio);
+
+const arbeitskarte = lauf(path.join("tools", "test-arbeitskarte.mjs"), []);
+schritt("Digitale Arbeitskarte", arbeitskarte);
+
 const funktion = lauf(path.join("tools", "test-function.js"), []);
 schritt("Bewertungslogik", funktion,
   (funktion.ausgabe.match(/^\d+ bestanden.*$/m) || [""])[0]);

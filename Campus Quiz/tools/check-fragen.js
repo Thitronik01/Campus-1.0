@@ -184,6 +184,27 @@ for (const island of catalog.inseln) {
       if (!bild.alt) fail(where(q.id), `${bild.feld}: imageAlt bzw. alt fehlt (Vorlesetext und Ersatz bei Ladefehler).`);
     }
 
+    // --- Audio: kein Autoplay-Feld, sondern eine einzelne lokale Datei mit
+    // Textalternative. Die Engine zeigt daraus einen wiederholbaren Player.
+    if (q.audio !== undefined) {
+      if (!q.audio || typeof q.audio !== "object" || Array.isArray(q.audio)) {
+        fail(where(q.id), "audio muss ein Objekt sein.");
+      } else {
+        if (!q.audio.src || typeof q.audio.src !== "string") {
+          fail(where(q.id), "audio.src fehlt.");
+        } else if (!q.audio.src.startsWith("/")) {
+          fail(where(q.id), `audio.src muss mit / beginnen ("${q.audio.src}").`);
+        } else {
+          const audioDatei = path.join(__dirname, "..", "public", q.audio.src.replace(/^\//, ""));
+          if (!fs.existsSync(audioDatei)) fail(where(q.id), `Audiodatei fehlt — ${q.audio.src}`);
+          if (!/\.mp3$/i.test(q.audio.src)) warn(where(q.id), `Ungeprüftes Audioformat: ${q.audio.src}`);
+        }
+        if (!q.audio.fallbackText || typeof q.audio.fallbackText !== "string") {
+          fail(where(q.id), "audio.fallbackText fehlt (Textbeschreibung für Lärm und Barrierefreiheit)." );
+        }
+      }
+    }
+
     if (q.layout && !["portrait", "square", "landscape", "product"].includes(q.layout)) {
       fail(where(q.id), `Unbekanntes layout "${q.layout}" — erlaubt: portrait, square, landscape, product.`);
     }
