@@ -71,7 +71,10 @@
   --duration-normal: 220ms;
   --ease-out: cubic-bezier(.23, 1, .32, 1);
 
-  --content: 1200px;
+  /* Der Campus nutzt auf Arbeitsplatz-Monitoren die verfügbare Breite. Eine
+     feste 1200-px-Kappe ließ bei WQHD, 4K und Browser-Zoom große Leerflächen
+     entstehen. Lesbarkeitsgrenzen sitzen deshalb an den jeweiligen Inhalten. */
+  --content: 1920px;
   --tap: 44px;   /* Mindest-Trefferfläche, WCAG 2.5.8 */
 }
 
@@ -151,7 +154,7 @@ h2 { font-size: clamp(1.15rem, 1.05rem + .4vw, 1.5rem); letter-spacing: -.015em;
   flex-direction: column;
   min-height: 100vh;
   min-height: 100dvh;
-  width: min(calc(100% - 24px), var(--content));
+  width: min(calc(100% - clamp(20px, 3vw, 56px)), var(--content));
   margin: 0 auto;
   padding: 16px 0 28px;
   padding-left: env(safe-area-inset-left);
@@ -1007,15 +1010,15 @@ main { flex: 1 0 auto; }
    der Fakten ist Redaktionssache; bei :nth-child wandert sonst still das
    falsche Bild an die falsche Zeile — dieselbe Begruendung wie bei
    opt-1 bis opt-4 an den Antwortkacheln. */
-#screen-start .start-intro .facts .fact-fragen::before {
+#screen-start .facts .fact-fragen::before {
   background-image: url("/media/campus/campus-hex-fragen.webp");
 }
 
-#screen-start .start-intro .facts .fact-zeit::before {
+#screen-start .facts .fact-zeit::before {
   background-image: url("/media/campus/campus-hex-zeitlimit.webp");
 }
 
-#screen-start .start-intro .facts .fact-aufloesung::before {
+#screen-start .facts .fact-aufloesung::before {
   background-image: url("/media/campus/campus-hex-aufloesung.webp");
 }
 
@@ -1130,14 +1133,34 @@ main { flex: 1 0 auto; }
 }
 
 #screen-start[data-island="vejro"] .start-layout {
-  min-height: clamp(740px, 74vh, 850px);
+  grid-template-columns: minmax(0, 1fr) clamp(340px, 26vw, 430px);
+  min-height: clamp(620px, 72vh, 790px);
 }
 
 #screen-start[data-island="vejro"] .start-intro {
   position: relative;
   isolation: isolate;
-  min-height: 740px;
+  min-height: 620px;
+  padding: clamp(30px, 3.5vw, 48px);
   overflow: hidden;
+  background:
+    radial-gradient(circle at 55% 78%, rgba(19, 140, 231, .3), transparent 35%),
+    radial-gradient(circle at 12% 10%, rgba(31, 83, 151, .36), transparent 40%),
+    linear-gradient(145deg, #081b35 0%, #09284f 55%, #06162c 100%);
+}
+
+/* Die Bildgenerator-Ebenen besitzen weiche, halbtransparente Ränder. Diese
+   Blende hält die Texte ruhig, ohne den Lichtkegel oder die Produkte als
+   Ganzes abzudunkeln. */
+#screen-start[data-island="vejro"] .start-intro::before {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(4, 17, 36, .56) 0%, rgba(4, 17, 36, .17) 50%, transparent 78%),
+    linear-gradient(180deg, transparent 42%, rgba(4, 17, 36, .1) 60%, rgba(4, 17, 36, .62) 100%);
+  pointer-events: none;
 }
 
 #screen-start[data-island="vejro"] .start-intro > :not(.vejro-start-visual) {
@@ -1145,8 +1168,25 @@ main { flex: 1 0 auto; }
   z-index: 3;
 }
 
+#screen-start[data-island="vejro"] .start-intro .kicker {
+  display: none;
+}
+
+#screen-start[data-island="vejro"] .start-intro h1 {
+  max-width: 16ch;
+  font-size: clamp(2.2rem, 3.3vw, 3.45rem);
+  line-height: 1.03;
+  letter-spacing: -.045em;
+  text-wrap: balance;
+}
+
+#screen-start[data-island="vejro"] .start-intro .lead {
+  display: none;
+}
+
 #screen-start[data-island="vejro"] .facts {
-  max-width: 620px;
+  max-width: 580px;
+  margin-top: 18px;
 }
 
 .vejro-start-visual {
@@ -1157,17 +1197,159 @@ main { flex: 1 0 auto; }
   pointer-events: none;
 }
 
-.vejro-start-products {
+.vejro-start-visual img {
   position: absolute;
-  bottom: 1.5%;
-  left: 50%;
   display: block;
-  width: auto;
-  max-width: 94%;
-  height: min(38%, 360px);
-  filter: drop-shadow(0 20px 24px rgba(0, 9, 30, .38));
-  transform: translateX(-50%);
+  max-width: none;
+  height: auto;
   user-select: none;
+}
+
+.vejro-start-light {
+  z-index: 0;
+  top: -9%;
+  right: -9%;
+  width: min(88%, 850px);
+  opacity: .9;
+}
+
+.vejro-start-stage {
+  z-index: 1;
+  right: 2%;
+  bottom: -5%;
+  width: 96%;
+  filter: drop-shadow(0 22px 26px rgba(0, 5, 20, .48));
+}
+
+.vejro-start-access {
+  z-index: 2;
+  bottom: 9.5%;
+  left: 8%;
+  width: 34%;
+  filter: brightness(1.12) drop-shadow(0 18px 18px rgba(0, 7, 25, .46));
+}
+
+.vejro-start-water {
+  z-index: 2;
+  bottom: 11%;
+  left: 28%;
+  width: 53%;
+  filter: brightness(1.12) drop-shadow(0 17px 18px rgba(0, 7, 25, .5));
+}
+
+.vejro-start-contact {
+  z-index: 2;
+  right: 0;
+  bottom: 8.5%;
+  width: 40%;
+  filter: brightness(1.08) drop-shadow(0 18px 20px rgba(0, 7, 25, .5));
+}
+
+#screen-start[data-island="vejro"] .start-form {
+  gap: 14px;
+  padding: clamp(24px, 2.6vw, 38px);
+  background: rgba(255, 255, 255, .985);
+}
+
+#screen-start[data-island="vejro"] .start-actions {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+#screen-start[data-island="vejro"] .start-actions .btn { width: 100%; }
+
+#screen-start[data-island="vejro"] .start-details { display: none; }
+
+#screen-start[data-island="vejro"] .participant-summary {
+  grid-template-columns: 1fr;
+}
+
+#screen-start[data-island="vejro"] .participant-summary .btn {
+  grid-column: 1;
+  grid-row: 4;
+  justify-self: start;
+}
+
+/* Mit gespeicherten Angaben wird die rechte Spalte zum eigentlichen
+   Startpanel: Identität oben, Orientierung in der Mitte, Handlung unten. */
+#screen-start[data-island="vejro"] .start-form.has-participant-facts {
+  display: flex;
+  flex-direction: column;
+  align-content: initial;
+  padding-top: clamp(24px, 2.8vw, 38px);
+}
+
+#screen-start[data-island="vejro"] .has-participant-facts .participant-summary {
+  gap: 4px;
+  padding: 18px;
+  border: 1px solid rgba(59, 169, 211, .3);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 100% 0, rgba(175, 202, 5, .13), transparent 48%),
+    linear-gradient(145deg, #F4F9FC, #FFFFFF);
+  box-shadow: 0 12px 28px rgba(10, 39, 71, .08);
+}
+
+#screen-start[data-island="vejro"] .has-participant-facts .participant-summary .form-title {
+  margin-bottom: 4px;
+  font-size: 1.28rem;
+}
+
+#screen-start[data-island="vejro"] .has-participant-facts .participant-summary .btn {
+  min-height: 38px;
+  margin-top: 7px;
+  font-size: .84rem;
+}
+
+#screen-start[data-island="vejro"] .has-participant-facts .facts {
+  gap: 13px;
+  margin: 18px 0 24px;
+  padding: 18px 16px;
+  border: 1px solid rgba(29, 54, 97, .12);
+  border-radius: 18px;
+  background: #F6F9FC;
+  box-shadow: inset 0 1px 0 #fff;
+}
+
+#screen-start[data-island="vejro"] .has-participant-facts .facts li {
+  grid-template-columns: 46px minmax(0, 1fr);
+  gap: 10px;
+  min-height: 46px;
+  align-items: center;
+  color: var(--th-navy);
+  font-size: .88rem;
+  font-weight: 750;
+  line-height: 1.35;
+}
+
+#screen-start[data-island="vejro"] .has-participant-facts .facts li::before {
+  width: 46px;
+  height: 46px;
+  border-radius: 0;
+  background-color: transparent;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  box-shadow: none;
+  filter: drop-shadow(0 5px 7px rgba(0, 13, 38, .18));
+}
+
+#screen-start[data-island="vejro"] .has-participant-facts .start-actions {
+  margin-top: auto;
+}
+
+#screen-start[data-island="vejro"] .has-participant-facts #btn-to-islands { order: 1; }
+
+#screen-start[data-island="vejro"] .has-participant-facts #btn-start {
+  order: 2;
+  border-color: #92B900;
+  background: #B8F500;
+  color: #0A2747;
+  box-shadow: 0 12px 28px rgba(146, 185, 0, .32);
+}
+
+#screen-start[data-island="vejro"] .has-participant-facts #btn-start:hover {
+  background: #C4FF18;
 }
 
 #screen-start[data-island="poel"] .start-layout {
@@ -1212,9 +1394,7 @@ main { flex: 1 0 auto; }
 }
 
 @media (min-width: 1400px) {
-  .vejro-start-products {
-    height: min(42%, 430px);
-  }
+  .vejro-start-stage { width: 92%; }
 }
 
 #screen-start[data-island="usedom"] .start-layout {
@@ -1528,9 +1708,83 @@ main { flex: 1 0 auto; }
 }
 
 .quiz-body {
-  width: min(100%, 1010px);
+  width: min(100%, 1440px);
   margin: 0 auto;
   padding: 22px clamp(18px, 4vw, 42px) clamp(24px, 4vw, 42px);
+}
+
+/* Medienfragen verwenden die Breite als Arbeitsfläche: Aufgabenstellung und
+   Antworten bleiben in einer gut lesbaren Spalte, das Anschauungsobjekt steht
+   daneben. Unter 1100 px fällt alles wieder in die bewährte lineare Folge. */
+#screen-quiz[data-has-media="true"] .quiz-body {
+  width: min(100%, 1680px);
+}
+
+.quiz-main {
+  display: flex;
+  flex-direction: column;
+}
+
+/* display: contents bewahrt auf schmalen Screens die fachlich richtige
+   Reihenfolge Frage, Bild, Ton, Antworten, ohne die Desktop-Gruppierung in
+   das Markup der einzelnen Fragetypen zu duplizieren. */
+.question-work { display: contents; }
+.quiz-main .q-meta { order: 1; }
+.quiz-main .q-title { order: 2; }
+.quiz-main .q-hint { order: 3; }
+.quiz-main .q-media { order: 4; }
+.quiz-main .q-audio { order: 5; }
+.quiz-main #q-input { order: 6; }
+
+@media (min-width: 760px) {
+  #screen-quiz[data-has-media="true"] .quiz-main {
+    display: grid;
+    grid-template-columns: minmax(280px, .9fr) minmax(340px, 1.1fr);
+    column-gap: clamp(26px, 3vw, 52px);
+    align-items: start;
+  }
+
+  #screen-quiz[data-has-media="true"] .question-work {
+    display: block;
+    min-width: 0;
+  }
+
+  #screen-quiz[data-has-media="true"] .q-title { max-width: 34ch; }
+  #screen-quiz[data-has-media="true"] .q-media {
+    min-width: 0;
+    margin: 0;
+  }
+
+  #screen-quiz[data-has-media="true"] .q-media img,
+  #screen-quiz[data-has-media="true"] .q-media img[data-layout="portrait"] {
+    width: 100%;
+    height: clamp(390px, calc(100dvh - 245px), 760px);
+    margin: 0;
+    object-fit: contain;
+    background: linear-gradient(145deg, #FFFFFF, #F4F7FA);
+  }
+
+  #screen-quiz[data-has-media="true"] .answers {
+    grid-template-columns: 1fr;
+  }
+
+  #screen-quiz[data-has-media="true"] .answer {
+    min-height: 74px;
+  }
+}
+
+@media (min-width: 1100px) {
+  #screen-quiz[data-has-media="true"] .quiz-main {
+    grid-template-columns: minmax(390px, .82fr) minmax(520px, 1.18fr);
+  }
+}
+
+/* Stark herausgezoomte Browser und sehr breite Displays liefern einen
+   virtuellen Viewport jenseits von 2200 px. Dort darf die Medienfrage die
+   ganze reale Fensterbreite verwenden; Textfragen behalten ihre Lesekappe. */
+@media (min-width: 2200px) {
+  .shell { width: calc(100% - 64px); }
+  #screen-quiz[data-has-media="true"] .quiz-body { width: 100%; }
 }
 
 .q-meta {
@@ -1574,8 +1828,11 @@ main { flex: 1 0 auto; }
 .q-media { margin: 0 0 18px; }
 .q-media img {
   width: 100%;
+  max-height: min(68dvh, 760px);
   border: 1px solid var(--th-line);
   border-radius: var(--radius-lg);
+  object-fit: contain;
+  background: linear-gradient(145deg, #FFFFFF, #F4F7FA);
   cursor: zoom-in;
 }
 .q-media figcaption { margin-top: 8px; color: var(--th-muted); font-size: .84rem; }
@@ -2244,7 +2501,10 @@ main { flex: 1 0 auto; }
   #screen-start[data-island="samsoe"] .start-layout { grid-template-columns: 1fr; }
   #screen-start[data-island="samsoe"] .start-intro { min-height: 690px; }
   #screen-start[data-island="hiddensee"] .start-intro { min-height: 720px; }
-  #screen-start[data-island="vejro"] .start-intro { min-height: 760px; }
+  #screen-start[data-island="vejro"] .start-layout {
+    grid-template-columns: minmax(0, 1.42fr) minmax(270px, .7fr);
+  }
+  #screen-start[data-island="vejro"] .start-intro { min-height: 690px; }
   #screen-start[data-island="poel"] .start-intro { min-height: 740px; }
   #screen-start[data-island="usedom"] .start-intro { min-height: 780px; }
   .usedom-start-display { height: min(38%, 340px); }
@@ -2328,8 +2588,26 @@ main { flex: 1 0 auto; }
   #screen-start[data-island="samsoe"] .start-form { padding: 26px 22px; }
   #screen-start[data-island="hiddensee"] .start-intro { min-height: 680px; }
   .hiddensee-start-contact { bottom: -1%; width: min(108%, 560px); }
-  #screen-start[data-island="vejro"] .start-intro { min-height: 700px; }
-  .vejro-start-products { bottom: 2%; max-width: 98%; height: min(36%, 320px); }
+  #screen-start[data-island="vejro"] .start-layout { grid-template-columns: 1fr; }
+  #screen-start[data-island="vejro"] .start-intro {
+    min-height: 650px;
+    padding: 24px 22px;
+  }
+  #screen-start[data-island="vejro"] .start-intro::before {
+    background:
+      linear-gradient(180deg, rgba(4, 17, 36, .28) 0%, transparent 40%, rgba(4, 17, 36, .62) 100%);
+  }
+  #screen-start[data-island="vejro"] .start-intro h1 {
+    max-width: 13ch;
+    font-size: clamp(1.9rem, 9vw, 2.55rem);
+  }
+  #screen-start[data-island="vejro"] .facts { gap: 5px; margin-top: 12px; }
+  .vejro-start-light { top: 22%; right: -29%; width: 118%; opacity: .82; }
+  .vejro-start-stage { right: -6%; bottom: 2%; width: 112%; }
+  .vejro-start-access { bottom: 10%; left: 2%; width: 39%; }
+  .vejro-start-water { bottom: 10%; left: 21.5%; width: 62%; }
+  .vejro-start-contact { right: -6%; bottom: 10%; width: 49%; }
+  #screen-start[data-island="vejro"] .start-form { padding: 26px 22px; }
   #screen-start[data-island="poel"] .start-intro { min-height: 680px; }
   .poel-start-haendler { bottom: 2%; max-width: 98%; height: min(35%, 300px); }
   #screen-start[data-island="usedom"] .start-intro { min-height: 680px; }

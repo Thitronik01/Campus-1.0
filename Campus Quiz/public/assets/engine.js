@@ -13,7 +13,7 @@
 
 (function () {
   const EVENT_SLUG = "campus-2026";
-  const ENGINE_VERSION = "1.6.0";
+  const ENGINE_VERSION = "1.9.0";
   const SUBMIT_ENDPOINT = "/.netlify/functions/submit-quiz";
 
   const LS_PARTICIPANT = "thitronik.campus.2026.participant";
@@ -83,7 +83,13 @@
     hiddenseeStartVisual: $("hiddensee-start-visual"),
     hiddenseeStartContact: $("hiddensee-start-contact"),
     vejroStartVisual: $("vejro-start-visual"),
-    vejroStartProducts: $("vejro-start-products"),
+    vejroStartLayers: [
+      $("vejro-start-light"),
+      $("vejro-start-stage"),
+      $("vejro-start-access"),
+      $("vejro-start-water"),
+      $("vejro-start-contact")
+    ],
     poelStartVisual: $("poel-start-visual"),
     poelStartHaendler: $("poel-start-haendler"),
     usedomStartVisual: $("usedom-start-visual"),
@@ -94,6 +100,7 @@
     fehmarnStartDiagnostic: $("fehmarn-start-diagnostic"),
     formIntro: $("form-intro"),
     startForm: $("start-form"),
+    startActions: document.querySelector("#start-form .start-actions"),
     startFields: $("start-fields"),
     participantSummary: $("participant-summary"),
     participantName: $("participant-name"),
@@ -339,6 +346,19 @@
       && /^\d{5}$/.test(String(data.dealerNumber || "").trim());
   }
 
+  /** Auf VEJRØ wechseln die drei Starthinweise nach rechts, sobald die
+   *  Angaben vollständig sind. Beim Bearbeiten kehren sie in den Hero
+   *  zurück, damit das lange Formular nicht noch mehr Inhalt tragen muss. */
+  function placeStartFacts(byParticipant) {
+    const rechts = byParticipant && state.island?.island === "vejro";
+    el.startForm.classList.toggle("has-participant-facts", rechts);
+    if (rechts) {
+      el.startForm.insertBefore(el.startFacts, el.startActions);
+    } else {
+      el.startDetails.parentElement.insertBefore(el.startFacts, el.startDetails);
+    }
+  }
+
   /** Vollständige Angaben werden zur Zeile zusammengefaltet: Sie sind
    *  gespeichert, ihre erneute Eingabe ist also keine Aufgabe mehr, sondern
    *  eine Störung vor der eigentlichen - dem Quiz. Das Formular bleibt im
@@ -351,11 +371,13 @@
     el.participantMeta.textContent = teile.join(", ");
     el.participantSummary.hidden = false;
     el.startFields.hidden = true;
+    placeStartFacts(true);
   }
 
   function showParticipantForm(focus) {
     el.participantSummary.hidden = true;
     el.startFields.hidden = false;
+    placeStartFacts(false);
     if (focus) el.fName.focus();
   }
 
@@ -703,8 +725,15 @@
     if (isHiddensee && !el.hiddenseeStartContact.getAttribute("src")) {
       el.hiddenseeStartContact.src = el.hiddenseeStartContact.dataset.src;
     }
-    if (isVejro && !el.vejroStartProducts.getAttribute("src")) {
-      el.vejroStartProducts.src = el.vejroStartProducts.dataset.src;
+    if (isVejro) {
+      el.vejroStartLayers.forEach((image) => {
+        if (!image.getAttribute("src")) {
+          image.loading = "eager";
+          image.decoding = "async";
+          image.fetchPriority = "high";
+          image.src = image.dataset.src;
+        }
+      });
     }
     if (isPoel && !el.poelStartHaendler.getAttribute("src")) {
       el.poelStartHaendler.src = el.poelStartHaendler.dataset.src;
@@ -772,7 +801,9 @@
     // dem Aufsteller steht, entscheidet nicht danach, ob er anfängt - sie
     // bleiben abrufbar, nehmen aber keinen Platz mehr vor dem Knopf weg.
     el.startTypes.textContent = `Fragetypen: ${[...types].map((t) => typeNames[t] || t).join(", ")}`;
-    el.startDetails.open = false;
+    // Auf VEJRØ ist die kurze Fragetyp-Information direkt sichtbar. Der
+    // zusätzliche Aufklappknopf konkurrierte dort mit der Produktbühne.
+    el.startDetails.open = isVejro;
 
     // "internerHinweis" wird bewusst NICHT angezeigt. Das sind redaktionelle
     // Notizen an uns ("Menüpfade gegenprüfen", "Feld media ergänzen") - auf
@@ -881,6 +912,12 @@
     state.revealed = false;
     state.questionStartedAt = Date.now();
 
+    const hatMedienbild = Boolean(q.media && q.media.src);
+    el.screens.quiz.dataset.hasMedia = String(hatMedienbild);
+    el.screens.quiz.dataset.mediaLayout = hatMedienbild
+      ? (q.media.layout || q.layout || "landscape")
+      : "none";
+
     const total = state.questions.length;
     el.qCounter.textContent = `Frage ${state.index + 1} von ${total}`;
     const pct = Math.round((state.index / total) * 100);
@@ -904,7 +941,7 @@
       el.qHint.hidden = false;
     } else el.qHint.hidden = true;
 
-    if (q.media && q.media.src) {
+    if (hatMedienbild) {
       el.qMediaImg.src = q.media.src;
       el.qMediaImg.alt = q.media.alt || "";
       el.qMediaImg.dataset.layout = q.media.layout || q.layout || "landscape";

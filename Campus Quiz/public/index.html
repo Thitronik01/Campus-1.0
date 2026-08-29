@@ -8,7 +8,7 @@
   <meta name="description" content="THITRONIK Campus: Wissenscheck nach jeder Schulungsinsel.">
   <meta name="robots" content="noindex, nofollow">
   <title>THITRONIK Campus: Wissenscheck</title>
-  <link rel="stylesheet" href="/assets/styles.css?v=1.6.0">
+  <link rel="stylesheet" href="/assets/styles.css?v=1.9.2">
 </head>
 <body>
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
@@ -158,9 +158,21 @@
                    width="1536" height="1024">
             </div>
             <div class="vejro-start-visual" id="vejro-start-visual" aria-hidden="true" hidden>
-              <img class="vejro-start-products" id="vejro-start-products"
-                   data-src="/media/vejro/vej-start-produktneuheiten.webp" alt=""
-                   width="1200" height="800">
+              <img class="vejro-start-light" id="vejro-start-light"
+                   data-src="/media/vejro/vej-start-licht.webp" alt=""
+                   width="1536" height="1024">
+              <img class="vejro-start-stage" id="vejro-start-stage"
+                   data-src="/media/vejro/vej-start-podest.webp" alt=""
+                   width="1619" height="971">
+              <img class="vejro-start-access" id="vejro-start-access"
+                   data-src="/media/vejro/vej-start-fingerprint.webp" alt=""
+                   width="1619" height="971">
+              <img class="vejro-start-water" id="vejro-start-water"
+                   data-src="/media/vejro/vej-start-wassermelder.webp" alt=""
+                   width="1536" height="1024">
+              <img class="vejro-start-contact" id="vejro-start-contact"
+                   data-src="/media/vejro/vej-start-magnetkontakt.webp" alt=""
+                   width="1536" height="1024">
             </div>
             <div class="poel-start-visual" id="poel-start-visual" aria-hidden="true" hidden>
               <img class="poel-start-haendler" id="poel-start-haendler"
@@ -251,35 +263,39 @@
         </div>
 
         <div class="quiz-body">
-          <div class="q-meta">
-            <p class="q-category" id="q-category"></p>
-            <p class="q-mode" id="q-mode"></p>
-          </div>
-          <h1 class="q-title" id="q-title" tabindex="-1"></h1>
-          <p class="q-hint" id="q-hint" hidden></p>
-
-          <figure class="q-media" id="q-media" hidden>
-            <img id="q-media-img" alt="">
-            <figcaption id="q-media-caption"></figcaption>
-          </figure>
-
-          <section class="q-audio" id="q-audio" aria-label="Ton zur Frage" hidden>
-            <div class="q-audio-row">
-              <button class="q-audio-button" id="q-audio-button" type="button" aria-pressed="false">Ton abspielen</button>
-              <div class="q-audio-progress-wrap">
-                <progress id="q-audio-progress" max="100" value="0" aria-label="Abspielfortschritt"></progress>
-                <output id="q-audio-time">0:00 / 0:00</output>
+          <div class="quiz-main">
+            <div class="question-work">
+              <div class="q-meta">
+                <p class="q-category" id="q-category"></p>
+                <p class="q-mode" id="q-mode"></p>
               </div>
-            </div>
-            <p class="q-audio-status" id="q-audio-status" role="status" aria-live="polite"></p>
-            <details class="q-audio-fallback">
-              <summary>Textbeschreibung des Tons</summary>
-              <p id="q-audio-fallback-text"></p>
-            </details>
-            <audio id="q-audio-player" preload="metadata"></audio>
-          </section>
+              <h1 class="q-title" id="q-title" tabindex="-1"></h1>
+              <p class="q-hint" id="q-hint" hidden></p>
 
-          <div id="q-input"></div>
+              <section class="q-audio" id="q-audio" aria-label="Ton zur Frage" hidden>
+                <div class="q-audio-row">
+                  <button class="q-audio-button" id="q-audio-button" type="button" aria-pressed="false">Ton abspielen</button>
+                  <div class="q-audio-progress-wrap">
+                    <progress id="q-audio-progress" max="100" value="0" aria-label="Abspielfortschritt"></progress>
+                    <output id="q-audio-time">0:00 / 0:00</output>
+                  </div>
+                </div>
+                <p class="q-audio-status" id="q-audio-status" role="status" aria-live="polite"></p>
+                <details class="q-audio-fallback">
+                  <summary>Textbeschreibung des Tons</summary>
+                  <p id="q-audio-fallback-text"></p>
+                </details>
+                <audio id="q-audio-player" preload="metadata"></audio>
+              </section>
+
+              <div id="q-input"></div>
+            </div>
+
+            <figure class="q-media" id="q-media" hidden>
+              <img id="q-media-img" alt="">
+              <figcaption id="q-media-caption"></figcaption>
+            </figure>
+          </div>
 
           <div class="feedback" id="q-feedback" role="status" aria-live="polite" hidden>
             <p class="feedback-title" id="q-feedback-title"></p>
@@ -401,6 +417,6 @@
     <input name="score"><input name="total"><input name="percent"><input name="answers_json">
   </form>
 
-  <script src="/assets/engine.js?v=1.6.0" defer></script>
+  <script src="/assets/engine.js?v=1.9.0" defer></script>
 </body>
 </html>
