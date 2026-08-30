@@ -29,6 +29,24 @@ Für die Pilotphase sind keine Datenbank und keine Umgebungsvariablen nötig.
    - `campus-feedback`
 5. Für den datenbanklosen Pilotstand eine CSV exportieren und prüfen, ob Name, Händlernummer, Insel und Ergebnis beziehungsweise Feedback enthalten sind.
 
+## Später: THI aktivieren
+
+Der Assistent ist eingebaut, aber ohne Schlüssel stumm. Zum Aktivieren in
+Netlify unter **Site configuration → Environment variables**:
+
+| Variable | Wert |
+|---|---|
+| `ANYMIZE_API_KEY` | der Schlüssel aus dem Anymize-Konto |
+| `ANYMIZE_API_URL` | `https://app.anymize.ai/api/v1/llm-anonymous/chat/completions` |
+| `THI_MODEL` | `anthropic/claude-sonnet-4.6` |
+
+Danach neu deployen. Der Schlüssel gehört ausschließlich hierher — nie ins
+Repository und nie in Browser-Code.
+
+Ohne diese Werte bleibt der Campus vollständig benutzbar; THI meldet im Panel,
+dass der Schlüssel fehlt. Alle Einzelheiten in
+[`Campus Quiz/THI.md`](Campus%20Quiz/THI.md).
+
 ## Später: Supabase aktivieren
 
 Erst nach der Abstimmung der Fragen:

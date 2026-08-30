@@ -31,6 +31,11 @@ gebaut wurde.
 | `tools/test-paket.js` | Testet die Function eines **erzeugten** Pakets |
 | `tools/dev-server.js` | Lokaler Server, bildet die Netlify-Redirects nach |
 | `tools/bilder-aus-bestandsquiz.js` | Löst die eingebetteten Bilder aus einem alten Quiz heraus |
+| `netlify/functions/thi.mjs` | **THI**, der Assistent — siehe [`THI.md`](THI.md) |
+| `netlify/functions/thi-lib/` | Suchkern und Campus-Wissen von THI |
+| `netlify/functions/thi-wissen/` | Der Wissensbestand von THI. Erzeugt, nicht von Hand ändern. |
+| `public/assets/thi.js`, `thi.css` | THI im Browser: Schalter in der Kopfzeile und Panel |
+| `tools/test-thi.js` | Prüft THI — ohne API-Schlüssel lauffähig |
 
 **Inhalt steht in den JSON-Dateien, nicht im Code.** Eine Frage zu ändern heißt,
 eine JSON-Datei zu ändern — sonst nichts.
@@ -99,8 +104,8 @@ node tools/test-paket.js "../Samsø Quiz" samsoe
 ```
 
 Prüft Bewertung, Manipulationsschutz, Cache-Buster und die statisch erkannten
-Netlify-Formulare. Der aktuelle Komplettlauf umfasst **166 Prüfungen der sieben
-Einzelpakete und 187 Prüfungen des Gesamtpakets**.
+Netlify-Formulare. Der aktuelle Komplettlauf umfasst **167 Prüfungen der sieben
+Einzelpakete und 223 Prüfungen des Gesamtpakets**.
 
 Das Gesamtpaket wird mit demselben Werkzeug geprüft, einmal je Insel:
 
@@ -117,14 +122,14 @@ gibt.
 
 | Ordner | Insel | Fragen | Größe |
 |---|---|---|---|
-| `Vejrø Quiz` | VEJRØ | 10 | 670 KB |
-| `Poel Quiz` | POEL | 10 | 674 KB |
-| `Hiddensee Quiz` | HIDDENSEE | 12 | 682 KB |
-| `Samsø Quiz` | SAMSØ | 10 · 3 Bildfragen | 1602 KB |
-| `Fehmarn Quiz` | FEHMARN | 11 | 706 KB |
-| `Usedom Quiz` | USEDOM | 10 | 582 KB |
-| `Langeland Quiz` | LANGELAND | 10 | 598 KB |
-| `Campus Gesamtpaket` | **alle sieben** | 73 · 3 Bildfragen | 2785 KB |
+| `Vejrø Quiz` | VEJRØ | 10 | 5354 KB |
+| `Poel Quiz` | POEL | 10 | 3856 KB |
+| `Hiddensee Quiz` | HIDDENSEE | 12 | 3936 KB |
+| `Samsø Quiz` | SAMSØ | 9 · 3 Bildfragen | 4842 KB |
+| `Fehmarn Quiz` | FEHMARN | 11 · 1 Audiofrage | 6065 KB |
+| `Usedom Quiz` | USEDOM | 10 · Bildfragen | 4814 KB |
+| `Langeland Quiz` | LANGELAND | 10 | 3821 KB |
+| `Campus Gesamtpaket` | **alle sieben** | 72 · 3 Bildfragen | 16238 KB |
 
 ### Das Gesamtpaket
 
@@ -393,6 +398,47 @@ Feld, entfällt die Zeile ersatzlos.
 > Bild an die falsche Zeile. Gleiche Begründung wie bei `opt-1` bis `opt-4`
 > an den Antwortkacheln.
 
+### Betreuung einer Insel
+
+Unter dem Startbildschirm steht ein Streifen mit den Betreuern der Insel:
+Foto, Name und die Spezialfähigkeit in einer Zeile. Gepflegt wird er in
+`public/data/betreuer.json`:
+
+```json
+{
+  "personen": {
+    "mm": {
+      "name": "Vorname Nachname",
+      "rolle": "Technik",
+      "koennen": "Funkanlagen im Aufbau",
+      "bild": "/media/betreuer/mm.webp"
+    }
+  },
+  "inseln": { "hiddensee": ["mm"], "fehmarn": ["mm"] }
+}
+```
+
+**Zwei Ebenen, weil eine Person mehrere Inseln betreut.** Unter `personen`
+steht sie einmal, unter `inseln` wird sie zugeordnet. Bei einer flachen
+Liste je Insel stünde dieselbe Person mehrfach da — und beim nächsten
+Wechsel des Fotos an drei Stellen.
+
+| Feld | |
+|---|---|
+| `name` | Vor- und Nachname, wie auf dem Namensschild |
+| `koennen` | Die Spezialfähigkeit in einer Zeile. Nicht Titel oder Abteilung, sondern das, wofür man die Person auf der Insel anspricht. Richtwert 40 Zeichen |
+| `bild` | Foto unter `public/media/betreuer/`, quadratisch, ab 240×240, WebP. Wird rund beschnitten |
+| `rolle` | Optional, kleine Zeile über dem Namen |
+
+Ohne `bild` stehen die Initialen im Kreis — ein leerer grauer Kreis sieht
+aus wie ein Ladefehler. Hat eine Insel keinen Eintrag, bleibt der Streifen
+**ausgeblendet**; eine Überschrift über einer leeren Liste ist eine Zusage,
+die die Seite nicht einhält.
+
+Der Ordner `public/media/betreuer/` wandert als Ganzes in beide
+Paketformen — wer eine Person ergänzt, legt ein Foto ab und trägt sie ein,
+mehr nicht.
+
 ### Eine Frage ergänzen
 
 1. Frage in `public/data/inseln/<insel>.json` eintragen
@@ -402,11 +448,22 @@ Feld, entfällt die Zeile ersatzlos.
 
 ### Engine oder Stile ändern
 
-`ENGINE_VERSION` in `engine.js` **und** die beiden `?v=`-Marken in
-`index.html` gemeinsam hochzählen. Die Marken sind der einzige
-Cache-Schlüssel: Bleiben sie stehen, liefert der Browser eines Teilnehmers
-nach dem Deploy weiter die alte Engine aus — und zwar genau dem, der die
-Seite schon einmal offen hatte.
+**`ENGINE_VERSION` in `engine.js` hochzählen.** Sie ist der einzige
+Cache-Schlüssel: `netlify.toml` liefert `/assets/*` mit
+`max-age=31536000, immutable` aus. Bleibt die Zahl stehen, holt der Browser
+eines Teilnehmers **ein Jahr lang** die alte Engine aus seinem Cache — und
+zwar genau der, der die Seite schon einmal offen hatte.
+
+Die vier `?v=`-Marken in `index.html` (styles.css, thi.css, engine.js,
+thi.js) setzt `build-insel.js` beim Bauen selbst aus `ENGINE_VERSION` ein;
+im Paket sind sie also immer stimmig. In der Quelle sollten sie trotzdem
+mitgezogen werden, sonst liefert der lokale Entwicklungsserver alte Dateien
+aus.
+
+> **Geprüft wird das nicht.** `test-paket.js` vergleicht nur, ob die Marken
+> zur Fassung passen — und das tun sie immer, weil der Bau sie von dort
+> nimmt. Ob jemand die Fassung überhaupt *hochgezählt* hat, merkt niemand.
+> Siehe [`BACKLOG.md`](../BACKLOG.md).
 
 ### Eine Insel ergänzen
 
@@ -703,10 +760,10 @@ statt. Ein Dark Mode ist bewusst nicht gebaut.
 
 Gemessen, nicht geschätzt:
 
-- Kompletter Durchlauf aller vier Fragetypen bei 375 px und 1280 px
+- Kompletter Durchlauf aller fünf Fragetypen bei 375 px und 1280 px
 - Kein horizontaler Seiten-Scroll, kein Element ragt über den Viewport
 - Ziffernfilter der Händlernummer gegen sechs Eingabevarianten
-- 26 Tests der Bewertungslogik, darunter zwei Manipulationsversuche
+- 28 Tests der Bewertungslogik, darunter zwei Manipulationsversuche
 - Kontrast der tragenden Farbpaare am gerenderten Bild
 - Formularvalidierung mit Fokussprung auf das erste fehlerhafte Feld
 - Sende-Ausgang gegen vier Serverantworten durchgespielt: Funkloch, `500`,
@@ -721,6 +778,8 @@ Gemessen, nicht geschätzt:
   (155 × 206 px), alle vier Bilder geladen, Großansicht als echtes Modal mit
   Fokus im Dialog, Auflösung markiert gewählt-falsch und übersehen-richtig
   getrennt, kein verschachtelter Button, Lupe 44 × 44 bei 6 % Kachelfläche
+- 69 Prüfungen für THI, darunter der komplette Modellweg gegen einen
+  nachgebildeten Anymize-Dienst — siehe [`THI.md`](THI.md)
 
 **Nicht geprüft:** echte Hardware. Getestet wurde emuliert. Offen bleibt, was
 sich nur auf einem echten Gerät zeigt — iOS-Safari mit eingeblendeter Tastatur,
@@ -839,8 +898,7 @@ der Fall, weil die Kategorien Einzeletiketten sind („Der Klassiker", „Die
 Falle"). Die Auswertung je Frage passiert ohnehin in `campus_quiz_fragen`.
 
 **7. Die Fragen brauchen noch die abschließende technische Freigabe.** Der
-Bestand entspricht Fragenkatalog v4: 73 Fragen, davon zwölf auf HIDDENSEE und
-elf auf FEHMARN, mit den Rubriken „Falsch gewählt?" und „Mitnehmen". Die
+Bestand umfasst 72 Fragen, davon zwölf auf HIDDENSEE und elf auf FEHMARN, mit den Rubriken „Falsch gewählt?" und „Mitnehmen". Die
 Quellen stehen je Insel im Feld `quellen`; das Fachreview aus der Campus-Runde
 ist eingearbeitet.
 

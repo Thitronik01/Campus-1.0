@@ -1,0 +1,308 @@
+# Arbeitsregeln für dieses Repository
+
+Diese Datei gilt für alle Werkzeuge, die hier mitarbeiten — Claude Code,
+Codex, und was noch kommt. `CLAUDE.md` verweist hierher und ergänzt nur, was
+Claude Code allein betrifft. **Eine Quelle, nicht zwei**: Zwei Anleitungen
+für dieselben Regeln driften auseinander, und dann folgt jedes Werkzeug einer
+anderen.
+
+---
+
+## Was das hier ist
+
+Der THITRONIK Campus 1.0: eine statische Netlify-Site aus reinem HTML, CSS
+und JavaScript — kein Framework, kein Bundler — plus Netlify Functions.
+Sieben Schulungsinseln mit je einem Quiz, dazu der Feedbackbogen, die
+digitale Arbeitskarte und THI, der Assistent über die Anymize-API.
+
+Zielgerät ist das Telefon eines Händlers in einer Messehalle. Das ist keine
+Randbedingung, sondern die wichtigste: Jedes Megabyte und jede Klickfläche
+unter 44 Pixeln trifft dort zuerst.
+
+---
+
+## 0. „Es ist Montag"
+
+Sagt jemand **„es ist Montag"**, **„Arbeitsbeginn"** oder ruft `/montag` auf,
+dann wird [`.claude/commands/montag.md`](.claude/commands/montag.md)
+abgearbeitet: Stand holen, offene Zweige prüfen, bauen, alle Prüfungen laufen
+lassen, Entwicklungsserver starten, kurz melden.
+
+Ohne Agent geht es genauso:
+
+```bash
+cd "Campus Quiz"
+node tools/montag.js
+```
+
+---
+
+## 1. Vor dem ersten Handgriff: nachsehen, wer sonst noch arbeitet
+
+```bash
+git fetch --all --prune
+git branch -r
+```
+
+**Der weiteste Stand ist nicht automatisch `main`.** Im August 2026 lag
+`codex/campus-quiz-polish` fünf Tage vor `main` — mit Campus-Karte,
+Feedbackbogen und 14 neuen Bildern. Wer nur auf `main` schaute, sah davon
+nichts, baute den Gesamtfortschritt ein zweites Mal und produzierte
+27 Konflikte.
+
+Steht ein Branch vor `main`, gilt: **erst darauf aufsetzen, dann anfangen.**
+Und wenn eine Funktion gebaut werden soll, vorher prüfen, ob es sie in einem
+offenen Zweig schon gibt.
+
+---
+
+## 2. Geändert wird ausschließlich in `Campus Quiz/`
+
+| | |
+|---|---|
+| **Quelle** | `Campus Quiz/` — Engine, Fragensätze, Styles, THI, Werkzeuge |
+| **Quelle** | `Feedbackbogen/` — eigener Stand, wird ins Gesamtpaket kopiert |
+| **Quelle** | `Wissen/` — Produktwissen, Design-System, Medien |
+| **Erzeugt** | `Campus Gesamtpaket/`, `<Insel> Quiz/` — **nicht versioniert** |
+| **Vorlage** | `thi-standalone/`, `export/Bilder */` — **nicht versioniert** |
+| **Bestand** | `FehlerQuiz/`, `Pro-finder Quiz/` — laufen getrennt weiter |
+
+Die Paketordner stehen in `.gitignore`. Sie entstehen beim Bau und sind nach
+einem frischen Klon zunächst nicht da — das ist Absicht:
+
+```bash
+cd "Campus Quiz"
+node tools/build-insel.js gesamt     # Deploy-Paket, alle Inseln auf einer Site
+node tools/build-insel.js alle       # sieben Einzelpakete
+```
+
+Bis August 2026 lagen sie mit im Repository: 216 Dateien, ein Drittel des
+Projekts, bei jeder Engine-Änderung achtfach mitgeschrieben. Von 27
+Merge-Konflikten kamen 24 allein daher.
+
+---
+
+## 3. Vor jedem Commit
+
+```bash
+cd "Campus Quiz"
+node tools/montag.js --ohne-server
+```
+
+Baut beide Paketformen und lässt alles laufen: Fragensätze, Bewertungslogik,
+Feedback-Backend, THI und je rund 200 Paketprüfungen. Endet mit Rückgabewert
+1, sobald irgendetwas durchfällt — und zeigt dann nur die Zeilen, auf die es
+ankommt, statt der vollen Stapelspuren.
+
+Einzeln geht weiterhin alles:
+
+```bash
+node tools/check-fragen.js                        # Fragensätze
+node tools/test-function.js                       # Bewertungslogik
+node tools/test-thi.js                            # THI, ohne API-Schlüssel
+node tools/build-insel.js gesamt && node tools/build-insel.js alle
+node tools/test-paket.js "../Campus Gesamtpaket" vejro   # je Insel-Slug
+```
+
+---
+
+## 4. Testen immer mit `?demo=1`
+
+```
+http://localhost:8788/quiz?demo=1
+```
+
+Läuft vollständig durch, speichert absichtlich nichts. **Ohne `demo=1`
+landen Testdaten in der Produktivdatenbank.**
+
+Lokal starten:
+
+```bash
+cd "Campus Quiz"
+node tools/dev-server.js                          # Quelle, Port 8788
+node tools/dev-server.js "../Campus Gesamtpaket/public"   # gebautes Paket
+```
+
+> Zwei Server nebeneinander sind normal — einer auf der Quelle, einer auf dem
+> gebauten Paket. Wer im falschen misst, sucht Änderungen, die er gerade
+> woanders gemacht hat. Im Zweifel die `?v=`-Marke im Quelltext der Seite
+> ansehen: Sie nennt die Fassung, die dieser Server ausliefert.
+
+---
+
+## 5. Was nie ins Repository gehört
+
+- **Der Supabase Secret Key.** Ausschließlich Netlify-Umgebungsvariablen; er
+  umgeht Row Level Security.
+- **Der Anymize-API-Schlüssel** für THI. Ebenfalls nur
+  Netlify-Umgebungsvariablen — siehe [`Campus Quiz/THI.md`](Campus%20Quiz/THI.md).
+- **Echte Teilnehmerdaten** aus Testläufen.
+
+Das Repository ist privat und muss es bleiben: interne Artikel,
+Fremdmarken-Logos mit ungeklärten Rechten, fahrzeugspezifische
+Einbauunterlagen. Vor einer Weitergabe den Abschnitt „Vor der Weitergabe
+prüfen" in `Wissen/README.md` abarbeiten.
+
+---
+
+## 6. Ton der Dokumentation und Kommentare
+
+Deutsch, sachlich, ohne Werbesprache. Kommentare erklären **warum** etwas so
+ist, nicht was die Zeile tut — die bestehenden Dateien zeigen das Muster.
+Umlaute ausgeschrieben (`ä`, nicht `ae`) in Text und Kommentaren;
+**Bezeichner im Code bleiben ASCII** (`fluechtig`, `spaeter`).
+
+Ein Massen-Ersetzen von `ae` → `ä` über eine ganze Datei zerlegt dabei
+zuverlässig den Code: aus `laeuft` wird `läuft`, aus `bloecke` `blöcke`. Wenn
+schon, dann gezielt und nur in Zeichenketten und Kommentaren.
+
+---
+
+## 7. Fallen, die schon Zeit gekostet haben
+
+Der Abschnitt ist der eigentliche Grund für diese Datei. Jede dieser Fallen
+wurde einmal übersehen und hat danach Stunden gekostet.
+
+### `ENGINE_VERSION` ist der einzige Cache-Schlüssel
+
+`netlify.toml` liefert `/assets/*` mit `max-age=31536000, immutable` aus.
+Bleibt die Fassung beim Deploy stehen, holt ein Browser, der die Seite schon
+einmal offen hatte, **ein Jahr lang** die alte Engine aus seinem Cache. Die
+neue liegt auf dem Server und erreicht niemanden.
+
+Deshalb: **Wer `engine.js`, `styles.css`, `thi.js` oder `thi.css` ändert,
+zählt `ENGINE_VERSION` in `engine.js` hoch.** Das Bauwerkzeug setzt die Zahl
+beim Bau in alle `?v=`-Verweise der `index.html` ein; in der Quelle sollte
+sie trotzdem mitgezogen werden, sonst liefert der lokale
+Entwicklungsserver alte Dateien aus.
+
+Geprüft wird das derzeit **nicht** — die Paketprüfung vergleicht nur, ob die
+Marken zur Fassung passen, und das tun sie immer, weil der Bau sie von dort
+nimmt. Siehe Rückstand in [`BACKLOG.md`](BACKLOG.md).
+
+### Netlify packt ESM-Functions mit nft — und nft folgt nur statischen Importen
+
+`netlify/functions/thi.mjs` ist ESM und wird deshalb nicht von esbuild,
+sondern von nft (Node File Trace) verpackt. nft verfolgt **ausschließlich
+statische `import`-Anweisungen**. Ein `createRequire()` oder ein dynamisches
+`import()` bleibt unsichtbar: Das Paket kommt ohne die Daten hoch, und die
+Funktion stirbt beim ersten Aufruf mit `MODULE_NOT_FOUND`.
+
+Lokal fällt das nie auf, weil der Entwicklungsserver die Originaldatei lädt.
+
+Richtig ist:
+
+```js
+import ARTIKEL from "./thi-wissen/artikel.de.json" with { type: "json" };
+```
+
+`tools/test-thi.js` prüft das mit einer eigenen Verpackungsprobe. Diese
+Prüfung nicht entfernen.
+
+### CSS: `:not([attr])` hebt die Spezifität
+
+Der gemeinsame Verlauf über den Insel-Bühnen steht als
+
+```css
+#screen-start[data-island]:not([data-island="vejro"])... .start-intro::before
+```
+
+Jedes `:not()` zählt wie ein Attributselektor. Eine schlichte Regel für eine
+einzelne Insel verliert dagegen — sie steht im Stylesheet, greift aber nie.
+Wer eine Insel ausnimmt, trägt sie in die `:not()`-Kette ein **und** gibt ihr
+eine vollständige eigene Regel, `content` und `position` eingeschlossen.
+
+### `body { zoom: .8 }` verschiebt jede Messung
+
+Layout- und Bildschirmpixel fallen dadurch auseinander:
+
+- Eine Klickfläche mit `min-height: 54px` ist physisch **43 px** — unter dem
+  Mindestmaß von 44. Deshalb `calc(var(--tap) + 12px)` statt fester Zahlen.
+- `100vw` und `100dvh` verhalten sich uneinheitlich. Statt Breite oder Höhe
+  lieber gegenüberliegende Kanten setzen.
+- Medienabfragen sehen den **Viewport**, das Layout rechnet mit
+  `Viewport / 0.8`. Zwischen 640 und 800 px klaffen die beiden auseinander.
+
+### Vor dem Löschen eines Bildes nachsehen, wer darauf zeigt
+
+`lan-start-schluesseluebergabe.webp` sah nach dem Umbau der Langeland-Bühne
+verwaist aus — es hängt aber an einer **Frage** in
+`public/data/inseln/langeland.json`. Gelöscht hätte es eine Frage zerstört,
+und die Paketprüfung hätte es nicht bemerkt.
+
+Deshalb immer über den ganzen Baum suchen, `public/data/` eingeschlossen:
+
+```bash
+grep -rF "dateiname.webp" public tools netlify
+```
+
+### Erst messen, dann behaupten
+
+Zwei Beispiele aus einer einzigen Sitzung:
+
+- Ein Bildschirmfoto zeigte Samsø ohne Fahrzeug. Die naheliegende Erklärung —
+  der Verlauf überdeckt es — war falsch. Die Aufnahme entstand schlicht,
+  bevor das Bild gezeichnet war. Die Gegenprobe mit abgeschaltetem Verlauf
+  hat es geklärt.
+- Der Sprung der GitHub-Actions von `v4`/`v5` auf `v7`/`v8` sah nach
+  erfundenen Versionsnummern aus. Ein Blick auf die Tag-Listen zeigte: Es
+  gibt sie alle.
+
+Ein Verdacht ist kein Befund. Der Unterschied kostet zwei Minuten.
+
+### Unter Windows sind Umgebungsvariablen nicht case-sensitiv
+
+`delete process.env.Anymize_API_KEY` entfernt dort **auch**
+`ANYMIZE_API_KEY`. Wer in einem Test die eine Schreibweise wegnimmt, um die
+andere zu prüfen, prüft nichts.
+
+---
+
+## 8. Die jüngeren Bausteine
+
+### THI — der Assistent
+
+Function `netlify/functions/thi.mjs`, Bibliothek in `thi-lib/`, Wissen in
+`thi-wissen/`. Oberfläche: `public/assets/thi.js` und `thi.css`, der
+Schalter hängt sich selbst in die Kopfzeile.
+
+**`thi-wissen/` ist die einzige Ausnahme von „Erzeugtes gehört nicht ins
+Repository"** — rund 3 MB JSON, und sie sind versioniert. Der Grund:
+`tools/thi-wissen-bauen.js` erzeugt sie aus `thi-standalone/`, und der
+Ordner ist weder versioniert noch auf dem Netlify-Bauserver vorhanden. Ohne
+die Ausnahme könnte kein Deploy THI mit Wissen ausliefern. Neu gebaut wird
+von Hand, wenn das Wiki einen neuen Stand hat.
+
+Alles Weitere — Schlüssel, Grenzen, Wissen ergänzen — steht in
+[`Campus Quiz/THI.md`](Campus%20Quiz/THI.md).
+
+### Betreuung der Insel
+
+Der Streifen unter dem Startbildschirm mit Foto, Name und Spezialfähigkeit.
+Daten in `public/data/betreuer.json`, gerendert von `renderBetreuung()` in
+`engine.js`, ins Paket kopiert von `kopiereBetreuung()` in `build-insel.js`.
+
+Zwei Ebenen in der JSON — `personen` und `inseln` —, weil eine Person mehrere
+Inseln betreut und sonst beim nächsten Fotowechsel an drei Stellen stünde.
+Ohne Eintrag bleibt der Streifen ausgeblendet. Beschrieben in
+[`Campus Quiz/README.md`](Campus%20Quiz/README.md).
+
+### Insel-Bühnen aus Einzelmotiven
+
+`tools/szenen-bauen.js` schneidet und verkleinert die PNG-Quellen aus
+`export/Bilder <Insel>/` nach `public/media/<insel>/`. Braucht einmalig
+`npm install sharp --no-save`. Die Quellen sind **nicht** versioniert; das
+Ergebnis ist es.
+
+---
+
+## Wo was ausführlich steht
+
+| Thema | Datei |
+|---|---|
+| Überblick, Stand, Sicherheit | [`README.md`](README.md) |
+| Offene Befunde und Rückstand | [`BACKLOG.md`](BACKLOG.md) |
+| Engine, Fragetypen, Backend, Sende-Ausgang | [`Campus Quiz/README.md`](Campus%20Quiz/README.md) |
+| THI: Einbau, Schlüssel, Wissen ergänzen | [`Campus Quiz/THI.md`](Campus%20Quiz/THI.md) |
+| Deploy und Umgebungsvariablen | [`NETLIFY-DEPLOY.md`](NETLIFY-DEPLOY.md) |
+| Produktwissen, Design-System, Medien | [`Wissen/README.md`](Wissen/README.md) |

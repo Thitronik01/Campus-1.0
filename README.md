@@ -11,7 +11,7 @@
 
 <p align="center">
   <img alt="Inseln" src="https://img.shields.io/badge/Inseln-7-1D3661?style=flat-square">
-  <img alt="Fragen" src="https://img.shields.io/badge/Fragen-73-1D3661?style=flat-square">
+  <img alt="Fragen" src="https://img.shields.io/badge/Fragen-72-1D3661?style=flat-square">
   <img alt="Stack" src="https://img.shields.io/badge/Stack-Netlify%20Forms%20%2B%20Supabase%20später-3BA9D3?style=flat-square">
   <img alt="Framework" src="https://img.shields.io/badge/Framework-keins-AFCA05?style=flat-square">
   <img alt="Stand" src="https://img.shields.io/badge/Stand-vor%20dem%20ersten%20Deploy-CE132D?style=flat-square">
@@ -46,7 +46,7 @@ Praxis-Halbwahrheiten — Annahmen, die im Support später Zeit kosten.
 | **VEJRØ** | Produktneuheiten: Zugang & Wasserschutz | 10 |
 | **POEL** | Händlerbereich — Beratung & Werkstatt vorbereiten | 10 |
 | **HIDDENSEE** | Funk-Magnetkontakte, Abzweigverbinder & Crimpen | 12 |
-| **SAMSØ** | Einbauorte im Fahrzeug | 10 |
+| **SAMSØ** | Einbauorte im Fahrzeug | 9 |
 | **FEHMARN** | Fehlersuche, Support & Pro-finder-Mobilfunk | 11 |
 | **USEDOM** | Verkaufsdisplay & Konfigurator | 10 |
 | **LANGELAND** | Fahrzeugannahme & -übergabe | 10 |
@@ -171,7 +171,7 @@ Alle sieben Einzelpakete auf einmal: `node tools/build-insel.js alle`
 Der Workflow [`.github/workflows/campus.yml`](.github/workflows/campus.yml)
 läuft bei jedem Pull Request gegen `main` und bei jedem Push auf `main`.
 
-1. Er prüft alle 73 Fragen und die Bewertungslogik.
+1. Er prüft alle 72 Fragen und die Bewertungslogik.
 2. Er baut und prüft das Gesamtpaket sowie alle Einzelpakete.
 3. Er speichert `Campus Gesamtpaket/` für 14 Tage als geprüftes Artefakt.
 4. Bei einem Push auf `main` deployt er genau dieses Artefakt nach Netlify.
@@ -201,8 +201,8 @@ manueller Schritt.
 | **Browser** | die einzige Anwendung, die der Händler braucht |
 
 Kein Framework, kein Build-Schritt für die Seite selbst, keine App, keine
-Installation. Je nach Bildanteil sind die Insel-Pakete derzeit 582 bis 1602 KB
-groß, das Gesamtpaket 2785 KB.
+Installation. Je nach Bildanteil sind die Insel-Pakete derzeit rund 3800 bis
+6100 KB groß, das Gesamtpaket rund 16 MB.
 
 **Der Browser bewertet nicht.** Er sendet ausschließlich, *was* gewählt wurde —
 nie, ob es richtig war. Bewertet wird in der Netlify-Function, gegen dieselbe
@@ -224,23 +224,27 @@ der Browser wieder Empfang meldet. Solange etwas aussteht, sagt die Insel
 **Fertig und geprüft**
 
 - Ein Gesamtpaket (alle Inseln, eine Site) **und** sieben Einzelpakete, alle direkt hochladbar
-- 73 Fragen, alle fünf Fragetypen, aus dem Produktwissen mit Quellenangabe
-- 353 Paketprüfungen für Gesamt- und Einzelpakete, dazu 28 Prüfungen der Bewertungslogik
+- 72 Fragen, alle fünf Fragetypen, aus dem Produktwissen mit Quellenangabe
+- 390 Paketprüfungen für Gesamt- und Einzelpakete (223 + 167), dazu 28 Prüfungen der Bewertungslogik
 - Mobil geprüft bei 375 px: kein horizontaler Scroll, alle Trefferflächen ≥ 44 px
-- Arbeitsregeln in [`CLAUDE.md`](CLAUDE.md) — was Quelle ist, was erzeugt, und was vor jedem Commit läuft
+- Arbeitsregeln in [`AGENTS.md`](AGENTS.md) — was Quelle ist, was erzeugt, was vor jedem Commit läuft, und die Fallen, die schon Zeit gekostet haben
+- Syntaxprüfung aller 33 ausgelieferten Dateien vor allen anderen Prüfungen (`tools/check-syntax.js`)
+- THI, der Assistent — eingebaut und geprüft, wartet nur noch auf den Schlüssel
 - Sende-Ausgang gegen Funkloch, `500`, `400` und Erfolg durchgespielt — inklusive
   Reload zwischendrin
 - Farbkontraste am gerenderten Bild gemessen, alle über WCAG AA
 
 **Noch offen**
 
-- Die Supabase-Migration bewusst erst nach der fachlichen Fragenabstimmung einspielen; bis dahin sammelt Netlify Forms die Pilotdaten
-- Netlify Forms im Site-Dashboard aktivieren und nach dem ersten Deploy noch einmal deployen
+- THI und Supabase scharfschalten — Ablauf Schritt für Schritt in [`INBETRIEBNAHME.md`](INBETRIEBNAHME.md)
+- **64 Befunde aus dem Audit vom 30.08.2026**, nach Schwere geordnet in [`BACKLOG.md`](BACKLOG.md).
+  Zehn davon sind mit „hoch" bewertet; drei betreffen personenbezogene Daten und
+  gehören vor dem Scharfschalten von Supabase entschieden.
 - Weitere Werkstattbilder für Bildfragen, siehe [Wunschliste](Campus%20Quiz/BILDER-WUNSCHLISTE.md)
 - Fachliche Freigabe der Fragen
 
-Alles Einzelne steht in den [Issues](https://github.com/Thitronik01/Campus-1.0/issues)
-und ausführlich in [`Campus Quiz/README.md`](Campus%20Quiz/README.md).
+Ausführlich in [`Campus Quiz/README.md`](Campus%20Quiz/README.md). Aus dem
+Rückstand werden Issues mit `node .github/issues-anlegen.js`.
 
 ---
 
