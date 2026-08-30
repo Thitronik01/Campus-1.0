@@ -231,6 +231,46 @@ comment on view public.campus_quiz_und_feedback is
 
 
 -- ---------------------------------------------------------------------------
+-- 7b. Die Views ebenso verschliessen wie die Tabelle
+--
+-- Abschnitt 3 schuetzt die TABELLE: RLS an, keine Policy, Rechte fuer anon und
+-- authenticated entzogen. Fuer die vier Views darueber galt das nicht — und
+-- genau darueber war die Tabelle wieder lesbar. Zwei Voreinstellungen wirken
+-- dabei zusammen:
+--
+--   1. Eine View laeuft in PostgreSQL mit den Rechten ihres BESITZERS, nicht
+--      denen des Aufrufers. Die RLS der Tabelle greift dadurch nicht.
+--   2. Supabase legt fuer neue Objekte im Schema public Default-Privileges
+--      zugunsten von anon und authenticated an.
+--
+-- Zusammen heisst das: PostgREST haette
+-- /rest/v1/campus_quiz_und_feedback mit dem oeffentlichen anon-Schluessel
+-- ausgeliefert — Haendlernummer, Haendlername, Quizschnitt und
+-- Feedbackbewertung Zeile fuer Zeile.
+--
+-- Beides wird hier geschlossen. security_invoker laesst die View mit den
+-- Rechten des Aufrufers laufen, sodass die RLS der Tabelle wieder greift; der
+-- Rechteentzug ist der zweite Riegel.
+--
+-- WER DIE VIEWS AUSWERTEN SOLL — Langdock zum Beispiel —, braucht dafuer den
+-- Service Key oder eine eigene Rolle mit ausdruecklichem GRANT. Ueber den
+-- anon-Schluessel geht es danach nicht mehr, und das ist der Zweck.
+--
+-- Erfordert PostgreSQL 15 oder neuer; Supabase erfuellt das.
+-- ---------------------------------------------------------------------------
+
+alter view public.campus_quiz_inseln           set (security_invoker = on);
+alter view public.campus_quiz_fragen           set (security_invoker = on);
+alter view public.campus_quiz_taetigkeit       set (security_invoker = on);
+alter view public.campus_quiz_und_feedback     set (security_invoker = on);
+
+revoke all on public.campus_quiz_inseln       from anon, authenticated;
+revoke all on public.campus_quiz_fragen       from anon, authenticated;
+revoke all on public.campus_quiz_taetigkeit   from anon, authenticated;
+revoke all on public.campus_quiz_und_feedback from anon, authenticated;
+
+
+-- ---------------------------------------------------------------------------
 -- 8. Kontrolle nach dem Einspielen
 -- ---------------------------------------------------------------------------
 
@@ -239,7 +279,18 @@ comment on view public.campus_quiz_und_feedback is
 -- select * from public.campus_quiz_taetigkeit;
 -- select * from public.campus_quiz_und_feedback;
 
--- Prüfen, dass anon wirklich nicht drankommt:
--- select grantee, privilege_type
+-- Prüfen, dass anon wirklich nicht drankommt — Tabelle UND Views.
+-- Erwartet: keine Zeile mit grantee 'anon' oder 'authenticated'.
+-- select table_name, grantee, privilege_type
 --   from information_schema.role_table_grants
---  where table_name = 'campus_quiz_submissions';
+--  where table_name in ('campus_quiz_submissions',
+--                       'campus_quiz_inseln', 'campus_quiz_fragen',
+--                       'campus_quiz_taetigkeit', 'campus_quiz_und_feedback')
+--    and grantee in ('anon', 'authenticated');
+
+-- Und dass die Views mit den Rechten des Aufrufers laufen.
+-- Erwartet: viermal security_invoker=on.
+-- select c.relname, c.reloptions
+--   from pg_class c join pg_namespace n on n.oid = c.relnamespace
+--  where n.nspname = 'public' and c.relkind = 'v'
+--    and c.relname like 'campus_quiz%';

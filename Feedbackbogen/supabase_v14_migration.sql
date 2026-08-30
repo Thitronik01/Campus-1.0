@@ -287,3 +287,33 @@ create or replace view public.campus_feedback_langdock_stats as
 --    group by item_label
 --    order by stimmen desc;
 -- ---------------------------------------------------------------------------
+
+
+-- ---------------------------------------------------------------------------
+-- Auswertungs-Views verschliessen
+--
+-- Dieselbe Luecke wie in supabase_campus_quiz_migration.sql, Abschnitt 7b:
+-- Eine View laeuft mit den Rechten ihres Besitzers, und Supabase raeumt neuen
+-- Objekten im Schema public per Voreinstellung Rechte fuer anon und
+-- authenticated ein. Die Tabellen darunter sind RLS-geschuetzt — ueber die
+-- Views waeren sie es nicht gewesen.
+--
+-- Zum Auswerten (Langdock) den Service Key oder eine eigene Rolle mit
+-- ausdruecklichem GRANT verwenden.
+-- ---------------------------------------------------------------------------
+
+do $$
+declare v record;
+begin
+  for v in
+    select c.relname
+      from pg_class c
+      join pg_namespace n on n.oid = c.relnamespace
+     where n.nspname = 'public'
+       and c.relkind = 'v'
+       and c.relname like 'campus_feedback_langdock%'
+  loop
+    execute format('alter view public.%I set (security_invoker = on)', v.relname);
+    execute format('revoke all on public.%I from anon, authenticated', v.relname);
+  end loop;
+end $$;
