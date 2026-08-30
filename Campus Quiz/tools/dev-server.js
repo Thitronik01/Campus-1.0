@@ -8,11 +8,25 @@
 
    Speichern wird hier nicht getestet: Netlify Forms und Functions stehen nur
    im Deployment bereit. Lokal deshalb mit ?demo=1 arbeiten.
+
+   EINE AUSNAHME: die THI-Function. Sie speichert nichts, sie liest nur im
+   Wissensbestand und fragt das Sprachmodell — es gibt also nichts, was lokal
+   in die Produktivdatenbank laufen koennte. Ohne sie waere THI lokal
+   ueberhaupt nicht pruefbar, und ein Assistent, den man vor dem Deployment
+   nicht sehen kann, wird auch nicht vor dem Deployment richtig.
+
+   Der Schluessel kommt dafuer aus der Umgebung:
+
+     ANYMIZE_API_KEY=... ANYMIZE_API_URL=... node tools/dev-server.js
+
+   Ohne Schluessel laeuft alles bis auf die Modellantwort; THI meldet dann im
+   Panel, was fehlt.
    ========================================================================== */
 
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
+const { Readable } = require("stream");
 
 // Ohne Argument die Arbeitsquelle, mit Argument ein erzeugtes Insel-Paket:
 //   node tools/dev-server.js "../Samsø Quiz/public"
@@ -34,12 +48,59 @@ const MIME = {
   ".svg": "image/svg+xml"
 };
 
+/* Die THI-Function im v2-Format (Request rein, Response raus) an den
+   node:http-Server anschliessen. Der Modulpfad zeigt immer in die QUELLE, auch
+   wenn der Server ein gebautes Paket ausliefert: das Paket traegt dieselbe
+   Datei, und beim Entwickeln soll die Aenderung sofort greifen. */
+const THI_MODUL = path.join(__dirname, "..", "netlify", "functions", "thi.mjs");
+let thiGeladen = null;
+
+async function thiBedienen(req, res, url) {
+  try {
+    // Erst beim ersten Aufruf laden: der Wissensbestand kostet rund 3 MB
+    // Speicher, die ein Server ohne THI-Nutzung nicht braucht.
+    if (!thiGeladen) thiGeladen = import(`file://${THI_MODUL.replace(/\\/g, "/")}`);
+    const modul = await thiGeladen;
+
+    const koerper = await new Promise((fertig, fehler) => {
+      const teile = [];
+      req.on("data", (stueck) => teile.push(stueck));
+      req.on("end", () => fertig(Buffer.concat(teile)));
+      req.on("error", fehler);
+    });
+
+    const anfrage = new Request(`http://localhost:${PORT}${url.pathname}${url.search}`, {
+      method: req.method,
+      headers: req.headers,
+      body: req.method === "GET" || req.method === "HEAD" ? undefined : koerper
+    });
+
+    const antwort = await modul.default(anfrage);
+    const kopfzeilen = {};
+    antwort.headers.forEach((wert, name) => { kopfzeilen[name] = wert; });
+    res.writeHead(antwort.status, kopfzeilen);
+
+    if (antwort.body) Readable.fromWeb(antwort.body).pipe(res);
+    else res.end();
+  } catch (fehler) {
+    console.error("[thi] lokal fehlgeschlagen:", fehler);
+    res.writeHead(500, { "Content-Type": "application/json; charset=utf-8" });
+    res.end(JSON.stringify({ fehler: "lokal", meldung: String(fehler && fehler.message || fehler) }));
+  }
+}
+
 http.createServer((req, res) => {
   const url = new URL(req.url, `http://localhost:${PORT}`);
   let pathname = decodeURIComponent(url.pathname);
 
-  // Die Function gibt es lokal nicht — sauber als 501 melden, damit die
-  // Engine ihren Fehlerpfad zeigt statt auf eine HTML-Seite zu laufen.
+  // THI laeuft lokal mit (siehe Kopf der Datei).
+  if (pathname === "/.netlify/functions/thi") {
+    thiBedienen(req, res, url);
+    return;
+  }
+
+  // Die übrigen Functions gibt es lokal nicht — sauber als 501 melden, damit
+  // die Engine ihren Fehlerpfad zeigt statt auf eine HTML-Seite zu laufen.
   if (pathname.startsWith("/.netlify/functions/")) {
     res.writeHead(501, { "Content-Type": "application/json; charset=utf-8" });
     res.end(JSON.stringify({ error: "Lokal nicht verfügbar — bitte ?demo=1 verwenden." }));

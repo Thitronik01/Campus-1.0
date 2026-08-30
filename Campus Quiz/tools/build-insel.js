@@ -132,6 +132,38 @@ function kopiereVerzeichnis(von, nach, ausgenommen = new Set()) {
   return anzahl;
 }
 
+/** Kopiert THI: Browserteil nach public/assets, Function samt Wissensbestand
+ *  nach netlify/functions.
+ *
+ *  Der Wissensbestand wird NICHT beim Paketbau erzeugt — er entsteht aus
+ *  thi-standalone/, und der Ordner ist weder versioniert noch auf dem
+ *  Netlify-Bauserver vorhanden. Der Bestand selbst ist deshalb bewusst
+ *  versioniert und wird hier nur kopiert; er ist die einzige Ausnahme von
+ *  der Regel "Erzeugtes gehoert nicht ins Repository", und sie ist noetig,
+ *  weil sonst kein Deploy THI mit Wissen ausliefern koennte. Neu erzeugt
+ *  wird er von Hand, wenn das Wiki einen neuen Stand hat:
+ *
+ *      node tools/thi-wissen-bauen.js
+ */
+function kopiereThi(oeff, ziel) {
+  const bestand = path.join(WURZEL, "netlify", "functions", "thi-wissen");
+  if (!fs.existsSync(bestand)) {
+    throw new Error(`Der THI-Wissensbestand fehlt: ${bestand}
+Einmalig erzeugen mit:  node tools/thi-wissen-bauen.js`);
+  }
+
+  kopiere(path.join(WURZEL, "public", "assets", "thi.js"), path.join(oeff, "assets", "thi.js"));
+  kopiere(path.join(WURZEL, "public", "assets", "thi.css"), path.join(oeff, "assets", "thi.css"));
+
+  const fnZiel = path.join(ziel, "netlify", "functions");
+  kopiere(path.join(WURZEL, "netlify", "functions", "thi.mjs"), path.join(fnZiel, "thi.mjs"));
+  let dateien = 2;
+  dateien += kopiereVerzeichnis(path.join(WURZEL, "netlify", "functions", "thi-lib"),
+    path.join(fnZiel, "thi-lib"));
+  dateien += kopiereVerzeichnis(bestand, path.join(fnZiel, "thi-wissen"));
+  return dateien + 1;
+}
+
 /** Kopiert den Feedbackbogen rekursiv nach public/feedback/. Seine
  *  Verweise sind relativ ("assets/v12/..."), loesen sich unter dem
  *  Unterverzeichnis also von selbst richtig auf. */
@@ -156,7 +188,33 @@ function kopiereGemeinsameMedien(oeff) {
   for (const relativ of GEMEINSAME_MEDIEN) {
     kopiere(path.join(WURZEL, "public", relativ), path.join(oeff, relativ));
   }
-  return GEMEINSAME_MEDIEN.length;
+  /* Die Betreuerfotos stehen nicht in GEMEINSAME_MEDIEN, sondern werden als
+     Ordner uebernommen: Wer eine Person ergaenzt, legt ein Foto ab und
+     traegt sie in betreuer.json ein — er soll dafuer nicht zusaetzlich eine
+     Liste in einem Bauwerkzeug pflegen muessen. Sie je Insel abzulegen
+     scheidet aus, weil eine Person mehrere Inseln betreut. */
+  let zusatz = 0;
+  const fotos = path.join(WURZEL, "public", "media", "betreuer");
+  if (fs.existsSync(fotos)) {
+    // withFileTypes, damit ein versehentlich angelegter Unterordner den Bau
+    // nicht abbricht: fs.copyFileSync wirft auf Verzeichnissen.
+    for (const eintrag of fs.readdirSync(fotos, { withFileTypes: true })) {
+      if (!eintrag.isFile()) continue;
+      kopiere(path.join(fotos, eintrag.name), path.join(oeff, "media", "betreuer", eintrag.name));
+      zusatz++;
+    }
+  }
+  return GEMEINSAME_MEDIEN.length + zusatz;
+}
+
+/** betreuer.json gehoert in jedes Paket — auch ins Einzelpaket, denn die
+ *  Insel dort hat dieselbe Betreuung wie im Gesamtstand. Fehlt die Datei,
+ *  blendet die Engine den Streifen aus; dann bricht hier auch nichts ab. */
+function kopiereBetreuung(oeff) {
+  const quelle = path.join(WURZEL, "public", "data", "betreuer.json");
+  if (!fs.existsSync(quelle)) return false;
+  kopiere(quelle, path.join(oeff, "data", "betreuer.json"));
+  return true;
 }
 
 /** Leert einen Ordner, ohne ihn selbst zu entfernen.
@@ -316,16 +374,32 @@ Erzeugt am: (siehe Dateidatum)
 
 /** Gemeinsamer Überschreibschutz. Gibt false zurück, wenn der Ordner stehen
  *  bleiben muss. */
-function zielVorbereiten(ziel, ordnerName) {
+function zielVorbereiten(ziel, ordnerName, befehl) {
   if (fs.existsSync(ziel)) {
     const inhalt = fs.readdirSync(ziel);
     if (inhalt.length && !inhalt.includes(MARKER)) {
       console.error(`  ÜBERSPRUNGEN  ${ordnerName} — nicht leer und nicht von diesem Werkzeug erzeugt.`);
       console.error(`                Vorhandenes erst wegräumen, dann erneut bauen.`);
+      /* Ein uebersprungenes Paket ist ein Fehlschlag, kein Hinweis. Ohne
+         diese Zeile endet das Werkzeug mit 0, montag.js meldet "ok", und die
+         anschliessenden Paketpruefungen laufen gegen den ALTEN Stand — wer
+         danach hochlaedt, deployt eine veraltete Engine im Glauben, alles
+         sei gruen. */
+      process.exitCode = 1;
       return false;
     }
     leeren(ziel);
   }
+  /* Den MARKER sofort schreiben, nicht erst am Ende.
+     Vorher wurde er als letztes gesetzt — bricht der Bau dazwischen ab
+     (fehlender Feedbackbogen, fehlender THI-Bestand, fehlendes Bild),
+     bleibt ein voller Ordner OHNE MARKER zurueck. Den haelt das Werkzeug
+     ab dann fuer fremd und ruehrt ihn nie wieder an; er muss von Hand
+     geloescht werden. Steht der MARKER von Anfang an, ist auch eine
+     Bauruine als erzeugt gekennzeichnet und der naechste Lauf raeumt sie
+     weg. Der endgueltige MARKER am Ende ueberschreibt diesen hier. */
+  fs.mkdirSync(ziel, { recursive: true });
+  schreib(path.join(ziel, MARKER), markerText(befehl));
   return true;
 }
 
@@ -346,7 +420,7 @@ function baue(slug) {
 
   // Nur den Marker prüfen, wenn der Ordner Inhalt hat: ein bestehender,
   // nicht von uns erzeugter Ordner soll nicht stillschweigend verschwinden.
-  if (!zielVorbereiten(ziel, ordnerName)) return null;
+  if (!zielVorbereiten(ziel, ordnerName, slug)) return null;
 
   const oeff = path.join(ziel, "public");
 
@@ -370,6 +444,7 @@ function baue(slug) {
   schreib(path.join(oeff, "data", "inseln.json"),
     JSON.stringify({ event: katalog.event, titel: katalog.titel, inseln: [insel] }, null, 2) + "\n");
   kopiere(satzDatei, path.join(oeff, "data", "inseln", `${slug}.json`));
+  kopiereBetreuung(oeff);
 
   // --- Bilder -------------------------------------------------------------
   const bildQuelle = path.join(WURZEL, "public", "media", slug);
@@ -394,6 +469,9 @@ function baue(slug) {
   );
   schreib(path.join(ziel, "netlify", "functions", "submit-quiz.js"), fn);
 
+  // --- THI ----------------------------------------------------------------
+  const thiDateien = kopiereThi(oeff, ziel);
+
   // --- netlify.toml -------------------------------------------------------
   schreib(path.join(ziel, "netlify.toml"), netlifyToml(
     `# Einzel-Insel-Paket: jede Adresse liefert dieselbe Seite, die Engine geht
@@ -405,7 +483,7 @@ function baue(slug) {
 
   schreib(path.join(ziel, "ANLEITUNG.md"), anleitung(satz, insel, bilder));
 
-  return { ordnerName, ziel, bilder, fragen: satz.questions.length, version: satz.version };
+  return { ordnerName, ziel, bilder, fragen: satz.questions.length, version: satz.version, thiDateien };
 }
 
 /** Alle sieben Inseln auf einer Site: Übersicht unter /quiz, jede Insel unter
@@ -425,7 +503,7 @@ function baueGesamt() {
   const katalog = JSON.parse(lies("public", "data", "inseln.json"));
   const ziel = path.join(PROJEKT, GESAMT);
 
-  if (!zielVorbereiten(ziel, GESAMT)) return null;
+  if (!zielVorbereiten(ziel, GESAMT, "gesamt")) return null;
 
   const oeff = path.join(ziel, "public");
 
@@ -450,6 +528,7 @@ function baueGesamt() {
   // erhalten beim Eindampfen des Katalogs bewusst keinen Feedback-Link.
   schreib(path.join(oeff, "data", "inseln.json"),
     JSON.stringify({ ...katalog, feedback: `/${BOGEN_ZIEL}/` }, null, 2) + "\n");
+  kopiereBetreuung(oeff);
 
   const inseln = [];
   let fragen = 0;
@@ -494,6 +573,9 @@ function baueGesamt() {
   kopiere(path.join(WURZEL, "netlify", "functions", "submit-feedback.js"),
     path.join(ziel, "netlify", "functions", "submit-feedback.js"));
 
+  // --- THI ----------------------------------------------------------------
+  const thiDateien = kopiereThi(oeff, ziel);
+
   // --- netlify.toml -------------------------------------------------------
   schreib(path.join(ziel, "netlify.toml"), netlifyToml(
     `# Gesamtpaket: /quiz zeigt die Inselübersicht, /quiz/<insel> geht direkt\n` +
@@ -506,7 +588,7 @@ function baueGesamt() {
   schreib(path.join(ziel, MARKER), markerText("gesamt"));
   schreib(path.join(ziel, "ANLEITUNG.md"), anleitungGesamt(katalog, inseln, bilder, bogenDateien));
 
-  return { ordnerName: GESAMT, ziel, bilder, fragen, inseln: inseln.length, bogenDateien, arbeitskarteDateien };
+  return { ordnerName: GESAMT, ziel, bilder, fragen, inseln: inseln.length, bogenDateien, arbeitskarteDateien, thiDateien };
 }
 
 // -------------------------------------------------------------- Anleitung --
@@ -766,7 +848,7 @@ if (arg === "gesamt") {
     const r = baueGesamt();
     if (r) {
       gebaut.push(r);
-      console.log(`  gebaut  ${r.ordnerName.padEnd(18)} ${r.inseln} Inseln, ${r.fragen} Fragen, ${r.bilder} Bilder`);
+      console.log(`  gebaut  ${r.ordnerName.padEnd(18)} ${r.inseln} Inseln, ${r.fragen} Fragen, ${r.bilder} Bilder, THI (${r.thiDateien} Dateien)`);
       console.log(`\nEin Paket erzeugt: Übersicht unter /quiz, jede Insel unter /quiz/<slug>.`);
     }
   } catch (error) {
@@ -781,7 +863,7 @@ if (arg === "gesamt") {
       const r = baue(slug);
       if (r) {
         gebaut.push(r);
-        console.log(`  gebaut  ${r.ordnerName.padEnd(18)} ${r.fragen} Fragen, v${r.version}, ${r.bilder} Bilder`);
+        console.log(`  gebaut  ${r.ordnerName.padEnd(18)} ${r.fragen} Fragen, v${r.version}, ${r.bilder} Bilder, THI (${r.thiDateien} Dateien)`);
       }
     } catch (error) {
       console.error(`  FEHLER  ${slug}: ${error.message}`);

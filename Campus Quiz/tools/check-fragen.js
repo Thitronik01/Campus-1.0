@@ -317,6 +317,75 @@ for (const island of catalog.inseln) {
   }
 }
 
+/* -------------------------------------------------------- Betreuung ------
+ *
+ *  Die Betreuer-Leiste unter dem Startbildschirm faellt bei jedem
+ *  Redaktionsfehler STILL aus: Ein Komma zu viel in der JSON, und
+ *  engine.js schreibt nur ein console.warn; ein Tippfehler im Insel-Slug,
+ *  und der Streifen erscheint auf dieser Insel nie; ein Kuerzel ohne
+ *  Eintrag unter "personen", und die Person verschwindet durch das
+ *  .filter(Boolean) in renderBetreuung.
+ *
+ *  Auffallen wuerde das erst auf dem Startbildschirm der Schulung — vor den
+ *  Teilnehmern. Deshalb hier. */
+const betreuerDatei = path.join(DATA, "betreuer.json");
+if (!fs.existsSync(betreuerDatei)) {
+  warn("betreuer.json", "Datei fehlt — der Betreuungsstreifen bleibt auf allen Inseln leer.");
+} else {
+  const betreuung = readJson(betreuerDatei, "betreuer.json");
+  if (betreuung) {
+    const personen = betreuung.personen || {};
+    const zuordnung = betreuung.inseln || {};
+    const slugs = new Set(catalog.inseln.map((i) => i.slug));
+    const benutzt = new Set();
+
+    for (const [slug, kuerzelListe] of Object.entries(zuordnung)) {
+      if (!slugs.has(slug)) {
+        fail("betreuer.json", `"${slug}" ist keine bekannte Insel — der Streifen erschiene dort nie.`);
+        continue;
+      }
+      if (!Array.isArray(kuerzelListe)) {
+        fail("betreuer.json", `inseln.${slug} muss eine Liste von Kuerzeln sein.`);
+        continue;
+      }
+      for (const kuerzel of kuerzelListe) {
+        if (!personen[kuerzel]) {
+          fail("betreuer.json", `inseln.${slug} nennt "${kuerzel}" — unter "personen" gibt es das nicht.`);
+        } else {
+          benutzt.add(kuerzel);
+        }
+      }
+    }
+
+    for (const [kuerzel, person] of Object.entries(personen)) {
+      const wo = `betreuer.json/${kuerzel}`;
+      if (!person.name) fail(wo, 'Feld "name" fehlt.');
+      if (!person.koennen) {
+        fail(wo, 'Feld "koennen" fehlt — ohne Spezialfaehigkeit steht nur ein Name da.');
+      } else if (person.koennen.length > 70) {
+        warn(wo, `"koennen" ist ${person.koennen.length} Zeichen lang — auf dem Telefon bricht das um (Richtwert 40).`);
+      }
+      if (person.bild) {
+        if (!person.bild.startsWith("/")) {
+          fail(wo, `"bild" muss mit / beginnen: ${person.bild}`);
+        } else if (!fs.existsSync(path.join(__dirname, "..", "public", person.bild.replace(/^\//, "")))) {
+          fail(wo, `Foto fehlt: public${person.bild}`);
+        }
+      }
+      if (!benutzt.has(kuerzel)) {
+        warn(wo, "Person ist keiner Insel zugeordnet und erscheint nirgends.");
+      }
+    }
+
+    const ohne = catalog.inseln.filter((i) => !(zuordnung[i.slug] || []).length).map((i) => i.slug);
+    if (ohne.length === catalog.inseln.length) {
+      warn("betreuer.json", "Keine Insel hat eine Betreuung — der Streifen bleibt ueberall ausgeblendet.");
+    } else if (ohne.length) {
+      warn("betreuer.json", `Ohne Betreuung: ${ohne.join(", ")}`);
+    }
+  }
+}
+
 // Gegenprobe: kennt die Function alle Inseln?
 const fnSource = fs.readFileSync(
   path.join(__dirname, "..", "netlify", "functions", "submit-quiz.js"), "utf8");

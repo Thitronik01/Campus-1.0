@@ -1,0 +1,13 @@
+{
+  "_hinweis": "Wer welche Insel betreut. Zwei Ebenen, weil eine Person mehrere Inseln betreuen kann: unter 'personen' steht sie einmal, unter 'inseln' wird sie zugeordnet. Ohne Zuordnung bleibt der Streifen auf dem Startbildschirm ausgeblendet — eine leere Ueberschrift ist schlechter als gar keine.",
+  "_felder": {
+    "name": "Vor- und Nachname, so wie er auf dem Namensschild steht.",
+    "koennen": "Die Spezialfaehigkeit in einer Zeile. Kein Titel, keine Abteilung — das, wofuer man diese Person auf der Insel anspricht. Richtwert 40 Zeichen.",
+    "bild": "Foto unter /media/betreuer/. Quadratisch, mindestens 240x240, als WebP. Wird rund beschnitten dargestellt.",
+    "rolle": "Optional. Erscheint als kleine Zeile ueber dem Namen."
+  },
+
+  "personen": {},
+
+  "inseln": {}
+}

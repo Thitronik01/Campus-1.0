@@ -168,6 +168,15 @@ if (!SCHNELL) {
 
 titel("Quelle prüfen");
 
+/* Steht bewusst an erster Stelle: Alle folgenden Pruefungen lesen die
+   ausgelieferten Dateien nur als TEXT und klopfen sie mit regulaeren
+   Ausdruecken ab. Ein Syntaxfehler in engine.js oder thi.js lief bis August
+   2026 gruen durch die gesamte Kette — nachgestellt und belegt. Wer hier
+   durchfaellt, braucht den Rest nicht zu lesen. */
+const syntax = lauf(path.join("tools", "check-syntax.js"), []);
+schritt("Syntax", syntax,
+  (syntax.ausgabe.match(/^Syntax: .*$/m) || [""])[0].replace(/^Syntax: /, ""));
+
 const fragen = lauf(path.join("tools", "check-fragen.js"), []);
 schritt("Fragensätze", fragen,
   (fragen.ausgabe.match(/^\d+ Fragen geprüft\.$/m) || [""])[0]);
@@ -185,6 +194,12 @@ schritt("Bewertungslogik", funktion,
 const feedbackFunktion = lauf(path.join("tools", "test-feedback-function.js"), []);
 schritt("Feedback-Backend", feedbackFunktion,
   (feedbackFunktion.ausgabe.match(/^\d+ bestanden.*$/m) || [""])[0]);
+
+// THI braucht keinen API-Schlüssel für diese Prüfung: der Modellaufruf läuft
+// gegen einen nachgebildeten Anymize-Dienst. Geprüft werden Wissensbestand,
+// Retrieval, Werkzeugschleife und die Missbrauchsbremsen.
+const thi = lauf(path.join("tools", "test-thi.js"), []);
+schritt("THI", thi, (thi.ausgabe.match(/^THI: .*$/m) || [""])[0].replace(/^THI: /, ""));
 
 /** Zählt die Prüfungen eines Paket-Durchlaufs zusammen und meldet die erste
  *  Insel, die durchfällt — eine Liste mit sieben Zeilen liest morgens niemand. */

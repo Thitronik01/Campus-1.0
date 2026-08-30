@@ -19,7 +19,7 @@ npm-debug.log*
 # ---------------------------------------------------------------------------
 # Werkzeuge und Betriebssystem
 # ---------------------------------------------------------------------------
-.claude/settings.local.json
+**/.claude/settings.local.json
 .DS_Store
 Thumbs.db
 desktop.ini
@@ -50,3 +50,27 @@ desktop.ini
 /Fehmarn Quiz/
 /Usedom Quiz/
 /Langeland Quiz/
+
+# ---------------------------------------------------------------------------
+# Vorlagen und Zulieferungen, die nicht ins Repository gehoeren
+#
+# thi-standalone/ ist der Next.js-Entwurf, aus dem THI in den Campus portiert
+# wurde. Er ist Vorlage, nicht Produkt: 452 MB und 24.665 Dateien, davon der
+# groesste Teil node_modules. Ausserdem liegt darin eine .env.local. Der
+# Ordner bleibt als Nachschlagewerk auf der Platte, aber ausserhalb von Git.
+/thi-standalone/
+
+# export/ ist laut seinem eigenen README ein temporaeres Uebergabepaket. Die
+# Bildordner darin sind die PNG-Quellen, aus denen tools/szenen-bauen.js die
+# WebP-Motive erzeugt — rund 25 MB fuer Dateien, die genau einmal gebraucht
+# werden. Versioniert ist das ERGEBNIS unter public/media/, und darauf kommt
+# es an. Wer ein Motiv nachziehen will, braucht die Quellen ohnehin neu.
+/export/Bilder */
+
+# Ausgabe von Druck- und Ausleitungslaeufen, kein Quellmaterial.
+/Campus Quiz/output/
+
+# ---------------------------------------------------------------------------
+# Werkzeuge der Entwicklungsumgebung
+# ---------------------------------------------------------------------------
+.playwright-mcp/

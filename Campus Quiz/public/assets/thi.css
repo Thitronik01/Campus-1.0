@@ -1,0 +1,535 @@
+/* ==========================================================================
+   THI — Assistent im THITRONIK Campus
+   --------------------------------------------------------------------------
+   Nutzt die Tokens aus styles.css (--th-navy, --radius-*, --shadow-*), damit
+   THI nicht wie ein angeklebtes Fremdteil aussieht, sondern wie ein weiterer
+   Bereich derselben Oberfläche.
+
+   ZWEI DINGE, DIE HIER ANDERS SIND ALS ERWARTET:
+
+   1. `body` trägt `zoom: .8` (styles.css). Fixierte Elemente erben diesen
+      Zoom, und die Viewport-Einheiten verhalten sich darin nicht einheitlich:
+      gemessen entsprach 100dvh der vollen Fensterhöhe, 100vw dagegen nur
+      80 % der Fensterbreite. Deshalb werden Panel und Schleier über
+      gegenüberliegende Kanten aufgespannt (top/right/bottom/left) statt über
+      width und height. Eine Kante bei 0 bleibt bei 0, unabhängig vom Zoom —
+      damit hängt das Layout an keiner Umrechnung.
+
+   2. Feste Pixelwerte werden NICHT kompensiert. Sie sollen mitskalieren, denn
+      dann hat THI dieselbe scheinbare Größe wie der Rest der Seite. Die
+      460 px Panelbreite erscheinen also als 368 px — passend zu einer
+      Oberfläche, die insgesamt auf 80 % läuft.
+   ========================================================================== */
+
+:root {
+  --thi-breite: 460px;
+  --thi-kopf: #14294D;
+}
+
+/* ----------------------------------------------------- Schalter im Kopf --- */
+
+/* Erbt .masthead-tool aus styles.css. Hier steht nur, was ein <button>
+   gegenüber einem <a> zusätzlich braucht, und das Avatar-Feld: THI bekommt
+   sein Gesicht statt eines Strichsymbols — das macht ihn in der Reihe der
+   Werkzeuge auf einen Blick unterscheidbar. */
+.thi-schalter {
+  font: inherit;
+  cursor: pointer;
+  appearance: none;
+}
+
+/* Kein eigenes Aussehen fuer Feld und Symbol: Beides kommt aus
+   `.masthead-tool .ta-icon` — hellblaues Feld, Linien in Blau, 22 px.
+   Nur der geoeffnete Zustand braucht eine Regel, denn dort wird der
+   Knopf selbst hellblau und das gleichfarbige Feld darin verschwaende.
+
+   Frueher stand hier ein Navy-Feld mit dem vollfarbigen Avatar. */
+.thi-schalter[aria-expanded="true"] {
+  border-color: var(--th-blue);
+  background: var(--info-bg);
+}
+
+.thi-schalter[aria-expanded="true"] .ta-icon {
+  background: var(--th-white);
+}
+
+/* Hinweispunkt, solange THI in dieser Sitzung noch nicht geöffnet wurde.
+   Ein Werkzeug, das niemand bemerkt, ist keins — und die Kopfzeile hat sonst
+   keinen Platz für eine Erklärung. */
+.thi-schalter .thi-punkt {
+  width: 8px;
+  height: 8px;
+  margin-left: -4px;
+  border-radius: 50%;
+  background: var(--th-lime);
+  box-shadow: 0 0 0 3px rgba(175, 202, 5, .25);
+}
+
+.thi-schalter.ist-gesehen .thi-punkt { display: none; }
+
+/* ---------------------------------------------------------- Abdunkelung --- */
+
+.thi-schleier {
+  position: fixed;
+  z-index: 90;
+  inset: 0;
+  background: rgba(10, 39, 71, .32);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--duration-normal) var(--ease-out),
+              visibility var(--duration-normal) var(--ease-out);
+}
+
+.thi-schleier.ist-offen { opacity: 1; visibility: visible; }
+
+/* ---------------------------------------------------------------- Panel --- */
+
+.thi-panel {
+  position: fixed;
+  z-index: 91;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  width: var(--thi-breite);
+  border-left: 1px solid var(--th-line-strong);
+  background: var(--th-page);
+  box-shadow: -24px 0 64px rgba(10, 39, 71, .18);
+  transform: translateX(100%);
+  visibility: hidden;
+  transition: transform var(--duration-normal) var(--ease-out),
+              visibility var(--duration-normal) var(--ease-out);
+}
+
+.thi-panel.ist-offen { transform: translateX(0); visibility: visible; }
+
+@media (prefers-reduced-motion: reduce) {
+  .thi-panel, .thi-schleier { transition-duration: 1ms; }
+}
+
+/* ----------------------------------------------------------- Panel-Kopf --- */
+
+.thi-kopf {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 14px 14px 18px;
+  background: linear-gradient(135deg, var(--th-navy) 0%, var(--thi-kopf) 100%);
+  color: var(--th-white);
+}
+
+.thi-kopf-avatar {
+  display: grid;
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, .1);
+}
+
+.thi-kopf-avatar svg { width: 32px; height: 32px; }
+
+.thi-kopf-text { display: grid; flex: 1 1 auto; gap: 2px; min-width: 0; }
+
+.thi-kopf-name {
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: .02em;
+  line-height: 1.1;
+}
+
+.thi-kopf-rolle {
+  color: rgba(255, 255, 255, .72);
+  font-size: .78rem;
+  line-height: 1.2;
+}
+
+.thi-kopf-knopf {
+  display: grid;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, .18);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, .06);
+  color: var(--th-white);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.thi-kopf-knopf:hover { background: rgba(255, 255, 255, .16); }
+.thi-kopf-knopf:active { transform: scale(.94); }
+
+.thi-kopf-knopf svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+/* -------------------------------------------------------------- Verlauf --- */
+
+.thi-verlauf {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px 16px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Begrüßung: erscheint nur, solange nichts gefragt wurde. */
+.thi-start { display: grid; gap: 14px; padding: 6px 2px 0; }
+
+.thi-start-kopf { display: grid; justify-items: center; gap: 10px; text-align: center; }
+.thi-start-kopf svg { width: 56px; height: 56px; }
+
+.thi-start-titel {
+  margin: 0;
+  color: var(--th-navy);
+  font-size: 1.14rem;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.thi-start-text {
+  margin: 0;
+  max-width: 34ch;
+  color: var(--th-muted);
+  font-size: .88rem;
+  line-height: 1.5;
+}
+
+.thi-vorschlaege { display: grid; gap: 8px; margin-top: 4px; }
+
+.thi-vorschlag {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--th-line);
+  border-radius: var(--radius-md);
+  background: var(--th-white);
+  color: var(--th-navy);
+  font: inherit;
+  font-size: .87rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-out),
+              background-color var(--duration-fast) var(--ease-out),
+              transform var(--duration-press) var(--ease-out);
+}
+
+.thi-vorschlag:hover { border-color: var(--th-blue); background: var(--info-bg); }
+.thi-vorschlag:active { transform: scale(.99); }
+
+.thi-vorschlag svg {
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  color: var(--th-blue-text);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ---------------------------------------------------------- Nachrichten --- */
+
+.thi-zeile { display: flex; gap: 9px; max-width: 100%; }
+.thi-zeile.von-nutzer { justify-content: flex-end; }
+
+.thi-zeile-avatar {
+  display: grid;
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  margin-top: 2px;
+  border-radius: 9px;
+  background: var(--th-navy);
+}
+
+.thi-zeile-avatar svg { width: 22px; height: 22px; }
+
+.thi-blase {
+  max-width: 86%;
+  padding: 11px 14px;
+  border-radius: var(--radius-lg);
+  font-size: .9rem;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.von-thi .thi-blase {
+  border: 1px solid var(--th-line);
+  border-bottom-left-radius: 6px;
+  background: var(--th-white);
+  color: var(--th-ink);
+  box-shadow: var(--shadow-sm);
+}
+
+.von-nutzer .thi-blase {
+  border-bottom-right-radius: 6px;
+  background: var(--th-navy);
+  color: var(--th-white);
+}
+
+/* Formatierung innerhalb einer Antwort. Bewusst sparsam: THI antwortet in
+   Fließtext mit kurzen Aufzählungen, mehr braucht es nicht. */
+.thi-blase p { margin: 0 0 .6em; }
+.thi-blase p:last-child { margin-bottom: 0; }
+.thi-blase ul, .thi-blase ol { margin: .4em 0 .6em; padding-left: 1.25em; }
+.thi-blase li { margin-bottom: .25em; }
+.thi-blase strong { font-weight: 800; }
+.thi-blase code {
+  padding: 1px 5px;
+  border-radius: 5px;
+  background: var(--th-soft);
+  font-family: ui-monospace, "SFMono-Regular", "Consolas", monospace;
+  font-size: .86em;
+}
+.von-nutzer .thi-blase code { background: rgba(255, 255, 255, .16); }
+
+/* Statuszeile während THI nachschlägt. */
+.thi-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--th-muted);
+  font-size: .84rem;
+  font-style: italic;
+}
+
+.thi-punkte { display: inline-flex; gap: 3px; }
+
+.thi-punkte span {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--th-blue);
+  animation: thi-wippe 1.1s var(--ease-out) infinite;
+}
+
+.thi-punkte span:nth-child(2) { animation-delay: .16s; }
+.thi-punkte span:nth-child(3) { animation-delay: .32s; }
+
+@keyframes thi-wippe {
+  0%, 60%, 100% { opacity: .28; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-3px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thi-punkte span { animation: none; opacity: .6; }
+}
+
+/* Folgefragen unter einer Antwort. */
+.thi-folge { display: grid; gap: 6px; margin-top: 10px; }
+
+.thi-folge-knopf {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 38px;
+  padding: 8px 11px;
+  border: 1px solid var(--th-line);
+  border-radius: var(--radius-sm);
+  background: var(--info-bg);
+  color: var(--th-blue-text);
+  font: inherit;
+  font-size: .83rem;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-out);
+}
+
+.thi-folge-knopf:hover { border-color: var(--th-blue); }
+
+.thi-folge-knopf svg {
+  flex: 0 0 13px;
+  width: 13px;
+  height: 13px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Hinweis-, Fehler- und Nicht-eingerichtet-Meldungen. */
+.thi-hinweis {
+  padding: 12px 14px;
+  border: 1px solid var(--error-line);
+  border-radius: var(--radius-md);
+  background: var(--error-bg);
+  color: var(--th-ink);
+  font-size: .86rem;
+  line-height: 1.5;
+}
+
+.thi-hinweis.ist-ruhig {
+  border-color: var(--th-line);
+  background: var(--th-white);
+  color: var(--th-muted);
+}
+
+.thi-hinweis strong { display: block; margin-bottom: 3px; color: var(--th-navy); }
+
+/* ----------------------------------------------------------- Eingabefeld --- */
+
+.thi-fuss {
+  flex: 0 0 auto;
+  padding: 12px 14px 14px;
+  border-top: 1px solid var(--th-line);
+  background: var(--th-white);
+  padding-bottom: max(14px, env(safe-area-inset-bottom));
+}
+
+.thi-eingabe-feld {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 6px 6px 6px 12px;
+  border: 1px solid var(--th-line-strong);
+  border-radius: var(--radius-lg);
+  background: var(--th-white);
+  transition: border-color var(--duration-fast) var(--ease-out);
+}
+
+.thi-eingabe-feld:focus-within { border-color: var(--th-blue); }
+
+.thi-eingabe {
+  flex: 1 1 auto;
+  max-height: 132px;
+  min-height: 34px;
+  padding: 7px 0;
+  border: 0;
+  background: none;
+  color: var(--th-ink);
+  font: inherit;
+  font-size: .92rem;
+  line-height: 1.45;
+  resize: none;
+  outline: none;
+}
+
+.thi-eingabe::placeholder { color: var(--th-muted); }
+
+.thi-senden {
+  display: grid;
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 0;
+  border-radius: 12px;
+  background: var(--th-navy);
+  color: var(--th-white);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-out),
+              transform var(--duration-press) var(--ease-out);
+}
+
+.thi-senden:hover:not(:disabled) { background: var(--th-navy-deep); }
+.thi-senden:active:not(:disabled) { transform: scale(.94); }
+.thi-senden:disabled { background: var(--th-line-strong); cursor: not-allowed; }
+
+.thi-senden svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Abbrechen ersetzt Senden, solange eine Antwort läuft. Eine lange Antwort
+   nicht stoppen zu können, wäre in einer Schulung mit Zeitdruck ärgerlich. */
+.thi-senden.ist-abbruch { background: var(--th-red); }
+.thi-senden.ist-abbruch svg { fill: currentColor; stroke: none; }
+
+.thi-fuss-zeile {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.thi-fuss-text {
+  color: var(--th-muted);
+  font-size: .72rem;
+  line-height: 1.35;
+}
+
+.thi-leeren {
+  border: 0;
+  background: none;
+  color: var(--th-muted);
+  font: inherit;
+  font-size: .72rem;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.thi-leeren:hover { color: var(--th-red); }
+.thi-leeren[hidden] { display: none; }
+
+/* ------------------------------------------------------------ Tastatur ---- */
+
+.thi-panel :focus-visible,
+.thi-schalter:focus-visible {
+  outline: 3px solid var(--th-blue);
+  outline-offset: 2px;
+}
+
+.thi-kopf :focus-visible {
+  outline-color: var(--th-white);
+}
+
+/* --------------------------------------------------------------- Mobil ---- */
+
+@media (max-width: 759px) {
+  /* Drei Werkzeuge passen nicht mehr in zwei Spalten: styles.css stellt
+     .masthead-tools ab 759px auf ein 2-Spalten-Raster, THI landete dann als
+     halbbreiter Rest in Zeile zwei. Drei gleich breite Spalten halten die
+     Reihe zusammen; die Beschriftungen sind kurz genug dafür. */
+  .masthead-tools { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .masthead-tool { gap: 7px; padding: 6px 8px; }
+  .masthead-tool .ta-icon { flex-basis: 32px; width: 32px; height: 32px; }
+  .masthead-tool .ta-icon svg { width: 19px; height: 19px; }
+  .thi-schalter .ta-icon svg { width: 26px; height: 26px; }
+  .masthead-tool .ta-title { font-size: .82rem; }
+}
+
+@media (max-width: 640px) {
+  /* Vollbild: ein 460-px-Panel neben 20 px Restseite wäre auf dem Telefon
+     weder zu lesen noch zu bedienen. Die linke Kante übernimmt die Breite —
+     so bleibt es bei Kanten statt Umrechnung (siehe Kopf der Datei). */
+  .thi-panel { left: 0; width: auto; border-left: 0; }
+  .thi-blase { max-width: 90%; }
+}
+
+/* Sehr schmale Geräte: die dritte Spalte würde die Beschriftungen brechen. */
+@media (max-width: 400px) {
+  .masthead-tool .ta-text { display: none; }
+  .masthead-tool { justify-content: center; padding: 6px; }
+}

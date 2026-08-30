@@ -8,7 +8,8 @@
   <meta name="description" content="THITRONIK Campus: Wissenscheck nach jeder Schulungsinsel.">
   <meta name="robots" content="noindex, nofollow">
   <title>THITRONIK Campus: Wissenscheck</title>
-  <link rel="stylesheet" href="/assets/styles.css?v=1.12.1">
+  <link rel="stylesheet" href="/assets/styles.css?v=1.24.0">
+  <link rel="stylesheet" href="/assets/thi.css?v=1.24.0">
 </head>
 <body>
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
@@ -156,20 +157,45 @@
                    data-src="/media/poel/poe-start-haendlerbereich.webp" alt=""
                    width="1200" height="675">
             </div>
+            <!-- USEDOM: die Beratungsszene aus Einzelmotiven, von hinten nach
+                 vorn. Raum und Podest tragen, das Display ist das Hauptmotiv,
+                 die beiden Personen stehen davor. Licht macht CSS. -->
             <div class="usedom-start-visual" id="usedom-start-visual" aria-hidden="true" hidden>
-              <img class="usedom-start-display" id="usedom-start-display"
-                   data-src="/media/usedom/use-start-verkaufsdisplay.webp" alt=""
+              <img class="usedom-szene-raum" id="usedom-szene-raum"
+                   data-src="/media/usedom/use-szene-raum.webp" alt=""
                    width="1400" height="788">
+              <img class="usedom-szene-podest" id="usedom-szene-podest"
+                   data-src="/media/usedom/use-szene-podest.webp" alt=""
+                   width="1000" height="154">
+              <img class="usedom-szene-display" id="usedom-szene-display"
+                   data-src="/media/usedom/use-szene-display.webp" alt=""
+                   width="1100" height="602">
+              <img class="usedom-szene-verkaeufer" id="usedom-szene-verkaeufer"
+                   data-src="/media/usedom/use-szene-verkaeufer.webp" alt=""
+                   width="297" height="760">
+              <img class="usedom-szene-kundin" id="usedom-szene-kundin"
+                   data-src="/media/usedom/use-szene-kundin.webp" alt=""
+                   width="176" height="720">
             </div>
             <div class="langeland-start-visual" id="langeland-start-visual" aria-hidden="true" hidden>
-              <img class="langeland-start-handover" id="langeland-start-handover"
-                   data-src="/media/langeland/lan-start-schluesseluebergabe.webp" alt=""
-                   width="1200" height="675">
+              <img class="langeland-szene-uebergabe" id="langeland-szene-uebergabe"
+                   data-src="/media/langeland/lan-szene-uebergabe.webp" alt=""
+                   width="1500" height="844">
             </div>
+            <!-- FEHMARN: drei Ebenen. Der Arbeitsplatz ist EIN fertiges
+                 Motiv — Mitarbeiterin, ProFinder, Tablet und Zubehör sind
+                 darin fotografisch aufeinander abgestimmt und werden nicht
+                 einzeln positioniert. -->
             <div class="fehmarn-start-visual" id="fehmarn-start-visual" aria-hidden="true" hidden>
-              <img class="fehmarn-start-diagnostic" id="fehmarn-start-diagnostic"
-                   data-src="/media/fehmarn/feh-start-fehlersuche.webp" alt=""
-                   width="1200" height="800">
+              <img class="fehmarn-szene-raum" id="fehmarn-szene-raum"
+                   data-src="/media/fehmarn/feh-szene-raum.webp" alt=""
+                   width="1400" height="788">
+              <img class="fehmarn-szene-welle" id="fehmarn-szene-welle"
+                   data-src="/media/fehmarn/feh-szene-welle.webp" alt=""
+                   width="900" height="244">
+              <img class="fehmarn-szene-arbeitsplatz" id="fehmarn-szene-arbeitsplatz"
+                   data-src="/media/fehmarn/feh-szene-arbeitsplatz.webp" alt=""
+                   width="1240" height="916">
             </div>
           </div>
 
@@ -225,6 +251,16 @@
             </div>
           </form>
         </div>
+
+        <!-- Betreuung dieser Insel. Steht bewusst unter dem Layout und ueber
+             die volle Breite: Wer die Insel betreut, gehoert weder in die
+             Buehne (dort steht das Thema) noch in die Teilnehmerspalte (dort
+             steht der Teilnehmer selbst). Ohne Eintrag in betreuer.json
+             bleibt der Streifen ausgeblendet. -->
+        <section class="betreuung" id="betreuung" aria-labelledby="betreuung-titel" hidden>
+          <h2 class="betreuung-titel" id="betreuung-titel">Betreuung auf dieser Insel</h2>
+          <ul class="betreuung-liste" id="betreuung-liste"></ul>
+        </section>
       </section>
 
       <!-- ==================== Quiz ==================== -->
@@ -400,6 +436,10 @@
     <input name="score"><input name="total"><input name="percent"><input name="answers_json">
   </form>
 
-  <script src="/assets/engine.js?v=1.12.1" defer></script>
+  <script src="/assets/engine.js?v=1.24.0" defer></script>
+  <!-- THI haengt seinen Schalter selbst in .masthead-tools ein und baut sein
+       Panel an den Seitenkoerper. Faellt das Skript aus, fehlt nur THI —
+       Kopfzeile und Quiz bleiben unberuehrt. -->
+  <script src="/assets/thi.js?v=1.24.0" defer></script>
 </body>
 </html>

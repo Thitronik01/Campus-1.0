@@ -1,0 +1,14 @@
+Fotos der Betreuerinnen und Betreuer.
+
+  Quadratisch, mindestens 240 x 240 Pixel, als WebP.
+  Dateiname = das Kuerzel aus public/data/betreuer.json, z. B. mm.webp
+
+Die Anzeige beschneidet rund auf 64 Pixel. Das Gesicht gehoert in die Mitte;
+ein Bild im Hochformat verliert oben und unten.
+
+Der ganze Ordner wandert beim Bau in beide Paketformen. Wer eine Person
+ergaenzt, legt hier das Foto ab und traegt sie in betreuer.json ein — mehr
+ist nicht noetig.
+
+Ohne Foto zeigt der Streifen die Initialen im Kreis. Das ist ein gueltiger
+Zustand, kein Fehler.

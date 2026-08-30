@@ -13,7 +13,7 @@
 
 (function () {
   const EVENT_SLUG = "campus-2026";
-  const ENGINE_VERSION = "1.12.1";
+  const ENGINE_VERSION = "1.24.0";
   const SUBMIT_ENDPOINT = "/.netlify/functions/submit-quiz";
 
   const LS_PARTICIPANT = "thitronik.campus.2026.participant";
@@ -93,11 +93,21 @@
     poelStartVisual: $("poel-start-visual"),
     poelStartHaendler: $("poel-start-haendler"),
     usedomStartVisual: $("usedom-start-visual"),
-    usedomStartDisplay: $("usedom-start-display"),
+    usedomStartLayers: [
+      $("usedom-szene-raum"),
+      $("usedom-szene-podest"),
+      $("usedom-szene-display"),
+      $("usedom-szene-verkaeufer"),
+      $("usedom-szene-kundin")
+    ],
     langelandStartVisual: $("langeland-start-visual"),
-    langelandStartHandover: $("langeland-start-handover"),
+    langelandStartUebergabe: $("langeland-szene-uebergabe"),
     fehmarnStartVisual: $("fehmarn-start-visual"),
-    fehmarnStartDiagnostic: $("fehmarn-start-diagnostic"),
+    fehmarnStartLayers: [
+      $("fehmarn-szene-raum"),
+      $("fehmarn-szene-welle"),
+      $("fehmarn-szene-arbeitsplatz")
+    ],
     formIntro: $("form-intro"),
     startForm: $("start-form"),
     startActions: document.querySelector("#start-form .start-actions"),
@@ -172,13 +182,16 @@
     errCopy: $("err-copy"),
     btnErrBack: $("btn-err-back"),
 
-    toast: $("toast")
+    toast: $("toast"),
+    betreuung: $("betreuung"),
+    betreuungListe: $("betreuung-liste")
   };
 
   // ---------------------------------------------------------------- State ---
 
   const state = {
     catalog: null,      // inseln.json
+    betreuung: null,    // betreuer.json, fehlt sie, bleibt der Streifen leer
     island: null,       // geladener Fragensatz
     slug: null,
     questions: [],      // laufende Runde (ggf. gemischt / gefiltert)
@@ -346,11 +359,30 @@
       && /^\d{5}$/.test(String(data.dealerNumber || "").trim());
   }
 
+  /** Inseln, deren Bühne die Quizfakten selbst trägt.
+   *
+   *  Zurzeit keine. Sowohl auf USEDOM als auch auf FEHMARN standen sie eine
+   *  Fassung lang links in der Bühne. In beiden Fällen war das Ergebnis
+   *  dasselbe: Sie nahmen der Szene die Fläche, während die rechte Spalte
+   *  unter der Teilnehmerzeile leer blieb. Der Schalter bleibt, weil die
+   *  Frage bei der nächsten Bühne wiederkommt. */
+  const FAKTEN_IM_HERO = new Set();
+
   /** Bei vollständigen Teilnehmerdaten wird die rechte Spalte auf jeder
    *  Insel zum kompakten Startpanel. Beim Bearbeiten kehren die Hinweise in
-   *  den Hero zurück, damit das lange Formular nicht zusätzlich wächst. */
+   *  den Hero zurück, damit das lange Formular nicht zusätzlich wächst.
+   *
+   *  Zwei Klassen, weil es zwei Fragen sind: `is-panel` schaltet die rechte
+   *  Spalte in den kompakten Modus, `has-participant-facts` sagt zusätzlich,
+   *  dass die Fakten dort mit drinstehen. Auf Inseln aus FAKTEN_IM_HERO ist
+   *  nur die erste wahr — sonst verlöre die Teilnehmerkarte ihre Gestaltung,
+   *  weil die haengt am selben Schalter. */
   function placeStartFacts(byParticipant) {
-    const rechts = byParticipant && Boolean(state.island);
+    const panel = byParticipant && Boolean(state.island);
+    // state.island ist der Fragensatz, nicht der Slug — der steht in seinem
+    // Feld `island` und ist derselbe Wert, der auch data-island trägt.
+    const rechts = panel && !FAKTEN_IM_HERO.has(state.island && state.island.island);
+    el.startForm.classList.toggle("is-panel", panel);
     el.startForm.classList.toggle("has-participant-facts", rechts);
     if (rechts) {
       el.startForm.insertBefore(el.startFacts, el.startActions);
@@ -689,6 +721,72 @@
     return state.catalog.inseln.length === 1;
   }
 
+  /* Die Betreuung einer Insel.
+   *
+   *  Zwei Ebenen in betreuer.json, weil eine Person mehrere Inseln betreuen
+   *  kann: `personen` haelt sie einmal, `inseln` ordnet sie zu. Bei einer
+   *  flachen Liste je Insel stuende dieselbe Person mehrfach da — und beim
+   *  naechsten Wechsel des Fotos an drei Stellen.
+   *
+   *  Fehlt die Datei oder hat die Insel keinen Eintrag, bleibt der Streifen
+   *  ausgeblendet. Eine Ueberschrift ueber einer leeren Liste ist eine
+   *  Zusage, die die Seite nicht einhaelt. */
+  function renderBetreuung(slug) {
+    const daten = state.betreuung;
+    const kuerzel = (daten && daten.inseln && daten.inseln[slug]) || [];
+    const personen = (daten && daten.personen) || {};
+    const liste = kuerzel.map((k) => personen[k]).filter(Boolean);
+
+    el.betreuung.hidden = liste.length === 0;
+    el.betreuungListe.textContent = "";
+    if (!liste.length) return;
+
+    el.betreuung.classList.toggle("ist-einzeln", liste.length === 1);
+
+    for (const person of liste) {
+      const zeile = document.createElement("li");
+      zeile.className = "betreuung-karte";
+
+      const bild = document.createElement("span");
+      bild.className = "betreuung-bild";
+      if (person.bild) {
+        const img = document.createElement("img");
+        img.src = person.bild;
+        img.alt = "";
+        img.width = 240;
+        img.height = 240;
+        img.loading = "lazy";
+        img.decoding = "async";
+        bild.appendChild(img);
+      } else {
+        /* Ohne Foto die Initialen statt eines grauen Kastens: Sie sagen
+           wenigstens, wer gemeint ist, und halten die Zeile in Form. */
+        bild.classList.add("ohne-foto");
+        bild.textContent = person.name
+          .split(/\s+/).slice(0, 2).map((t) => t.charAt(0)).join("");
+      }
+
+      const text = document.createElement("span");
+      text.className = "betreuung-text";
+      if (person.rolle) {
+        const rolle = document.createElement("span");
+        rolle.className = "betreuung-rolle";
+        rolle.textContent = person.rolle;
+        text.appendChild(rolle);
+      }
+      const name = document.createElement("span");
+      name.className = "betreuung-name";
+      name.textContent = person.name;
+      const koennen = document.createElement("span");
+      koennen.className = "betreuung-koennen";
+      koennen.textContent = person.koennen || "";
+      text.append(name, koennen);
+
+      zeile.append(bild, text);
+      el.betreuungListe.appendChild(zeile);
+    }
+  }
+
   function renderStart() {
     const island = state.island;
     const isSamsoe = island.island === "samsoe";
@@ -700,6 +798,7 @@
     const isFehmarn = island.island === "fehmarn";
 
     el.screens.start.dataset.island = island.island || "";
+    renderBetreuung(island.island || "");
     el.samsoeStartVisual.hidden = !isSamsoe;
     el.hiddenseeStartVisual.hidden = !isHiddensee;
     el.vejroStartVisual.hidden = !isVejro;
@@ -715,9 +814,9 @@
       [isHiddensee, [el.hiddenseeStartContact]],
       [isVejro, el.vejroStartLayers],
       [isPoel, [el.poelStartHaendler]],
-      [isUsedom, [el.usedomStartDisplay]],
-      [isLangeland, [el.langelandStartHandover]],
-      [isFehmarn, [el.fehmarnStartDiagnostic]]
+      [isUsedom, el.usedomStartLayers],
+      [isLangeland, [el.langelandStartUebergabe]],
+      [isFehmarn, el.fehmarnStartLayers]
     ];
     startMotive.forEach(([aktiv, bilder]) => {
       if (!aktiv) return;
@@ -2119,6 +2218,14 @@
       fail("Die Inselübersicht konnte nicht geladen werden. Bitte die Seite neu laden.");
       console.error(error);
       return;
+    }
+
+    /* Eigener Versuch mit eigenem catch: Die Betreuung ist Beiwerk. Faellt
+       sie aus, laeuft das Quiz weiter — nur der Streifen bleibt leer. */
+    try {
+      state.betreuung = await fetchJson("/data/betreuer.json");
+    } catch (error) {
+      console.warn("Betreuung nicht geladen:", error);
     }
 
     // Die beiden Campus-Werkzeuge gehören in den Kopf und bleiben auch bei

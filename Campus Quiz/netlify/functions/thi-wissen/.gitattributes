@@ -1,0 +1,12 @@
+# Erzeugte Daten, die bewusst versioniert sind — siehe AGENTS.md, Abschnitt 8:
+# ohne sie kann kein Deploy THI mit Wissen ausliefern, und die Quelle
+# thi-standalone/ liegt nicht im Repository.
+#
+# `-diff` schaltet die Textdifferenz ab. Ein Unterschied ueber 1,8 MB JSON in
+# wenigen sehr langen Zeilen ist fuer niemanden lesbar und blaeht jede
+# Pull-Request-Ansicht auf. Die Delta-Kompression bleibt erhalten — anders als
+# bei `binary`, das beides abschaltet.
+#
+# Diese Datei liegt hier statt in der Wurzel, weil der Pfad "Campus Quiz" ein
+# Leerzeichen enthaelt und .gitattributes-Muster daran zerbrechen.
+*.json -diff

@@ -191,6 +191,13 @@ h2 { font-size: clamp(1.15rem, 1.05rem + .4vw, 1.5rem); letter-spacing: -.015em;
   justify-self: start;
   gap: 12px;
   min-width: 0;
+  /* Ohne diese Grenze nimmt sich der Block bei `justify-self: start` seine
+     Inhaltsbreite und laeuft ueber die Spalte hinaus — auf HIDDENSEE stiess
+     der lange Titel bei 1440 px an den ersten Werkzeugknopf. Sichtbar wurde
+     das erst, als die Werkzeugzeile mit THI auf drei Knoepfe wuchs. Mit der
+     Grenze greift die Kuerzung mit Auslassungspunkten, die an
+     `.brand-copy strong` schon steht. */
+  max-width: 100%;
 }
 
 .brand-home {
@@ -966,6 +973,119 @@ main { flex: 1 0 auto; }
 .start-intro h1 { color: #fff; }
 .start-intro .lead { color: rgba(255, 255, 255, .88); }
 
+/* ---------------------------------------------------- Betreuung der Insel ---
+
+   Ein Streifen unter dem Layout, ueber die volle Breite der Karte. Er
+   beantwortet die Frage, die vor dem Quiz aufkommt und die weder Buehne
+   noch Teilnehmerspalte beantworten: Wen spreche ich hier an?
+
+   Deshalb unten und nicht oben. Oben steht, worum es geht — das ist der
+   Grund, warum jemand auf der Seite ist. Die Betreuung ist die Antwort auf
+   die zweite Frage, und die stellt sich erst danach.
+
+   Der helle Grund trennt den Streifen von der weissen Teilnehmerspalte
+   darueber; ohne ihn liefe er mit ihr zu einer Flaeche zusammen. */
+.betreuung {
+  padding: clamp(18px, 2.2vw, 26px) clamp(20px, 3vw, 42px) clamp(20px, 2.6vw, 30px);
+  border-top: 1px solid var(--th-line);
+  background: #F7FAFC;
+}
+
+.betreuung[hidden] { display: none; }
+
+.betreuung-titel {
+  margin: 0 0 14px;
+  color: var(--th-muted);
+  font-size: .74rem;
+  font-weight: 800;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+
+/* auto-fit statt fester Spaltenzahl: Die Zahl der Betreuer steht in
+   betreuer.json und darf sich aendern, ohne dass hier jemand nachzaehlt. */
+.betreuung-liste {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(258px, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Eine Person allein wuerde sonst ueber die ganze Breite gezogen — ein
+   Name und eine Zeile Text in einem 1100 px breiten Kasten. */
+.betreuung.ist-einzeln .betreuung-liste {
+  grid-template-columns: minmax(0, 430px);
+}
+
+.betreuung-karte {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+  padding: 12px 18px 12px 12px;
+  border: 1px solid var(--th-line);
+  border-radius: var(--radius-lg);
+  background: var(--th-white);
+  box-shadow: var(--shadow-sm);
+}
+
+.betreuung-bild {
+  display: grid;
+  overflow: hidden;
+  width: 64px;
+  height: 64px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--info-bg);
+  /* Weisser Innenring, damit ein dunkles Foto nicht direkt an der
+     Kartenkante klebt, darunter der Markenring. */
+  box-shadow: 0 0 0 2px var(--th-white), 0 0 0 3px rgba(59, 169, 211, .45);
+}
+
+.betreuung-bild img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Fehlt das Foto, stehen die Initialen da. Ein leerer grauer Kreis sagt
+   nichts und sieht aus wie ein Ladefehler. */
+.betreuung-bild.ohne-foto {
+  color: var(--th-blue-text);
+  font-size: 1.06rem;
+  font-weight: 800;
+}
+
+.betreuung-text {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.betreuung-rolle {
+  color: var(--th-blue-text);
+  font-size: .67rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.betreuung-name {
+  color: var(--th-navy);
+  font-size: .98rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.betreuung-koennen {
+  color: var(--th-muted);
+  font-size: .84rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
 .samsoe-start-visual[hidden],
 .hiddensee-start-visual[hidden],
 .vejro-start-visual[hidden],
@@ -1040,15 +1160,15 @@ main { flex: 1 0 auto; }
 }
 
 #screen-start .start-intro .facts li {
-  grid-template-columns: 50px minmax(0, 1fr);
-  gap: 12px;
-  min-height: 50px;
+  grid-template-columns: 58px minmax(0, 1fr);
+  gap: 13px;
+  min-height: 58px;
   align-items: center;
 }
 
 #screen-start .start-intro .facts li::before {
-  width: 50px;
-  height: 50px;
+  width: 58px;
+  height: 58px;
   border-radius: 0;
   background-color: transparent;
   background-position: center;
@@ -1364,9 +1484,9 @@ main { flex: 1 0 auto; }
 }
 
 #screen-start[data-island="vejro"] .has-participant-facts .facts li {
-  grid-template-columns: 46px minmax(0, 1fr);
-  gap: 10px;
-  min-height: 46px;
+  grid-template-columns: 54px minmax(0, 1fr);
+  gap: 11px;
+  min-height: 54px;
   align-items: center;
   color: var(--th-navy);
   font-size: .88rem;
@@ -1375,8 +1495,8 @@ main { flex: 1 0 auto; }
 }
 
 #screen-start[data-island="vejro"] .has-participant-facts .facts li::before {
-  width: 46px;
-  height: 46px;
+  width: 54px;
+  height: 54px;
   border-radius: 0;
   background-color: transparent;
   background-position: center;
@@ -1449,14 +1569,34 @@ main { flex: 1 0 auto; }
   .vejro-start-stage { width: 92%; }
 }
 
+/* ---------------------------------------------- USEDOM: die Beratungsbühne
+   Die anderen Inseln stellen ihr Motiv als Objekt auf eine Verlaufsfläche.
+   USEDOM hat als einzige eine fertig fotografierte Szene: Verkäufer, Kundin
+   und Verkaufsdisplay in einem Bild, im selben Navy wie die Fläche.
+
+   Deshalb ist das Bild hier nicht Objekt, sondern Bühne — formatfüllend
+   hinter allem. Als 380 px hohes Objekt am unteren Rand war die Szene zu
+   klein, um die Beratungssituation zu zeigen, und ließ darüber eine leere
+   Fläche stehen, die nichts erzählte.
+
+   Der Preis dafür ist, dass Text auf Bild liegt statt auf Farbe. Das trägt
+   der Verlauf unten; er ist kräftiger als der gemeinsame Scrim, weil links
+   im Bild der Verkäufer steht und nicht nur dunkler Hintergrund. */
+
 #screen-start[data-island="usedom"] .start-layout {
-  min-height: clamp(820px, 78vh, 920px);
+  /* Schmalere rechte Spalte als im gemeinsamen System (dort bis 430 px):
+     Ohne die Fakten trägt sie nur noch Teilnehmer und zwei Knöpfe. Der
+     gewonnene Platz geht an die Szene, und das Verhältnis landet bei den
+     rund 76 / 24, die die Bühne als Hauptdarsteller lesbar machen. */
+  grid-template-columns: minmax(0, 1fr) clamp(300px, 23vw, 366px);
+  min-height: clamp(560px, 74vh, 760px);
 }
 
 #screen-start[data-island="usedom"] .start-intro {
   position: relative;
   isolation: isolate;
-  min-height: 820px;
+  min-height: clamp(560px, 74vh, 760px);
+  padding: clamp(30px, 3.4vw, 52px);
   overflow: hidden;
 }
 
@@ -1465,51 +1605,71 @@ main { flex: 1 0 auto; }
   z-index: 3;
 }
 
-#screen-start[data-island="usedom"] .facts {
-  max-width: 620px;
-}
+/* Der gemeinsame Scrim reicht über einer Fotoszene nicht: er ist auf eine
+   Verlaufsfläche mit freigestelltem Objekt gerechnet.
 
-.usedom-start-visual {
+   Die Werte hier sind gemessen, nicht geschätzt. Unter der Überschrift liegt
+   bei etwa 31 % der Breite die weisse Displayfläche der Szene — die hellste
+   Stelle des ganzen Bildes. Mit dem gemeinsamen Scrim kam weisser Text dort
+   auf 3,05:1 und lag damit unter der WCAG-AA-Schwelle von 4,5:1; ein
+   Stichprobenraster von vier Punkten je Zeile hatte die Stelle noch
+   übersprungen.
+
+   Dieser Verlauf deckt bis 34 % nahezu voll und läuft erst danach aus. Damit
+   steht der Text an seiner schlechtesten Stelle bei 6,5:1, und die Szene
+   bleibt rechts der Textspalte unangetastet — dort, wo Display und Kundin
+   stehen. Wer die Deckung zurücknimmt, muss neu messen: eine Sichtprüfung
+   findet diese Stelle nicht. */
+#screen-start[data-island="usedom"] .start-intro::before {
+  /* content/position/inset stehen hier vollständig, weil USEDOM aus dem
+     gemeinsamen Scrim ausgenommen ist (siehe dort).
+
+     Seit die Szene eingepasst rechts sitzt, steht der Text vollständig auf
+     der Bühnenfläche: gemessen 19:1, auch ganz ohne Abdunklung. Der Verlauf
+     hat deshalb nur noch eine Aufgabe — die linke Bildkante weichzeichnen,
+     damit sie nicht als Schnittkante im Navy steht. Er läuft vor dem
+     THITRONIK-Verkäufer aus, der bei etwa 29 % der Bühnenbreite beginnt;
+     eine kräftigere Deckung hatte ihn zuvor unsichtbar gemacht. */
+  content: "";
   position: absolute;
-  z-index: 1;
+  z-index: 2;
   inset: 0;
-  overflow: hidden;
+  background:
+    linear-gradient(100deg,
+      rgba(4, 16, 34, .62) 0%,
+      rgba(4, 16, 34, .42) 20%,
+      rgba(4, 16, 34, .10) 30%,
+      transparent 38%),
+    linear-gradient(180deg, rgba(4, 16, 34, .30) 0%, transparent 22%);
   pointer-events: none;
 }
 
-.usedom-start-display {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  display: block;
-  width: auto;
-  height: min(40%, 380px);
-  opacity: .98;
-  filter: drop-shadow(0 20px 24px rgba(0, 9, 30, .34));
-  transform: translateX(-50%);
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 18%, #000 100%);
-  mask-image: linear-gradient(to bottom, transparent 0%, #000 18%, #000 100%);
-  user-select: none;
-}
+#screen-start[data-island="usedom"] .facts { max-width: 34ch; }
+
+/* ------------------------------------------ LANGELAND: die Übergabe
+   Eine einzige, fertige Szene — und eine, die ihre Textfläche mitbringt:
+   Links liegt eine grosse, fast leere dunkle Zone, rechts stehen Übergabe
+   und Fahrzeug. Sie gehört deshalb als Bühne über die ganze Fläche, nicht
+   als Motiv darauf.
+
+   Das Vorgängerbild war ein freigestelltes Händepaar auf Weiss, das mittig
+   unten auf der Verlaufsfläche sass. */
 
 #screen-start[data-island="langeland"] .start-layout {
-  min-height: clamp(820px, 78vh, 920px);
+  min-height: clamp(620px, 70vh, 780px);
 }
 
 #screen-start[data-island="langeland"] .start-intro {
   position: relative;
   isolation: isolate;
-  min-height: 820px;
+  min-height: clamp(620px, 70vh, 780px);
+  padding: clamp(30px, 3.4vw, 52px);
   overflow: hidden;
 }
 
 #screen-start[data-island="langeland"] .start-intro > :not(.langeland-start-visual) {
   position: relative;
   z-index: 3;
-}
-
-#screen-start[data-island="langeland"] .facts {
-  max-width: 620px;
 }
 
 .langeland-start-visual {
@@ -1520,26 +1680,63 @@ main { flex: 1 0 auto; }
   pointer-events: none;
 }
 
-.langeland-start-handover {
+/* Eigener Verlauf statt des gemeinsamen: Der ist rein seitlich gerechnet
+   und deckt links 58 %. Auf dem Desktop passt das — dort liegt links im Bild
+   ohnehin die dunkle Wand. Auf dem Telefon ist die Bühne aber nur 373 px
+   breit; derselbe Verlauf legt sich dann über genau den Bildbereich, in dem
+   Übergabe und Fahrzeug stehen, und die Szene verschwindet in der Fläche.
+
+   Hier deckt er deshalb seitlich schwächer und dafür von oben, wo auf
+   schmalen Bühnen der Text sitzt. */
+#screen-start[data-island="langeland"] .start-intro::before {
+  content: "";
   position: absolute;
-  bottom: 0;
-  left: 50%;
+  z-index: 2;
+  inset: 0;
+  background:
+    linear-gradient(96deg,
+      rgba(4, 16, 34, .72) 0%,
+      rgba(4, 16, 34, .46) 26%,
+      rgba(4, 16, 34, .10) 48%,
+      transparent 62%),
+    linear-gradient(180deg, rgba(4, 16, 34, .34) 0%, transparent 30%);
+  pointer-events: none;
+}
+
+.langeland-szene-uebergabe {
+  position: absolute;
+  inset: 0;
   display: block;
-  width: auto;
-  height: min(40%, 380px);
-  filter: drop-shadow(0 20px 24px rgba(0, 9, 30, .34));
-  transform: translateX(-50%);
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  /* Der Ausschnitt sitzt rechts: Die Szene ist 16:9, die Bühne breiter — es
+     wird also vertikal beschnitten. 62 % zeigt die Gesichter und die
+     Schlüsselübergabe, ohne dass oben die leere Hallendecke Platz frisst. */
+  object-fit: cover;
+  object-position: 60% 62%;
   user-select: none;
 }
 
+/* ------------------------------------------- FEHMARN: der Support-Platz
+   Drei Ebenen: Raum, Signalwelle, Arbeitsplatz. Die Bildaussage ist doppelt
+   und soll in zwei Sekunden ankommen — ProFinder und Diagnose-Tablet stehen
+   fuer die Fehlersuche, Headset und Signalwelle fuer den Support.
+
+   Der Arbeitsplatz ist EIN Motiv und wird nicht auseinandergenommen:
+   Mitarbeiterin, Geraet, Tablet und Zubehoer sind darin fotografisch
+   aufeinander abgestimmt, Licht und Perspektive stimmen. In CSS neu
+   gestapelt ginge genau diese Abstimmung verloren. */
+
 #screen-start[data-island="fehmarn"] .start-layout {
-  min-height: clamp(820px, 78vh, 920px);
+  min-height: clamp(620px, 68vh, 760px);
 }
 
 #screen-start[data-island="fehmarn"] .start-intro {
   position: relative;
   isolation: isolate;
-  min-height: 820px;
+  min-height: clamp(620px, 68vh, 760px);
+  padding: clamp(30px, 3.4vw, 52px);
   overflow: hidden;
 }
 
@@ -1548,9 +1745,7 @@ main { flex: 1 0 auto; }
   z-index: 3;
 }
 
-#screen-start[data-island="fehmarn"] .facts {
-  max-width: 620px;
-}
+#screen-start[data-island="fehmarn"] .facts { max-width: 34ch; }
 
 .fehmarn-start-visual {
   position: absolute;
@@ -1560,18 +1755,50 @@ main { flex: 1 0 auto; }
   pointer-events: none;
 }
 
-.fehmarn-start-diagnostic {
+.fehmarn-szene-raum,
+.fehmarn-szene-welle,
+.fehmarn-szene-arbeitsplatz {
   position: absolute;
-  bottom: 0;
-  left: 50%;
   display: block;
-  width: auto;
-  max-width: 96%;
-  height: min(42%, 390px);
-  filter: drop-shadow(0 20px 24px rgba(0, 9, 30, .34));
-  transform: translateX(-50%);
+  max-width: none;
   user-select: none;
 }
+
+/* Raum: die Buehne. Der Ausschnitt sitzt rechts, damit die vertikale
+   Lichtlinie des Motivs im rechten Buehnenbereich stehen bleibt — sie ist
+   der einzige harte Lichtakzent und gibt der Flaeche Tiefe. */
+.fehmarn-szene-raum {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 72% 58%;
+}
+
+/* Signalwelle: liegt hinter dem Arbeitsplatz und vor dem Raum. Sie ist
+   Dekor und darf nie mit Mitarbeiterin, Geraet oder Ueberschrift um
+   Aufmerksamkeit konkurrieren — daher die gedaempfte Deckkraft. */
+.fehmarn-szene-welle {
+  z-index: 2;
+  top: 15%;
+  left: 36%;
+  width: 24%;
+  height: auto;
+  opacity: .62;
+}
+
+/* Arbeitsplatz: am unteren Rand verankert, nicht schwebend. Die Breite ist
+   so gewaehlt, dass die linke Kante der Tischplatte hinter dem Textblock
+   endet und Tablet wie ProFinder vollstaendig im Bild bleiben. */
+.fehmarn-szene-arbeitsplatz {
+  z-index: 3;
+  right: 1%;
+  bottom: 0;
+  width: 60%;
+  height: auto;
+  filter: drop-shadow(0 18px 34px rgba(0, 9, 30, .38));
+}
+
 
 /* ------------------------------------------------ Gemeinsame Produktbühne
    VEJRØ liefert die visuelle Referenz: große Themenbühne links, kompaktes
@@ -1591,7 +1818,14 @@ main { flex: 1 0 auto; }
   overflow: hidden;
 }
 
-#screen-start[data-island]:not([data-island="vejro"]) .start-intro::before {
+/* USEDOM ist hier ausgenommen und bringt seinen eigenen Verlauf mit: Als
+   einzige Insel liegt dort eine Fotoszene unter dem Text, kein
+   freigestelltes Motiv auf Farbflaeche. Der Ausschluss steht im Selektor
+   statt in einer spaeteren Ueberschreibung, weil dieser hier durch das
+   :not() eine hoehere Spezifitaet hat: eine Insel-Regel mit
+   [data-island="usedom"] wuerde ihn sonst NICHT schlagen und stillschweigend
+   wirkungslos bleiben. Genau das war beim Umbau zunaechst passiert. */
+#screen-start[data-island]:not([data-island="vejro"]):not([data-island="usedom"]):not([data-island="langeland"]) .start-intro::before {
   content: "";
   position: absolute;
   z-index: 2;
@@ -1653,14 +1887,14 @@ main { flex: 1 0 auto; }
   justify-self: start;
 }
 
-#screen-start[data-island] .start-form.has-participant-facts {
+#screen-start[data-island] .start-form.is-panel {
   display: flex;
   flex-direction: column;
   align-content: initial;
   padding-top: clamp(24px, 2.8vw, 38px);
 }
 
-#screen-start[data-island] .start-form.has-participant-facts .participant-summary {
+#screen-start[data-island] .start-form.is-panel .participant-summary {
   gap: 4px;
   padding: 18px;
   border: 1px solid rgba(59, 169, 211, .3);
@@ -1671,12 +1905,12 @@ main { flex: 1 0 auto; }
   box-shadow: 0 12px 28px rgba(10, 39, 71, .08);
 }
 
-#screen-start[data-island] .start-form.has-participant-facts .participant-summary .form-title {
+#screen-start[data-island] .start-form.is-panel .participant-summary .form-title {
   margin-bottom: 4px;
   font-size: 1.28rem;
 }
 
-#screen-start[data-island] .start-form.has-participant-facts .participant-summary .btn {
+#screen-start[data-island] .start-form.is-panel .participant-summary .btn {
   min-height: var(--tap);
   margin-top: 7px;
   font-size: .84rem;
@@ -1693,9 +1927,9 @@ main { flex: 1 0 auto; }
 }
 
 #screen-start[data-island] .start-form.has-participant-facts .facts li {
-  grid-template-columns: 46px minmax(0, 1fr);
-  gap: 10px;
-  min-height: 46px;
+  grid-template-columns: 54px minmax(0, 1fr);
+  gap: 11px;
+  min-height: 54px;
   align-items: center;
   color: var(--th-navy);
   font-size: .88rem;
@@ -1704,8 +1938,8 @@ main { flex: 1 0 auto; }
 }
 
 #screen-start[data-island] .start-form.has-participant-facts .facts li::before {
-  width: 46px;
-  height: 46px;
+  width: 54px;
+  height: 54px;
   border-radius: 0;
   background-color: transparent;
   background-position: center;
@@ -1715,13 +1949,283 @@ main { flex: 1 0 auto; }
   filter: drop-shadow(0 5px 7px rgba(0, 13, 38, .18));
 }
 
-#screen-start[data-island] .start-form.has-participant-facts .start-actions {
+#screen-start[data-island] .start-form.is-panel {
+  display: flex;
+  flex-direction: column;
+  align-content: initial;
+  padding-top: clamp(24px, 2.8vw, 38px);
+}
+
+#screen-start[data-island] .start-form.is-panel .participant-summary {
+  gap: 4px;
+  padding: 18px;
+  border: 1px solid rgba(59, 169, 211, .3);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 100% 0, rgba(175, 202, 5, .13), transparent 48%),
+    linear-gradient(145deg, #F4F9FC, #FFFFFF);
+  box-shadow: 0 12px 28px rgba(10, 39, 71, .08);
+}
+
+#screen-start[data-island] .start-form.is-panel .participant-summary .form-title {
+  margin-bottom: 4px;
+  font-size: 1.28rem;
+}
+
+#screen-start[data-island] .start-form.is-panel .participant-summary .btn {
+  min-height: var(--tap);
+  margin-top: 7px;
+  font-size: .84rem;
+}
+
+/* --- USEDOM: die rechte Spalte ----------------------------------------
+   Sie hat nach dem Umzug der Fakten in die Bühne nur noch zwei Aufgaben:
+   sagen, wer angemeldet ist, und den Weg ins Quiz öffnen. Deshalb keine
+   Teilnehmerkarte mit eigenem Rahmen, Verlauf und Schatten wie auf den
+   übrigen Inseln — in einer Spalte mit zwei Elementen ist ein Kasten um
+   eines davon keine Gliederung, sondern nur eine zweite Kante neben der
+   Spaltenkante. Eine Haarlinie trennt hier genauso zuverlässig.
+
+   Zum `.screen` im Selektor: #screen-start trägt diese Klasse ohnehin,
+   die Auswahl ändert sich dadurch nicht. Es geht allein um das Gewicht.
+   Die gemeinsamen Panel-Regeln weiter unten haben dieselbe Spezifität
+   wie diese hier; ohne den Zusatz entschiede die Reihenfolge in der
+   Datei, welche gewinnt, und die verschiebt sich beim nächsten
+   Einfügen still. Mit dem Zusatz ist die Position gleichgültig. */
+
+#screen-start.screen[data-island="usedom"] .start-form {
+  padding: clamp(28px, 2.4vw, 40px);
+  background: #fff;
+}
+
+#screen-start.screen[data-island="usedom"] .start-form.is-panel .participant-summary {
+  gap: 3px;
+  padding: 0 0 22px;
+  border: 0;
+  border-bottom: 1px solid var(--th-line);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+
+#screen-start.screen[data-island="usedom"] .start-form.is-panel .participant-summary .form-title {
+  margin-bottom: 6px;
+  color: var(--th-muted);
+  font-size: .78rem;
+  font-weight: 800;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+
+#screen-start.screen[data-island="usedom"] .participant-name {
+  font-size: 1.14rem;
+  line-height: 1.25;
+}
+
+#screen-start.screen[data-island="usedom"] .start-form.is-panel .participant-summary .btn {
+  margin-top: 10px;
+  padding-left: 0;
+  font-size: .84rem;
+}
+
+/* Die Knopfgruppe sitzt unten in der Spalte (margin-top:auto aus dem
+   gemeinsamen Block). Der Deckel begrenzt, wie weit sie absinkt: ohne ihn
+   standen zwischen Teilnehmerzeile und Knopf über 300 px Leere, weil die
+   Spalte so hoch ist wie die Bühne. Die Gruppe bleibt damit im Blickfeld,
+   ohne oben festzukleben. */
+/* Die Fakten stehen in derselben Spalte wie die Teilnehmerzeile — und die
+   ist hier flach. Eine Karte nur um die Fakten ergäbe zwei verschiedene
+   Gestaltungen für zwei gleichrangige Blöcke. Also auch hier nur Fläche,
+   getrennt durch dieselbe Haarlinie. */
+#screen-start.screen[data-island="usedom"] .start-form.has-participant-facts .facts {
+  margin: 20px 0 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+
+#screen-start.screen[data-island="usedom"] .start-form.is-panel .start-actions {
+  gap: 12px;
+  /* Ganz an den unteren Rand (margin-top:auto aus dem gemeinsamen Block).
+     Seit die Fakten wieder in dieser Spalte stehen, ist darüber kein
+     Leerraum mehr, den ein gedeckelter Abstand ausgleichen müsste. */
+  padding-top: 0;
+}
+
+/* Höhen in var(--tap), nicht in festen Pixeln: die Seite läuft auf
+   zoom: .8 (siehe :root), feste 54 px wären real 43 px und damit unter der
+   44-px-Trefferfläche, die auf dem Tablet am Fahrzeug gebraucht wird. */
+#screen-start.screen[data-island="usedom"] #btn-start {
+  min-height: calc(var(--tap) + 12px);
+  font-size: 1.02rem;
+}
+
+#screen-start.screen[data-island="usedom"] #btn-start:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(166, 255, 0, .2);
+}
+
+#screen-start.screen[data-island="usedom"] #btn-to-islands {
+  min-height: calc(var(--tap) + 4px);
+  border-color: var(--th-navy);
+  color: var(--th-navy);
+}
+
+/* Reihenfolge umgedreht: Der gemeinsame Block stellt die Campus-Karte nach
+   oben (order 1) und "Quiz starten" darunter. Auf dieser Insel steht die
+   wichtigste Handlung zuerst — wer hier ankommt, will das Quiz starten, die
+   Karte ist der Rueckweg. */
+#screen-start.screen[data-island="usedom"] .start-form.is-panel #btn-start { order: 1; }
+#screen-start.screen[data-island="usedom"] .start-form.is-panel #btn-to-islands { order: 2; }
+
+.usedom-start-visual {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* --- Die Ebenen der Szene, von hinten nach vorn -----------------------
+   Reihenfolge: Raum, Licht, Podest, Display, Verkäufer, Kundin.
+
+   Alle Motive sind beim Aufbereiten auf ihren sichtbaren Inhalt zugeschnitten
+   (tools/usedom-szene-bauen.js). Deshalb beschreibt jede Prozentangabe hier
+   wirklich die Person oder das Gerät und nicht den transparenten Rand um sie
+   herum — ohne den Zuschnitt verschiebt `left: 30%` das leere Kästchen.
+
+   Die Personen werden über die HÖHE bemessen, das Display über die BREITE.
+   Das entspricht dem, was die Szene zusammenhält: Menschen vergleicht man in
+   ihrer Größe zueinander, ein Aufsteller misst sich an der Bühnenbreite. */
+
+.usedom-szene-raum,
+.usedom-szene-podest,
+.usedom-szene-display,
+.usedom-szene-verkaeufer,
+.usedom-szene-kundin {
+  position: absolute;
+  display: block;
+  max-width: none;
+  user-select: none;
+}
+
+/* Raum: liefert Wand, Boden und die Spiegelung.
+
+   Breiter als die Bühne und nach links verschoben, und das ist keine
+   Geschmacksfrage: Das Motiv trägt links und rechts je einen vertikalen
+   Neonstab. Formatfüllend eingesetzt landet der linke bei 6 % der Breite —
+   genau unter dem Beschreibungstext. Gemessen kam weisser Text dort auf
+   2,9:1 und lag damit unter der WCAG-AA-Schwelle.
+
+   Beide Stäbe aus dem Bild zu schieben kostet nichts (die Wand dahinter ist
+   gleichmässig) und hebt den Text auf 16,8:1 — ohne ihn abzudunkeln. Den
+   Lichtakzent rechts übernimmt der Stab aus CSS. */
+.usedom-szene-raum {
+  top: 0;
+  left: -16%;
+  width: 132%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 62%;
+  opacity: .92;
+}
+
+/* Lichtschein hinter dem Display — als Verlauf, nicht als Bild: Als WebP
+   kostete derselbe Kreis 152 KB, hier kostet er nichts und skaliert
+   verlustfrei mit. Dazu rechts der vertikale Lichtstab aus demselben Grund. */
+.usedom-start-visual::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  top: 4%;
+  left: 50%;
+  width: 34%;
+  height: 58%;
+  background: radial-gradient(ellipse at center,
+    rgba(88, 184, 255, .30) 0%,
+    rgba(45, 140, 255, .16) 38%,
+    rgba(13, 110, 253, .05) 62%,
+    transparent 76%);
+  pointer-events: none;
+}
+
+.usedom-start-visual::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  top: 12%;
+  right: 3%;
+  width: 4px;
+  height: 46%;
+  border-radius: 4px;
+  background: linear-gradient(180deg,
+    rgba(120, 200, 255, 0) 0%,
+    rgba(150, 214, 255, .92) 14%,
+    rgba(150, 214, 255, .92) 86%,
+    rgba(120, 200, 255, 0) 100%);
+  box-shadow: 0 0 22px 5px rgba(45, 140, 255, .5);
+  pointer-events: none;
+}
+
+/* Podest: liegt unter Display und Personen und gibt ihnen einen Stand.
+   Ohne es schweben die freigestellten Motive über dem Boden. */
+.usedom-szene-podest {
+  z-index: 2;
+  bottom: 19%;
+  left: 44%;
+  width: 48%;
+  height: auto;
+  opacity: .8;
+}
+
+.usedom-szene-display {
+  z-index: 3;
+  bottom: 29%;
+  left: 50%;
+  width: 35%;
+  height: auto;
+  filter: drop-shadow(0 18px 26px rgba(0, 9, 30, .45));
+}
+
+/* Verkäufer: links vor dem Display, zum Gerät hin orientiert.
+   Er beginnt bei 36 % — gemessen endet die Überschrift bei 35 %, er stösst
+   also an sie an, statt sie zu überlagern. Seine rechte Schulter ragt vor
+   die linke Displaykante; genau diese Überschneidung macht aus zwei
+   nebeneinander gesetzten Motiven eine Szene mit Tiefe. */
+.usedom-szene-verkaeufer {
+  z-index: 4;
+  bottom: 4%;
+  left: 41%;
+  width: auto;
+  height: 76%;
+  filter: drop-shadow(-6px 14px 20px rgba(0, 9, 30, .45));
+}
+
+/* Kundin: rechts, dem Display zugewandt. Etwas kleiner als der Verkäufer,
+   weil sie im Bildraum weiter hinten steht. Sie steht VOR der rechten
+   Displaykante, nicht daneben — sonst stehen drei Motive in einer Reihe
+   statt einer Beratungssituation. */
+.usedom-szene-kundin {
+  z-index: 5;
+  right: 6%;
+  bottom: 4%;
+  width: auto;
+  height: 72%;
+  filter: drop-shadow(-10px 14px 20px rgba(0, 9, 30, .4));
+}
+
+
+
+
+#screen-start[data-island] .start-form.is-panel .start-actions {
   margin-top: auto;
 }
 
-#screen-start[data-island] .start-form.has-participant-facts #btn-to-islands { order: 1; }
+#screen-start[data-island] .start-form.is-panel #btn-to-islands { order: 1; }
 
-#screen-start[data-island] .start-form.has-participant-facts #btn-start {
+#screen-start[data-island] .start-form.is-panel #btn-start {
   order: 2;
   border-color: #92B900;
   background: #B8F500;
@@ -1729,15 +2233,18 @@ main { flex: 1 0 auto; }
   box-shadow: 0 12px 28px rgba(146, 185, 0, .32);
 }
 
-#screen-start[data-island] .start-form.has-participant-facts #btn-start:hover {
+#screen-start[data-island] .start-form.is-panel #btn-start:hover {
   background: #C4FF18;
 }
 
+
+
+
 /* Motiv-Overrides: gleicher Bühnenmaßstab, aber eine zur Bildaussage passende
    Position. Kein Motiv wird gestreckt oder beschnitten. */
-.samsoe-start-vehicle { left: 2%; bottom: 2%; width: min(48%, 790px); }
+.samsoe-start-vehicle { left: 6%; bottom: 2%; width: min(48%, 790px); }
 .samsoe-start-technician { right: 4%; bottom: 0; width: min(36%, 620px); }
-.hiddensee-start-contact { bottom: 1%; width: min(56%, 820px); }
+.hiddensee-start-contact { bottom: 1%; left: 57%; width: min(56%, 820px); }
 .poel-start-haendler {
   right: 4%;
   bottom: -2%;
@@ -1747,32 +2254,13 @@ main { flex: 1 0 auto; }
   height: auto;
   transform: none;
 }
-.usedom-start-display {
-  right: 2%;
-  bottom: -2%;
-  left: auto;
-  width: min(74%, 1100px);
-  height: auto;
-  max-height: 72%;
-  transform: none;
-}
-.langeland-start-handover {
-  right: 5%;
-  bottom: -1%;
-  left: auto;
-  width: min(72%, 1040px);
-  height: auto;
-  transform: none;
-}
-.fehmarn-start-diagnostic {
-  right: 3%;
-  bottom: -2%;
-  left: auto;
-  width: min(72%, 1000px);
-  max-width: none;
-  height: auto;
-  transform: none;
-}
+/* USEDOM steht hier bewusst nicht: Seine Bühne besteht aus mehreren Ebenen
+   mit eigenen Positionen (siehe oben), nicht aus einem Motiv auf einer
+   Fläche. */
+/* LANGELAND steht hier nicht mehr: Die Szene ist formatfüllende Bühne
+   (siehe oben), kein Motiv, das auf der Fläche platziert wird. */
+/* FEHMARN steht hier nicht mehr: Seine Bühne besteht aus drei Ebenen mit
+   eigenen Positionen (siehe oben), nicht aus einem Motiv auf einer Fläche. */
 
 .facts { display: grid; gap: 10px; margin: 22px 0 0; padding: 0; list-style: none; }
 .facts li {
@@ -2141,7 +2629,13 @@ main { flex: 1 0 auto; }
   font-weight: 800;
   cursor: pointer;
 }
-.q-audio-button:hover { background: var(--th-navy-2); }
+/* --th-navy-2 gibt es nicht — die Deklaration war damit "invalid at
+   computed-value time" und fiel NICHT auf die Grundregel zurueck, sondern
+   auf transparent. Weisse Schrift auf dem hellblauen Kasten darunter:
+   1,09:1. Die Beschriftung verschwand genau dann, wenn die Maus darauf
+   stand. `:not(:disabled)`, weil :hover sonst auch den Ladezustand vor
+   `canplay` trifft. */
+.q-audio-button:hover:not(:disabled) { background: var(--th-navy-deep); }
 .q-audio-button:disabled { cursor: not-allowed; opacity: .48; }
 .q-audio-progress-wrap { display: grid; flex: 1; gap: 5px; min-width: 0; }
 .q-audio progress { width: 100%; height: 9px; accent-color: var(--th-blue); }
@@ -2153,7 +2647,7 @@ main { flex: 1 0 auto; }
 .fact-audio::before {
   border-radius: 0 !important;
   background-color: transparent !important;
-  background-image: url("/media/fehmarn/feh-icon-ton.png?v=1.0.0") !important;
+  background-image: url("/media/fehmarn/feh-icon-ton.webp") !important;
   background-position: center !important;
   background-repeat: no-repeat !important;
   background-size: contain !important;
@@ -2805,6 +3299,43 @@ main { flex: 1 0 auto; }
 
 /* --------------------------------------------------------------- Mobile --- */
 
+/* Zwischenbreiten: Text über der Szene, nicht daneben.
+   --------------------------------------------------------------------------
+   Der Textblock hat eine feste Maximalbreite (16ch für die Überschrift), sein
+   ANTEIL an der Bühne wächst also, je schmaler die wird. Gemessen: Ab rund
+   1000 px Bühnenbreite endet der Text vor dem Verkäufer, darunter läuft er in
+   ihn hinein — bei 900 px um 5 px, bei 700 px um 71 px.
+
+   1000 px Bühne entsprechen etwa 1300 px Fensterbreite. Zwischen dem
+   Tablet-Umbruch bei 900 px und dieser Grenze bleibt eine Lücke, in der die
+   nebeneinander gesetzte Anordnung nicht mehr aufgeht. Dort gilt dieselbe
+   Anordnung wie auf dem Tablet: Text oben, Szene darunter. */
+@media (min-width: 901px) and (max-width: 1299px) {
+  #screen-start[data-island="usedom"] .start-intro { min-height: 600px; }
+  .usedom-szene-display { left: 24%; width: 52%; bottom: 25%; }
+  .usedom-szene-verkaeufer { left: 9%; height: 56%; }
+  .usedom-szene-kundin { right: 9%; height: 52%; }
+  .usedom-szene-podest { left: 18%; width: 66%; bottom: 16%; }
+  .usedom-start-visual::before { top: 4%; left: 24%; width: 50%; height: 52%; }
+
+  /* FEHMARN gleicher Fall, gleiche Messung: frei erst ab rund 1000 px
+     Bühnenbreite, bei 900 px läuft der Text 20 px in den Arbeitsplatz.
+     Hier bleibt die Anordnung aber nebeneinander — anders als auf USEDOM,
+     weil der Textblock mit vier Faktenzeilen ohnehin fast die ganze
+     Bühnenhöhe braucht und darunter kein Platz für die Szene wäre. Statt sie
+     nach unten zu schieben, wird sie schmaler: Bei 62 % beginnt sie erst bei
+     40 % der Breite und lässt dem Text seine 38 %. */
+  #screen-start[data-island="fehmarn"] .start-intro { min-height: 640px; }
+  /* Der Beschreibungstext ist hier das breiteste Element (42 ch aus dem
+     gemeinsamen Block, gemessen 44 % der Bühne). Er wird schmaler, damit die
+     Szene nicht ihrerseits weiter schrumpfen muss — aber nur so weit, dass
+     er nicht gequetscht wirkt. */
+  #screen-start[data-island="fehmarn"] .start-intro .lead { max-width: 36ch; }
+  .fehmarn-szene-arbeitsplatz { right: -1%; width: 58%; }
+  .fehmarn-szene-welle { top: 13%; left: 44%; width: 20%; opacity: .5; }
+  .fehmarn-szene-raum { object-position: 70% 60%; }
+}
+
 @media (max-width: 900px) {
   .masthead { grid-template-columns: minmax(0, 1fr) minmax(260px, .72fr); }
   .masthead-tools {
@@ -2825,21 +3356,37 @@ main { flex: 1 0 auto; }
   }
   #screen-start[data-island="vejro"] .start-intro { min-height: 690px; }
   #screen-start[data-island="poel"] .start-intro { min-height: 740px; }
-  #screen-start[data-island="usedom"] .start-intro { min-height: 780px; }
-  .usedom-start-display { height: min(38%, 340px); }
-  #screen-start[data-island="langeland"] .start-intro { min-height: 780px; }
-  .langeland-start-handover { height: min(38%, 340px); }
-  #screen-start[data-island="fehmarn"] .start-intro { min-height: 780px; }
-  .fehmarn-start-diagnostic { height: min(40%, 350px); }
+  /* Auf dieser Breite steht der Text nicht mehr NEBEN der Szene, sondern
+     DARÜBER: Gemessen belegt er hier 51 % der Bühnenbreite statt 35 % wie
+     auf dem Desktop, weil die Überschrift früher umbricht. Die Szene rückt
+     deshalb nach unten und wird flacher — die Personen auf gut die Hälfte
+     der Bühnenhöhe, damit sie unter dem Textblock bleiben. Die Bühne wird
+     dafür etwas höher. */
+  #screen-start[data-island="usedom"] .start-intro { min-height: 600px; }
+  .usedom-szene-display { left: 24%; width: 52%; bottom: 25%; }
+  .usedom-szene-verkaeufer { left: 9%; height: 56%; }
+  /* Rechts genug Abstand, damit sie VOR der Displaykante steht und nicht
+     daneben — sonst stehen drei Motive in einer Reihe. */
+  .usedom-szene-kundin { right: 9%; height: 52%; }
+  .usedom-szene-podest { left: 18%; width: 66%; bottom: 16%; }
+  /* Schmalere Bühne: Der Ausschnitt rückt Richtung Bildmitte, damit die
+     beiden Personen zusammen im Bild bleiben. */
+  #screen-start[data-island="langeland"] .start-intro { min-height: 560px; }
+  .langeland-szene-uebergabe { object-position: 66% 60%; }
+  /* Auf dieser Breite steht der Text über der Szene statt daneben — wie auf
+     USEDOM, aus demselben Grund: Der Textblock hat eine feste Maximalbreite,
+     sein Anteil an der Bühne wächst also, je schmaler die wird. Die Szene
+     rückt nach unten und schrumpft, die Welle wird kleiner und blasser. */
+  #screen-start[data-island="fehmarn"] .start-intro { min-height: 660px; }
+  .fehmarn-szene-arbeitsplatz { right: -2%; width: 78%; }
+  .fehmarn-szene-welle { top: 30%; left: 4%; width: 30%; opacity: .45; }
+  .fehmarn-szene-raum { object-position: 68% 60%; }
   /* Bei Tabletbreite bleibt die Vejrø-Aufteilung für alle Inseln erhalten.
      Die globale 80-%-Skalierung vergrößert den virtuellen Inhaltsbereich;
      deshalb reichen 270 CSS-px für das Startpanel weiterhin komfortabel. */
   #screen-start[data-island] .start-layout {
     grid-template-columns: minmax(0, 1.42fr) minmax(270px, .7fr);
   }
-  .usedom-start-display,
-  .langeland-start-handover,
-  .fehmarn-start-diagnostic { height: auto; }
   .result-layout { grid-template-columns: 1fr; }
   .score-card { position: static; }
 }
@@ -2959,12 +3506,67 @@ main { flex: 1 0 auto; }
   #screen-start[data-island="vejro"] .start-form { padding: 26px 22px; }
   #screen-start[data-island="poel"] .start-intro { min-height: 680px; }
   .poel-start-haendler { bottom: 2%; max-width: 98%; height: min(35%, 300px); }
-  #screen-start[data-island="usedom"] .start-intro { min-height: 680px; }
-  .usedom-start-display { width: 94%; height: auto; }
-  #screen-start[data-island="langeland"] .start-intro { min-height: 680px; }
-  .langeland-start-handover { width: 96%; height: auto; }
-  #screen-start[data-island="fehmarn"] .start-intro { min-height: 680px; }
-  .fehmarn-start-diagnostic { width: 96%; height: auto; }
+  /* Einspaltig: Die Bühne wird zum Kopfbild über dem Teilnehmerbereich.
+     Der Ausschnitt geht Richtung Bildmitte, damit Verkäufer, Display und
+     Kundin zusammen im Bild bleiben. */
+  #screen-start[data-island="usedom"] .start-intro { min-height: 520px; }
+  /* Einspaltig steht der Text oben, die Szene darunter. Sie nimmt die volle
+     Breite und rückt in die untere Hälfte. Der Verkäufer bleibt links, die
+     Kundin rechts — auf 373 px wären beide sonst übereinander. */
+  .usedom-szene-display { left: 21%; width: 56%; bottom: 26%; }
+  /* Die Personen stehen mit Abstand zur Kante: Bei left/right 0 wurden sie
+     am Bühnenrand angeschnitten, und eine halbe Person liest sich als
+     Bildfehler, nicht als Anschnitt. */
+  .usedom-szene-verkaeufer { left: 5%; height: 44%; }
+  .usedom-szene-kundin { right: 7%; height: 40%; }
+  .usedom-szene-podest { left: 14%; width: 72%; bottom: 17%; }
+  .usedom-szene-raum { object-position: center 70%; }
+  /* Der Lichtstab säße auf dieser Breite im Text. */
+  .usedom-start-visual::after { display: none; }
+
+  /* Der seitliche Scrim greift hier nicht mehr: In einer 373 px schmalen
+     Bühne nimmt der Text die volle Breite ein, während der Verlauf erst bei
+     86 % ausläuft. Gemessen kam weisser Text damit auf 1,15:1 und lag direkt
+     auf der hellen Displayfläche. Ein zweiter Verlauf von oben deckt den
+     Textbereich unabhängig von der Breite ab; zusammen ergeben beide 6,8:1. */
+  #screen-start[data-island="usedom"] .start-intro::before {
+    background:
+      linear-gradient(180deg,
+        rgba(4, 16, 34, .92) 0%,
+        rgba(4, 16, 34, .86) 62%,
+        rgba(4, 16, 34, .55) 80%,
+        rgba(4, 16, 34, .40) 100%),
+      linear-gradient(100deg,
+        rgba(4, 16, 34, .70) 0%,
+        rgba(4, 16, 34, .40) 46%,
+        transparent 84%);
+  }
+  /* Einspaltig: Der Text steht oben, die Szene füllt den Rest. Von den
+     1500 px Bildbreite sind hier nur noch rund 370 sichtbar — der Ausschnitt
+     geht deshalb ganz an den rechten Rand, wo Übergabe und Fahrzeug stehen.
+     Bei 74 % lag der sichtbare Bereich noch auf der dunklen Wand. */
+  #screen-start[data-island="langeland"] .start-intro { min-height: 560px; }
+  .langeland-szene-uebergabe { object-position: 100% 56%; }
+  /* Der Text steht oben, die Szene darunter: Der Verlauf deckt entsprechend
+     von oben statt von der Seite. */
+  #screen-start[data-island="langeland"] .start-intro::before {
+    background:
+      linear-gradient(180deg,
+        rgba(4, 16, 34, .90) 0%,
+        rgba(4, 16, 34, .82) 42%,
+        rgba(4, 16, 34, .40) 62%,
+        rgba(4, 16, 34, .18) 100%);
+  }
+  /* Einspaltig: Text oben, Arbeitsplatz darunter über die volle Breite.
+     Die Welle entfällt — sie ist reine Dekoration und würde auf 373 px nur
+     mit dem Hauptmotiv um Platz streiten. */
+  /* Über der Szene stehen Überschrift und Beschreibung; die Faktenzeilen
+     liegen in der rechten Spalte. Die Höhe ist danach bemessen, dass der
+     Kopf der Mitarbeiterin frei bleibt. */
+  #screen-start[data-island="fehmarn"] .start-intro { min-height: 660px; }
+  .fehmarn-szene-arbeitsplatz { right: auto; left: 50%; width: 112%; transform: translateX(-50%); }
+  .fehmarn-szene-welle { display: none; }
+  .fehmarn-szene-raum { object-position: 60% 62%; }
 
   /* Smartphone: Hero, Informationen und Startaktion folgen wieder der
      natürlichen Lesereihenfolge und nutzen die volle Inhaltsbreite. */
