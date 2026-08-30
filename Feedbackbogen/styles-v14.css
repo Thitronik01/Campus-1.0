@@ -217,25 +217,46 @@ input[type="text"], textarea, .rate, .field { scroll-margin-top: 118px; }
 .masthead__home {
   display: inline-flex;
   align-items: center;
-  gap: 14px;
+  margin-left: auto;
   min-height: 48px;
-  color: rgba(255, 255, 255, .82);
-  font-size: .8rem;
-  font-weight: 720;
+  color: var(--th-navy);
   text-decoration: none;
 }
 .masthead__logo { width: min(220px, 46vw); height: auto; }
-.masthead__home span { white-space: nowrap; }
-.masthead__home:hover span { color: var(--th-white); text-decoration: underline; text-underline-offset: 4px; }
-
-/* "Campus 2026" im THITRONIK Neongruen. Lime als Marker, dunkler Text darauf
-   erreicht 10:1 Kontrast, weisser Text waere unlesbar. */
-.masthead__tag {
-  padding: 6px 13px; border-radius: var(--radius-pill);
-  background: var(--th-lime); color: var(--th-ink);
-  font-size: .74rem; font-weight: 800;
-  letter-spacing: .1em; text-transform: uppercase; white-space: nowrap;
+.masthead__home-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 48px;
+  padding: 10px 17px;
+  border: 1px solid var(--th-lime);
+  border-radius: var(--radius-md);
+  background: var(--th-lime);
+  color: var(--th-ink);
+  font-size: .82rem;
+  font-weight: 800;
+  line-height: 1.2;
+  white-space: nowrap;
+  box-shadow: 0 8px 22px rgba(5, 21, 45, .18);
+  transition:
+    background var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out),
+    transform var(--duration-press) var(--ease-out);
 }
+.masthead__home-icon {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1;
+}
+.masthead__home:hover .masthead__home-action {
+  border-color: #c1db1a;
+  background: #c1db1a;
+  box-shadow: 0 10px 26px rgba(5, 21, 45, .24);
+  transform: translateY(-1px);
+}
+.masthead__home:active .masthead__home-action { transform: scale(.98); }
 
 @media (min-width: 760px) { .masthead__bar { min-height: 96px; } }
 
@@ -1054,7 +1075,9 @@ input[type="text"]::placeholder, textarea::placeholder { color: #8B95A1; }
 .done__back:active { transform: scale(.975); }
 
 @media (max-width: 560px) {
-  .masthead__home span { display: none; }
+  .masthead__logo { width: min(176px, 48vw); }
+  .masthead__home-action { width: 48px; padding-inline: 0; }
+  .masthead__home-label { display: none; }
   .done__card { padding: 20px; }
 }
 

@@ -8,7 +8,7 @@
   <meta name="description" content="THITRONIK Campus: Wissenscheck nach jeder Schulungsinsel.">
   <meta name="robots" content="noindex, nofollow">
   <title>THITRONIK Campus: Wissenscheck</title>
-  <link rel="stylesheet" href="/assets/styles.css?v=1.9.2">
+  <link rel="stylesheet" href="/assets/styles.css?v=1.12.1">
 </head>
 <body>
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
@@ -35,6 +35,30 @@
           <span id="campus-progress-fill"></span>
         </div>
       </div>
+      <nav class="masthead-tools" aria-label="Campus-Werkzeuge">
+        <a class="masthead-tool" id="arbeitskarte-link" href="/arbeitskarte/" hidden>
+          <span class="ta-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false"><path d="M8 4h8M9 3h6v3H9z"></path><path d="M6 5h12v16H6z"></path><path d="M9 10h6M9 14h6M9 18h4"></path></svg>
+          </span>
+          <span class="ta-text">
+            <span class="ta-kicker">Werkstatt-Werkzeug</span>
+            <span class="ta-title">Arbeitskarte</span>
+            <span class="ta-desc">Arbeitskarte öffnen</span>
+          </span>
+          <span class="ta-cta">Öffnen</span>
+        </a>
+        <a class="masthead-tool" id="tagesabschluss" href="/feedback/" hidden>
+          <span class="ta-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false"><path d="M5 4h14v13H9l-4 3V4Z"></path><path d="M8 8h8M8 12h5"></path></svg>
+          </span>
+          <span class="ta-text">
+            <span class="ta-kicker" id="ta-kicker">Tagesabschluss</span>
+            <span class="ta-title" id="ta-title">Feedbackbogen</span>
+            <span class="ta-desc" id="ta-desc"></span>
+          </span>
+          <span class="ta-cta">Öffnen</span>
+        </a>
+      </nav>
       <div class="masthead-meta" id="masthead-meta" hidden>
         <span class="chip" id="chip-island"></span>
         <span class="chip chip-quiet" id="chip-participant"></span>
@@ -43,16 +67,6 @@
 
     <main id="main">
 
-      <!-- Sende-Ausgang. Steht über den Bildschirmen und nicht in der
-           Campus-Karte: im Einzel-Insel-Paket gibt es diese Karte gar nicht,
-           und genau dort wäre der Hinweis sonst unsichtbar. Während einer
-           laufenden Frage bleibt er ausgeblendet - mitten im Quiz ist
-           niemand in der Lage, etwas daran zu ändern. -->
-      <div class="ausgang" id="ausgang" hidden>
-        <p class="ausgang-text" id="ausgang-text" role="status" aria-live="polite"></p>
-        <button class="btn btn-secondary btn-small" id="btn-ausgang-senden" type="button">Jetzt senden</button>
-      </div>
-
       <!-- ==================== Inselübersicht ==================== -->
       <section class="screen" id="screen-islands" aria-labelledby="islands-title" hidden>
         <div class="campus-map" id="campus-map">
@@ -60,17 +74,6 @@
             <p class="kicker">Campus 2026</p>
             <h1 id="islands-title">Deine Schulungsexpedition</h1>
             <p class="lead">Wähle eine Insel aus und starte den Wissenscheck.</p>
-            <ul class="campus-highlights" aria-label="Campus-Überblick">
-              <li><strong>7</strong><span>Wissensinseln</span></li>
-              <li>
-                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m5 12 4 4L19 6"></path></svg>
-                <span>Sofortauflösung</span>
-              </li>
-              <li>
-                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 4h14v13H9l-4 3V4Z"></path><path d="M8 8h8M8 12h5"></path></svg>
-                <span>Feedback inklusive</span>
-              </li>
-            </ul>
           </div>
 
           <svg class="campus-map-art" id="campus-map-art" viewBox="0 0 1200 760" preserveAspectRatio="none" aria-hidden="true" focusable="false">
@@ -104,32 +107,6 @@
           <ul class="island-map" id="island-grid" aria-label="Schulungsinseln"></ul>
         </div>
 
-        <a class="tagesabschluss campus-tool" id="arbeitskarte-link" href="/arbeitskarte/" hidden>
-          <span class="ta-icon campus-tool-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" focusable="false"><path d="M8 4h8M9 3h6v3H9z"></path><path d="M6 5h12v16H6z"></path><path d="M9 10h6M9 14h6M9 18h4"></path></svg>
-          </span>
-          <span class="ta-text">
-            <span class="ta-kicker">Werkstatt-Werkzeug</span>
-            <span class="ta-title">Arbeitskarte Digital</span>
-            <span class="ta-desc">Fahrzeugannahme, Vorschäden, Material und Übergabe direkt am Fahrzeug dokumentieren.</span>
-          </span>
-          <span class="ta-cta">Arbeitskarte öffnen</span>
-        </a>
-
-        <!-- Kein Listeneintrag und keine Insel: Der Tagesabschluss zaehlt
-             nicht in "7 von 7" mit. Ein echtes <a>, weil es ein anderes
-             Dokument ist - Mittelklick und "in neuem Tab" sollen gehen. -->
-        <a class="tagesabschluss" id="tagesabschluss" href="/feedback/" hidden>
-          <span class="ta-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" focusable="false"><path d="M5 4h14v13H9l-4 3V4Z"></path><path d="M8 8h8M8 12h5"></path></svg>
-          </span>
-          <span class="ta-text">
-            <span class="ta-kicker" id="ta-kicker">Tagesabschluss</span>
-            <span class="ta-title" id="ta-title">Feedbackbogen</span>
-            <span class="ta-desc" id="ta-desc"></span>
-          </span>
-          <span class="ta-cta">Feedbackbogen öffnen</span>
-        </a>
       </section>
 
       <!-- ==================== Start / Teilnehmerdaten ==================== -->
@@ -292,7 +269,7 @@
             </div>
 
             <figure class="q-media" id="q-media" hidden>
-              <img id="q-media-img" alt="">
+              <img id="q-media-img" alt="" decoding="async" fetchpriority="high">
               <figcaption id="q-media-caption"></figcaption>
             </figure>
           </div>
@@ -372,6 +349,12 @@
         <button class="btn btn-primary" id="btn-err-back" type="button">Zur Campus-Karte</button>
       </section>
 
+      <!-- Ausstehende Übertragungen stehen bewusst am Ende des Inhalts. -->
+      <div class="ausgang" id="ausgang" hidden>
+        <p class="ausgang-text" id="ausgang-text" role="status" aria-live="polite"></p>
+        <button class="btn btn-secondary btn-small" id="btn-ausgang-senden" type="button">Jetzt senden</button>
+      </div>
+
     </main>
 
     <footer class="colophon">
@@ -417,6 +400,6 @@
     <input name="score"><input name="total"><input name="percent"><input name="answers_json">
   </form>
 
-  <script src="/assets/engine.js?v=1.9.0" defer></script>
+  <script src="/assets/engine.js?v=1.12.1" defer></script>
 </body>
 </html>

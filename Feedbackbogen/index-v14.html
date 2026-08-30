@@ -11,7 +11,7 @@
   <link rel="preload" as="image" href="assets/v12/hero-1024.webp"
     imagesrcset="assets/v12/hero-640.webp 640w, assets/v12/hero-1024.webp 1024w, assets/v12/hero-1600.webp 1600w"
     imagesizes="(max-width: 1228px) calc(100vw - 28px), 1200px" fetchpriority="high">
-  <link rel="stylesheet" href="styles-v14.css">
+  <link rel="stylesheet" href="styles-v14.css?v=14.3">
 </head>
 <body data-build="v14">
   <a class="skip" href="#panel-1">Direkt zum Feedbackbogen</a>
@@ -23,11 +23,13 @@
 
   <header class="masthead">
     <div class="shell masthead__bar">
+      <img class="masthead__logo" src="assets/thitronik-logo.png" alt="THITRONIK" width="485" height="118">
       <a class="masthead__home" href="/quiz" aria-label="Zur Campus-Karte">
-        <img class="masthead__logo" src="assets/thitronik-logo.png" alt="THITRONIK" width="485" height="118">
-        <span>Zur Campus-Karte</span>
+        <span class="masthead__home-action">
+          <span class="masthead__home-icon" aria-hidden="true">&#8592;</span>
+          <span class="masthead__home-label">Zur Campus-Karte</span>
+        </span>
       </a>
-      <span class="masthead__tag">Campus 2026</span>
     </div>
   </header>
 

@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#1D3661">
-  <title>Arbeitskarte Digital v3.0 · THITRONIK Campus</title>
-  <link rel="stylesheet" href="/arbeitskarte/assets/arbeitskarte-v1.css?v=1.0.0">
+  <title>Arbeitskarte | THITRONIK Campus</title>
+  <link rel="stylesheet" href="/arbeitskarte/assets/arbeitskarte-v1.css?v=1.1.0">
 </head>
 <body>
   <a class="skip-link" href="#arbeitskarte-main">Zum Formular springen</a>
@@ -16,7 +16,7 @@
     </a>
     <div class="ak-title-block">
       <p>Werkstatt-Modul</p>
-      <h1>Arbeitskarte Digital <span>v3.0</span></h1>
+      <h1>Arbeitskarte</h1>
     </div>
     <a class="ak-back" href="/quiz">Campus-Übersicht</a>
   </header>
@@ -31,10 +31,7 @@
         <button type="button" class="ak-button ak-button--quiet" id="btn-history">Verlauf</button>
         <button type="button" class="ak-button ak-button--quiet" id="btn-new">Neue Karte</button>
         <button type="button" class="ak-button ak-button--quiet ak-button--danger" id="btn-reset">Zurücksetzen</button>
-        <button type="button" class="ak-button ak-button--quiet" id="btn-import">JSON importieren</button>
-        <input type="file" id="import-file" accept="application/json,.json" hidden>
-        <button type="button" class="ak-button ak-button--quiet" id="btn-export">JSON exportieren</button>
-        <button type="button" class="ak-button ak-button--quiet" id="btn-print">Drucken</button>
+        <button type="button" class="ak-button ak-button--quiet ak-button--pdf" id="btn-export" title="Druckansicht öffnen und als PDF speichern">PDF exportieren</button>
         <button type="button" class="ak-button ak-button--primary" id="btn-save">Speichern</button>
       </div>
     </section>
@@ -241,6 +238,6 @@
 
   <div id="toast" class="ak-toast" role="status" aria-live="polite" hidden></div>
   <div id="print-view" class="ak-print-view" aria-hidden="true"></div>
-  <script type="module" src="/arbeitskarte/assets/app-v1.js?v=1.0.0"></script>
+  <script type="module" src="/arbeitskarte/assets/app-v1.js?v=1.1.0"></script>
 </body>
 </html>

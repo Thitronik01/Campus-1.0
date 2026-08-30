@@ -13,7 +13,7 @@
 
 (function () {
   const EVENT_SLUG = "campus-2026";
-  const ENGINE_VERSION = "1.9.0";
+  const ENGINE_VERSION = "1.12.1";
   const SUBMIT_ENDPOINT = "/.netlify/functions/submit-quiz";
 
   const LS_PARTICIPANT = "thitronik.campus.2026.participant";
@@ -346,11 +346,11 @@
       && /^\d{5}$/.test(String(data.dealerNumber || "").trim());
   }
 
-  /** Auf VEJRØ wechseln die drei Starthinweise nach rechts, sobald die
-   *  Angaben vollständig sind. Beim Bearbeiten kehren sie in den Hero
-   *  zurück, damit das lange Formular nicht noch mehr Inhalt tragen muss. */
+  /** Bei vollständigen Teilnehmerdaten wird die rechte Spalte auf jeder
+   *  Insel zum kompakten Startpanel. Beim Bearbeiten kehren die Hinweise in
+   *  den Hero zurück, damit das lange Formular nicht zusätzlich wächst. */
   function placeStartFacts(byParticipant) {
-    const rechts = byParticipant && state.island?.island === "vejro";
+    const rechts = byParticipant && Boolean(state.island);
     el.startForm.classList.toggle("has-participant-facts", rechts);
     if (rechts) {
       el.startForm.insertBefore(el.startFacts, el.startActions);
@@ -660,9 +660,7 @@
       el.tagesabschluss.hidden = false;
       el.tagesabschluss.classList.toggle("is-ready", fertig);
       el.taKicker.textContent = fertig ? "Expedition abgeschlossen" : "Tagesabschluss";
-      el.taTitle.textContent = fertig
-        ? `Alle ${total} ${total === 1 ? "Insel" : "Inseln"} geschafft`
-        : "Feedbackbogen";
+      el.taTitle.textContent = "Feedbackbogen";
       el.taDesc.textContent = fertig
         ? "Es fehlt nur noch deine Rückmeldung zum Tag."
         : "Deine Rückmeldung zur Schulung, etwa sechs Minuten. Geht auch, bevor alle Inseln erledigt sind.";
@@ -709,44 +707,28 @@
     el.usedomStartVisual.hidden = !isUsedom;
     el.langelandStartVisual.hidden = !isLangeland;
     el.fehmarnStartVisual.hidden = !isFehmarn;
-    if (isSamsoe) {
-      [el.samsoeStartVehicle, el.samsoeStartTechnician].forEach((image) => {
-        if (!image.getAttribute("src")) {
-          // Beide Ebenen bilden gemeinsam das Startmotiv und liegen sofort im
-          // sichtbaren Bereich. Der Browser soll sie deshalb nicht hinter
-          // spaeteren Quizbildern einreihen.
-          image.loading = "eager";
-          image.decoding = "async";
-          image.fetchPriority = "high";
-          image.src = image.dataset.src;
-        }
+    // Das jeweilige Motiv ist der große Inhalt oberhalb der Falz. Feste
+    // HTML-Abmessungen reservieren den Platz; hohe Ladepriorität verhindert,
+    // dass die Produktbühne erst nach nachgelagerten Quizmedien erscheint.
+    const startMotive = [
+      [isSamsoe, [el.samsoeStartVehicle, el.samsoeStartTechnician]],
+      [isHiddensee, [el.hiddenseeStartContact]],
+      [isVejro, el.vejroStartLayers],
+      [isPoel, [el.poelStartHaendler]],
+      [isUsedom, [el.usedomStartDisplay]],
+      [isLangeland, [el.langelandStartHandover]],
+      [isFehmarn, [el.fehmarnStartDiagnostic]]
+    ];
+    startMotive.forEach(([aktiv, bilder]) => {
+      if (!aktiv) return;
+      bilder.forEach((image) => {
+        if (image.getAttribute("src")) return;
+        image.loading = "eager";
+        image.decoding = "async";
+        image.fetchPriority = "high";
+        image.src = image.dataset.src;
       });
-    }
-    if (isHiddensee && !el.hiddenseeStartContact.getAttribute("src")) {
-      el.hiddenseeStartContact.src = el.hiddenseeStartContact.dataset.src;
-    }
-    if (isVejro) {
-      el.vejroStartLayers.forEach((image) => {
-        if (!image.getAttribute("src")) {
-          image.loading = "eager";
-          image.decoding = "async";
-          image.fetchPriority = "high";
-          image.src = image.dataset.src;
-        }
-      });
-    }
-    if (isPoel && !el.poelStartHaendler.getAttribute("src")) {
-      el.poelStartHaendler.src = el.poelStartHaendler.dataset.src;
-    }
-    if (isUsedom && !el.usedomStartDisplay.getAttribute("src")) {
-      el.usedomStartDisplay.src = el.usedomStartDisplay.dataset.src;
-    }
-    if (isLangeland && !el.langelandStartHandover.getAttribute("src")) {
-      el.langelandStartHandover.src = el.langelandStartHandover.dataset.src;
-    }
-    if (isFehmarn && !el.fehmarnStartDiagnostic.getAttribute("src")) {
-      el.fehmarnStartDiagnostic.src = el.fehmarnStartDiagnostic.dataset.src;
-    }
+    });
 
     el.btnToIslands.hidden = istEinzelinsel();
 
@@ -913,10 +895,18 @@
     state.questionStartedAt = Date.now();
 
     const hatMedienbild = Boolean(q.media && q.media.src);
+    const hatBildantworten = Array.isArray(q.options)
+      && q.options.some((option) => option.image);
     el.screens.quiz.dataset.hasMedia = String(hatMedienbild);
     el.screens.quiz.dataset.mediaLayout = hatMedienbild
       ? (q.media.layout || q.layout || "landscape")
       : "none";
+    el.screens.quiz.dataset.questionType = q.type || "unknown";
+    el.screens.quiz.dataset.answerMedia = String(hatBildantworten);
+    el.screens.quiz.dataset.answerLayout = hatBildantworten
+      ? (q.layout || "portrait")
+      : "none";
+    el.screens.quiz.dataset.revealed = "false";
 
     const total = state.questions.length;
     el.qCounter.textContent = `Frage ${state.index + 1} von ${total}`;
@@ -942,12 +932,38 @@
     } else el.qHint.hidden = true;
 
     if (hatMedienbild) {
-      el.qMediaImg.src = q.media.src;
+      const setOrientation = () => {
+        if (!el.qMediaImg.naturalWidth || !el.qMediaImg.naturalHeight) return;
+        el.screens.quiz.dataset.mediaOrientation = el.qMediaImg.naturalHeight > el.qMediaImg.naturalWidth
+          ? "portrait"
+          : "landscape";
+      };
+      const mediaWidth = Number(q.media.width);
+      const mediaHeight = Number(q.media.height);
+      const hatAbmessungen = mediaWidth > 0 && mediaHeight > 0;
+      if (hatAbmessungen) {
+        el.qMediaImg.width = mediaWidth;
+        el.qMediaImg.height = mediaHeight;
+        el.screens.quiz.dataset.mediaOrientation = mediaHeight > mediaWidth
+          ? "portrait"
+          : "landscape";
+      } else {
+        el.qMediaImg.removeAttribute("width");
+        el.qMediaImg.removeAttribute("height");
+        el.screens.quiz.dataset.mediaOrientation = "loading";
+      }
+      el.qMediaImg.onload = setOrientation;
       el.qMediaImg.alt = q.media.alt || "";
       el.qMediaImg.dataset.layout = q.media.layout || q.layout || "landscape";
       el.qMediaCaption.textContent = q.media.caption || "Zum Vergrößern antippen";
       el.qMedia.hidden = false;
-    } else el.qMedia.hidden = true;
+      el.qMediaImg.src = q.media.src;
+      if (el.qMediaImg.complete) setOrientation();
+    } else {
+      el.qMediaImg.onload = null;
+      el.screens.quiz.dataset.mediaOrientation = "none";
+      el.qMedia.hidden = true;
+    }
 
     renderAudio(q);
 
@@ -1370,6 +1386,7 @@
     state.responses.push({ id: q.id, answer, response_seconds: seconds });
     state.results.push({ question: q, answer, isCorrect });
     state.revealed = true;
+    el.screens.quiz.dataset.revealed = "true";
 
     paintReveal(q, answer);
 
@@ -1433,6 +1450,16 @@
   }
 
   function paintReveal(q, answer) {
+    const verdict = (node, text, klasse) => {
+      const label = document.createElement("span");
+      label.className = `answer-verdict ${klasse}`;
+      label.textContent = text;
+      node.appendChild(label);
+      if (node.hasAttribute("aria-label")) {
+        node.setAttribute("aria-label", `${node.getAttribute("aria-label")}. ${text}`);
+      }
+    };
+
     if (q.type === "single" || q.type === "multi" || q.type === "truefalse") {
       el.qInput.querySelectorAll(".answer").forEach((node) => {
         const id = node.dataset.id;
@@ -1440,17 +1467,31 @@
         const right = q.correct.includes(id);
         node.disabled = true;
         node.classList.remove("is-selected");
-        if (chosen && right) node.classList.add("is-correct");
-        else if (chosen && !right) node.classList.add("is-wrong");
-        else if (!chosen && right) node.classList.add("is-missed");
+        if (chosen && right) {
+          node.classList.add("is-correct");
+          verdict(node, "Deine Auswahl: richtig", "is-correct");
+        } else if (chosen && !right) {
+          node.classList.add("is-wrong");
+          verdict(node, "Deine Auswahl: falsch", "is-wrong");
+        } else if (!chosen && right) {
+          node.classList.add("is-missed");
+          verdict(node, "Richtige Antwort, nicht ausgewählt", "is-missed");
+        }
       });
     } else if (q.type === "order") {
       el.qInput.querySelectorAll(".order-item").forEach((node) => {
         const id = node.dataset.id;
         const pos = (answer.order || []).indexOf(id);
+        const correctPos = q.correct.indexOf(id);
+        const richtig = q.correct[pos] === id;
         node.disabled = true;
         node.classList.remove("is-picked");
-        node.classList.add(q.correct[pos] === id ? "is-correct" : "is-wrong");
+        node.classList.add(richtig ? "is-correct" : "is-wrong");
+        verdict(node,
+          richtig
+            ? `Deine Position ${pos + 1}: richtig`
+            : `Deine Position ${pos + 1}; richtig wäre ${correctPos + 1}`,
+          richtig ? "is-correct" : "is-wrong");
       });
       el.qInput.querySelector(".order-reset")?.setAttribute("hidden", "");
     } else if (q.type === "match") {
@@ -1460,6 +1501,9 @@
         select.disabled = true;
         const richtig = (answer.pairs || {})[id] === q.correct[id];
         node.classList.add(richtig ? "is-correct" : "is-wrong");
+        verdict(node,
+          richtig ? "Richtig zugeordnet" : "Noch nicht richtig zugeordnet",
+          richtig ? "is-correct" : "is-wrong");
 
         // Bei einer falschen Zuordnung genügt Rot nicht. Die Gesamtauflösung
         // nennt alle Paare in einer einzigen Zeile ("A → 1 · B → 2 · C → 3");
@@ -2075,6 +2119,18 @@
       fail("Die Inselübersicht konnte nicht geladen werden. Bitte die Seite neu laden.");
       console.error(error);
       return;
+    }
+
+    // Die beiden Campus-Werkzeuge gehören in den Kopf und bleiben auch bei
+    // einem direkten Einstieg über eine Insel-URL auffindbar. Einzelpakete
+    // liefern diese Links nicht und behalten die Knöpfe deshalb ausgeblendet.
+    if (state.catalog.feedback) {
+      el.tagesabschluss.href = state.catalog.feedback;
+      el.tagesabschluss.hidden = false;
+    }
+    if (state.catalog.arbeitskarte) {
+      el.arbeitskarteLink.href = state.catalog.arbeitskarte;
+      el.arbeitskarteLink.hidden = false;
     }
 
     await route();

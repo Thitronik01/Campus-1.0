@@ -726,9 +726,9 @@ eigene Adresse für einen eigenen QR-Code. Er liegt bewusst auf derselben
 Domain wie die Inseln: Nur so stehen ihm abends die Angaben zur Verfügung,
 die morgens im Wissenscheck eingetippt wurden.
 
-Die **Arbeitskarte Digital v3.0** liegt unter \`/arbeitskarte\`. Sie speichert
-Entwürfe und Verlauf zunächst lokal auf dem jeweiligen Gerät und kann komplette
-Karten als JSON ausgeben und wieder einlesen.
+Die **Arbeitskarte** liegt unter \`/arbeitskarte\`. Sie speichert Entwürfe und
+Verlauf zunächst lokal auf dem jeweiligen Gerät. Vollständige Karten lassen
+sich über die CI-konforme Druckansicht als PDF sichern.
 
 ---
 

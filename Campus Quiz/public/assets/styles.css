@@ -74,8 +74,12 @@
   /* Der Campus nutzt auf Arbeitsplatz-Monitoren die verfügbare Breite. Eine
      feste 1200-px-Kappe ließ bei WQHD, 4K und Browser-Zoom große Leerflächen
      entstehen. Lesbarkeitsgrenzen sitzen deshalb an den jeweiligen Inhalten. */
-  --content: 1920px;
-  --tap: 44px;   /* Mindest-Trefferfläche, WCAG 2.5.8 */
+  /* Die Oberfläche entspricht visuell 80 % Browser-Zoom. Die größere
+     Inhaltskappe gleicht die Skalierung aus, damit breite Fenster weiterhin
+     vollständig genutzt werden. Trefferflächen bleiben real mindestens 44 px. */
+  --ui-scale: .8;
+  --content: 2400px;
+  --tap: 55px;
 }
 
 * { box-sizing: border-box; }
@@ -108,6 +112,7 @@ body {
   font-size: 16px;
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
+  zoom: var(--ui-scale);
 }
 
 button, input, select, textarea { font: inherit; color: inherit; }
@@ -153,7 +158,7 @@ h2 { font-size: clamp(1.15rem, 1.05rem + .4vw, 1.5rem); letter-spacing: -.015em;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  min-height: 100dvh;
+  min-height: 125dvh;
   width: min(calc(100% - clamp(20px, 3vw, 56px)), var(--content));
   margin: 0 auto;
   padding: 16px 0 28px;
@@ -164,10 +169,9 @@ h2 { font-size: clamp(1.15rem, 1.05rem + .4vw, 1.5rem); letter-spacing: -.015em;
 /* ---------------------------------------------------------------- Kopf --- */
 
 .masthead {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
-  justify-content: space-between;
   gap: 12px;
   padding: 12px 16px;
   margin-bottom: 16px;
@@ -179,13 +183,21 @@ h2 { font-size: clamp(1.15rem, 1.05rem + .4vw, 1.5rem); letter-spacing: -.015em;
   box-shadow: var(--shadow-sm);
 }
 
-.brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.brand {
+  display: flex;
+  grid-column: 1;
+  grid-row: 1;
+  align-items: center;
+  justify-self: start;
+  gap: 12px;
+  min-width: 0;
+}
 
 .brand-home {
   display: flex;
   flex: 0 0 auto;
   align-items: center;
-  min-height: 44px;
+  min-height: var(--tap);
   border-radius: 8px;
   text-decoration: none;
 }
@@ -223,11 +235,82 @@ h2 { font-size: clamp(1.15rem, 1.05rem + .4vw, 1.5rem); letter-spacing: -.015em;
   white-space: nowrap;
 }
 
-.masthead-meta { display: flex; flex-wrap: wrap; gap: 8px; }
+.masthead-meta {
+  display: flex;
+  grid-column: 3;
+  grid-row: 1;
+  flex-wrap: wrap;
+  justify-self: end;
+  gap: 8px;
+}
+
+.masthead-tools {
+  display: flex;
+  grid-column: 2;
+  grid-row: 1;
+  align-items: center;
+  justify-self: center;
+  gap: 10px;
+  margin-left: 0;
+}
+
+.masthead-tool {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: var(--tap);
+  padding: 6px 14px 6px 8px;
+  border: 1px solid var(--th-line-strong);
+  border-radius: var(--radius-md);
+  background: var(--th-white);
+  color: var(--th-navy);
+  box-shadow: 0 4px 14px rgba(10, 39, 71, .08);
+  font-weight: 800;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: border-color var(--duration-fast) var(--ease-out),
+              background-color var(--duration-fast) var(--ease-out),
+              transform var(--duration-press) var(--ease-out);
+}
+.masthead-tool[hidden] { display: none; }
+.masthead-tool:hover { border-color: var(--th-blue); background: var(--info-bg); }
+.masthead-tool:active { transform: scale(.98); }
+.masthead-tool .ta-icon {
+  display: grid;
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--info-bg);
+  color: var(--th-blue-text);
+}
+.masthead-tool .ta-icon svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.masthead-tool .ta-text { display: block; min-width: 0; }
+.masthead-tool .ta-title { color: inherit; font-size: .9rem; line-height: 1.15; }
+.masthead-tool .ta-kicker,
+.masthead-tool .ta-desc,
+.masthead-tool .ta-cta { display: none; }
+.masthead-tool.is-ready {
+  border-color: var(--success-line);
+  background: var(--success-bg);
+}
+.masthead-tool.is-ready .ta-icon { background: var(--th-white); color: var(--th-lime-text); }
 
 .masthead-progress {
+  grid-column: 3;
+  grid-row: 1;
+  justify-self: end;
   width: min(360px, 42vw);
-  margin-left: auto;
+  margin-left: 0;
 }
 .campus-progress-head {
   display: flex;
@@ -360,39 +443,6 @@ main { flex: 1 0 auto; }
 }
 
 .island-intro .lead { margin-bottom: 0; text-wrap: pretty; }
-
-.campus-highlights {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 18px 0 0;
-  padding: 0;
-  list-style: none;
-}
-.campus-highlights li {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  min-height: 36px;
-  padding: 7px 11px;
-  border: 1px solid rgba(29, 54, 97, .12);
-  border-radius: var(--radius-pill);
-  background: rgba(255, 255, 255, .78);
-  color: var(--th-navy);
-  font-size: .78rem;
-  font-weight: 720;
-  backdrop-filter: blur(8px);
-}
-.campus-highlights strong { font-size: .94rem; line-height: 1; }
-.campus-highlights svg {
-  width: 17px;
-  height: 17px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
 
 .campus-map-art,
 .map-compass { display: none; }
@@ -813,9 +863,11 @@ main { flex: 1 0 auto; }
   .island-fehmarn .i-visual { left: 47%; top: 4%; width: 53%; height: 96%; }
   .island-fehmarn .i-content { left: 0; top: 29%; width: 47%; }
 
-  .island-usedom { left: 25%; top: 47%; width: 39%; height: 24%; }
-  .island-usedom .i-visual { left: 38%; top: 0; width: 62%; height: 100%; }
-  .island-usedom .i-content { left: 10%; top: 27%; width: 43%; }
+  /* Usedom bleibt als eigene Station oberhalb von Poel. Die kompaktere
+     Silhouette verhindert, dass beide Inselmotive optisch ineinanderlaufen. */
+  .island-usedom { left: 27%; top: 45%; width: 34%; height: 21%; }
+  .island-usedom .i-visual { left: 43%; top: -4%; width: 53%; height: 94%; }
+  .island-usedom .i-content { left: 4%; top: 24%; width: 48%; }
 
   .island-hiddensee { left: 70%; top: 33%; width: 29%; height: 38%; }
   .island-hiddensee .i-visual {
@@ -1521,6 +1573,207 @@ main { flex: 1 0 auto; }
   user-select: none;
 }
 
+/* ------------------------------------------------ Gemeinsame Produktbühne
+   VEJRØ liefert die visuelle Referenz: große Themenbühne links, kompaktes
+   Startpanel rechts. Die Inhalte und Motive bleiben inselspezifisch, ihre
+   Hierarchie und Bedienung folgen jedoch demselben System. */
+
+#screen-start[data-island] .start-layout {
+  grid-template-columns: minmax(0, 1fr) clamp(340px, 26vw, 430px);
+  min-height: clamp(620px, 72vh, 790px);
+}
+
+#screen-start[data-island] .start-intro {
+  position: relative;
+  isolation: isolate;
+  min-height: 620px;
+  padding: clamp(30px, 3.5vw, 48px);
+  overflow: hidden;
+}
+
+#screen-start[data-island]:not([data-island="vejro"]) .start-intro::before {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(4, 17, 36, .58) 0%, rgba(4, 17, 36, .2) 48%, transparent 76%),
+    linear-gradient(180deg, transparent 46%, rgba(4, 17, 36, .08) 62%, rgba(4, 17, 36, .58) 100%);
+  pointer-events: none;
+}
+
+#screen-start[data-island] .start-intro > .kicker,
+#screen-start[data-island] .start-intro > h1,
+#screen-start[data-island] .start-intro > .lead,
+#screen-start[data-island] .start-intro > .facts,
+#screen-start[data-island] .start-intro > .start-details {
+  position: relative;
+  z-index: 3;
+}
+
+#screen-start[data-island] .start-intro .kicker,
+#screen-start[data-island] .start-details { display: none; }
+
+#screen-start[data-island] .start-intro h1 {
+  max-width: 16ch;
+  font-size: clamp(2.2rem, 3.3vw, 3.45rem);
+  line-height: 1.03;
+  letter-spacing: -.045em;
+  text-wrap: balance;
+  white-space: normal;
+}
+
+#screen-start[data-island] .start-intro .lead {
+  max-width: 42ch;
+  font-size: clamp(.94rem, 1.1vw, 1.06rem);
+  line-height: 1.52;
+  text-wrap: pretty;
+}
+
+#screen-start[data-island] .start-form {
+  gap: 14px;
+  padding: clamp(24px, 2.6vw, 38px);
+  background: rgba(255, 255, 255, .985);
+}
+
+#screen-start[data-island] .start-actions {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+#screen-start[data-island] .start-actions .btn { width: 100%; }
+
+#screen-start[data-island] .participant-summary {
+  grid-template-columns: 1fr;
+}
+
+#screen-start[data-island] .participant-summary .btn {
+  grid-column: 1;
+  grid-row: 4;
+  justify-self: start;
+}
+
+#screen-start[data-island] .start-form.has-participant-facts {
+  display: flex;
+  flex-direction: column;
+  align-content: initial;
+  padding-top: clamp(24px, 2.8vw, 38px);
+}
+
+#screen-start[data-island] .start-form.has-participant-facts .participant-summary {
+  gap: 4px;
+  padding: 18px;
+  border: 1px solid rgba(59, 169, 211, .3);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 100% 0, rgba(175, 202, 5, .13), transparent 48%),
+    linear-gradient(145deg, #F4F9FC, #FFFFFF);
+  box-shadow: 0 12px 28px rgba(10, 39, 71, .08);
+}
+
+#screen-start[data-island] .start-form.has-participant-facts .participant-summary .form-title {
+  margin-bottom: 4px;
+  font-size: 1.28rem;
+}
+
+#screen-start[data-island] .start-form.has-participant-facts .participant-summary .btn {
+  min-height: var(--tap);
+  margin-top: 7px;
+  font-size: .84rem;
+}
+
+#screen-start[data-island] .start-form.has-participant-facts .facts {
+  gap: 13px;
+  margin: 18px 0 24px;
+  padding: 18px 16px;
+  border: 1px solid rgba(29, 54, 97, .12);
+  border-radius: 18px;
+  background: #F6F9FC;
+  box-shadow: inset 0 1px 0 #fff;
+}
+
+#screen-start[data-island] .start-form.has-participant-facts .facts li {
+  grid-template-columns: 46px minmax(0, 1fr);
+  gap: 10px;
+  min-height: 46px;
+  align-items: center;
+  color: var(--th-navy);
+  font-size: .88rem;
+  font-weight: 750;
+  line-height: 1.35;
+}
+
+#screen-start[data-island] .start-form.has-participant-facts .facts li::before {
+  width: 46px;
+  height: 46px;
+  border-radius: 0;
+  background-color: transparent;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  box-shadow: none;
+  filter: drop-shadow(0 5px 7px rgba(0, 13, 38, .18));
+}
+
+#screen-start[data-island] .start-form.has-participant-facts .start-actions {
+  margin-top: auto;
+}
+
+#screen-start[data-island] .start-form.has-participant-facts #btn-to-islands { order: 1; }
+
+#screen-start[data-island] .start-form.has-participant-facts #btn-start {
+  order: 2;
+  border-color: #92B900;
+  background: #B8F500;
+  color: #0A2747;
+  box-shadow: 0 12px 28px rgba(146, 185, 0, .32);
+}
+
+#screen-start[data-island] .start-form.has-participant-facts #btn-start:hover {
+  background: #C4FF18;
+}
+
+/* Motiv-Overrides: gleicher Bühnenmaßstab, aber eine zur Bildaussage passende
+   Position. Kein Motiv wird gestreckt oder beschnitten. */
+.samsoe-start-vehicle { left: 2%; bottom: 2%; width: min(48%, 790px); }
+.samsoe-start-technician { right: 4%; bottom: 0; width: min(36%, 620px); }
+.hiddensee-start-contact { bottom: 1%; width: min(56%, 820px); }
+.poel-start-haendler {
+  right: 4%;
+  bottom: -2%;
+  left: auto;
+  width: min(72%, 1050px);
+  max-width: none;
+  height: auto;
+  transform: none;
+}
+.usedom-start-display {
+  right: 2%;
+  bottom: -2%;
+  left: auto;
+  width: min(74%, 1100px);
+  height: auto;
+  max-height: 72%;
+  transform: none;
+}
+.langeland-start-handover {
+  right: 5%;
+  bottom: -1%;
+  left: auto;
+  width: min(72%, 1040px);
+  height: auto;
+  transform: none;
+}
+.fehmarn-start-diagnostic {
+  right: 3%;
+  bottom: -2%;
+  left: auto;
+  width: min(72%, 1000px);
+  max-width: none;
+  height: auto;
+  transform: none;
+}
+
 .facts { display: grid; gap: 10px; margin: 22px 0 0; padding: 0; list-style: none; }
 .facts li {
   display: grid;
@@ -1629,7 +1882,7 @@ main { flex: 1 0 auto; }
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 48px;
+  min-height: var(--tap);
   padding: 12px 20px;
   border: 1px solid transparent;
   border-radius: 12px;
@@ -1737,28 +1990,36 @@ main { flex: 1 0 auto; }
 .quiz-main #q-input { order: 6; }
 
 @media (min-width: 760px) {
-  #screen-quiz[data-has-media="true"] .quiz-main {
+  #screen-quiz[data-has-media="true"] .quiz-body {
     display: grid;
     grid-template-columns: minmax(280px, .9fr) minmax(340px, 1.1fr);
     column-gap: clamp(26px, 3vw, 52px);
     align-items: start;
   }
 
+  #screen-quiz[data-has-media="true"] .quiz-main { display: contents; }
+
   #screen-quiz[data-has-media="true"] .question-work {
     display: block;
+    grid-column: 1;
+    grid-row: 1;
     min-width: 0;
   }
 
   #screen-quiz[data-has-media="true"] .q-title { max-width: 34ch; }
   #screen-quiz[data-has-media="true"] .q-media {
+    grid-column: 2;
+    grid-row: 1;
     min-width: 0;
     margin: 0;
   }
 
   #screen-quiz[data-has-media="true"] .q-media img,
   #screen-quiz[data-has-media="true"] .q-media img[data-layout="portrait"] {
-    width: 100%;
-    height: clamp(390px, calc(100dvh - 245px), 760px);
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    max-height: clamp(320px, calc(100dvh - 250px), 660px);
     margin: 0;
     object-fit: contain;
     background: linear-gradient(145deg, #FFFFFF, #F4F7FA);
@@ -1769,13 +2030,23 @@ main { flex: 1 0 auto; }
   }
 
   #screen-quiz[data-has-media="true"] .answer {
-    min-height: 74px;
+    min-height: 68px;
   }
+
+  #screen-quiz[data-has-media="true"] .feedback { grid-column: 1 / -1; }
+  #screen-quiz[data-has-media="true"] .quiz-actions { grid-column: 1; }
+  #screen-quiz[data-has-media="true"][data-revealed="true"] .quiz-actions { grid-column: 1 / -1; }
 }
 
 @media (min-width: 1100px) {
-  #screen-quiz[data-has-media="true"] .quiz-main {
+  #screen-quiz[data-has-media="true"] .quiz-body {
     grid-template-columns: minmax(390px, .82fr) minmax(520px, 1.18fr);
+  }
+}
+
+@media (min-width: 1500px) {
+  #screen-quiz[data-has-media="true"] .answers:not(.answers-bild) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -1807,6 +2078,7 @@ main { flex: 1 0 auto; }
   font-weight: 800;
   letter-spacing: .09em;
   text-transform: uppercase;
+  overflow-wrap: anywhere;
 }
 .q-mode {
   display: inline-flex;
@@ -1821,14 +2093,25 @@ main { flex: 1 0 auto; }
   font-size: .78rem;
   font-weight: 750;
 }
-.q-title { font-size: clamp(1.2rem, 1.05rem + .8vw, 1.75rem); margin-bottom: 8px; }
+.q-title {
+  max-width: 68ch;
+  margin-bottom: 8px;
+  font-size: clamp(1.2rem, 1.05rem + .8vw, 1.75rem);
+  overflow-wrap: anywhere;
+}
 .q-title:focus { outline: none; }
 .q-hint { color: var(--th-muted); font-size: .94rem; }
 
-.q-media { margin: 0 0 18px; }
+.q-media {
+  display: grid;
+  justify-items: center;
+  margin: 0 0 18px;
+}
 .q-media img {
-  width: 100%;
-  max-height: min(68dvh, 760px);
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: min(42dvh, 360px);
   border: 1px solid var(--th-line);
   border-radius: var(--radius-lg);
   object-fit: contain;
@@ -1867,7 +2150,16 @@ main { flex: 1 0 auto; }
 .q-audio-fallback { margin-top: 8px; }
 .q-audio-fallback summary { min-height: var(--tap); display: flex; align-items: center; color: var(--th-navy); font-weight: 750; cursor: pointer; }
 .q-audio-fallback p { margin: 0; color: var(--th-muted); }
-.fact-audio::before { background: var(--th-blue) !important; box-shadow: inset 0 0 0 6px var(--th-blue), inset 0 0 0 7px rgba(17,17,17,.3) !important; }
+.fact-audio::before {
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  background-image: url("/media/fehmarn/feh-icon-ton.png?v=1.0.0") !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: contain !important;
+  box-shadow: none !important;
+  filter: drop-shadow(0 5px 7px rgba(0, 13, 38, .18));
+}
 
 @media (max-width: 560px) {
   .q-audio-row { align-items: stretch; flex-direction: column; }
@@ -1986,7 +2278,22 @@ main { flex: 1 0 auto; }
 .answer.is-correct .answer-letter { background: var(--th-lime); color: var(--th-ink); }
 .answer.is-wrong .answer-letter { background: var(--th-red); color: #fff; }
 
+.answer-text,
+.order-text,
+.match-label { overflow-wrap: anywhere; }
 .answer-text { font-weight: 600; line-height: 1.4; }
+
+.answer-verdict {
+  grid-column: 2;
+  display: block;
+  margin-top: 2px;
+  font-size: .78rem;
+  font-weight: 800;
+  line-height: 1.3;
+}
+.answer-verdict.is-correct,
+.answer-verdict.is-missed { color: var(--th-lime-text); }
+.answer-verdict.is-wrong { color: var(--th-red); }
 
 /* --- Bildkacheln (Fehmarn-Muster: vier Fotos als Antwort) ---------------- */
 
@@ -2046,6 +2353,11 @@ main { flex: 1 0 auto; }
   justify-content: center;
   min-height: 48px;
   margin-top: auto;
+  text-align: center;
+}
+.answer-bild .answer-verdict {
+  grid-column: auto;
+  margin: 0 10px 10px;
   text-align: center;
 }
 .answers-bild[data-layout="product"] .answer-zoom {
@@ -2197,6 +2509,7 @@ main { flex: 1 0 auto; }
 /* Navy statt Lime-Text: die Zeile steht auf dem roten Fehlergrund, dort
    erreicht #6B7D00 nur 4,07:1 und bleibt unter den 4,5:1 für Fließtext. */
 .match-solution { grid-column: 1 / -1; margin: 4px 0 0; color: var(--th-navy); font-size: .86rem; font-weight: 700; }
+.match-row .answer-verdict { grid-column: 1 / -1; margin: 2px 0 0; }
 
 /* --- Feedback --- */
 
@@ -2280,23 +2593,19 @@ main { flex: 1 0 auto; }
 }
 .review-mitnehmen b { font-weight: 800; }
 
-/* Die Aktionsleiste klebt am unteren Rand. Vorher stand sie unter der
-   Auflösung: wer bei einer Bildfrage antwortete, sah das Feedback über sich
-   einschieben, während der Knopf unter dem Daumen von "Antwort prüfen" auf
-   "Nächste Frage" wechselte. Ein zweiter Tipp sprang dann über die Auflösung
-   hinweg — also über genau den Teil, für den der Check gemacht ist. */
+/* Die Aktionsleiste bleibt im Dokumentfluss. Sticky überdeckte auf kleinen
+   Viewports Antworten und nach der Auswertung den Mitnehmen-Block. Direkt
+   nach Antworten beziehungsweise Feedback ist der Knopf weiterhin eindeutig
+   erreichbar, ohne Inhalte unter einer schwebenden Fläche zu verstecken. */
 .quiz-actions {
-  position: sticky;
-  bottom: 0;
-  z-index: 5;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
   margin-top: 22px;
-  padding: 14px 0 max(6px, env(safe-area-inset-bottom));
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #fff 20%);
+  padding: 14px 0 max(14px, env(safe-area-inset-bottom));
+  border-top: 1px solid var(--th-line);
 }
 .selection-status { margin: 0; color: var(--th-muted); font-size: .86rem; }
 
@@ -2497,6 +2806,16 @@ main { flex: 1 0 auto; }
 /* --------------------------------------------------------------- Mobile --- */
 
 @media (max-width: 900px) {
+  .masthead { grid-template-columns: minmax(0, 1fr) minmax(260px, .72fr); }
+  .masthead-tools {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+  .masthead-progress,
+  .masthead-meta {
+    grid-column: 2;
+    grid-row: 1;
+  }
   .start-layout { grid-template-columns: 1fr; }
   #screen-start[data-island="samsoe"] .start-layout { grid-template-columns: 1fr; }
   #screen-start[data-island="samsoe"] .start-intro { min-height: 690px; }
@@ -2512,12 +2831,36 @@ main { flex: 1 0 auto; }
   .langeland-start-handover { height: min(38%, 340px); }
   #screen-start[data-island="fehmarn"] .start-intro { min-height: 780px; }
   .fehmarn-start-diagnostic { height: min(40%, 350px); }
+  /* Bei Tabletbreite bleibt die Vejrø-Aufteilung für alle Inseln erhalten.
+     Die globale 80-%-Skalierung vergrößert den virtuellen Inhaltsbereich;
+     deshalb reichen 270 CSS-px für das Startpanel weiterhin komfortabel. */
+  #screen-start[data-island] .start-layout {
+    grid-template-columns: minmax(0, 1.42fr) minmax(270px, .7fr);
+  }
+  .usedom-start-display,
+  .langeland-start-handover,
+  .fehmarn-start-diagnostic { height: auto; }
   .result-layout { grid-template-columns: 1fr; }
   .score-card { position: static; }
 }
 
 @media (max-width: 759px) {
-  .masthead-progress { order: 3; width: 100%; margin-left: 0; }
+  .masthead-progress {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-self: stretch;
+    width: 100%;
+    margin-left: 0;
+  }
+  .masthead-tools {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    margin-left: 0;
+  }
+  .masthead-tool { justify-content: center; min-width: 0; }
   .campus-progress-head { margin-bottom: 5px; }
   .masthead-progress small { text-align: left; }
 }
@@ -2528,7 +2871,7 @@ main { flex: 1 0 auto; }
 
 @media (max-width: 640px) {
   .shell { width: calc(100% - 20px); padding: 12px 0 22px; }
-  .masthead { flex-wrap: wrap; gap: 8px; padding: 9px 12px 12px; border-radius: 16px; }
+  .masthead { grid-template-columns: minmax(0, 1fr); gap: 8px; padding: 9px 12px 12px; border-radius: 16px; }
   .brand { gap: 10px; }
   .brand-logo { width: 112px; }
   .brand-copy { padding-left: 10px; }
@@ -2572,8 +2915,14 @@ main { flex: 1 0 auto; }
   .confirm-dialog-actions .btn-danger { grid-row: 1; }
 
   #screen-start[data-island="samsoe"] .start-intro {
-    min-height: 450px;
+    min-height: 650px;
     padding: 26px 22px;
+  }
+  /* Ohne gespeicherte Angaben stehen die drei Fakten noch im Hero. Dafür
+     braucht Samsø mehr Höhe, damit Text und Fahrzeugmotiv nicht kollidieren.
+     Im regulären kompakten Startzustand bleibt die kurze Bühne erhalten. */
+  #screen-start[data-island="samsoe"]:has(.start-form.has-participant-facts) .start-intro {
+    min-height: 450px;
   }
   #screen-start[data-island="samsoe"] .start-intro h1 { font-size: clamp(2rem, 10vw, 2.75rem); }
   #screen-start[data-island="samsoe"] .facts { gap: 8px; }
@@ -2616,6 +2965,16 @@ main { flex: 1 0 auto; }
   .langeland-start-handover { width: 96%; height: auto; }
   #screen-start[data-island="fehmarn"] .start-intro { min-height: 680px; }
   .fehmarn-start-diagnostic { width: 96%; height: auto; }
+
+  /* Smartphone: Hero, Informationen und Startaktion folgen wieder der
+     natürlichen Lesereihenfolge und nutzen die volle Inhaltsbreite. */
+  #screen-start[data-island] .start-layout { grid-template-columns: 1fr; }
+  .poel-start-haendler {
+    right: 2%;
+    width: 96%;
+    max-width: none;
+    height: auto;
+  }
 }
 
 /* ------------------------------------------------------- Reduced Motion --- */
@@ -2661,7 +3020,7 @@ main { flex: 1 0 auto; }
   flex-wrap: wrap;
   gap: 10px 14px;
   align-items: center;
-  margin: 0 0 16px;
+  margin: 16px 0 0;
   padding: 14px 16px;
   border: 1px solid var(--th-blue);
   border-radius: var(--radius-md);

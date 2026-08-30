@@ -76,6 +76,21 @@ button, summary, input[type="file"], label:has(input[type="checkbox"]), label:ha
 .ak-button--primary { color: #fff; border-color: var(--navy); background: var(--navy); }
 .ak-button--primary:hover { color: #fff; border-color: var(--navy-2); background: var(--navy-2); }
 .ak-button--danger { color: var(--red); border-color: rgba(206,19,45,.35); }
+.ak-button--pdf { display: inline-flex; align-items: center; gap: 9px; }
+.ak-button--pdf::before {
+  content: "PDF";
+  display: grid;
+  place-items: center;
+  min-width: 30px;
+  min-height: 24px;
+  padding: 1px 4px;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  color: var(--red);
+  font-size: .66rem;
+  font-weight: 900;
+  letter-spacing: .04em;
+}
 .ak-button:disabled { cursor: not-allowed; opacity: .48; }
 
 .ak-progress { margin-top: 16px; padding: 12px 20px; display: grid; grid-template-columns: 140px 1fr; align-items: center; gap: 20px; }
@@ -209,13 +224,17 @@ details > summary { min-height: 44px; padding: 8px 0; color: var(--navy); font-w
 .ak-toast { position: fixed; z-index: 100; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom)); transform: translateX(-50%); max-width: calc(100% - 32px); padding: 12px 18px; border-radius: 10px; color: #fff; background: var(--navy); box-shadow: var(--shadow); }
 
 .ak-print-view { display: none; }
-.ak-pr-head { display: flex; justify-content: space-between; border-bottom: 3px solid var(--navy); padding-bottom: 10px; }
-.ak-pr-head img { width: 170px; height: auto; }
-.ak-pr-head h1 { margin: 4px 0 0; color: var(--navy); }
-.ak-pr-meta { text-align: right; }
-.ak-pr-section { break-after: page; padding-top: 14px; }
+.ak-pr-page-head { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding-bottom: 9px; border-bottom: 4px solid var(--lime); }
+.ak-pr-page-head > div { display: flex; align-items: center; gap: 14px; }
+.ak-pr-page-head img { width: 150px; height: auto; }
+.ak-pr-page-head span { display: grid; padding-left: 14px; border-left: 1px solid #aeb9c7; }
+.ak-pr-page-head small { color: var(--cyan); font-size: 7.5pt; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.ak-pr-page-head strong { color: var(--navy); font-size: 15pt; line-height: 1.1; }
+.ak-pr-page-head > b { color: var(--navy); font-size: 8.5pt; }
+.ak-pr-meta { display: flex; justify-content: space-between; gap: 16px; margin: -2px 0 10px; padding: 7px 9px; border-left: 3px solid var(--cyan); background: #f2f6f9; }
+.ak-pr-section { break-after: page; padding-top: 4px; }
 .ak-pr-section:last-child { break-after: auto; }
-.ak-pr-section h2 { color: var(--navy); border-bottom: 1px solid #9da8b5; padding-bottom: 5px; }
+.ak-pr-section h2 { margin: 10px 0 8px; padding-bottom: 5px; border-bottom: 1px solid #9da8b5; color: var(--navy); }
 .ak-pr-section h3 { margin: 10px 0 5px; color: var(--navy); font-size: 12pt; }
 .ak-pr-grid-2, .ak-pr-grid-3 { display: grid; gap: 12px; }
 .ak-pr-grid-2 { grid-template-columns: repeat(2, 1fr); }
@@ -238,6 +257,7 @@ details > summary { min-height: 44px; padding: 8px 0; color: var(--navy); font-w
 .ak-pr-signature { min-height: 95px; border-bottom: 1px solid #333; display: flex; flex-direction: column; justify-content: flex-end; }
 .ak-pr-signature img { max-height: 75px; max-width: 100%; object-fit: contain; }
 .ak-pr-signature small { margin-top: 4px; }
+.ak-pr-footer { display: flex; justify-content: space-between; gap: 16px; margin-top: 14px; padding-top: 6px; border-top: 1px solid #aeb9c7; color: #536277; font-size: 7.5pt; }
 
 @media (max-width: 1050px) {
   .ak-command { align-items: flex-start; }
@@ -300,10 +320,12 @@ details > summary { min-height: 44px; padding: 8px 0; color: var(--navy); font-w
 }
 
 @media print {
-  @page { size: A4 portrait; margin: 12mm; }
-  body { background: #fff; font-size: 9.5pt; }
+  @page { size: A4 portrait; margin: 11mm 12mm 10mm; }
+  html, body { background: #fff; }
+  body { font-size: 9.3pt; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .skip-link, .ak-topbar, .ak-shell, .ak-dialog, .ak-toast { display: none !important; }
   .ak-print-view { display: block !important; }
-  .ak-pr-section { page-break-after: always; }
+  .ak-pr-section { min-height: 270mm; display: flex; flex-direction: column; page-break-after: always; }
   .ak-pr-section:last-child { page-break-after: auto; }
+  .ak-pr-footer { margin-top: auto; }
 }

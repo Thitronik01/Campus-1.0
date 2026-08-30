@@ -57,12 +57,14 @@ const imported = normalizeWorkCard({
   materials: [{ id: 1, gruppe: "Zubehör", artikel: "NFC-Modul", artNr: "105299", menge: "2", verbaut: true }],
   sketches: { dach: "data:image/png;base64,DACH" }
 });
-check("Import ergänzt fehlende Formularfelder robust", imported.formData.monteur.name === "" && imported.formData.kunde.name === "Import");
-check("Import normalisiert Material und Terminologie", imported.materials[0].menge === 2 && imported.materials[0].artikel === "NFC Modul");
-check("Import übernimmt den Front-Altdaten-Alias", imported.sketches.front.endsWith("DACH"));
+check("Altdaten ergänzen fehlende Formularfelder robust", imported.formData.monteur.name === "" && imported.formData.kunde.name === "Import");
+check("Altdaten normalisieren Material und Terminologie", imported.materials[0].menge === 2 && imported.materials[0].artikel === "NFC Modul");
+check("Altdaten übernehmen den Front-Alias", imported.sketches.front.endsWith("DACH"));
 
 const html = fs.readFileSync(path.join(publicDir, "arbeitskarte/index.html"), "utf8");
 const storageSource = fs.readFileSync(path.join(publicDir, "arbeitskarte/assets/storage-v1.js"), "utf8");
+const appSource = fs.readFileSync(path.join(publicDir, "arbeitskarte/assets/app-v1.js"), "utf8");
+const printSource = fs.readFileSync(path.join(publicDir, "arbeitskarte/assets/print-v1.js"), "utf8");
 for (const page of ["auftrag", "sichtkontrolle", "material", "uebergabe"]) {
   check(`Seite ${page} ist vorhanden`, html.includes(`data-page="${page}"`));
 }
@@ -70,8 +72,11 @@ for (const view of vehicleSketchViews) {
   check(`Bild ${view.key} ist vorhanden`, fs.existsSync(path.join(publicDir, view.backgroundSrc)));
 }
 check("Druckansicht ist angebunden", html.includes('id="print-view"') && fs.existsSync(path.join(publicDir, "arbeitskarte/assets/print-v1.js")));
-check("JSON-Import und -Export sind bedienbar", html.includes('id="btn-import"') && html.includes('id="btn-export"'));
-check("JSON-Export enthält die komplette Karte", storageSource.includes("const payload = { ...card") && !storageSource.includes("materials.filter"));
+check("Arbeitskarte trägt die bereinigte Bezeichnung", html.includes("<h1>Arbeitskarte</h1>") && !html.includes("Arbeitskarte Digital") && !html.includes("v3.0"));
+check("JSON-Import ist aus der Oberfläche entfernt", !html.includes('id="btn-import"') && !html.includes("application/json"));
+check("PDF-Export ist bedienbar", html.includes('id="btn-export"') && html.includes("PDF exportieren") && appSource.includes("window.print()"));
+check("JSON-Exportcode ist entfernt", !storageSource.includes("downloadCard") && !storageSource.includes("readImportedCard"));
+check("PDF-Druckansicht verwendet THITRONIK CI", printSource.includes("THITRONIK Campus") && printSource.includes("Arbeitskarte") && printSource.includes("Seite ${page} von 4"));
 check("Zurücksetzen ist bedienbar", html.includes('id="btn-reset"'));
 
 console.log(`Arbeitskarte: ${checks.length} Prüfungen erfolgreich.`);

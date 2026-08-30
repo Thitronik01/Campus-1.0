@@ -3,9 +3,9 @@ import {
   grundfunktionenLabels, normalizeSketches, proFinderLabels,
   rueckfahrkameraLabels, vehicleSketchViews
 } from "./data-v1.js";
-import { deleteCard, downloadCard, loadInitialCard, readHistory, readImportedCard, writeCard } from "./storage-v1.js";
+import { deleteCard, loadInitialCard, readHistory, writeCard } from "./storage-v1.js?v=1.1.0";
 import { imageFileToDataUrl, prepareInkCanvas, prepareSignatureCanvas, startDictation } from "./media-v1.js";
-import { renderPrintView } from "./print-v1.js";
+import { renderPrintView } from "./print-v1.js?v=1.1.0";
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -63,7 +63,7 @@ function saveCard(withFeedback = true) {
   } catch (error) {
     console.error(error);
     $("#save-state").textContent = "Speichern fehlgeschlagen";
-    toast("Der lokale Speicher ist voll. Bitte Karte als JSON exportieren und Fotos verkleinern.");
+    toast("Der lokale Speicher ist voll. Bitte Fotos verkleinern und die Arbeitskarte als PDF sichern.");
   }
 }
 
@@ -394,30 +394,13 @@ function bindEvents() {
     const missing = showValidation({ focus: true });
     if (missing.length && !confirm(`Folgende Pflichtangaben fehlen:\n\n• ${missing.map((item) => item.label).join("\n• ")}\n\nTrotzdem exportieren?`)) return;
     saveCard(false);
-    downloadCard(card);
-    toast("JSON-Export wurde erstellt.");
-  });
-  $("#btn-print").addEventListener("click", () => {
-    triedSave = true;
-    const missing = showValidation({ focus: true });
-    if (missing.length && !confirm(`Folgende Pflichtangaben fehlen:\n\n• ${missing.map((item) => item.label).join("\n• ")}\n\nTrotzdem drucken?`)) return;
-    saveCard(false);
     renderPrintView(card, $("#print-view"));
+    const previousTitle = document.title;
+    const plate = String(card.formData.kunde.kennzeichen || "OHNE-KZ").trim().replace(/\s+/g, "-").toUpperCase();
+    document.title = `Arbeitskarte_${plate || "OHNE-KZ"}_${new Date().toISOString().slice(0, 10)}`;
+    window.addEventListener("afterprint", () => { document.title = previousTitle; }, { once: true });
     window.print();
-  });
-  $("#btn-import").addEventListener("click", () => $("#import-file").click());
-  $("#import-file").addEventListener("change", async (event) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    try {
-      card = await readImportedCard(file);
-      triedSave = false;
-      saveCard(false);
-      switchTab("auftrag");
-      renderDynamic();
-      toast(`„${file.name}“ wurde vollständig importiert.`);
-    } catch (error) { toast(error.message || "Import fehlgeschlagen."); }
-    event.target.value = "";
+    toast("Im Druckdialog bitte „Als PDF speichern“ wählen.");
   });
   $("#btn-new").addEventListener("click", () => {
     saveCard(false);

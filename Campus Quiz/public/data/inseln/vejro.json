@@ -130,7 +130,7 @@
       "id": "VEJ-04",
       "type": "order",
       "category": "Funk-Wassermelder prüfen",
-      "media": { "src": "/media/vejro/vej-produkt-wassermelder.webp", "alt": "Funk-Wassermelder mit Sendeeinheit und Fühler", "layout": "product" },
+      "media": { "src": "/media/vejro/vej-produkt-wassermelder.webp", "alt": "Funk-Wassermelder mit Sendeeinheit und Fühler", "layout": "product", "width": 933, "height": 1400 },
       "prompt": "Bringe den vollständigen Funktionstest des eingebauten Funk-Wassermelders in die richtige Reihenfolge.",
       "items": [
         { "id": "o1", "text": "WiPro III scharf schalten" },
@@ -158,7 +158,7 @@
       "id": "VEJ-10",
       "type": "single",
       "category": "Aktueller Sicherheitshinweis",
-      "media": { "src": "/media/vejro/vej-produkt-camplock.webp", "alt": "CampLock Fingerprint-Sensor", "layout": "product" },
+      "media": { "src": "/media/vejro/vej-produkt-camplock.webp", "alt": "CampLock Fingerprint-Sensor", "layout": "product", "width": 1400, "height": 933 },
       "prompt": "Bei der Übergabe fragt der Kunde, ob der Fahrzeugschlüssel dank Fingerprint künftig zu Hause bleiben kann. Was gilt nach dem aktuellen Sicherheitshinweis?",
       "options": [
         { "id": "a", "text": "Ja - nach erfolgreichem Test ersetzt der Fingerprint den Schlüssel vollständig" },
@@ -186,7 +186,7 @@
       "id": "VEJ-07",
       "type": "single",
       "category": "Systemgrenze Wassermelder",
-      "media": { "src": "/media/vejro/vej-produkt-wassermelder.webp", "alt": "Funk-Wassermelder 868", "layout": "product" },
+      "media": { "src": "/media/vejro/vej-produkt-wassermelder.webp", "alt": "Funk-Wassermelder 868", "layout": "product", "width": 933, "height": 1400 },
       "prompt": "Ein Kunde möchte den Funk-Wassermelder 868 ohne WiPro III als eigenständigen akustischen Wasserwarner einsetzen. Was sagst du?",
       "options": [
         { "id": "a", "text": "Das geht - der Melder besitzt eine eigene Sirene" },

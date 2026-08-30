@@ -49,35 +49,3 @@ export function loadInitialCard(storage = localStorage) {
 export function deleteCard(id, storage = localStorage) {
   storage.removeItem(`${HISTORY_PREFIX}${id}`);
 }
-
-export function downloadCard(card) {
-  const plate = String(card.formData.kunde.kennzeichen || "OHNE-KZ").trim().replace(/\s+/g, "-").toUpperCase();
-  const payload = { ...card, exportVersion: "3.0", exportedAt: new Date().toISOString() };
-  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = `Arbeitskarte_${plate || "OHNE-KZ"}_${new Date().toISOString().slice(0, 10)}.json`;
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-  URL.revokeObjectURL(link.href);
-}
-
-export function readImportedCard(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onerror = () => reject(new Error("Die Datei konnte nicht gelesen werden."));
-    reader.onload = () => {
-      try {
-        const raw = JSON.parse(String(reader.result || ""));
-        if (!raw || typeof raw !== "object" || (!raw.formData && !raw.materials && !raw.sketches)) {
-          throw new Error("Die Datei enthält keine Arbeitskarte.");
-        }
-        resolve(normalizeWorkCard({ ...raw, id: raw.id || undefined }));
-      } catch (error) {
-        reject(error instanceof Error ? error : new Error("Ungültiges JSON-Format."));
-      }
-    };
-    reader.readAsText(file);
-  });
-}
