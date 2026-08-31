@@ -77,9 +77,13 @@ for (const island of catalog.inseln) {
     continue;
   }
 
-  // Fachlich dichte Inseln dürfen bis zu zwölf Fragen enthalten.
-  if (set.questions.length < 5 || set.questions.length > 12) {
-    warn(island.slug, `${set.questions.length} Fragen — vorgesehen sind 5 bis 12.`);
+  // Redaktionsziel seit der Runde 08/2026: genau zehn Fragen je Insel. Ein
+  // Hinweis, kein Fehler — ein Zwischenstand beim Umbau soll den Bau nicht
+  // anhalten. Unbemerkt bleiben soll er aber auch nicht: Vorher stand hier
+  // eine Spanne von 5 bis 12, und darin sind die Inseln über Monate
+  // unterschiedlich lang geworden, ohne dass es jemand sah.
+  if (set.questions.length !== 10) {
+    warn(island.slug, `${set.questions.length} Fragen — vorgesehen sind genau 10.`);
   }
 
   const ids = new Set();

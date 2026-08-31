@@ -10,8 +10,32 @@
 process.env.SUPABASE_URL = "https://beispiel.invalid";
 process.env.SUPABASE_SECRET_KEY = "sb_secret_test";
 
+const fs = require("fs");
 const path = require("path");
-const island = require("../public/data/inseln/hiddensee.json");
+
+/* Die Prüfinsel wird gesucht, nicht verdrahtet.
+ *
+ *  Der Test braucht einen Fragensatz mit mindestens einer single- und einer
+ *  match-Frage — die Zuordnungsprüfung baut sonst auf undefined auf. Vorher
+ *  stand hier fest "hiddensee". Als die Zuordnungsfrage dort aus
+ *  redaktionellen Gründen wegfiel, starb der Test mit einem TypeError, der
+ *  nach kaputtem Werkzeug aussah statt nach einer geänderten Datei. */
+const INSELN = path.join(__dirname, "..", "public", "data", "inseln");
+const island = (() => {
+  const passend = fs.readdirSync(INSELN)
+    .filter((name) => name.endsWith(".json"))
+    .map((name) => require(path.join(INSELN, name)))
+    .find((satz) => {
+      const typen = new Set((satz.questions || []).map((q) => q.type));
+      return typen.has("single") && typen.has("match");
+    });
+  if (!passend) {
+    console.error("Kein Fragensatz enthält zugleich eine single- und eine match-Frage — " +
+      "die Zuordnungsprüfung lässt sich nicht aufbauen.");
+    process.exit(1);
+  }
+  return passend;
+})();
 
 // fetch abfangen und den Body zurückgeben, statt ihn zu senden.
 let captured = null;
@@ -67,7 +91,7 @@ function buildPayload(mode, overrides = {}) {
 
   return Object.assign({
     event: "campus-2026",
-    island: "hiddensee",
+    island: island.island,
     quiz_version: island.version,
     engine_version: "1.0",
     session_id: "test-" + Math.random().toString(36).slice(2),
@@ -78,13 +102,13 @@ function buildPayload(mode, overrides = {}) {
     started_at: "2026-08-13T09:00:00.000Z",
     finished_at: "2026-08-13T09:04:10.000Z",
     shuffle_enabled: true,
-    page_url: "https://beispiel.invalid/quiz/hiddensee",
+    page_url: `https://beispiel.invalid/quiz/${island.island}`,
     answers
   }, overrides);
 }
 
 (async function run() {
-  console.log("Bewertung\n");
+  console.log(`Bewertung — Prüfinsel ${island.code || island.island}\n`);
 
   let r = await call(buildPayload("richtig"));
   check("Alles richtig → 201", r.status === 201, `Status ${r.status}: ${r.body.error || ""}`);
@@ -92,7 +116,7 @@ function buildPayload(mode, overrides = {}) {
   check("score = total", r.gespeichert && r.gespeichert.score === island.questions.length);
   check("incorrect = 0", r.gespeichert && r.gespeichert.incorrect === 0);
   check("Dauer berechnet", r.gespeichert && r.gespeichert.duration_seconds === 250, `${r.gespeichert?.duration_seconds}`);
-  check("island_code ergänzt", r.gespeichert && r.gespeichert.island_code === "HIDDENSEE");
+  check("island_code ergänzt", r.gespeichert && r.gespeichert.island_code === island.code);
   check("Antworten tragen is_correct", r.gespeichert && r.gespeichert.answers.every((a) => a.is_correct === true));
   check("Antworten tragen category", r.gespeichert && r.gespeichert.answers.every((a) => typeof a.category === "string"));
 

@@ -3,7 +3,7 @@
   "code": "VEJRØ",
   "title": "Produktneuheiten: Zugang & Wasserschutz",
   "subtitle": "Neuheiten verstehen, passend beraten",
-  "version": "5",
+  "version": "6",
   "lernziel": "CampLock und VanLock sicher abgrenzen, den Fingerprint ehrlich beraten und die neuen Funklösungen gegen Wassereinbruch passend einsetzen.",
   "dauerMinuten": 7,
   "quellen": [
@@ -13,21 +13,21 @@
     "produkte/funk-magnetkontakt.md",
     "referenz/zugang-bedienung.md"
   ],
-  "internerHinweis": "Fragenkatalog v5. VEJRØ bündelt Produktneuheiten: CampLock/VanLock Fingerprint V002+, Funk-Wassermelder 868 und wasserdichter Funk-Magnetkontakt. Fingerprint-Kompatibilität und Sicherheitshinweis vom 27.07.2026 vor jeder Schulung gegen den aktuellen Freigabestand prüfen.",
+  "internerHinweis": "Fragenkatalog v6. Zehn Fragen. Redaktionsrunde 08/2026: Markenname Hartal aus VEJ-01 und VEJ-09 genommen - die Fragen laufen jetzt ueber den Tuertyp. Achtung, das Produktwissen nennt die Hartal-Kompatibilitaet weiterhin als entscheidenden Punkt fuer CampLock (produkte/camplock-fingerprint.md). VEJ-02 ohne Revisionskuerzel V002+. VEJ-03 und VEJ-09 haben je eine weitere falsche Option. VEJ-08 benennt den Einbaupunkt des Fuehlers konkret. Offen: VEJ-06 und VEJ-10 fragen beide, ob der Fahrzeugschluessel zu Hause bleiben darf. Fingerprint-Kompatibilitaet und Sicherheitshinweis vom 27.07.2026 vor jeder Schulung gegen den aktuellen Freigabestand pruefen.",
   "questions": [
     {
       "id": "VEJ-01",
       "type": "single",
       "category": "CampLock oder VanLock",
-      "prompt": "Ein Kunde hat einen Kastenwagen ohne Hartal-Aufbautür und möchte biometrischen Zugang. Was empfiehlst du?",
+      "prompt": "Ein Kunde hat einen Kastenwagen ohne Aufbautür und möchte biometrischen Zugang. Was empfiehlst du?",
       "options": [
         { "id": "a", "text": "CampLock Fingerprint" },
         { "id": "b", "text": "VanLock Fingerprint" },
         { "id": "c", "text": "CampLock Fingerprint mit Montageadapter" },
-        { "id": "d", "text": "Erst nach Umbau auf eine Hartal-Tür möglich" }
+        { "id": "d", "text": "Erst nach Nachrüstung einer Aufbautür möglich" }
       ],
       "correct": ["b"],
-      "feedback": "CampLock ist für Hartal-Aufbautüren mit Zentralverriegelung gebaut, VanLock für Reisemobile und Kastenwagen. Zwei Produkte, zwei Einsatzbereiche.",
+      "feedback": "CampLock ist für Aufbautüren mit Zentralverriegelung gebaut, VanLock für Reisemobile und Kastenwagen. Zwei Produkte, zwei Einsatzbereiche.",
       "irrtum": [
         {
           "fuer": ["a", "c"],
@@ -36,7 +36,7 @@
         },
         {
           "fuer": ["d"],
-          "titel": "Umbau auf Hartal-Tür",
+          "titel": "Umbau auf eine Aufbautür",
           "text": "Technisch absurd teuer - und unnötig, weil es für genau diesen Fall ein eigenes Produkt gibt."
         }
       ],
@@ -52,15 +52,21 @@
         { "id": "b", "text": "Die Gehäusepfeile von Sender und Magnet zueinander ausrichten" },
         { "id": "c", "text": "Im geschlossenen Zustand höchstens 22 mm Abstand einplanen" },
         { "id": "d", "text": "Grundsätzlich den Montageadapter des Standardkontakts verwenden" },
-        { "id": "e", "text": "Den Sender dauerhaft unter Wasser montieren - IP67 erlaubt das" }
+        { "id": "e", "text": "Den Sender dauerhaft unter Wasser montieren - IP67 erlaubt das" },
+        { "id": "f", "text": "Die Sende-LED vom Magneten weg ausrichten, wie bei der Standardausführung" }
       ],
       "correct": ["a", "b", "c"],
-      "feedback": "Für feuchte- und spritzwasserbelastete Öffnungen ist die wasserdichte Ausführung vorgesehen. Pfeile zueinander, geschlossen maximal 22 mm - und IP67 bedeutet nicht Dauereintauchen.",
+      "feedback": "Für feuchte- und spritzwasserbelastete Öffnungen ist die wasserdichte Ausführung vorgesehen. Die kleinen **Pfeile auf Sendeeinheit und Magnet zeigen aufeinander**, geschlossen sind es höchstens 22 mm - und IP67 bedeutet nicht Dauereintauchen.",
       "irrtum": [
         {
           "fuer": ["d"],
           "titel": "Standardadapter übernommen",
           "text": "Die Montageregeln der Standardausführung dürfen nicht ungeprüft auf die wasserdichte Ausführung übertragen werden."
+        },
+        {
+          "fuer": ["f"],
+          "titel": "LED-Regel der Standardausführung übertragen",
+          "text": "Der verführerischste Fehler dieser Frage, weil die Regel für den Standardkontakt richtig ist. Die wasserdichte Ausführung wird nicht über die LED ausgerichtet, sondern über die Gehäusepfeile - und die zeigen aufeinander."
         },
         {
           "fuer": ["e"],
@@ -105,13 +111,13 @@
       "category": "Produktneuheit: Funk-Wassermelder 868",
       "prompt": "Wo platzierst du beim Funk-Wassermelder 868 Sendeeinheit und Fühler?",
       "options": [
-        { "id": "a", "text": "Sendeeinheit trocken und zugänglich; Fühler am tiefen Punkt, an dem Wasser früh erkannt werden soll" },
+        { "id": "a", "text": "Sendeeinheit trocken und zugänglich; Fühler tief am gefährdeten Punkt - etwa unter dem Frischwassertank oder unter der Spüle" },
         { "id": "b", "text": "Beide Komponenten direkt auf dem Fahrzeugboden im möglichen Wasserbereich" },
         { "id": "c", "text": "Sendeeinheit hinter einer Metallverkleidung; Fühler möglichst hoch an der Wand" },
         { "id": "d", "text": "Fühler in den Frischwassertank; Sendeeinheit außen unter das Fahrzeug" }
       ],
       "correct": ["a"],
-      "feedback": "Die Sendeeinheit bleibt trocken, funkgünstig und für Wartung erreichbar. Der kabelgebundene Fühler sitzt tief am gewünschten Frühwarnpunkt, beide Kontaktflächen am Boden.",
+      "feedback": "Die Sendeeinheit bleibt trocken, funkgünstig und für Wartung erreichbar. Der Fühler sitzt am 30 cm langen Kabel tief dort, wo zuerst Wasser ankommt: **unter dem Frisch- oder Brauchwassertank, unter der Spüle, unter Leitungen und Anschlüssen, in Staufächern mit wasserführenden Bauteilen oder hinter einer Serviceklappe**. Beide Kontaktstifte liegen dabei am Boden auf.",
       "irrtum": [
         {
           "fuer": ["b", "d"],
@@ -124,7 +130,7 @@
           "text": "Ein hoch montierter Fühler meldet erst spät. Metall unmittelbar um die Sendeeinheit kann zusätzlich die Funkstrecke verschlechtern."
         }
       ],
-      "mitnehmen": "Beim Wassermelder haben Sender und Fühler bewusst zwei verschiedene Einbauorte: Elektronik trocken, Messpunkt tief."
+      "mitnehmen": "Beim Wassermelder haben Sender und Fühler bewusst zwei verschiedene Einbauorte: Elektronik trocken, Messpunkt tief. Die 30 cm Kabellänge entscheiden mit - der Sendeeinbauort muss zum gewählten Messpunkt passen, nicht umgekehrt."
     },
     {
       "id": "VEJ-04",
@@ -219,16 +225,22 @@
         { "id": "a", "text": "Der Kunde will damit die Fahrzeug-Zentralverriegelung bedienen, hat aber keine safe.lock-Anlage" },
         { "id": "b", "text": "Der Kunde plant bewusst keinen zweiten Zugangsweg" },
         { "id": "c", "text": "Der Kunde arbeitet beruflich viel mit Handschuhen und nassen Händen" },
-        { "id": "d", "text": "Der Kunde hat eine Hartal-Aufbautür mit Zentralverriegelung" },
-        { "id": "e", "text": "Der Kunde möchte zusätzlich eine Fahrzeugortung" }
+        { "id": "d", "text": "Der Kunde hat eine Aufbautür mit Zentralverriegelung" },
+        { "id": "e", "text": "Der Kunde möchte zusätzlich eine Fahrzeugortung" },
+        { "id": "f", "text": "Der Kunde will den Fingerprint ergänzend zum vorhandenen Funk-Handsender nutzen" }
       ],
       "correct": ["a", "b", "c"],
       "feedback": "Drei echte Grenzen: eine technische (ohne safe.lock keine Fahrzeug-ZV), eine konzeptionelle (kein zweiter Weg) und eine praktische (Handschuhe und nasse Hände).",
       "irrtum": [
         {
           "fuer": ["d"],
-          "titel": "Hartal-Aufbautür mitangekreuzt",
+          "titel": "Aufbautür mit Zentralverriegelung mitangekreuzt",
           "text": "Das ist genau der vorgesehene Einsatzfall. Wer hier ein Problem sieht, verwechselt Voraussetzung mit Einschränkung."
+        },
+        {
+          "fuer": ["f"],
+          "titel": "Der zweite Bedienweg mitangekreuzt",
+          "text": "Dreht die Regel genau um. Ein vorhandener Funk-Handsender ist nicht das Problem, sondern die Lösung - er ist der zweite, technisch unabhängige Zugangsweg, den wir in jeder Beratung suchen."
         },
         {
           "fuer": ["e"],
@@ -242,20 +254,20 @@
       "id": "VEJ-02",
       "type": "single",
       "category": "Varianten und Freigabestand",
-      "prompt": "Vor dir liegen CampLock oder VanLock Fingerprint in Ausführung V002+ und eine vorhandene WiPro III ohne safe.lock. Darfst du die Funktion zusagen?",
+      "prompt": "Vor dir liegen ein CampLock oder VanLock Fingerprint und eine vorhandene WiPro III ohne safe.lock. Darfst du die Funktion zusagen?",
       "options": [
-        { "id": "a", "text": "Ja - jede WiPro III ist mit V002+ kompatibel" },
-        { "id": "b", "text": "Nein - die aktuelle V002+-Anleitung nennt WiPro III safe.lock; Produktstand und passende Anleitung zuerst eindeutig zuordnen" },
+        { "id": "a", "text": "Ja - jede WiPro III ist mit dem Fingerprint kompatibel" },
+        { "id": "b", "text": "Nein - die aktuelle Anleitung nennt WiPro III safe.lock; Produktstand und passende Anleitung zuerst eindeutig zuordnen" },
         { "id": "c", "text": "Ja - wenn ein Pro-finder ergänzt wird" },
         { "id": "d", "text": "Ja - sofern nur die Aufbautür geöffnet werden soll" }
       ],
       "correct": ["b"],
-      "feedback": "Für CampLock und VanLock Fingerprint V002+ beschreibt die aktuelle Anleitung den Betrieb als Zubehör zu WiPro III safe.lock. Vor einer Zusage werden Ausführung, Serien-/Revisionsstand, Fahrzeug und zugehörige aktuelle Anleitung zusammen geprüft.",
+      "feedback": "Für CampLock und VanLock Fingerprint beschreibt die aktuelle Anleitung den Betrieb als Zubehör zu **WiPro III safe.lock**. Vor einer Zusage werden Ausführung, Serien- und Revisionsstand, Fahrzeug und die zugehörige aktuelle Anleitung zusammen geprüft.",
       "irrtum": [
         {
           "fuer": ["a", "d"],
           "titel": "Älteren Funktionsstand übertragen",
-          "text": "Bei ähnlich benannten Produktständen darf eine frühere Kompatibilitätsaussage nicht auf V002+ übertragen werden. Entscheidend ist die Anleitung der konkreten Ausführung."
+          "text": "Bei ähnlich benannten Produktständen darf eine frühere Kompatibilitätsaussage nicht auf den neuen übertragen werden. Entscheidend ist die Anleitung der konkreten Ausführung."
         },
         {
           "fuer": ["c"],

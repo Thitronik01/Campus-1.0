@@ -3,7 +3,7 @@
   "code": "FEHMARN",
   "title": "Fehlersuche & Support",
   "subtitle": "Erst lesen, dann tauschen",
-  "version": "7",
+  "version": "8",
   "lernziel": "Bevor du tauschst, lies. Jedes Gerät sagt, was los ist - über Blinkcode, Ton, Seriennummer, Spannungsverhalten. Tauschen ist die teuerste Form der Diagnose.",
   "dauerMinuten": 9,
   "quellen": [
@@ -13,7 +13,7 @@
     "produkte/pro-finder.md",
     "referenz/mobilfunk-sim.md"
   ],
-  "internerHinweis": "Fragenkatalog v7. Das bestehende FehlerQuiz mit sechs Bildfragen läuft separat; FEHMARN ist die anspruchsvollere Supportebene. Neu: bestätigter WiPro-III-Hauptalarm als Audiofrage, Übertemperaturdiagnose an G.A.S.-pro III und ein kontrollierter Referenz-SIM-Test beim Pro-Finder. Blinkcodes und Spannungsschwellen vor jeder Schulung gegen den aktuellen Anleitungsstand prüfen.",
+  "internerHinweis": "Fragenkatalog v8. Zehn Fragen. Redaktionsrunde 08/2026: FEH-03 (gelbe Status-LED ab 0699-045) entfernt, FEH-01 im Prompt gekuerzt. FEH-05 auf die interne Praxis umgestellt - der Test mit unangezuendetem Feuerzeuggas ist zulaessig; das Produktwissen (produkte/gas-pro-iii.md, referenz/gas.md, referenz/stoerungsbeseitigung.md) sagt noch das Gegenteil und muss nachgezogen werden. FEH-04 auf ca. 12,0 V Rueckkehrschwelle geaendert - pro-finder.md nennt noch 12,5 V. FEH-09 prueft jetzt die Smartphone-Kennzeichnung; der sequentielle SMS-Versand steht im Mitnehmen. Blinkcodes und Spannungsschwellen vor jeder Schulung gegen den aktuellen Anleitungsstand pruefen.",
   "questions": [
     {
       "id": "FEH-06",
@@ -50,7 +50,7 @@
       "id": "FEH-01",
       "type": "single",
       "category": "Alarmspeicher lesen",
-      "prompt": "Nach dem Unscharfschalten blinkt die Status-LED wiederholt 9× mit 5 s Pause. Was war los?",
+      "prompt": "Die Status-LED blinkt wiederholt 9× mit 5 s Pause. Was war los?",
       "options": [
         { "id": "a", "text": "Panikalarm über den Handsender" },
         { "id": "b", "text": "Anti-Jamming-Ereignis - mögliche Funkstörung" },
@@ -69,33 +69,6 @@
       "mitnehmen": "Anti-Jamming lässt sich über DIP 7 → ON abschalten. Das macht das Symptom weg, nicht die Ursache - und nimmt der Anlage eine Schutzfunktion. Erst Ort und Zeitpunkt dokumentieren, Störquellen suchen."
     },
     {
-      "id": "FEH-03",
-      "type": "single",
-      "category": "Pro-finder 0699-045",
-      "prompt": "Bei einem Pro-finder mit der Seriennummer 0699-045 blinkt die Status-LED gelb. Was bedeutet das?",
-      "options": [
-        { "id": "a", "text": "Die zuletzt beauftragte SMS konnte nicht gesendet werden" },
-        { "id": "b", "text": "Der Zielrufnummernspeicher ist leer" },
-        { "id": "c", "text": "Die GPS-Antenne hat keinen Satellitenempfang" },
-        { "id": "d", "text": "Die Fahrzeugbatterie liegt unter 12,5 V" }
-      ],
-      "correct": ["a"],
-      "feedback": "Ab Seriennummer **0699-045** bedeutet gelbes Blinken: Die letzte SMS konnte nicht versendet werden. Jetzt Tarif/Guthaben, Zielrufnummer, Netz und SIM-Konfiguration prüfen.",
-      "irrtum": [
-        {
-          "fuer": ["b"],
-          "titel": "Bedeutung älterer Geräte übernommen",
-          "text": "Bei älteren Pro-findern kann gelbes Blinken auf den leeren Zielrufnummernspeicher hinweisen. Ab 0699-045 hat derselbe Blinkcode eine andere Bedeutung."
-        },
-        {
-          "fuer": ["c"],
-          "titel": "GPS- mit Mobilfunkfehler verwechselt",
-          "text": "Die gelbe Anzeige dieses Gerätestands bezieht sich auf den fehlgeschlagenen SMS-Versand, nicht auf die Satellitenposition."
-        }
-      ],
-      "mitnehmen": "Der Gerätestand entscheidet über die Bedeutung eines Blinkcodes. Deshalb bei jeder Diagnose zuerst die vollständige Seriennummer aufnehmen."
-    },
-    {
       "id": "FEH-04",
       "type": "single",
       "category": "Spannung",
@@ -107,7 +80,7 @@
         { "id": "d", "text": "Die Sicherung hat ausgelöst und muss neu gesetzt werden" }
       ],
       "correct": ["b"],
-      "feedback": "Warnung bei ca. **11,2 V**, danach Standby zum Schutz der Batterie. Ab einer Versorgung über ca. **12,5 V** kehrt das Gerät in den Normalbetrieb zurück.",
+      "feedback": "Warnung bei ca. **11,2 V**, danach Standby zum Schutz der Batterie. Ab einer Versorgung über ca. **12,0 V** kehrt das Gerät in den Normalbetrieb zurück.",
       "irrtum": [
         {
           "fuer": ["a"],
@@ -147,29 +120,34 @@
     {
       "id": "FEH-05",
       "type": "single",
-      "category": "Sicherheitsgrenze",
+      "category": "Funktionstest",
       "prompt": "Ein Kollege will die G.A.S.-pro III „mal eben mit dem Feuerzeug testen“. Was sagst du?",
       "options": [
-        { "id": "a", "text": "Kurz und aus 1 m Abstand ist unbedenklich" },
-        { "id": "b", "text": "Nicht durchführen - dieser Test ist nicht vorgesehen" },
-        { "id": "c", "text": "Nur bei der CO-Variante zulässig" },
-        { "id": "d", "text": "Nur bei geöffnetem Fenster" }
+        { "id": "a", "text": "Geht - unangezündetes Feuerzeuggas auf den Sensor geben und die Reaktion abwarten" },
+        { "id": "b", "text": "Nicht durchführen - ein Funktionstest am eingebauten Gerät ist nicht vorgesehen" },
+        { "id": "c", "text": "Nur mit gezündeter Flamme direkt vor dem Sensor" },
+        { "id": "d", "text": "Nur an der CO-Ausführung - die spricht auf Feuerzeuggas an" }
       ],
-      "correct": ["b"],
-      "feedback": "Wegen des Auswertungsalgorithmus ist ein Anwendertest mit Feuerzeuggas laut Kurzanleitung nicht vorgesehen. Das Gerät führt einen automatischen Sensorselbsttest durch.",
+      "correct": ["a"],
+      "feedback": "Aus dem Feuerzeug kommt Butan - genau eines der Gase, auf die der integrierte Sensor der G.A.S.-pro III ausgelegt ist. Der Test mit **unangezündetem** Gas ist deshalb zulässig und zeigt dem Kunden die Funktion. Danach lüften und abwarten, bis das Gerät in den grünen Normalzustand zurückkehrt.",
       "irrtum": [
         {
-          "fuer": ["a"],
-          "titel": "Kurz und aus Abstand",
-          "text": "Der pragmatische Werkstattreflex - man will dem Kunden ja etwas zeigen. Der Test kann den Sensor beeinflussen und sagt über die tatsächliche Funktion nichts Belastbares aus."
+          "fuer": ["c"],
+          "titel": "Mit gezündeter Flamme",
+          "text": "Eine offene Flamme und eine Gasprüfung im Fahrzeug sind die beiden Dinge, die nie zusammenkommen dürfen. Getestet wird mit ausströmendem Gas, nicht mit Feuer."
         },
         {
           "fuer": ["d"],
-          "titel": "Bei geöffnetem Fenster",
-          "text": "Behandelt es als Belüftungsfrage. Das Problem ist nicht die Gaskonzentration im Raum, sondern was der Sensor daraus macht."
+          "titel": "Nur an der CO-Ausführung",
+          "text": "Vertauscht die Sensoren. Der CO-Sensor misst Kohlenmonoxid und spricht auf Feuerzeuggas gerade nicht an - dort sagt der Test nichts aus."
+        },
+        {
+          "fuer": ["b"],
+          "titel": "Lieber gar nicht testen",
+          "text": "Die Vorsicht ist ehrenwert, geht hier aber zu weit. Ein Kunde, dem die Anlage einmal vorgeführt wurde, vertraut ihr anders als einer, dem sie nur beschrieben wurde."
         }
       ],
-      "mitnehmen": "Meldet der Selbsttest einen Fehler, zeigt sich das eindeutig: 1 Ton pro Sekunde und die betroffene Sensor-LED blinkt gelb. Dem Kunden zeigst du den grünen Normalzustand - das ist der Nachweis, den es braucht."
+      "mitnehmen": "Meldet der Selbsttest einen Fehler, zeigt sich das eindeutig: 1 Ton pro Sekunde und die betroffene Sensor-LED blinkt gelb. Nach dem Gastest ist der grüne Normalzustand der eigentliche Nachweis - er zeigt, dass das Gerät wieder frei misst."
     },
     {
       "id": "FEH-09",
@@ -177,21 +155,26 @@
       "category": "Alarmweiterleitung",
       "prompt": "„Meine Frau bekommt die Alarm-SMS, ich nie.“ Woran liegt es?",
       "options": [
-        { "id": "a", "text": "Alarm-SMS werden nacheinander versendet" },
+        { "id": "a", "text": "Sein Mobilfunkanbieter blockiert automatisiert versendete SMS" },
         { "id": "b", "text": "Nur die Masternummer bekommt Alarm-SMS" },
         { "id": "c", "text": "Die zweite Nummer muss als Smartphone gekennzeichnet sein" },
         { "id": "d", "text": "Es ist immer nur eine Zielrufnummer möglich" }
       ],
-      "correct": ["a"],
-      "feedback": "Der Versand läuft der Reihe nach. Wird ein Testalarm sofort beendet, kommen die späteren Zielrufnummern gar nicht mehr an die Reihe.",
+      "correct": ["c"],
+      "feedback": "Die Nummer ist ohne die Smartphone-Kennzeichnung **S** programmiert. Erst mit ihr wird eine Zielrufnummer als Smartphone geführt. Beispiel Vertragskarte: **DE+S491701234567** mit Kennzeichnung, **DE+491701234567** ohne.",
       "irrtum": [
         {
           "fuer": ["b"],
           "titel": "Nur die Masternummer",
-          "text": "Passt scheinbar perfekt zur Beobachtung - und führt dazu, dass man dem Kunden eine Einschränkung erklärt, die es nicht gibt. Der vermeintliche Fehler entsteht beim Testen selbst."
+          "text": "Passt scheinbar perfekt zur Beobachtung - und führt dazu, dass man dem Kunden eine Einschränkung erklärt, die es nicht gibt. Bis zu zehn Zielrufnummern sind möglich."
+        },
+        {
+          "fuer": ["a"],
+          "titel": "Der Anbieter blockiert",
+          "text": "Die bequemste Erklärung, weil sie den Fehler aus der eigenen Reichweite schiebt. Bevor der Provider verdächtigt wird, gehört die Programmier-SMS Zeichen für Zeichen geprüft."
         }
       ],
-      "mitnehmen": "Einen kontrollierten Test vollständig durchlaufen lassen, dann bekommt jede Nummer ihre SMS. Gehört so auch in die Fahrzeugübergabe - Masternummer zuerst."
+      "mitnehmen": "Ein zweiter Effekt sieht dem hier zum Verwechseln ähnlich: Alarm-SMS gehen **nacheinander** raus. Wer einen Testalarm sofort beendet, lässt die späteren Nummern gar nicht erst an die Reihe kommen. Deshalb bei der Übergabe jede vereinbarte Zielrufnummer einzeln und vollständig durchtesten - Masternummer zuerst."
     },
     {
       "id": "FEH-08",

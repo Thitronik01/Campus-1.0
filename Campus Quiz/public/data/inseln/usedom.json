@@ -3,7 +3,7 @@
   "code": "USEDOM",
   "title": "Verkaufsdisplay & Konfigurator",
   "subtitle": "Vom Einzelprodukt zum System",
-  "version": "5",
+  "version": "6",
   "lernziel": "Wer die vier Ebenen trennt - Zentrale, Fernsteuerung, Lesestelle, Medium -, beantwortet fast jede Kundenfrage von selbst.",
   "dauerMinuten": 7,
   "quellen": [
@@ -12,7 +12,7 @@
     "produkte/nfc-modul.md",
     "referenz/zugang-bedienung.md"
   ],
-  "internerHinweis": "Fragenkatalog v5. USEDOM erklärt Verkaufsdisplay und Konfigurator über Kundenwunsch, Systembausteine und Angebotsvorbereitung. USE-01 nutzt ausschließlich echte Produktbilder. Artikelnummern und Leistungswerte vor jeder Schulung gegen den aktuellen Produktstand prüfen.",
+  "internerHinweis": "Fragenkatalog v6. Zehn Fragen. Redaktionsrunde 08/2026: USE-01 hat zwei weitere falsche Optionen bekommen - Funk-Wassermelder 868 (deckt keinen der drei Wuensche ab) und Fingerprint (deckt einen Wunsch doppelt ab und setzt safe.lock voraus). Damit steht die Frage bei acht Bildoptionen, dem Maximum des Produktlayouts. Die beiden Bilder sind Kopien aus media/vejro; wird dort ein Motiv ausgetauscht, muss media/usedom mitgezogen werden, weil Einzelpakete nur den eigenen Insel-Ordner mitnehmen. USE-01 nutzt ausschliesslich echte Produktbilder. Artikelnummern und Leistungswerte vor jeder Schulung gegen den aktuellen Produktstand pruefen.",
   "questions": [
     {
       "id": "USE-04",
@@ -54,10 +54,12 @@
         { "id": "c", "text": "NFC Modul", "image": "/media/usedom/use-produkt-nfc-modul.webp", "imageAlt": "Schwarzes NFC Modul als Lesestelle" },
         { "id": "d", "text": "KeyCard, KeyTag oder KeyStrap", "image": "/media/usedom/use-produkt-keycard.webp", "imageAlt": "THITRONIK KeyCard als Zugangsmedium" },
         { "id": "e", "text": "G.A.S.-pro III", "image": "/media/usedom/use-produkt-gas-pro-iii.webp", "imageAlt": "G.A.S.-pro III Gaswarner" },
-        { "id": "f", "text": "T.S.A. Funk-Rauchmelder", "image": "/media/usedom/use-produkt-tsa-funk-rauchmelder.webp", "imageAlt": "T.S.A. Funk-Rauchmelder" }
+        { "id": "f", "text": "T.S.A. Funk-Rauchmelder", "image": "/media/usedom/use-produkt-tsa-funk-rauchmelder.webp", "imageAlt": "T.S.A. Funk-Rauchmelder" },
+        { "id": "g", "text": "Funk-Wassermelder 868", "image": "/media/usedom/use-produkt-wassermelder.webp", "imageAlt": "Funk-Wassermelder 868 mit Sendeeinheit und Sensor am Kabel" },
+        { "id": "h", "text": "CampLock oder VanLock Fingerprint", "image": "/media/usedom/use-produkt-fingerprint.webp", "imageAlt": "Runder Fingerprint-Sensor mit grün leuchtendem Ring" }
       ],
       "correct": ["a", "b", "c", "d"],
-      "feedback": "Drei Kundenwünsche, drei Bausteine - plus das Zugangsmedium.",
+      "feedback": "Drei Kundenwünsche, drei Bausteine - plus das Zugangsmedium. Alles Weitere ist Zusatzverkauf und gehört getrennt besprochen, nicht in diese Position.",
       "irrtum": [
         {
           "fuer": ["d"],
@@ -65,12 +67,17 @@
           "text": "Der häufigste Fehler im Angebot. Das NFC Modul ist nur die Lesestelle - ohne KeyCard, KeyTag oder KeyStrap öffnet niemand etwas. Der Kunde merkt es am Tag der Übergabe."
         },
         {
-          "fuer": ["e"],
-          "titel": "Gaswarner mitangekreuzt",
-          "text": "Sinnvolles Produkt, aber es deckt keinen der drei genannten Wünsche ab. Zusatzverkauf ja - aber nicht in dieser Position."
+          "fuer": ["e", "f", "g"],
+          "titel": "Gutes Produkt, falscher Wunsch",
+          "text": "Gaswarner, Rauchmelder und Wassermelder sind sinnvolle Produkte - nur deckt keines davon einen der drei genannten Wünsche ab. Zusatzverkauf ja, aber als eigenes Thema und nicht in dieser Position."
+        },
+        {
+          "fuer": ["h"],
+          "titel": "Fingerprint zusätzlich mitangekreuzt",
+          "text": "Der teure Fehler, weil er richtig klingt: Der Fingerprint löst denselben Wunsch wie NFC Modul und KeyCard - nur ein zweites Mal, und er setzt zusätzlich WiPro III safe.lock voraus. Ein Wunsch, ein Weg."
         }
       ],
-      "mitnehmen": "Geh die Kundenwünsche einzeln durch und hak sie am Angebot ab. Drei Wünsche, drei Häkchen - plus die Frage: „Womit macht er es auf?“"
+      "mitnehmen": "Geh die Kundenwünsche einzeln durch und hak sie am Angebot ab. Drei Wünsche, drei Häkchen - plus die Frage: „Womit macht er es auf?“ Jede Position ohne Haken gehört begründet oder gestrichen."
     },
     {
       "id": "USE-02",

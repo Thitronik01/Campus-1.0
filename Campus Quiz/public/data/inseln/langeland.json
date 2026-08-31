@@ -3,7 +3,7 @@
   "code": "LANGELAND",
   "title": "Fahrzeugannahme & Fahrzeugübergabe",
   "subtitle": "Der Prozess vor und nach dem Schraubendreher",
-  "version": "5",
+  "version": "6",
   "lernziel": "Ein Fahrzeug vollständig und freigabebewusst annehmen, den Einbau prüfbar dokumentieren und dem Kunden System, Grenzen und Bedienwege sicher übergeben.",
   "dauerMinuten": 7,
   "quellen": [
@@ -12,7 +12,7 @@
     "referenz/zugang-bedienung.md",
     "_intern/support-fallaufnahme.md"
   ],
-  "internerHinweis": "Fragenkatalog v5. LANGELAND deckt Annahme, Erwartungsmanagement, vollständige Übergabe und Dokumentation ab. LAN-09 macht die vollständige Prüfung aller zugesagten Meldewege zur Übergabebedingung. Zeitwerte und Fahrzeugfreigaben vor jeder Schulung gegen den aktuellen Stand prüfen.",
+  "internerHinweis": "Fragenkatalog v6. Zehn Fragen. Redaktionsrunde 08/2026: LAN-06 (safe.lock im Campingmodus) entfernt, dafuer LAN-11 zu Ruhestrom und Standzeit. Mit LAN-06 ist der Campingmodus aus dem Fragensatz verschwunden - falls er in der Uebergabe eine Rolle spielen soll, gehoert er in eine neue Frage. LAN-09 macht die vollstaendige Pruefung aller zugesagten Meldewege zur Uebergabebedingung. Zeitwerte, Ruhestromrichtwerte und Fahrzeugfreigaben vor jeder Schulung gegen den aktuellen Stand pruefen.",
   "questions": [
     {
       "id": "LAN-01",
@@ -111,33 +111,6 @@
         }
       ],
       "mitnehmen": "Diese eine Minute ist einer der häufigsten Gründe für einen vermeintlichen Mangel bei der Abnahme. Warten ist hier Teil des Tests - **Prinzip 3**."
-    },
-    {
-      "id": "LAN-06",
-      "type": "single",
-      "category": "Campingmodus",
-      "prompt": "Fahrzeug mit safe.lock im Campingmodus. Welchen Hinweis gibst du dem Kunden zwingend mit?",
-      "options": [
-        { "id": "a", "text": "Der Originalschlüssel funktioniert immer als Rückfallebene" },
-        { "id": "b", "text": "Im Campingmodus konsequent über den THITRONIK-Bedienweg verriegeln" },
-        { "id": "c", "text": "Der Campingmodus muss vor jeder Fahrt deaktiviert werden" },
-        { "id": "d", "text": "Im Campingmodus ist der Alarm inaktiv" }
-      ],
-      "correct": ["b"],
-      "feedback": "Wird mit THITRONIK-Zubehör verriegelt, bleibt der Originalschlüssel als Fallback nutzbar. Umgekehrt gilt das nicht: Wird zuerst mit dem Originalschlüssel verriegelt, kann die spätere Entriegelung über THITRONIK-Zubehör bei bestimmten Fahrzeugen blockiert sein.",
-      "irrtum": [
-        {
-          "fuer": ["a"],
-          "titel": "Originalschlüssel immer als Rückfallebene",
-          "text": "Die vernünftigste Annahme der Welt - und in dieser Richtung falsch. Genau diese Asymmetrie ist der Kern der Frage: Ein Weg führt zurück, der andere nicht."
-        },
-        {
-          "fuer": ["d"],
-          "titel": "Alarm im Campingmodus inaktiv",
-          "text": "Wäre ein gravierender Sicherheitsirrtum. Der Campingmodus ist eine Zugangslogik, keine Abschaltung."
-        }
-      ],
-      "mitnehmen": "Genau dieser Fall führt zu Anrufen vom Stellplatz - abends, wenn niemand mehr erreichbar ist. Einmal bei der Übergabe erklärt, tritt er nicht auf."
     },
     {
       "id": "LAN-09",
@@ -274,6 +247,38 @@
         }
       ],
       "mitnehmen": "Das **Foto der DIP-Stellung** ist der am häufigsten vergessene und im Supportfall wertvollste Teil der Dokumentation - es beantwortet in zwei Sekunden eine Frage, die sonst eine Demontage kostet. Damit schließt sich der Kreis: Deine Akte von heute ist die Fallaufnahme von FEHMARN in zwei Jahren."
+    },
+    {
+      "id": "LAN-11",
+      "type": "single",
+      "category": "Standzeit und Ruhestrom",
+      "prompt": "Der Kunde stellt sein Wohnmobil über den Winter ab. Was gehört bei der Übergabe zum Thema Ruhestrom gesagt?",
+      "options": [
+        { "id": "a", "text": "Die THITRONIK-Komponenten ziehen zusammen rund 27-36 mA; dazu kommen Fahrzeuggrundlast und Selbstentladung - ohne Ladeerhaltung wird es nach wenigen Wochen knapp" },
+        { "id": "b", "text": "Nichts - die Anlage schaltet sich bei längeren Standzeiten selbst ab" },
+        { "id": "c", "text": "Die Anlage hat keinen nennenswerten Ruhestrom; eine leere Batterie kommt vom Fahrzeug" },
+        { "id": "d", "text": "Er soll vor der Standzeit einfach die Batterie abklemmen" }
+      ],
+      "correct": ["a"],
+      "feedback": "WiPro III safe.lock rund **11 mA**, Pro-finder **16-25 mA**, zusammen etwa **27-36 mA** - und das ist nur THITRONIK. Fahrzeuggrundlast, Selbstentladung und Batteriezustand kommen dazu. Bei rund 50 mA Gesamtlast sind das etwa **1,2 Ah pro Tag**: von 30 Ah praktisch nutzbarer Kapazität bleiben rund **25 Tage**.",
+      "irrtum": [
+        {
+          "fuer": ["b"],
+          "titel": "Die Anlage schaltet sich schon ab",
+          "text": "Sie tut das Gegenteil - wach bleiben ist ihre Aufgabe. Der Pro-finder geht erst bei 11,2 V in den Tiefentladeschutz, und dann ist die Batterie bereits in einem Zustand, den niemand wollte."
+        },
+        {
+          "fuer": ["c"],
+          "titel": "Kein nennenswerter Ruhestrom",
+          "text": "Bequem in beide Richtungen. Die Anlage ist nicht der ganze Grund für eine leere Batterie, aber sie ist ein realer Anteil - und wer ihn bei der Übergabe verschweigt, diskutiert ihn im Frühjahr am Telefon."
+        },
+        {
+          "fuer": ["d"],
+          "titel": "Batterie abklemmen",
+          "text": "Löst das Stromproblem und schafft ein größeres: Eine abgeklemmte Anlage bewacht nichts. Die Antwort heißt Ladeerhaltung, nicht Abklemmen."
+        }
+      ],
+      "mitnehmen": "Ladeerhaltung spätestens nach etwa **zwei Wochen** einplanen und das Fahrzeug mit voller Batterie abstellen. Zwei Sätze bei der Übergabe ersparen den Anruf im März."
     }
   ]
 }

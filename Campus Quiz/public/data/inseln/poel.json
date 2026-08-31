@@ -3,7 +3,7 @@
   "code": "POEL",
   "title": "Händlerbereich",
   "subtitle": "Das digitale Werkzeug für Beratung und Werkstatt",
-  "version": "5",
+  "version": "6",
   "lernziel": "Den THITRONIK-Händlerbereich als tägliches Arbeitsmittel nutzen: Kundenunterlagen sauber von geschützten Einbaudaten trennen, Aufträge fundiert vorbereiten und den eigenen Werkstattservice stärken.",
   "dauerMinuten": 7,
   "quellen": [
@@ -11,7 +11,7 @@
     "_intern/werkseinbau-eckernfoerde.md",
     "produkte/gas-pro-iii.md"
   ],
-  "internerHinweis": "Fragenkatalog v5. POEL trainiert die Navigation zwischen öffentlichem Support, geschütztem Händlerbereich und aktuellen Produktinformationen. Menünamen und Dokumentenstände vor jeder Schulung gegen die Website prüfen.",
+  "internerHinweis": "Fragenkatalog v6. Zehn Fragen. Redaktionsrunde 08/2026: POE-05 (Zuordnung Fundorte) entfernt, dafuer POE-11 zur Fahrzeugfreigabe - auch damit die Insel nicht aus zehn Einfachauswahlen besteht. POE-08 nennt Dateiname und vollen Pfad des Upgrade-/Update-Formulars. POE-10 laeuft jetzt ueber den Pro-finder statt ueber CampLock/VanLock; damit bleibt die Seriennummernlogik im Lehrplan, die mit FEH-03 auf FEHMARN weggefallen ist. Menuenamen, Dateiname und Dokumentenstaende vor jeder Schulung gegen die Website pruefen - der Pfad in POE-08 traegt die Jahreszahl 2024 im Dateinamen.",
   "questions": [
     {
       "id": "POE-01",
@@ -134,39 +134,6 @@
       "mitnehmen": "Der Login lohnt sich einmalig und spart dauerhaft. Vieles, was Händler telefonisch anfragen, liegt dort bereits fertig."
     },
     {
-      "id": "POE-05",
-      "type": "match",
-      "category": "Dokumenten-Navigation",
-      "media": { "src": "/media/poel/poe-start-haendlerbereich.webp", "alt": "Arbeitsplatz mit THITRONIK-Händlerunterlagen", "layout": "landscape" },
-      "prompt": "Ordne jede benötigte Information dem schnellsten aktuellen Fundort zu.",
-      "left": [
-        { "id": "l1", "text": "CampLock/VanLock V002+ Kurzanleitung" },
-        { "id": "l2", "text": "Konformitätserklärung oder WiPro Upgrade-/Update-Formular" },
-        { "id": "l3", "text": "Fahrzeugspezifische Stecker- und Pinbelegung" },
-        { "id": "l4", "text": "Aktueller Sicherheits- oder Rückrufhinweis" }
-      ],
-      "right": [
-        { "id": "r1", "text": "Öffentlicher Support → Downloads → Alarmanlagen → Anleitungen" },
-        { "id": "r2", "text": "Öffentlicher Support → Downloads → Alarmanlagen → Sonstiges" },
-        { "id": "r3", "text": "Geschützter Händlerbereich / Werkstattunterlagen" },
-        { "id": "r4", "text": "Offizielle News-, Hinweis- oder Rückrufseite" },
-        { "id": "r5", "text": "Produktkonfigurator" }
-      ],
-      "correct": { "l1": "r1", "l2": "r2", "l3": "r3", "l4": "r4" },
-      "feedback": "Anleitungen und sonstige Formulare sind öffentlich gegliedert; fahrzeugspezifische Anschlussdaten bleiben geschützt; zeitkritische Sicherheitsinformationen werden über die aktuelle offizielle Hinweis- oder Rückrufseite geprüft.",
-      "irrtum": [
-        {
-          "titel": "Konfigurator als Dokumentenarchiv genutzt",
-          "text": "Der Konfigurator unterstützt die Zusammenstellung eines Systems. Er ersetzt weder aktuelle Anleitungen noch geschützte Werkstattunterlagen oder Sicherheitshinweise."
-        },
-        {
-          "titel": "Öffentliche und geschützte Unterlagen vermischt",
-          "text": "Kundenfähige Dokumente werden öffentlich bereitgestellt; fahrzeugspezifische Anschlussdetails gehören in den geschützten Arbeitsbereich des Fachbetriebs."
-        }
-      ],
-      "mitnehmen": "Nicht nur wissen, was gesucht wird, sondern wo es gepflegt wird. So landet automatisch der aktuelle Stand auf dem Werkstattauftrag."
-    },
-    {
       "id": "POE-07",
       "type": "single",
       "category": "Kunde am Telefon",
@@ -200,7 +167,7 @@
         { "id": "d", "text": "FAQ → Mobilfunk" }
       ],
       "correct": ["a"],
-      "feedback": "Das aktuelle WiPro III Upgrade-/Update-Formular liegt im öffentlichen Support unter Downloads → Alarmanlagen → Sonstiges.",
+      "feedback": "Das aktuelle WiPro III Upgrade-/Update-Formular liegt im öffentlichen Support unter Downloads → Alarmanlagen → Sonstiges - als **wipro_iii_upgrade_update_service_2024-de.pdf**.",
       "irrtum": [
         {
           "fuer": ["b"],
@@ -213,34 +180,34 @@
           "text": "Händlerfinder und FAQ lösen andere Aufgaben. Für ein auszufüllendes Serviceformular führt der Weg direkt zu den Downloads."
         }
       ],
-      "mitnehmen": "Bei Formularen immer frisch herunterladen. Eine gespeicherte alte Kopie kann Pflichtfelder oder aktuelle Versandhinweise missen."
+      "mitnehmen": "Voller Pfad, falls es schnell gehen muss: thitronik.de/fileadmin/user_upload/downloads/alarmanlagen/sonstiges/wipro_iii_upgrade_update_service_2024-de.pdf - und trotzdem jedes Mal frisch herunterladen. Eine gespeicherte alte Kopie kann Pflichtfelder oder aktuelle Versandhinweise missen."
     },
     {
       "id": "POE-10",
       "type": "single",
       "category": "Passende Anleitung wählen",
-      "prompt": "Im Downloadbereich findest du verschiedene CampLock/VanLock-Fingerprint-Anleitungen. Wie wählst du die richtige aus?",
+      "prompt": "Im Downloadbereich findest du verschiedene Pro-finder-Anleitungen. Wie wählst du die richtige aus?",
       "options": [
         { "id": "a", "text": "Immer die Datei mit dem neuesten Upload-Datum öffnen" },
-        { "id": "b", "text": "Produktvariante und Serien-/Revisionsstand am Gerät prüfen und genau die dazu gekennzeichnete Anleitung verwenden" },
-        { "id": "c", "text": "CampLock- und VanLock-Anleitungen sind vollständig austauschbar" },
+        { "id": "b", "text": "Gerätegeneration an der vollständigen Seriennummer bestimmen und genau die dazu gekennzeichnete Anleitung verwenden" },
+        { "id": "c", "text": "Pro-finder-Anleitungen gelten über alle Gerätestände hinweg gleich" },
         { "id": "d", "text": "Die kürzeste Anleitung ist die aktuelle Werkstattfassung" }
       ],
       "correct": ["b"],
-      "feedback": "Die Kennzeichnung der konkreten Produktausführung entscheidet. Bei Fingerprint-Produkten können sich Reihenfolge, Kompatibilität und Inbetriebnahme zwischen frühen und V002+-Ständen unterscheiden.",
+      "feedback": "Die vollständige Seriennummer entscheidet. Beim Pro-finder hängen SIM-Format, PIN-Verhalten, Blinkcodes und Anschlussbelegung am Gerätestand - ab **0699-045** etwa Nano-SIM und abgeschaltete PIN-Abfrage, davor Micro- beziehungsweise Mini-SIM.",
       "irrtum": [
         {
           "fuer": ["a"],
           "titel": "Nur nach Datum gewählt",
-          "text": "Die neueste Datei kann für eine andere Revision gedacht sein. Der Abgleich beginnt am verbauten Produkt, nicht in der Dateiliste."
+          "text": "Die neueste Datei kann für eine andere Gerätegeneration gedacht sein. Der Abgleich beginnt am verbauten Gerät, nicht in der Dateiliste."
         },
         {
           "fuer": ["c", "d"],
           "titel": "Dokumente nach Ähnlichkeit gewählt",
-          "text": "Ähnlicher Name oder Umfang ist kein Revisionsnachweis. Nur die eindeutige Kennzeichnung verbindet Gerät und Anleitung."
+          "text": "Ähnlicher Name oder Umfang ist kein Nachweis für den Gerätestand. Nur die Seriennummer verbindet Gerät und Anleitung eindeutig."
         }
       ],
-      "mitnehmen": "Dokumentenstand heißt nicht automatisch neuestes Datum, sondern passendster freigegebener Stand für genau dieses Gerät."
+      "mitnehmen": "Dokumentenstand heißt nicht neuestes Datum, sondern passendster freigegebener Stand für genau dieses Gerät. Deshalb steht die vollständige Seriennummer am Anfang jeder Recherche - nicht am Ende."
     },
     {
       "id": "POE-09",
@@ -268,6 +235,40 @@
         }
       ],
       "mitnehmen": "Der Händlerbereich ist nicht nur ein Archiv, sondern deine Quelle für den aktuellen Arbeitsstand."
+    },
+    {
+      "id": "POE-11",
+      "type": "multi",
+      "category": "Fahrzeugfreigabe prüfen",
+      "prompt": "Ein Kunde fragt, ob seine Fahrzeugvariante freigegeben ist. Woran machst du die Antwort fest? Wähle alle zutreffenden.",
+      "options": [
+        { "id": "a", "text": "An der aktuellen fahrzeug- und ausführungsspezifischen Einbauanleitung aus dem Händlerbereich" },
+        { "id": "b", "text": "An Baujahr beziehungsweise Modelljahr der konkreten Fahrzeugvariante" },
+        { "id": "c", "text": "An Seriennummer und Softwarestand der vorgesehenen Zentrale" },
+        { "id": "d", "text": "An der Fahrzeugübersicht auf der Website - sie ist das Freigabedokument" },
+        { "id": "e", "text": "An der Anleitung einer baugleichen Variante desselben Herstellers" },
+        { "id": "f", "text": "An der Auskunft eines Kollegen, der dieselbe Baureihe schon gemacht hat" }
+      ],
+      "correct": ["a", "b", "c"],
+      "feedback": "Die Fahrzeugübersicht ordnet ein, sie gibt nicht frei. Verbindlich ist die **aktuelle fahrzeug- und ausführungsspezifische Einbauanleitung** - und die passt nur, wenn Fahrzeug, Baujahr beziehungsweise Modelljahr, Ausführung, Seriennummer und Softwarestand zusammengehören.",
+      "irrtum": [
+        {
+          "fuer": ["d"],
+          "titel": "Die Übersicht als Freigabe gelesen",
+          "text": "Sie ist gemacht, um schnell einzuordnen, nicht um zuzusagen. Zwischen Übersicht und Anleitung liegen Modelljahr, Ausstattung und Softwarestand."
+        },
+        {
+          "fuer": ["e"],
+          "titel": "Von der baugleichen Variante abgeleitet",
+          "text": "Der teuerste Kurzschluss dieser Insel. Der Iveco Daily ab Modelljahr 2025/2026 hat ein geändertes BCM und ist derzeit nicht freigegeben - von außen sieht er aus wie der Daily daneben."
+        },
+        {
+          "fuer": ["f"],
+          "titel": "Auf die Kollegenauskunft gebaut",
+          "text": "Erfahrung ist wertvoll und ersetzt trotzdem kein Dokument. Was der Kollege verbaut hat, war vielleicht ein anderer Softwarestand."
+        }
+      ],
+      "mitnehmen": "Freigabe ist kein einzelner Haken, sondern eine Kette: Fahrzeug, Modelljahr, Ausführung, Softwarestand, passende Anleitung. Reißt ein Glied, ist die Frage nicht beantwortet, sondern geraten."
     }
   ]
 }

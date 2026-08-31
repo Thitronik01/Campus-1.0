@@ -3,7 +3,7 @@
   "code": "SAMSØ",
   "title": "Einbauorte im Fahrzeug",
   "subtitle": "Wo kommt was hin?",
-  "version": "9",
+  "version": "11",
   "lernziel": "Physik bestimmt den Einbauort, nicht der freie Platz. Wer das verstanden hat, muss keine Liste auswendig lernen.",
   "dauerMinuten": 8,
   "quellen": [
@@ -14,7 +14,7 @@
     "produkte/wipro-iii.md",
     "fahrzeuge/*"
   ],
-  "internerHinweis": "Fragenkatalog v9. SAM-02, SAM-03 und SAM-10 arbeiten mit echten Produkt- beziehungsweise Einbaufotos; SAM-09 ergänzt die physikalisch begründete Ausrichtung der externen GPS-Antenne. Einbauabstände und Kabellängen vor jeder Schulung gegen den aktuellen Anleitungsstand prüfen.",
+  "internerHinweis": "Fragenkatalog v11. Zehn Fragen. Redaktionsrunde 08/2026: SAM-11 neu (Sicherheitsabstand zu Batterie und Nasszelle). SAM-06 nennt die Praxisempfehlung, das NFC Modul hinter der Umweltplakette zu verstecken. SAM-09 fragt nach der Montage der externen GPS-Antenne: Aufkleber nach unten, Empfangsseite nach oben; die Aufloesung zeigt dazu sam-antenne-unterseite.webp. ACHTUNG bei diesem Bild: Es zeigt die externe GSM-Antenne, nicht die GPS-pro - die Bauform und die Lage des Aufklebers stimmen, der Schriftzug auf dem Etikett liest aber GSM ANTENNA. Deshalb nennen Alt-Text und Bildunterschrift bewusst kein Produkt. Sobald ein Foto der GPS-pro vorliegt, wird es getauscht. Nicht verwendbar sind das alte sam-produkt-gps-pro.webp und seine Quelle Wissen/03_Medien/produkte/GPS-pro.png - beide tragen Fantasietext auf dem Etikett und zeigen den Aufkleber oben. SAM-02, SAM-03 und SAM-10 arbeiten mit echten Produkt- beziehungsweise Einbaufotos. Einbauabstaende und Kabellaengen vor jeder Schulung gegen den aktuellen Anleitungsstand pruefen.",
   "questions": [
     {
       "id": "SAM-01",
@@ -180,7 +180,7 @@
         { "id": "d", "text": "Im Fahrerhaus unter dem Armaturenbrett" }
       ],
       "correct": ["b"],
-      "feedback": "Innen an der Scheibe - geschützt vor Wetter und Zugriff, aber von außen bedienbar.",
+      "feedback": "Innen an der Scheibe - geschützt vor Wetter und Zugriff, aber von außen bedienbar. Aus der Praxis: Das Modul lässt sich gut **hinter der Umweltplakette** verstecken. Von außen fällt dort nichts auf, und der Kunde trifft die Lesestelle trotzdem punktgenau.",
       "irrtum": [
         {
           "fuer": ["a"],
@@ -253,21 +253,30 @@
       "id": "SAM-09",
       "type": "single",
       "category": "GPS-Antenne ausrichten",
-      "media": { "src": "/media/samsoe/sam-produkt-gps-pro.webp", "alt": "Externe GPS-pro Antenne", "layout": "product" },
-      "prompt": "Der Pro-finder braucht wegen eines abgeschirmten Einbauorts eine externe GPS-Antenne. Wie wird ihre Empfangsseite ausgerichtet?",
+      "prompt": "Der Pro-finder braucht wegen eines abgeschirmten Einbauorts eine externe GPS-Antenne. Wie wird sie montiert?",
       "options": [
-        { "id": "a", "text": "Horizontal nach oben und mit möglichst freier Sicht durch ein nichtmetallisches Fahrzeugteil" },
-        { "id": "b", "text": "Senkrecht nach unten, damit Wasser ablaufen kann" },
+        { "id": "a", "text": "Waagerecht mit dem Aufkleber nach unten, freie Sicht nach oben durch ein nichtmetallisches Fahrzeugteil" },
+        { "id": "b", "text": "Waagerecht mit dem Aufkleber nach oben, damit die Beschriftung lesbar bleibt" },
         { "id": "c", "text": "Direkt unter eine geschlossene Metallverkleidung" },
         { "id": "d", "text": "Beliebig - GPS funktioniert unabhängig von der Ausrichtung" }
       ],
       "correct": ["a"],
-      "feedback": "Die Empfangsseite der GPS-Antenne zeigt horizontal nach oben. Metall unmittelbar über oder um die Antenne schirmt Satellitensignale ab; ein geeigneter nichtmetallischer Bereich verbessert den Empfang.",
+      "feedback": "Die Empfangsseite zeigt waagerecht **nach oben** - der Aufkleber sitzt auf der Unterseite und kommt beim Kleben nach unten. Metall unmittelbar über oder um die Antenne schirmt Satellitensignale ab; ein nichtmetallischer Bereich darüber verbessert den Empfang.",
+      "feedbackMedia": {
+        "src": "/media/samsoe/sam-antenne-unterseite.webp",
+        "alt": "Runde schwarze Klebeantenne, von unten fotografiert: weißer Aufkleber mit CE-Zeichen auf der Unterseite, daneben das aufgerollte Anschlusskabel mit Schraubstecker",
+        "caption": "So sieht die Seite aus, die nach unten kommt: Auf dem Aufkleber wird geklebt. Die glatte Gegenseite ist die Empfangsseite und schaut zum Himmel."
+      },
       "irrtum": [
         {
-          "fuer": ["b", "d"],
+          "fuer": ["b"],
+          "titel": "Aufkleber nach oben geklebt",
+          "text": "Sieht nach Ordnung aus und dreht die Antenne genau falsch herum. Meist steckt eine Verwechslung mit dem Pro-finder selbst dahinter: Dort muss „GPS inside“ nach **oben** zeigen. Bei der externen Antenne ist es umgekehrt."
+        },
+        {
+          "fuer": ["d"],
           "titel": "Ausrichtung unterschätzt",
-          "text": "Eine GPS-Antenne hat eine definierte Empfangsseite. Vertikale, nach unten gerichtete oder beliebige Montage verschenkt Empfangsreserve."
+          "text": "Eine GPS-Antenne hat eine definierte Empfangsseite. Beliebige Montage verschenkt Empfangsreserve - und niemand merkt es beim Einbau."
         },
         {
           "fuer": ["c"],
@@ -275,7 +284,7 @@
           "text": "Ein unauffälliger Ort ist nur dann gut, wenn das Material darüber Satellitensignale nicht abschirmt."
         }
       ],
-      "mitnehmen": "Bei Funk- und Satellitentechnik ist der Einbauort Teil der Funktion: Orientierung und Material über der Antenne werden bewusst gewählt und anschließend getestet."
+      "mitnehmen": "Zwei Geräte, zwei entgegengesetzte Regeln: Beim Pro-finder zeigt der Aufkleber nach oben, bei der externen GPS-Antenne nach unten. Dahinter steht beide Male dasselbe Prinzip - die Empfangsseite schaut zum Himmel. Wer das Prinzip kennt, muss sich keine der beiden Regeln merken."
     },
     {
       "id": "SAM-10",
@@ -309,6 +318,38 @@
         }
       ],
       "mitnehmen": "Diese Trennung - Medium, Lesestelle, Steuergerät - ist die Grundordnung des ganzen Sortiments. Auf USEDOM begegnet sie dir am Display wieder."
+    },
+    {
+      "id": "SAM-11",
+      "type": "single",
+      "category": "Abstände am Einbauort",
+      "prompt": "Der einzige freie Platz für den Gaswarner liegt 40 cm neben der Aufbaubatterie - Höhe und Fläche stimmen. Was machst du?",
+      "options": [
+        { "id": "a", "text": "Anderen Ort suchen - zu Batterien und Nasszelle gehört mindestens 1 m Abstand" },
+        { "id": "b", "text": "Passt - entscheidend ist allein die Höhe über dem Boden" },
+        { "id": "c", "text": "Passt, solange eine AGM-Batterie verbaut ist" },
+        { "id": "d", "text": "Passt, wenn der Sensor von der Batterie weg ausgerichtet wird" }
+      ],
+      "correct": ["a"],
+      "feedback": "Zum Einbauort gehören nicht nur Höhe und Fläche, sondern auch Abstände: mindestens **1 m** zu Batterien und Nasszelle, und nicht direkt gegenüber einem **Heizungsausströmer**. Eine Blei-Aufbaubatterie gast beim Laden aus - das erzeugt genau die Fehlalarme, die der Kunde nach drei Nächten abstellen lässt.",
+      "irrtum": [
+        {
+          "fuer": ["b"],
+          "titel": "Nur auf die Höhe geschaut",
+          "text": "Die Höhe ist die bekannteste Regel und deshalb die einzige, an die man denkt. Sie ist notwendig, aber sie reicht nicht: Ein Ort ist erst bewertet, wenn auch die Nachbarschaft geprüft ist."
+        },
+        {
+          "fuer": ["c"],
+          "titel": "AGM als Freibrief",
+          "text": "AGM gast weniger, nicht gar nicht. Der Sicherheitsabstand gilt für Batterien - ohne Unterscheidung nach Bauart."
+        },
+        {
+          "fuer": ["d"],
+          "titel": "Sensor wegdrehen",
+          "text": "Behandelt den Gaswarner wie eine Kamera. Er misst die Luft, die ihn umgibt, nicht die Richtung, in die er zeigt."
+        }
+      ],
+      "mitnehmen": "Ein Fehlalarm um drei Uhr nachts kostet die Anlage das Vertrauen des Kunden - und danach schaltet er sie ab. Der halbe Meter, den du beim Einbau sparst, kommt genau so zurück."
     }
   ]
 }
