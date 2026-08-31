@@ -34,6 +34,17 @@ const SCHULUNG = [
 const KATALOG = JSON.parse(fs.readFileSync(
   require('path').resolve(P, '..', 'Campus Quiz', 'public', 'data', 'inseln.json'), 'utf8'));
 
+/* Diese Liste erzeugt die Inselkacheln. RUEGEN gehoert nicht hinein: Der
+   Bogen fuehrt die Verpflegungsinsel schon als eigene Catering-Kachel
+   weiter unten (cateringMarkup, mit Icon statt Foto). Seit RUEGEN auch im
+   Katalog des Wissenschecks steht, stuende es hier sonst ein zweites Mal —
+   und dazu mit einem Kachelbild unter assets/v12/islands/, das es nicht
+   gibt; genau daran ist der Bau zuerst gescheitert.
+
+   Dieselbe Regel wie in engine.js, build-insel.js und check-fragen.js:
+   negativ gesetzt, damit eine Lerninsel nichts eintragen muss. */
+const LERNINSELN = KATALOG.inseln.filter((insel) => insel.wissenscheck !== false);
+
 /* Der itemKey wandert in die Datenbank und bleibt deshalb, wie er war —
    auch das unregelmaessige insel_vejroe gegenueber dem Slug vejro. */
 const ITEM_KEYS = {
@@ -97,7 +108,7 @@ ${inner}
    Reihenfolge folgt jetzt dem Katalog, und positionsgebundene Zahlen haetten
    dabei still ihre Bedeutung getauscht — aus der 4 waere Poel statt Usedom
    geworden, ohne dass irgendetwas gemeldet haette. */
-const islandMarkup = KATALOG.inseln.map((insel) => isle(insel.slug,
+const islandMarkup = LERNINSELN.map((insel) => isle(insel.slug,
   `              <span class="isle__thumb"><img src="assets/v12/islands/${insel.slug}.webp" alt="" width="90" height="76" loading="lazy" decoding="async"></span>
               <span class="isle__text"><strong>${esc(insel.name)}</strong><small>${esc(insel.title)}</small></span>`
 )).join('\n');
@@ -106,7 +117,7 @@ const islandMarkup = KATALOG.inseln.map((insel) => isle(insel.slug,
    Liste fuehren muss. Vorher stand dort islandDefinitions mit denselben
    Namen ein zweites Mal. */
 const inselDaten = JSON.stringify(Object.fromEntries(
-  KATALOG.inseln.map((i) => [i.slug, [ITEM_KEYS[i.slug], i.name]])
+  LERNINSELN.map((i) => [i.slug, [ITEM_KEYS[i.slug], i.name]])
     .concat([['ruegen', [ITEM_KEYS.ruegen, 'Rügen']]])
 ));
 

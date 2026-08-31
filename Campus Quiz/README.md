@@ -439,6 +439,103 @@ Der Ordner `public/media/betreuer/` wandert als Ganzes in beide
 Paketformen — wer eine Person ergänzt, legt ein Foto ab und trägt sie ein,
 mehr nicht.
 
+**Die Fotos entstehen aus den Originalen der Website**, die im Querformat
+vorliegen (meist 400×228). Ein zentrierter Quadratzuschnitt setzt das
+Gesicht dabei zu hoch und zu klein; deshalb schneidet
+`tools/betreuer-fotos.js` mit sharps `attention` auf 320×320 — die
+auffälligste Bildregion, bei Portraits das Gesicht:
+
+```bash
+node tools/betreuer-fotos.js "../export/Bilder Thitronik Mitarbeiter"
+```
+
+Die Zuordnung Originaldatei → Zieldatei steht in dem Werkzeug, weil die
+Originale Umlaute und Leerzeichen tragen und die Zieldateien ASCII sind.
+Wer eine Person ergänzt, trägt sie dort **und** in `betreuer.json` ein.
+
+### Eine Insel ohne Wissenscheck
+
+> **Derzeit hat keine Insel dieses Feld.** RÜGEN, die Verpflegungsinsel,
+> war am 31.08.2026 kurz eingebaut und ist auf Wunsch wieder aus dem
+> Frontend genommen worden. Die Mechanik ist vollständig erhalten
+> geblieben, ebenso die Silhouette und die Fotos der beiden Betreuerinnen
+> — der Wiedereinbau ist der Block am Ende dieses Abschnitts.
+
+Eine Station, die auf der Campus-Karte steht, aber keinen Fragensatz hat,
+trägt in `public/data/inseln.json` das Feld
+
+```json
+"wissenscheck": false
+```
+
+Das Feld steht **negativ**, damit die Lerninseln nichts eintragen müssen —
+ein vergessenes Feld macht eine Insel zur Lerninsel, nicht umgekehrt. Eine
+Insel, die still aus Fortschritt und Prüfung fällt, fällt niemandem auf.
+
+Dieselbe Regel steht unter demselben Namen `hatWissenscheck()` an fünf
+Stellen, weil jede von ihnen sonst einen Fragensatz erwartet:
+
+| Datei | was sonst passiert |
+|---|---|
+| `public/assets/engine.js` | Fortschritt zählt „x von 8", der Balken erreicht nie 100 %; `/quiz/ruegen` meldet „Fragensatz konnte nicht geladen werden" |
+| `tools/check-fragen.js` | meldet den fehlenden Fragensatz als Fehler |
+| `tools/build-insel.js` | bricht den Bau des Gesamtpakets ab |
+| `tools/fragenkatalog.js` | bricht mit `ENOENT` ab |
+| `Feedbackbogen/tools/build-index-v14.js` | Rügen stünde doppelt im Bogen — dort gibt es die Catering-Kachel schon |
+
+Statt des Fortschritts zeigt die Kachel die Betreuung mit Foto und Namen,
+und sie ist ein `div` statt eines Knopfes: Ein Knopf, der nichts tut,
+verspricht ein Quiz, das es nicht gibt. Ein Aufruf von `/quiz/<slug>`
+landet auf der Übersicht statt auf einer Fehlermeldung.
+
+Die Silhouette erzeugt `tools/ruegen-silhouette.js` — die übrigen sieben
+Motive sind gezeichnet, für Rügen gab es keins. Sie ist eng auf die Kontur
+zugeschnitten, weil Rügen in der schmalsten Kachel der Karte sitzt: In der
+Ecke oben links steht die Überschrift „Deine Schulungsexpedition"
+(gemessen 0–36 % Breite, 0–30 % Höhe), frei ist allein unten rechts.
+
+**Rügen zurückholen** — die Kachelposition steht als `.island-ruegen` in
+`styles.css`, das Motiv liegt unter `public/media/inseln/ruegen.webp`, die
+Fotos unter `public/media/betreuer/`. Es fehlen nur zwei Einträge.
+
+In `public/data/inseln.json` als letzte Insel:
+
+```json
+{
+  "slug": "ruegen",
+  "name": "Rügen",
+  "code": "RÜGEN",
+  "title": "Verpflegung",
+  "thema": "Pause, Essen & Tagesablauf",
+  "beschreibung": "Die Versorgungsinsel der Expedition. Kein Wissenscheck - hier gibt es Kaffee, Essen und Auskunft zum Tagesablauf.",
+  "image": "/media/inseln/ruegen.webp",
+  "wissenscheck": false
+}
+```
+
+In `public/data/betreuer.json` unter `personen` und `inseln`:
+
+```json
+"hermine-bender": {
+  "name": "Hermine Bender",
+  "koennen": "Verpflegung und Tagesablauf",
+  "bild": "/media/betreuer/hermine-bender.webp"
+},
+"carolin-kinder": {
+  "name": "Carolin Kinder",
+  "koennen": "Verpflegung und Tagesablauf",
+  "bild": "/media/betreuer/carolin-kinder.webp"
+}
+```
+
+```json
+"ruegen": ["hermine-bender", "carolin-kinder"]
+```
+
+Danach `node tools/montag.js --ohne-server`. `ENGINE_VERSION` muss dafür
+**nicht** hoch: Es ändern sich nur Daten unter `/data/`, und die werden
+laut `netlify.toml` ohnehin nur 300 s gecacht.
+
 ### Eine Frage ergänzen
 
 1. Frage in `public/data/inseln/<insel>.json` eintragen

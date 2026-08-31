@@ -403,12 +403,23 @@ function zielVorbereiten(ziel, ordnerName, befehl) {
   return true;
 }
 
+/** Hat diese Insel einen Wissenscheck?
+ *
+ *  RUEGEN ist die Verpflegungsinsel: eine Station auf der Campus-Karte,
+ *  aber ohne Fragensatz. Das Feld steht negativ in inseln.json, damit die
+ *  Lerninseln nichts eintragen muessen. Dieselbe Funktion steht unter
+ *  demselben Namen in engine.js und check-fragen.js. */
+const hatWissenscheck = (insel) => insel.wissenscheck !== false;
+
 // ------------------------------------------------------------------- Bauen --
 
 function baue(slug) {
   const katalog = JSON.parse(lies("public", "data", "inseln.json"));
   const insel = katalog.inseln.find((i) => i.slug === slug);
   if (!insel) throw new Error(`Unbekannte Insel: ${slug}`);
+  if (!hatWissenscheck(insel)) {
+    throw new Error(`${slug} ist eine Insel ohne Wissenscheck — davon gibt es kein Einzelpaket.`);
+  }
 
   const satzDatei = path.join(WURZEL, "public", "data", "inseln", `${slug}.json`);
   const satz = JSON.parse(fs.readFileSync(satzDatei, "utf8"));
@@ -533,6 +544,7 @@ function baueGesamt() {
   const inseln = [];
   let fragen = 0;
   for (const eintrag of katalog.inseln) {
+    if (!hatWissenscheck(eintrag)) continue;
     const satzDatei = path.join(WURZEL, "public", "data", "inseln", `${eintrag.slug}.json`);
     if (!fs.existsSync(satzDatei)) throw new Error(`Fragensatz fehlt: ${eintrag.slug}.json`);
     kopiere(satzDatei, path.join(oeff, "data", "inseln", `${eintrag.slug}.json`));
@@ -687,8 +699,11 @@ sendet nur, **was** gewählt wurde. Bewertet wird in der Function.
 }
 
 function anleitungGesamt(katalog, inseln, bilder, bogenDateien) {
-  const zeilen = katalog.inseln.map((eintrag, i) => {
-    const satz = inseln[i];
+  const zeilen = katalog.inseln.map((eintrag) => {
+    if (!hatWissenscheck(eintrag)) {
+      return `| **${eintrag.code}** | Station auf der Karte | — | ${eintrag.title} (ohne Wissenscheck) |`;
+    }
+    const satz = inseln.find((s) => s.island === eintrag.slug);
     return `| **${eintrag.code}** | \`/quiz/${eintrag.slug}\` | ${satz.questions.length} | ${satz.title} |`;
   }).join("\n");
 

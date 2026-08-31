@@ -51,7 +51,13 @@ function anker(text) {
 
 const katalog = JSON.parse(fs.readFileSync(path.join(WURZEL, "public", "data", "inseln.json"), "utf8"));
 
-const inseln = katalog.inseln.map((eintrag) => {
+/* RUEGEN ist die Verpflegungsinsel: eine Station auf der Campus-Karte,
+   aber ohne Fragensatz — im Katalog der Lösungen hat sie deshalb nichts
+   zu suchen. Dieselbe Regel und derselbe Name wie in engine.js,
+   build-insel.js und check-fragen.js. */
+const hatWissenscheck = (insel) => insel.wissenscheck !== false;
+
+const inseln = katalog.inseln.filter(hatWissenscheck).map((eintrag) => {
   const datei = path.join(WURZEL, "public", "data", "inseln", `${eintrag.slug}.json`);
   return JSON.parse(fs.readFileSync(datei, "utf8"));
 });

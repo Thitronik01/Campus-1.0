@@ -51,11 +51,28 @@ if (!catalog) {
   process.exit(1);
 }
 
-console.log(`Prüfe ${catalog.inseln.length} Inseln …\n`);
+/** Hat diese Insel einen Wissenscheck?
+ *
+ *  RUEGEN ist die Verpflegungsinsel: eine Station auf der Campus-Karte,
+ *  aber ohne Fragensatz. Das Feld steht negativ in inseln.json, damit die
+ *  Lerninseln nichts eintragen muessen und ein vergessenes Feld eine
+ *  Insel zur Lerninsel macht statt umgekehrt — eine Insel, die still aus
+ *  der Pruefung faellt, faellt niemandem auf. Dieselbe Funktion steht
+ *  unter demselben Namen in engine.js und build-insel.js. */
+const hatWissenscheck = (insel) => insel.wissenscheck !== false;
+
+const lerninseln = catalog.inseln.filter(hatWissenscheck);
+const ohneCheck = catalog.inseln.filter((i) => !hatWissenscheck(i));
+
+console.log(`Prüfe ${lerninseln.length} Inseln …`);
+if (ohneCheck.length) {
+  console.log(`Ohne Wissenscheck, nur Station auf der Karte: ${ohneCheck.map((i) => i.slug).join(", ")}`);
+}
+console.log("");
 
 let totalQuestions = 0;
 
-for (const island of catalog.inseln) {
+for (const island of lerninseln) {
   const file = path.join(DATA, "inseln", `${island.slug}.json`);
 
   if (!fs.existsSync(file)) {
@@ -390,12 +407,18 @@ if (!fs.existsSync(betreuerDatei)) {
   }
 }
 
-// Gegenprobe: kennt die Function alle Inseln?
+// Gegenprobe: kennt die Function alle Inseln? Die Verpflegungsinsel sendet
+// nichts ein und darf dort deshalb gerade nicht stehen — ein Eintrag ohne
+// Fragensatz brächte die Function beim Start zum Absturz.
 const fnSource = fs.readFileSync(
   path.join(__dirname, "..", "netlify", "functions", "submit-quiz.js"), "utf8");
 for (const island of catalog.inseln) {
-  if (!fnSource.includes(`${island.slug}: require(`)) {
+  const eingebunden = fnSource.includes(`${island.slug}: require(`);
+  if (hatWissenscheck(island) && !eingebunden) {
     fail("submit-quiz.js", `Insel "${island.slug}" ist nicht eingebunden — Einsendungen würden abgewiesen.`);
+  }
+  if (!hatWissenscheck(island) && eingebunden) {
+    fail("submit-quiz.js", `Insel "${island.slug}" hat keinen Wissenscheck, ist aber eingebunden — dort gibt es keinen Fragensatz zum Laden.`);
   }
 }
 

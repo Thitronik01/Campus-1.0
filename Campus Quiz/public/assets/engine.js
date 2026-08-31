@@ -13,7 +13,7 @@
 
 (function () {
   const EVENT_SLUG = "campus-2026";
-  const ENGINE_VERSION = "1.25.0";
+  const ENGINE_VERSION = "1.26.0";
   const SUBMIT_ENDPOINT = "/.netlify/functions/submit-quiz";
 
   const LS_PARTICIPANT = "thitronik.campus.2026.participant";
@@ -506,6 +506,37 @@
 
   // -------------------------------------------------------- Inselübersicht --
 
+  /** Hat diese Insel einen Wissenscheck?
+   *
+   *  Alles ausser der Verpflegungsinsel RÜGEN hat einen. Das Feld steht
+   *  negativ in inseln.json (`"wissenscheck": false`), damit die sieben
+   *  Lerninseln nichts eintragen muessen und ein vergessenes Feld die
+   *  Insel zur Lerninsel macht — nicht umgekehrt. Eine Insel, die
+   *  versehentlich aus dem Fortschritt faellt, faellt still aus. */
+  const hatWissenscheck = (insel) => insel.wissenscheck !== false;
+
+  /** Foto und Name der Betreuung als kompakte Reihe fuer die Kartenkachel.
+   *
+   *  Fehlt betreuer.json oder die Zuordnung, kommt ein leerer String
+   *  zurueck und die Zeile bleibt weg — dieselbe Regel wie beim
+   *  Betreuungsstreifen auf dem Startbildschirm: lieber nichts als eine
+   *  leere Ueberschrift. */
+  function betreuungKurz(slug) {
+    const daten = state.betreuung;
+    const kuerzel = (daten && daten.inseln && daten.inseln[slug]) || [];
+    const personen = (daten && daten.personen) || {};
+    const liste = kuerzel.map((k) => personen[k]).filter(Boolean);
+    if (!liste.length) return "";
+
+    return liste.map((person) => {
+      const foto = person.bild
+        ? `<img src="${escapeHtml(person.bild)}" alt="" width="240" height="240" loading="lazy" decoding="async">`
+        : escapeHtml(person.name.split(/\s+/).slice(0, 2).map((t) => t.charAt(0)).join(""));
+      return `<span class="i-crew-person"><span class="i-crew-bild${person.bild ? "" : " ohne-foto"}">${foto}</span>` +
+        `<span class="i-crew-name">${escapeHtml(person.name)}</span></span>`;
+    }).join("");
+  }
+
   const CAMPUS_ROUTES = [
     "fehmarn-samsoe",
     "samsoe-vejro",
@@ -622,8 +653,12 @@
 
   function renderIslands() {
     const done = loadDone();
-    const total = state.catalog.inseln.length;
-    const abgeschlossen = state.catalog.inseln.filter((island) => done[island.slug]).length;
+    // RUEGEN ist die Verpflegungsinsel: eine Station auf der Karte, aber
+    // ohne Wissenscheck. Sie darf den Nenner nicht vergroessern — sonst
+    // stuende dort ewig "7 von 8" und der Balken erreichte nie 100 %.
+    const quizInseln = state.catalog.inseln.filter(hatWissenscheck);
+    const total = quizInseln.length;
+    const abgeschlossen = quizInseln.filter((island) => done[island.slug]).length;
     const fortschritt = total ? Math.round((abgeschlossen / total) * 100) : 0;
 
     setCampusRouteFocus("", false);
@@ -649,6 +684,28 @@
       const li = document.createElement("li");
       li.className = `island-map-item island-${island.slug}`;
       li.style.setProperty("--island-order", index);
+
+      // Die Verpflegungsinsel fuehrt nirgendwo hin. Ein Knopf, der nichts
+      // tut, ist schlechter als kein Knopf: Er verspricht ein Quiz, das es
+      // nicht gibt. Deshalb ein div, und statt des Fortschritts stehen die
+      // beiden Namen mit Foto da — das ist die Auskunft, die man an dieser
+      // Station wirklich sucht.
+      if (!hatWissenscheck(island)) {
+        const kachel = document.createElement("div");
+        kachel.className = "island-card is-service";
+        kachel.innerHTML = `
+        ${island.image ? `<span class="i-visual" aria-hidden="true"><img src="${escapeHtml(island.image)}" alt="" loading="lazy"></span>` : ""}
+        <span class="i-content">
+          <span class="i-code">${escapeHtml(island.code)}</span>
+          <span class="i-title">${escapeHtml(island.title)}</span>
+          <span class="i-desc">${escapeHtml(island.beschreibung)}</span>
+          <span class="i-crew">${betreuungKurz(island.slug)}</span>
+        </span>`;
+        li.appendChild(kachel);
+        el.islandGrid.appendChild(li);
+        return;
+      }
+
       const card = document.createElement("button");
       card.type = "button";
       card.className = "island-card" + (entry ? (unterwegs ? " is-warten" : " is-done") : "");
@@ -1697,7 +1754,9 @@
     }
 
     const done = loadDone();
-    const offen = state.catalog.inseln.filter((i) => !done[i.slug]);
+    // Die Verpflegungsinsel gehoert nicht in "Noch offen" — sie liesse
+    // sich nie abhaken und der Tagesabschluss erschiene nie.
+    const offen = state.catalog.inseln.filter((i) => hatWissenscheck(i) && !done[i.slug]);
     const tagesabschlussBereit = offen.length === 0 && Boolean(state.catalog.feedback);
 
     el.rRest.textContent = offen.length
@@ -2192,6 +2251,17 @@
     const known = state.catalog.inseln.find((i) => i.slug === slug);
     if (!known) {
       fail(`Die Insel „${slug}" gibt es nicht. Bitte den QR-Code noch einmal scannen oder eine Insel aus der Übersicht wählen.`);
+      return;
+    }
+
+    // Zu einer Insel ohne Wissenscheck gibt es keinen Fragensatz. Ohne
+    // diesen Zweig liefe /quiz/ruegen in fetchJson und der Teilnehmer
+    // laese "Der Fragensatz konnte nicht geladen werden" — ein Fehler, wo
+    // gar keiner ist. Ein aufgerufener QR-Code oder ein alter Link landet
+    // deshalb auf der Uebersicht.
+    if (!hatWissenscheck(known)) {
+      history.replaceState({}, "", "/quiz");
+      renderIslands();
       return;
     }
 

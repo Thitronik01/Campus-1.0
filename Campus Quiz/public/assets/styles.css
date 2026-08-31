@@ -654,6 +654,62 @@ main { flex: 1 0 auto; }
   border-radius: 50%;
   background: #D6DEE6;
 }
+
+/* --- Verpflegungsinsel ---------------------------------------------------
+   Rügen hat keinen Wissenscheck, also auch keinen Fortschritt. An die
+   Stelle des Status treten die beiden Namen mit Foto — die Auskunft, die
+   an dieser Station wirklich gesucht wird. Die Kachel ist ein div und
+   kein Knopf: Sie fuehrt nirgendwo hin, und ein Knopf, der nichts tut,
+   verspricht ein Quiz, das es nicht gibt. Deshalb hier auch kein
+   Hover-Zustand und kein Zeiger-Cursor. */
+.island-card.is-service { cursor: default; }
+
+.i-crew {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin-top: 2px;
+}
+
+.i-crew-person {
+  display: inline-flex;
+  gap: 7px;
+  align-items: center;
+  min-width: 0;
+}
+
+.i-crew-bild {
+  display: grid;
+  overflow: hidden;
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--info-bg);
+  box-shadow: 0 0 0 2px var(--th-white), 0 0 0 3px rgba(59, 169, 211, .45);
+}
+
+.i-crew-bild img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.i-crew-bild.ohne-foto {
+  color: var(--th-blue-text);
+  font-size: .64rem;
+  font-weight: 800;
+}
+
+.i-crew-name {
+  overflow: hidden;
+  color: var(--th-navy);
+  font-size: .78rem;
+  font-weight: 700;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
 .island-card.is-done .i-state::before {
   background: var(--th-lime);
   box-shadow: inset 0 0 0 3px var(--th-lime), inset 0 0 0 4px rgba(17, 17, 17, .22);
@@ -899,6 +955,22 @@ main { flex: 1 0 auto; }
   .island-poel { left: 48%; top: 70%; width: 31%; height: 23%; }
   .island-poel .i-visual { left: 0; top: 0; width: 55%; height: 100%; }
   .island-poel .i-content { left: 43%; top: 31%; width: 55%; }
+
+  /* Rügen ist die Verpflegungsinsel und liegt bewusst abseits des Rings,
+     den die sieben Lerninseln bilden.
+
+     Die Ecke oben links sieht auf der Karte leer aus, ist es aber nicht:
+     Dort steht die Ueberschrift „Deine Schulungsexpedition" (.screen-head,
+     gemessen 0-36 % Breite und 0-30 % Hoehe). Eine Kachel dort laeuft
+     mitten durch den Titel. Frei ist allein die Ecke rechts unten —
+     Hiddensee endet bei 71 % Hoehe, Poel bei 79 % Breite.
+
+     Die bleibt schmal, deshalb hier als einzige Station Motiv ueber Text
+     statt nebeneinander: 19 % Kartenbreite sind rund 240 px, und darin
+     brechen zwei Betreuernamen neben einer Silhouette unbrauchbar um. */
+  .island-ruegen { left: 80%; top: 72%; width: 19%; height: 26%; }
+  .island-ruegen .i-visual { left: 0; top: 0; width: 100%; height: 44%; }
+  .island-ruegen .i-content { left: 0; top: 44%; width: 100%; }
 
   .island-samsoe .i-content::after,
   .island-vejro .i-content::after,
