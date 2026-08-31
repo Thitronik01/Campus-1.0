@@ -175,6 +175,173 @@
   stroke-linecap: round;
 }
 
+/* -------------------------------------------------------- Vorlagenleiste --- */
+
+.thi-vorlagen-leiste {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 54px;
+  padding: 5px 14px;
+  border-bottom: 1px solid var(--th-line);
+  background: var(--th-white);
+}
+
+.thi-vorlagen-schalter {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--th-blue-text);
+  font: inherit;
+  font-size: .82rem;
+  font-weight: 800;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: border-color var(--duration-fast) var(--ease-out),
+              background-color var(--duration-fast) var(--ease-out);
+}
+
+.thi-vorlagen-schalter:hover,
+.thi-vorlagen-schalter[aria-expanded="true"] {
+  border-color: var(--th-line);
+  background: var(--info-bg);
+}
+
+.thi-vorlagen-schalter:active { background: var(--th-soft); }
+
+.thi-vorlagen-schalter svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.thi-vorlagen-profil {
+  max-width: 16ch;
+  overflow: hidden;
+  color: var(--th-muted);
+  font-size: .72rem;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------ Fallaufnahme ------- */
+
+.thi-vorlage {
+  flex: 1 1 auto;
+  padding: 18px 16px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--th-page);
+}
+
+.thi-vorlage[hidden] { display: none; }
+
+.thi-vorlagen-formular { display: grid; gap: 13px; }
+
+.thi-vorlagen-formular h2 {
+  margin: 0;
+  color: var(--th-navy);
+  font-size: 1.08rem;
+  line-height: 1.25;
+}
+
+.thi-vorlage-einleitung,
+.thi-vorlagen-hinweis {
+  margin: 0;
+  color: var(--th-muted);
+  font-size: .8rem;
+  line-height: 1.45;
+}
+
+.thi-vorlagen-feld { display: grid; gap: 5px; }
+
+.thi-vorlagen-feld label {
+  color: var(--th-navy);
+  font-size: .8rem;
+  font-weight: 800;
+}
+
+.thi-vorlagen-feld input,
+.thi-vorlagen-feld textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 11px;
+  border: 1px solid var(--th-line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--th-white);
+  color: var(--th-ink);
+  font: inherit;
+  font-size: .88rem;
+  line-height: 1.4;
+}
+
+.thi-vorlagen-feld textarea { min-height: 88px; resize: vertical; }
+
+.thi-vorlagen-feld small {
+  color: var(--th-muted);
+  font-size: .72rem;
+  line-height: 1.35;
+}
+
+.thi-vorlagen-fehler {
+  margin: 0;
+  padding: 9px 11px;
+  border: 1px solid var(--error-line);
+  border-radius: var(--radius-sm);
+  background: var(--error-bg);
+  color: var(--th-ink);
+  font-size: .8rem;
+  font-weight: 700;
+}
+
+.thi-vorlagen-fehler[hidden] { display: none; }
+
+.thi-vorlagen-aktionen {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-bottom: max(2px, env(safe-area-inset-bottom));
+}
+
+.thi-vorlagen-aktionen button {
+  min-height: 44px;
+  padding: 9px 12px;
+  border-radius: var(--radius-sm);
+  font: inherit;
+  font-size: .8rem;
+  font-weight: 800;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.thi-vorlagen-abbrechen {
+  border: 1px solid var(--th-line-strong);
+  background: var(--th-white);
+  color: var(--th-navy);
+}
+
+.thi-vorlagen-uebernehmen {
+  border: 1px solid var(--th-navy);
+  background: var(--th-navy);
+  color: var(--th-white);
+}
+
+.thi-vorlagen-abbrechen:hover { background: var(--th-soft); }
+.thi-vorlagen-uebernehmen:hover { background: var(--th-navy-deep); }
+.thi-vorlagen-aktionen button:active { opacity: .82; }
+
 /* -------------------------------------------------------------- Verlauf --- */
 
 .thi-verlauf {
@@ -187,6 +354,9 @@
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
 }
+
+.thi-verlauf[hidden],
+.thi-fuss[hidden] { display: none; }
 
 /* Begrüßung: erscheint nur, solange nichts gefragt wurde. */
 .thi-start { display: grid; gap: 14px; padding: 6px 2px 0; }
@@ -526,6 +696,8 @@
      so bleibt es bei Kanten statt Umrechnung (siehe Kopf der Datei). */
   .thi-panel { left: 0; width: auto; border-left: 0; }
   .thi-blase { max-width: 90%; }
+  .thi-vorlagen-aktionen { display: grid; grid-template-columns: 1fr; }
+  .thi-vorlagen-uebernehmen { grid-row: 1; }
 }
 
 /* Sehr schmale Geräte: die dritte Spalte würde die Beschriftungen brechen. */

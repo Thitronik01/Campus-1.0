@@ -50,7 +50,8 @@
   let offen = false;
   let zuletztFokussiert = null;
 
-  let panel, schleier, schalter, verlaufEl, eingabeEl, sendenEl, leerenEl;
+  let panel, schleier, schalter, verlaufEl, eingabeEl, sendenEl, leerenEl, fussEl;
+  let vorlagenSchalter, vorlagenFormular, vorlagenProfil, vorlagenFehler;
 
   // ----------------------------------------------------------------- Symbole -
 
@@ -108,6 +109,11 @@
   const symbolStop = () => svg("0 0 24 24", [["rect", { x: 6, y: 6, width: 12, height: 12, rx: 2 }]]);
   const symbolFrage = () => svg("0 0 24 24", [["path", { d: "M4 12h14M12 6l6 6-6 6" }]]);
   const symbolPfeil = () => svg("0 0 24 24", [["path", { d: "M5 8v6a3 3 0 0 0 3 3h11M15 13l4 4-4 4" }]]);
+  const symbolVorlage = () => svg("0 0 24 24", [
+    ["path", { d: "M8 4h8M9 3h6a1 1 0 0 1 1 1v2H8V4a1 1 0 0 1 1-1Z" }],
+    ["path", { d: "M7 5H5.5A1.5 1.5 0 0 0 4 6.5v13A1.5 1.5 0 0 0 5.5 21h13a1.5 1.5 0 0 0 1.5-1.5v-13A1.5 1.5 0 0 0 18.5 5H17" }],
+    ["path", { d: "M8 11h8M8 15h8" }]
+  ]);
 
   // ------------------------------------------------------------- Textausgabe -
 
@@ -254,9 +260,146 @@
     return kopf;
   }
 
+  /** Liest nur die bereits sichtbare Teilnehmer-Zusammenfassung der Quizseite.
+   *  THI greift absichtlich nicht selbst auf den dauerhaften Speicher zu. So
+   *  bleibt der Gesprächsverlauf sitzungsgebunden, und die Personalisierung
+   *  enthält weder Händlernummer noch Tätigkeitsbereich. */
+  function teilnehmerInfo() {
+    const nameEl = document.getElementById("participant-name");
+    const metaEl = document.getElementById("participant-meta");
+    const name = String(nameEl && nameEl.textContent || "").trim().slice(0, 80);
+    const meta = String(metaEl && metaEl.textContent || "").trim();
+    const haendler = meta.split(/,\s*Händlernummer\b/i)[0].trim().slice(0, 100);
+    return { name, haendler };
+  }
+
+  function personalisieren() {
+    const info = teilnehmerInfo();
+    const titel = verlaufEl && verlaufEl.querySelector(".thi-start-titel");
+    if (titel) titel.textContent = begruessung() + (info.name ? " " + info.name : "") + "! Ich bin THI.";
+    if (vorlagenProfil) {
+      vorlagenProfil.textContent = info.haendler ? "Für " + info.haendler : "";
+      vorlagenProfil.hidden = !info.haendler;
+    }
+  }
+
+  function baueVorlagenLeiste() {
+    const leiste = document.createElement("div");
+    leiste.className = "thi-vorlagen-leiste";
+
+    vorlagenSchalter = document.createElement("button");
+    vorlagenSchalter.type = "button";
+    vorlagenSchalter.className = "thi-vorlagen-schalter";
+    vorlagenSchalter.setAttribute("aria-expanded", "false");
+    vorlagenSchalter.setAttribute("aria-controls", "thi-vorlage");
+    vorlagenSchalter.appendChild(symbolVorlage());
+    const text = document.createElement("span");
+    text.textContent = "Mit Vorlage arbeiten";
+    vorlagenSchalter.appendChild(text);
+    vorlagenSchalter.addEventListener("click", () => {
+      if (vorlagenFormular.parentElement.hidden) vorlageOeffnen(); else vorlageSchliessen();
+    });
+
+    vorlagenProfil = document.createElement("small");
+    vorlagenProfil.className = "thi-vorlagen-profil";
+    vorlagenProfil.hidden = true;
+
+    leiste.append(vorlagenSchalter, vorlagenProfil);
+    return leiste;
+  }
+
+  function vorlagenFeld(form, id, beschriftung, { mehrzeilig = false, max = 120, hint = "" } = {}) {
+    const feld = document.createElement("div");
+    feld.className = "thi-vorlagen-feld";
+    const label = document.createElement("label");
+    label.htmlFor = id;
+    label.textContent = beschriftung;
+    const eingabe = document.createElement(mehrzeilig ? "textarea" : "input");
+    eingabe.id = id;
+    eingabe.name = id.replace("thi-vorlage-", "");
+    eingabe.maxLength = max;
+    if (mehrzeilig) eingabe.rows = 3;
+    else eingabe.type = "text";
+    if (hint) {
+      const hilfe = document.createElement("small");
+      hilfe.id = id + "-hilfe";
+      hilfe.textContent = hint;
+      eingabe.setAttribute("aria-describedby", hilfe.id);
+      feld.append(label, eingabe, hilfe);
+    } else {
+      feld.append(label, eingabe);
+    }
+    form.appendChild(feld);
+    return eingabe;
+  }
+
+  function baueVorlage() {
+    const bereich = document.createElement("section");
+    bereich.className = "thi-vorlage";
+    bereich.id = "thi-vorlage";
+    bereich.hidden = true;
+    bereich.setAttribute("aria-labelledby", "thi-vorlage-titel");
+
+    const titel = document.createElement("h2");
+    titel.id = "thi-vorlage-titel";
+    titel.textContent = "Strukturierte Fallaufnahme";
+    const einleitung = document.createElement("p");
+    einleitung.className = "thi-vorlage-einleitung";
+    einleitung.textContent = "Fülle nur aus, was bekannt ist. THI fragt gezielt nach fehlenden Angaben.";
+
+    vorlagenFormular = document.createElement("form");
+    vorlagenFormular.className = "thi-vorlagen-formular";
+    vorlagenFormular.noValidate = true;
+    vorlagenFormular.append(titel, einleitung);
+
+    vorlagenFeld(vorlagenFormular, "thi-vorlage-fahrzeug", "Fahrzeughersteller und Modell", {
+      hint: "Zum Beispiel Fiat Ducato oder Ford Transit"
+    });
+    const baujahr = vorlagenFeld(vorlagenFormular, "thi-vorlage-baujahr", "Baujahr oder Modelljahr", { max: 30 });
+    baujahr.inputMode = "numeric";
+    vorlagenFeld(vorlagenFormular, "thi-vorlage-produkt", "THITRONIK-Produkt und Variante", {
+      hint: "Zum Beispiel WiPro III safe.lock"
+    });
+    vorlagenFeld(vorlagenFormular, "thi-vorlage-stand", "Seriennummer oder Softwarestand");
+    vorlagenFeld(vorlagenFormular, "thi-vorlage-einbau", "Einbauzeitpunkt", { max: 80 });
+    vorlagenFeld(vorlagenFormular, "thi-vorlage-vorhaben", "Vorhaben oder genaues Fehlerbild", {
+      mehrzeilig: true,
+      max: 1200,
+      hint: "Beschreibe kurz, was du einbauen, prüfen oder beheben möchtest."
+    });
+
+    vorlagenFehler = document.createElement("p");
+    vorlagenFehler.className = "thi-vorlagen-fehler";
+    vorlagenFehler.id = "thi-vorlagen-fehler";
+    vorlagenFehler.hidden = true;
+    vorlagenFehler.setAttribute("role", "alert");
+
+    const datenschutz = document.createElement("p");
+    datenschutz.className = "thi-vorlagen-hinweis";
+    datenschutz.textContent = "Nur ausgefüllte Felder werden sichtbar in den Chat übernommen und an THI gesendet.";
+
+    const aktionen = document.createElement("div");
+    aktionen.className = "thi-vorlagen-aktionen";
+    const abbrechen = document.createElement("button");
+    abbrechen.type = "button";
+    abbrechen.className = "thi-vorlagen-abbrechen";
+    abbrechen.textContent = "Abbrechen";
+    abbrechen.addEventListener("click", vorlageSchliessen);
+    const uebernehmen = document.createElement("button");
+    uebernehmen.type = "submit";
+    uebernehmen.className = "thi-vorlagen-uebernehmen";
+    uebernehmen.textContent = "Übernehmen und THI fragen";
+    aktionen.append(abbrechen, uebernehmen);
+
+    vorlagenFormular.append(vorlagenFehler, datenschutz, aktionen);
+    vorlagenFormular.addEventListener("submit", vorlageAbsenden);
+    bereich.appendChild(vorlagenFormular);
+    return bereich;
+  }
+
   function baueFuss() {
-    const fuss = document.createElement("div");
-    fuss.className = "thi-fuss";
+    fussEl = document.createElement("div");
+    fussEl.className = "thi-fuss";
 
     const feld = document.createElement("div");
     feld.className = "thi-eingabe-feld";
@@ -301,8 +444,8 @@
     leerenEl.addEventListener("click", leeren);
 
     zeile.append(hinweis, leerenEl);
-    fuss.append(feld, zeile);
-    return fuss;
+    fussEl.append(feld, zeile);
+    return fussEl;
   }
 
   function bauePanel() {
@@ -324,7 +467,7 @@
     // während des Stroms — deshalb polite und kein aria-atomic.
     verlaufEl.setAttribute("aria-live", "polite");
 
-    panel.append(baueKopf(), verlaufEl, baueFuss());
+    panel.append(baueKopf(), baueVorlagenLeiste(), baueVorlage(), verlaufEl, baueFuss());
     document.body.append(schleier, panel);
   }
 
@@ -344,7 +487,8 @@
     kopf.appendChild(avatar());
     const titel = document.createElement("p");
     titel.className = "thi-start-titel";
-    titel.textContent = begruessung() + "! Ich bin THI.";
+    const info = teilnehmerInfo();
+    titel.textContent = begruessung() + (info.name ? " " + info.name : "") + "! Ich bin THI.";
     const text = document.createElement("p");
     text.className = "thi-start-text";
     text.textContent =
@@ -480,8 +624,61 @@
     if (laeuft) abbrechen();
     nachrichten = [];
     try { sessionStorage.removeItem(SPEICHER); } catch { /* egal */ }
+    if (vorlagenFormular) vorlagenFormular.reset();
+    if (vorlagenFehler) vorlagenFehler.hidden = true;
     neuZeichnen();
     eingabeEl.focus();
+  }
+
+  // --------------------------------------------------------------- Vorlage -
+
+  function vorlageOeffnen() {
+    personalisieren();
+    vorlagenFormular.parentElement.hidden = false;
+    verlaufEl.hidden = true;
+    fussEl.hidden = true;
+    vorlagenSchalter.setAttribute("aria-expanded", "true");
+    vorlagenSchalter.querySelector("span").textContent = "Vorlage schließen";
+    vorlagenFehler.hidden = true;
+    const erstesFeld = vorlagenFormular.querySelector("input, textarea");
+    if (erstesFeld) erstesFeld.focus();
+  }
+
+  function vorlageSchliessen() {
+    vorlagenFormular.parentElement.hidden = true;
+    verlaufEl.hidden = false;
+    fussEl.hidden = false;
+    vorlagenSchalter.setAttribute("aria-expanded", "false");
+    vorlagenSchalter.querySelector("span").textContent = "Mit Vorlage arbeiten";
+    vorlagenFehler.hidden = true;
+    vorlagenSchalter.focus();
+  }
+
+  function vorlageAbsenden(event) {
+    event.preventDefault();
+    if (laeuft) return;
+    const daten = new FormData(vorlagenFormular);
+    const felder = [
+      ["Fahrzeug", daten.get("fahrzeug")],
+      ["Baujahr/Modelljahr", daten.get("baujahr")],
+      ["THITRONIK-Produkt/Variante", daten.get("produkt")],
+      ["Seriennummer/Softwarestand", daten.get("stand")],
+      ["Einbauzeitpunkt", daten.get("einbau")],
+      ["Vorhaben/Fehlerbild", daten.get("vorhaben")]
+    ].map(([label, wert]) => [label, String(wert || "").trim()]).filter(([, wert]) => wert);
+
+    if (!felder.length) {
+      vorlagenFehler.textContent = "Bitte mindestens eine Angabe eintragen.";
+      vorlagenFehler.hidden = false;
+      vorlagenFormular.querySelector("input, textarea").focus();
+      return;
+    }
+
+    const text = "Strukturierte Fallaufnahme:\n"
+      + felder.map(([label, wert]) => "- " + label + ": " + wert).join("\n")
+      + "\n\nBitte prüfe den Fall anhand dieser Angaben und frage gezielt nach der wichtigsten fehlenden Information.";
+    vorlageSchliessen();
+    stellen(text);
   }
 
   // ------------------------------------------------------------------ Fragen -
@@ -670,6 +867,7 @@
     schalter.setAttribute("aria-expanded", "true");
     schalter.classList.add("ist-gesehen");
     try { sessionStorage.setItem(SPEICHER + "Gesehen", "1"); } catch { /* egal */ }
+    personalisieren();
     // Auf dem Telefon öffnet ein sofortiger Fokus die Tastatur und verdeckt
     // das halbe Panel, bevor man den Verlauf gesehen hat.
     if (window.matchMedia("(min-width: 641px)").matches) eingabeEl.focus();

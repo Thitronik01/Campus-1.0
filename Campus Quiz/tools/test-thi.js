@@ -578,6 +578,25 @@ function browserteilPruefen() {
   // weitergereicht, ein Verlauf in localStorage überlebte den Teilnehmer.
   pruefe("Browserteil: Verlauf in sessionStorage", quelle.includes("sessionStorage"));
   pruefe("Browserteil: kein localStorage für den Verlauf", !quelle.includes("localStorage"));
+
+  // Die strukturierte Fallaufnahme bleibt eine bewusste, sichtbare Eingabe.
+  // Profildaten werden nur aus der bereits sichtbaren Zusammenfassung gelesen
+  // und nicht automatisch in den Modellaufruf aufgenommen.
+  pruefe("Browserteil: strukturierte Fallaufnahme vorhanden",
+    quelle.includes("Mit Vorlage arbeiten") && quelle.includes("Strukturierte Fallaufnahme"));
+  pruefe("Browserteil: Vorlagenschalter prüft den sichtbaren Bereich",
+    quelle.includes("vorlagenFormular.parentElement.hidden"));
+  pruefe("Browserteil: sechs Fallfelder vorhanden",
+    ["fahrzeug", "baujahr", "produkt", "stand", "einbau", "vorhaben"]
+      .every((feld) => quelle.includes(`thi-vorlage-${feld}`)));
+  pruefe("Browserteil: Personalisierung nutzt sichtbare Teilnehmerdaten",
+    quelle.includes("participant-name") && quelle.includes("participant-meta"));
+  pruefe("Browserteil: Händlernummer wird nicht personalisiert",
+    quelle.includes("split(/,\\s*Händlernummer"));
+
+  const functionRoh = fs.readFileSync(path.join(WURZEL, "netlify", "functions", "thi.mjs"), "utf8");
+  pruefe("Systemanweisung: THI kennt seinen Namen",
+    /Dein Name ist THI/.test(functionRoh));
 }
 
 // ------------------------------------------------------------------ Lauf ---

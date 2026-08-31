@@ -165,7 +165,7 @@ Ohne `config.path` ist eine v2-Function unter dem Standardpfad
 | `public/assets/thi.js` | Schalter, Panel, Verlauf |
 | `public/assets/thi.css` | Gestaltung |
 | `tools/thi-wissen-bauen.js` | Erzeugt den Wissensbestand aus `thi-standalone/` |
-| `tools/test-thi.js` | 74 Prüfungen, ohne Schlüssel lauffähig |
+| `tools/test-thi.js` | 80 Prüfungen, ohne Schlüssel lauffähig |
 
 Die Function ist eine Netlify-Function im **v2-Format** (Web-API: Request rein,
 Response raus). Die beiden anderen Functions des Campus sind v1. Beides darf
@@ -252,7 +252,21 @@ Telefonen, für eine Funktion, die viele gar nicht öffnen.
 
 ---
 
-## Was gegenüber dem Standalone-Entwurf fehlt
+## Strukturierte Fallaufnahme und Personalisierung
+
+Über **Mit Vorlage arbeiten** öffnet THI eine optionale Fallaufnahme mit sechs
+Feldern: Fahrzeug, Baujahr oder Modelljahr, Produkt und Variante, Seriennummer
+oder Softwarestand, Einbauzeitpunkt sowie Vorhaben oder Fehlerbild. Nur
+ausgefüllte Felder werden als sichtbare Nutzernachricht in den Chat übernommen.
+Damit bleibt jederzeit nachvollziehbar, welche Angaben an THI gesendet werden.
+
+Sind Teilnehmerdaten auf der Quizseite bereits vollständig eingetragen, begrüßt
+THI die Person mit ihrem Namen und zeigt den Händlerbetrieb in der Vorlagenleiste.
+Diese Personalisierung wird ausschließlich aus der sichtbaren Zusammenfassung
+der Seite gelesen. Name, Händlerbetrieb und Händlernummer werden nicht
+automatisch an den Modelldienst übertragen.
+
+## Was gegenüber dem Standalone-Entwurf weiterhin fehlt
 
 | Weggelassen | Warum |
 |---|---|
@@ -260,7 +274,6 @@ Telefonen, für eine Funktion, die viele gar nicht öffnen.
 | Quellenliste unter der Antwort | Dasselbe: sie bestand aus Wiki-Pfaden. |
 | `app_navigieren` | Das Werkzeug sprang in Plattformbereiche (Kurse, Zertifikate, Forum), die es im Campus nicht gibt. |
 | Rollen und Anmeldung | Der Campus kennt keine Nutzer. Interne Inhalte sind stattdessen beim Bau entfernt. |
-| Strukturierte Fallaufnahme | Das Formular für Baujahr, Modell, Seriennummer. Die Systemanweisung fragt dieselben Angaben bei Bedarf im Gespräch ab — ein sechsfeldriges Formular vor der ersten Frage passt nicht zu einem Panel, das zwischendurch aufgeht. |
 
 ---
 
