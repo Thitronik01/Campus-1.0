@@ -6,8 +6,89 @@
     "bild": "Foto unter /media/betreuer/. Quadratisch, mindestens 240x240, als WebP. Wird rund beschnitten dargestellt.",
     "rolle": "Optional. Erscheint als kleine Zeile ueber dem Namen."
   },
+  "_fotos": "Erzeugt mit `node tools/betreuer-fotos.js \"../export/Bilder Thitronik Mitarbeiter\"`. Die Originale sind Querformat von der Website; das Werkzeug schneidet sie mit sharps `attention` auf 320x320, damit im runden Ausschnitt das Gesicht steht und nicht der Pullover. Wer eine Person ergaenzt, traegt sie dort UND hier ein.",
+  "_offen": "Stand 31.08.2026 — die 'koennen'-Zeilen sind aus dem Inselthema abgeleitet und redaktionell noch nicht bestaetigt. Sie sagen bisher, wofuer die Insel steht, nicht wofuer man genau diese Person anspricht. Die Schreibweisen folgen den Dateinamen der Mitarbeiterfotos, auch wo sie von der Zuruf-Liste abweichen: Mark Thitje (nicht Thietje), Carolin Kinder (nicht Caroline). RUEGEN, die Verpflegungsinsel mit Hermine Bender und Carolin Kinder, ist am 31.08.2026 vorerst aus dem Frontend genommen worden — sie steht nicht mehr in inseln.json. Ihre Fotos liegen weiter unter media/betreuer/, die Mechanik fuer Inseln ohne Wissenscheck ist vollstaendig erhalten. Wie sie zurueckkommt, steht im README unter 'Eine Insel ohne Wissenscheck'.",
 
-  "personen": {},
+  "personen": {
+    "dennis-behrendt": {
+      "name": "Dennis Behrendt",
+      "koennen": "Blinkcodes und Alarmspeicher lesen",
+      "bild": "/media/betreuer/dennis-behrendt.webp"
+    },
+    "sascha-fehlau": {
+      "name": "Sascha Fehlau",
+      "koennen": "Pro-finder, SIM und Mobilfunk",
+      "bild": "/media/betreuer/sascha-fehlau.webp"
+    },
+    "anton-passau": {
+      "name": "Anton Passau",
+      "koennen": "Einbauorte im Fahrzeug beurteilen",
+      "bild": "/media/betreuer/anton-passau.webp"
+    },
+    "steffen-kunz": {
+      "name": "Steffen Kunz",
+      "koennen": "Gas- und CO-Sensorik platzieren",
+      "bild": "/media/betreuer/steffen-kunz.webp"
+    },
+    "peer-flaig": {
+      "name": "Peer Flaig",
+      "koennen": "Fahrzeugannahme und Freigaben",
+      "bild": "/media/betreuer/peer-flaig.webp"
+    },
+    "mark-havenstein": {
+      "name": "Mark Havenstein",
+      "koennen": "Übergabe und Dokumentation",
+      "bild": "/media/betreuer/mark-havenstein.webp"
+    },
+    "julie-marier": {
+      "name": "Julie Marier",
+      "koennen": "Funk-Magnetkontakte montieren",
+      "bild": "/media/betreuer/julie-marier.webp"
+    },
+    "miriam-batliner": {
+      "name": "Miriam Batliner",
+      "koennen": "Crimpen und Abzweigverbinder",
+      "bild": "/media/betreuer/miriam-batliner.webp"
+    },
+    "emmanuel-simon": {
+      "name": "Emmanuel Simon",
+      "koennen": "Reichweite und Funkstrecke",
+      "bild": "/media/betreuer/emmanuel-simon.webp"
+    },
+    "delphine-passaret": {
+      "name": "Delphine Passaret",
+      "koennen": "Klebemontage und Untergründe",
+      "bild": "/media/betreuer/delphine-passaret.webp"
+    },
+    "thomas-schapke": {
+      "name": "Thomas Schapke",
+      "koennen": "Konfigurator und Angebotsentwurf",
+      "bild": "/media/betreuer/thomas-schapke.webp"
+    },
+    "regina-heyn": {
+      "name": "Regina Heyn",
+      "koennen": "Produkte am Display erklären",
+      "bild": "/media/betreuer/regina-heyn.webp"
+    },
+    "stephan-manns": {
+      "name": "Stephan Manns",
+      "koennen": "Händlerbereich und Produktneuheiten",
+      "bild": "/media/betreuer/stephan-manns.webp"
+    },
+    "mark-thitje": {
+      "name": "Mark Thitje",
+      "koennen": "CampLock, VanLock und Wasserschutz",
+      "bild": "/media/betreuer/mark-thitje.webp"
+    }
+  },
 
-  "inseln": {}
+  "inseln": {
+    "fehmarn": ["dennis-behrendt", "sascha-fehlau"],
+    "samsoe": ["anton-passau", "steffen-kunz"],
+    "langeland": ["peer-flaig", "mark-havenstein"],
+    "hiddensee": ["julie-marier", "miriam-batliner", "emmanuel-simon", "delphine-passaret"],
+    "usedom": ["thomas-schapke", "regina-heyn"],
+    "poel": ["stephan-manns"],
+    "vejro": ["stephan-manns", "mark-thitje"]
+  }
 }
