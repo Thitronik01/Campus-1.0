@@ -778,7 +778,7 @@ Gemessen, nicht geschätzt:
   (155 × 206 px), alle vier Bilder geladen, Großansicht als echtes Modal mit
   Fokus im Dialog, Auflösung markiert gewählt-falsch und übersehen-richtig
   getrennt, kein verschachtelter Button, Lupe 44 × 44 bei 6 % Kachelfläche
-- 69 Prüfungen für THI, darunter der komplette Modellweg gegen einen
+- 74 Prüfungen für THI, darunter der komplette Modellweg gegen einen
   nachgebildeten Anymize-Dienst — siehe [`THI.md`](THI.md)
 
 **Nicht geprüft:** echte Hardware. Getestet wurde emuliert. Offen bleibt, was

@@ -69,6 +69,22 @@ const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
 const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY || "";
 const MODELL = process.env.THI_MODEL || "anthropic/claude-sonnet-4.6";
 
+/* Zahlen aus Umgebungsvariablen nie ungeprüft übernehmen. `Number()` macht
+   aus einem Tippfehler NaN; jeder spätere Vergleich dagegen ist false und
+   würde gerade die Missbrauchsbremse lautlos abschalten. Auch Schreibweisen
+   wie "1.000" sind hier kein Tausenderwert und deshalb bewusst ungültig. */
+function positiveGanzeZahl(name, vorgabe) {
+  const roh = process.env[name];
+  if (roh === undefined || roh === "") return vorgabe;
+  const text = String(roh).trim();
+  const wert = /^\d+$/.test(text) ? Number(text) : NaN;
+  if (!Number.isSafeInteger(wert) || wert < 1) {
+    console.warn(`${name} ist ungültig; THI verwendet den Vorgabewert ${vorgabe}.`);
+    return vorgabe;
+  }
+  return wert;
+}
+
 /* Werkzeuge: THI schlägt bei Bedarf selbst nach, statt nur den vorab
    eingefügten Kontext zu nutzen. Nur bei Anymize — dort ist Function-Calling
    im Entwurf verifiziert worden. THI_TOOLS=false schaltet auf den reinen
@@ -76,7 +92,7 @@ const MODELL = process.env.THI_MODEL || "anthropic/claude-sonnet-4.6";
 const WERKZEUGE_AN =
   ANBIETER === "anymize" &&
   String(process.env.THI_TOOLS ?? "true").toLowerCase() !== "false";
-const MAX_RUNDEN = Math.max(1, Number(process.env.THI_TOOL_HOPS || 3));
+const MAX_RUNDEN = positiveGanzeZahl("THI_TOOL_HOPS", 3);
 
 /* Zeitgrenze für die Werkzeugrunden. Netlify bricht eine Function nach
    60 Sekunden ab — dann steht der Teilnehmer ohne Antwort da, obwohl das
@@ -84,7 +100,7 @@ const MAX_RUNDEN = Math.max(1, Number(process.env.THI_TOOL_HOPS || 3));
    keine weitere Werkzeugrunde mehr angeboten: das Modell muss dann mit dem
    antworten, was es hat. Lieber eine Antwort aus unvollständigem Kontext als
    ein Abbruch nach einer Minute Wartezeit. */
-const FRIST_MS = Math.max(5000, Number(process.env.THI_ZEITBUDGET_MS || 40000));
+const FRIST_MS = Math.max(5000, positiveGanzeZahl("THI_ZEITBUDGET_MS", 40000));
 
 /* Missbrauchsbremsen. Der Campus hat keine Anmeldung — ohne diese Grenzen
    wäre die Function ein offener Zugang zu einem kostenpflichtigen Modell.
@@ -95,8 +111,9 @@ const FRIST_MS = Math.max(5000, Number(process.env.THI_ZEITBUDGET_MS || 40000));
    eine entlaufene Schleife, keine belastbare Kostenobergrenze. Wer die
    braucht, setzt sie im Anymize-Konto. */
 const FENSTER_MS = 5 * 60 * 1000;
-const PRO_IP = Number(process.env.THI_RATE_LIMIT || 30);
-const PRO_TAG = Number(process.env.THI_DAILY_LIMIT || 1000);
+const PRO_IP = positiveGanzeZahl("THI_RATE_LIMIT", 30);
+const PRO_TAG = positiveGanzeZahl("THI_DAILY_LIMIT", 1000);
+const VERTRAUTE_PROXY_HOPS = positiveGanzeZahl("THI_TRUSTED_PROXIES", 1);
 const MAX_NACHRICHTEN = 24;
 const MAX_ZEICHEN = 4000;
 
@@ -462,8 +479,7 @@ function clientIp(anfrage) {
   if (xff) {
     const teile = xff.split(",").map((s) => s.trim()).filter(Boolean);
     if (teile.length) {
-      const hops = Math.max(1, Number(process.env.THI_TRUSTED_PROXIES || 1));
-      const idx = teile.length - hops;
+      const idx = teile.length - VERTRAUTE_PROXY_HOPS;
       return teile[idx >= 0 ? idx : teile.length - 1];
     }
   }
@@ -496,7 +512,10 @@ function limitGeprueft(anfrage) {
 
 function gleicheHerkunft(anfrage) {
   const herkunft = anfrage.headers.get("origin");
-  if (!herkunft) return true; // kein Origin (Tests, serverseitige Aufrufe)
+  /* Der Browser setzt Origin bei diesem POST. Fehlt der Kopf, stammt die
+     Anfrage aus keinem normalen Campus-Seitenaufruf und wird abgewiesen —
+     sonst wäre die Function per curl ein offener, kostenpflichtiger Zugang. */
+  if (!herkunft) return false;
   try {
     return new URL(herkunft).host === anfrage.headers.get("host");
   } catch {
@@ -558,10 +577,15 @@ export default async function handler(anfrage) {
   }
 
   const roh = Array.isArray(last?.nachrichten) ? last.nachrichten : [];
+  /* Nur Nutzernachrichten sind Eingabe. Antworten mit rolle:"thi" kommen
+     aus einem veränderbaren Browser-Speicher und dürfen deshalb nie wieder
+     als vertrauenswürdige assistant-Turns ans Modell gehen. Für Folgefragen
+     reichen die vorherigen Nutzerfragen; die sichtbare Unterhaltung bleibt
+     davon unberührt im Browser bestehen. */
   const nachrichten = roh
-    .filter((n) => n && (n.rolle === "nutzer" || n.rolle === "thi") && typeof n.text === "string" && n.text.trim())
+    .filter((n) => n && n.rolle === "nutzer" && typeof n.text === "string" && n.text.trim())
     .map((n) => ({
-      role: n.rolle === "nutzer" ? "user" : "assistant",
+      role: "user",
       content: n.text.length > MAX_ZEICHEN ? n.text.slice(0, MAX_ZEICHEN) : n.text
     }))
     .slice(-MAX_NACHRICHTEN);

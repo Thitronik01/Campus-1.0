@@ -70,10 +70,16 @@ Alle optional, alle mit brauchbarer Vorgabe.
 
 ### Was die Grenzen leisten — und was nicht
 
-Der Campus hat keine Anmeldung. `/.netlify/functions/thi` ist damit für jeden
-erreichbar, der die Adresse kennt. Dagegen stehen: Prüfung auf gleiche
-Herkunft, Limit pro IP, Tageslimit und Kappungen für Nachrichtenzahl und
-Länge.
+Der Campus hat keine Anmeldung. Die Function nimmt nur POST-Anfragen mit der
+exakt gleichen Herkunft wie die Campus-Seite an; ein fehlender `Origin`-Kopf
+wird ebenfalls abgewiesen. Dagegen stehen zusätzlich: Limit pro IP,
+Tageslimit und Kappungen für Nachrichtenzahl und Länge. Das ist eine wirksame
+Bremse gegen direkte Aufrufe, aber kein Ersatz für eine Anmeldung — ein
+programmatischer Client kann Herkunftsköpfe nachbilden.
+
+Zahlen in den `THI_*`-Variablen werden als positive ganze Zahlen geprüft. Bei
+einem Tippfehler fällt THI mit einer Warnung auf die Vorgabe zurück, statt ein
+Limit durch `NaN` still abzuschalten.
 
 **Das Tageslimit ist keine belastbare Kostenobergrenze.** Die Zähler liegen im
 Arbeitsspeicher der jeweiligen Function-Instanz, und Netlify startet unter Last
@@ -159,7 +165,7 @@ Ohne `config.path` ist eine v2-Function unter dem Standardpfad
 | `public/assets/thi.js` | Schalter, Panel, Verlauf |
 | `public/assets/thi.css` | Gestaltung |
 | `tools/thi-wissen-bauen.js` | Erzeugt den Wissensbestand aus `thi-standalone/` |
-| `tools/test-thi.js` | 69 Prüfungen, ohne Schlüssel lauffähig |
+| `tools/test-thi.js` | 74 Prüfungen, ohne Schlüssel lauffähig |
 
 Die Function ist eine Netlify-Function im **v2-Format** (Web-API: Request rein,
 Response raus). Die beiden anderen Functions des Campus sind v1. Beides darf
@@ -264,7 +270,7 @@ Telefonen, für eine Funktion, die viele gar nicht öffnen.
 node tools/test-thi.js
 ```
 
-69 Prüfungen, ohne API-Schlüssel lauffähig — der Modellaufruf geht gegen einen
+74 Prüfungen, ohne API-Schlüssel lauffähig — der Modellaufruf geht gegen einen
 nachgebildeten Anymize-Dienst. Damit ist der komplette Weg belegt, bevor der
 erste Schlüssel eingetragen wird:
 
@@ -272,8 +278,10 @@ erste Schlüssel eingetragen wird:
   Rohfelder der Händler-Projektion.
 - **Retrieval** — Normalisierung, Stoppwörter, Produktaliasse und acht echte
   Fragen mit dem Artikel, der treffen muss.
-- **Schutz** — ohne Schlüssel 503 mit klarer Meldung, fremde Herkunft 403, GET
-  405, leerer Verlauf 400, IP-Limit 429.
+- **Schutz** — ohne Schlüssel 503 mit klarer Meldung, fremde oder fehlende
+  Herkunft 403, GET 405, leerer Verlauf 400, IP-Limit 429, sichere Vorgaben
+  bei fehlerhaften Limits und keine ungeprüften Browser-Antworten als
+  `assistant`-Turns.
 - **Modell** — Werkzeugschleife über zwei Runden, Werkzeugergebnis als
   `user`-Nachricht (Anymize lehnt `role:"tool"` mit 400 ab), Streaming,
   Dienstfehler ohne Interna an den Browser.
@@ -324,9 +332,9 @@ Neuladen und endet mit dem Tab. „Gespräch löschen" räumt sofort auf.
 
 - **Kein Kostendeckel.** Siehe oben: die Grenzen liegen im Speicher einzelner
   Function-Instanzen. Ein harter Deckel gehört ins Anymize-Konto.
-- **Kein Zugangsschutz.** Wer die Adresse kennt, kann fragen. Solange der
-  Campus selbst offen erreichbar ist, ist das gleichauf; sobald es eine
-  Anmeldung gibt, sollte die Function sie mitprüfen.
+- **Keine Anmeldung.** Direkte Aufrufe ohne passende Herkunft werden
+  abgewiesen; eine echte Nutzerberechtigung ist das nicht. Sobald der Campus
+  eine Anmeldung erhält, muss die Function sie mitprüfen.
 - **THI läuft neben dem laufenden Wissenscheck.** Die Systemanweisung verbietet
   das Herausgeben von Lösungen, und die Fragensätze liegen nicht im
   Wissensbestand. Ein Sprachmodell ist aber keine Zugriffskontrolle: wer die
