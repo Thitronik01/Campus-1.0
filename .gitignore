@@ -66,6 +66,10 @@ desktop.ini
 # werden. Versioniert ist das ERGEBNIS unter public/media/, und darauf kommt
 # es an. Wer ein Motiv nachziehen will, braucht die Quellen ohnehin neu.
 /export/Bilder */
+# Dasselbe fuer das Asset-Pack der Campus-Karte: 28 MB PNG-Quellen, aus
+# denen tools/karten-assets.js rund 600 KB WebP macht. Versioniert ist
+# das Ergebnis unter public/media/inseln/ und public/media/campus/karte/.
+/export/thitronik_campus_asset_pack/
 
 # Ausgabe von Druck- und Ausleitungslaeufen, kein Quellmaterial.
 /Campus Quiz/output/

@@ -23,6 +23,7 @@ gebaut wurde.
 | `BILDER-WUNSCHLISTE.md` | Was an Bildern fehlt, über alle Inseln — mit Angabe, was generierbar ist und was ein echtes Foto braucht |
 | `FOTOLISTE-HIDDENSEE.md` | Dasselbe ausführlich für HIDDENSEE, mit Aufnahmehinweisen |
 | `tools/bilder-aufbereiten.js` | Rechnet Bilder auf WebP unter 150 KB um |
+| `tools/karten-assets.js` | Macht aus dem Asset-Pack die Motive der Expeditionskarte |
 | `netlify/functions/submit-quiz.js` | Bewertet serverseitig; schreibt nach Supabase oder gibt den geprüften Netlify-Forms-Ausweichweg frei |
 | `supabase_campus_quiz_migration.sql` | Tabelle und Auswertungs-Views. **Noch nicht eingespielt.** |
 | `tools/build-insel.js` | **Baut je Insel einen fertigen Netlify-Ordner.** Siehe unten. |
@@ -378,6 +379,122 @@ werden Kanten an Kabeln und Schriftzügen matschig). Braucht einmalig
 `npm install sharp --no-save`. `check-fragen.js` warnt, wenn ein Bild darüber
 liegt.
 
+### Die Expeditionskarte
+
+Die Übersicht unter `/quiz` ist keine Kachelliste mit Hintergrundbild,
+sondern eine **Bühne mit festem Seitenverhältnis**. Das ist der Unterschied,
+an dem alles andere hängt.
+
+Vorher war die Karte ein Kasten über die volle Breite mit
+`min-height: clamp(735px, 76vw, 900px)`. Gemessen ergab das auf dem iPad
+hochkant 1,0:1 und auf einem breiten Monitor 2,7:1 — dieselben
+Prozentangaben trafen also auf Verhältnisse, die um den Faktor 2,7
+auseinanderliegen. Jede Insel saß höchstens auf einer Fensterbreite richtig.
+
+Jetzt beschreibt eine Prozentangabe einen Ort auf der **Karte** statt einen
+Ort im **Fenster**:
+
+| | Verhältnis | gilt für |
+|---|---|---|
+| Querformat | 16:9 | Monitor, iPad quer |
+| Hochformat | 4:5 | iPad hochkant |
+| Liste | — | Telefon |
+
+Die Bühne erscheint ab `min-width: 700px` **und** `min-height: 560px`. Beide
+Bedingungen zusammen, weil die Breite allein zweimal daneben liegt: Ein iPad
+mini ist hochkant 744 px breit und fiel mit der alten 760-px-Grenze auf die
+Liste zurück; ein iPhone quer ist 844 px breit und bekam die Karte auf
+390 px Höhe.
+
+**Eine Insel verschieben.** Je Insel und Lage steht eine Zeile in
+`styles.css`:
+
+```css
+.island-vejro { --x: 56%; --y: 42%; --w: 19%; --karte-w: 15cqw; --karte-y: -12%; }
+```
+
+`--x`/`--y` ist der **Mittelpunkt** des Motivs, `--w` seine Breite; die Höhe
+folgt dem Seitenverhältnis des Bildes. `--karte-w` ist die Breite der
+Infokarte, `--karte-y` verschiebt sie gegen die Inselmitte.
+
+> **`--karte-y` zählt in Prozent der INSELHÖHE, nicht der Bühne.** VEJRØ ist
+> 34 % der Bühne hoch — −12 % davon sind gut 4 % Bühne. Wer hier in
+> Bühnenprozent rechnet, verschiebt ein Drittel dessen, was er meint.
+
+Alle Maße innerhalb der Bühne stehen in `cqw` (Prozent der Bühnenbreite) mit
+einer `max(…rem, …cqw)`-Untergrenze. Sonst wüchse die Schrift einer
+Infokarte weiter, während die Bühne unter ihr schrumpft, und die Karten
+stießen aneinander.
+
+**Nachmessen statt schauen.** Ob sich etwas überschneidet, beantwortet der
+Browser in einem Zug — in der Konsole auf `/quiz`:
+
+```js
+const m = document.getElementById('campus-map').getBoundingClientRect();
+const box = e => { const b = e.getBoundingClientRect(); return [
+  (b.left-m.left)/m.width*100, (b.top-m.top)/m.height*100,
+  (b.right-m.left)/m.width*100, (b.bottom-m.top)/m.height*100]; };
+const r = {};
+document.querySelectorAll('.island-map-item').forEach(li => {
+  const s = li.className.replace('island-map-item island-', '');
+  r['I '+s] = box(li.querySelector('.i-visual'));
+  r['K '+s] = box(li.querySelector('.i-content'));
+});
+const e = Object.entries(r), treffer = [];
+for (let i=0;i<e.length;i++) for (let j=i+1;j<e.length;j++) {
+  const [na,a]=e[i],[nb,b]=e[j];
+  if (na.slice(2)===nb.slice(2)) continue;
+  const ox=Math.min(a[2],b[2])-Math.max(a[0],b[0]);
+  const oy=Math.min(a[3],b[3])-Math.max(a[1],b[1]);
+  if (ox>0.3 && oy>0.3) treffer.push(`${na} x ${nb}`);
+}
+treffer;
+```
+
+**Die Routen** zeichnet die Engine, nicht das HTML: `updateCampusRoutes()`
+misst die Stationspunkte — das sind die kleinen Ringe an den Infokarten,
+Pseudoelemente von `.i-content` — und legt einen Bogen dazwischen.
+`ROUTEN_BOGEN` gibt je Route an, wie weit er sich wölbt, als **Anteil der
+Streckenlänge**. Vorher standen dort 28 feste Kontrollpunkte, die zu genau
+einer Anordnung passten; ein Anteil überlebt jedes Verschieben. Der
+`viewBox` wird auf die gemessene Bühne gesetzt, damit eine Benutzereinheit
+ein Pixel ist und die Pfeilspitzen in beiden Formaten stimmen.
+
+### Die Motive der Karte
+
+```bash
+node tools/karten-assets.js
+```
+
+Quelle ist das Asset-Pack unter
+`export/thitronik_campus_asset_pack/thitronik_campus_asset_pack/` — 28 MB
+PNG, **nicht versioniert** (siehe `.gitignore`, gleiche Begründung wie bei
+`export/Bilder <Insel>/`). Ziel sind die sieben Inselmotive in
+`public/media/inseln/` und die Kartendeko in `public/media/campus/karte/`.
+Zusammen rund 620 KB.
+
+Zwei Dinge macht das Werkzeug, die Kopieren von Hand nicht macht:
+
+1. **Zuschnitt.** Alle Inseln liegen als 1254×1254-Quadrate vor, das Motiv
+   füllt davon zwischen 39 % und 78 % der Breite. USEDOM ist real 587×1249.
+   Ohne Zuschnitt positioniert `--x`/`--y` nicht die Insel, sondern
+   transparente Luft.
+2. **Größe nach der langen Kante**, nicht nach der Breite. FEHMARN ist quer
+   (1230×839), HIDDENSEE hochkant (613×1232). Nach Breite skaliert käme
+   Hiddensee auf 1250 px Höhe für ein Motiv, das auf der Karte 8 % breit ist.
+
+Am Ende druckt es `imageBreite`/`imageHoehe` je Insel. Die gehören nach
+`public/data/inseln.json`: Auf der Bühne zieht das Motiv seine Höhe aus dem
+Seitenverhältnis, ohne die Angaben ist der Kasten bis zum Laden 0 hoch — und
+die Routen, die an den Stationspunkten hängen, würden einmal falsch
+gezeichnet.
+
+**Die Deko lädt das Telefon nicht.** Kompass, Boote, Wal, Möwen und Wellen
+sind leere Elemente mit CSS-Hintergrund, deklariert ausschließlich in der
+Medienabfrage der Bühne. Hintergründe einer nicht passenden Abfrage holt der
+Browser gar nicht erst. Ein ausgeblendetes `<img>` hätte er geladen — das
+Telefon zahlte 166 KB für Möwen, die es nie zeigt.
+
 ### Was vor dem Start steht
 
 Der Startbildschirm nennt in dieser Reihenfolge: Anzahl der Fragen,
@@ -489,14 +606,26 @@ verspricht ein Quiz, das es nicht gibt. Ein Aufruf von `/quiz/<slug>`
 landet auf der Übersicht statt auf einer Fehlermeldung.
 
 Die Silhouette erzeugt `tools/ruegen-silhouette.js` — die übrigen sieben
-Motive sind gezeichnet, für Rügen gab es keins. Sie ist eng auf die Kontur
-zugeschnitten, weil Rügen in der schmalsten Kachel der Karte sitzt: In der
-Ecke oben links steht die Überschrift „Deine Schulungsexpedition"
-(gemessen 0–36 % Breite, 0–30 % Höhe), frei ist allein unten rechts.
+Motive sind gezeichnet, für Rügen gab es keins.
 
-**Rügen zurückholen** — die Kachelposition steht als `.island-ruegen` in
-`styles.css`, das Motiv liegt unter `public/media/inseln/ruegen.webp`, die
-Fotos unter `public/media/betreuer/`. Es fehlen nur zwei Einträge.
+> **Vor dem Wiedereinbau fehlt ein Motiv.** Seit dem Umbau der Karte sind
+> die sieben Lerninseln isometrische Dioramen aus dem Asset-Pack. Die flache
+> Silhouette von Rügen steht daneben wie ein Platzhalter — auf dem hellen
+> Seegrund ist sie kaum zu sehen. Ein achtes Motiv im selben Stil erzeugt
+> man mit `05_prompts/ISLAND_PROMPT_TEMPLATE.md` aus dem Pack und schickt es
+> anschließend durch `tools/karten-assets.js` (Eintrag in `INSELN`
+> ergänzen).
+
+**Rügen zurückholen** — die Position steht als `.island-ruegen` in
+`styles.css`, in beiden Anordnungen: quer im freien Wasser oben rechts
+zwischen der Infokarte von SAMSØ und der Kompassrose, hochkant links unten
+zwischen den Infokarten von USEDOM und LANGELAND. Als einzige Station hängt
+die Kachel **unter** dem Motiv statt daneben: Statt eines
+Fortschrittsbalkens stehen dort zwei Namen mit Foto, und die brechen in
+einer Karte von 16 % Bühnenbreite unbrauchbar um.
+
+Das Motiv liegt unter `public/media/inseln/ruegen.webp`, die Fotos unter
+`public/media/betreuer/`. Es fehlen nur zwei Einträge.
 
 In `public/data/inseln.json` als letzte Insel:
 
@@ -509,6 +638,8 @@ In `public/data/inseln.json` als letzte Insel:
   "thema": "Pause, Essen & Tagesablauf",
   "beschreibung": "Die Versorgungsinsel der Expedition. Kein Wissenscheck - hier gibt es Kaffee, Essen und Auskunft zum Tagesablauf.",
   "image": "/media/inseln/ruegen.webp",
+  "imageBreite": 908,
+  "imageHoehe": 716,
   "wissenscheck": false
 }
 ```
@@ -568,6 +699,20 @@ Zusätzlich: Eintrag in `public/data/inseln.json`, eine `require()`-Zeile in
 `netlify/functions/submit-quiz.js`, und der Insel-Schlüssel muss in den
 `check`-Constraint der Tabelle. `check-fragen.js` meldet die vergessene
 `require()`-Zeile.
+
+Für die Karte kommt dreierlei dazu, und keins davon meldet eine Prüfung:
+
+1. **Ein Motiv** im Stil des Asset-Packs, aufbereitet über
+   `tools/karten-assets.js` (Eintrag in dessen `INSELN`).
+2. **`imageBreite`/`imageHoehe`** im Katalog — das Werkzeug druckt sie.
+3. **Eine Position je Lage** in `styles.css`, quer und hoch, plus die Seite,
+   auf der die Infokarte hängt (die beiden Gruppen „Karte rechts/links der
+   Insel"). Wer sie vergisst, sieht es: Ohne `--x`/`--y` landet die Station
+   mitten auf der Bühne über allen anderen. Danach mit dem
+   Überschneidungs-Schnipsel aus „Die Expeditionskarte" nachmessen.
+
+Soll die Insel Teil der Reiseroute werden, gehört sie außerdem in
+`CAMPUS_ROUTES` und `ROUTEN_BOGEN` in `engine.js`.
 
 ---
 

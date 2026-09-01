@@ -417,7 +417,20 @@ main { flex: 1 0 auto; }
 .lead { max-width: 62ch; color: var(--th-muted); font-size: 1.02rem; }
 
 
-/* --------------------------------------------------------- Inselauswahl --- */
+/* --------------------------------------------------------- Inselauswahl ---
+
+   Die Auswahl gibt es in zwei Fassungen, und die Grenze laeuft nicht allein
+   ueber die Breite:
+
+   LISTE  — Kacheln untereinander, volle Trefferbreite. Das Telefon.
+   BUEHNE — die Expeditionskarte mit Seegrund, Inselmotiven und Routen.
+
+   Warum Breite UND Hoehe entscheiden: Die alte Grenze war `min-width: 760px`
+   allein. Ein iPad mini ist hochkant 744 px breit und fiel damit auf die
+   Liste zurueck — ausgerechnet das Geraet, fuer das die Karte gedacht ist.
+   Ein iPhone quer ist 844 px breit und bekam die Buehne auf 390 px Hoehe.
+   `min-width: 700px` zusammen mit `min-height: 560px` trifft jedes iPad in
+   beiden Lagen und kein Telefon in keiner. */
 
 #screen-islands {
   position: relative;
@@ -428,12 +441,8 @@ main { flex: 1 0 auto; }
 .campus-map {
   position: relative;
   isolation: isolate;
-  min-height: 100%;
   overflow: hidden;
-  background:
-    linear-gradient(rgba(246, 250, 252, .08), rgba(246, 250, 252, .08)),
-    url("/media/campus/campus-hintergrund-v1.webp") center / cover no-repeat,
-    #F6FAFC;
+  background: #F6FAFC;
 }
 
 .island-intro {
@@ -451,8 +460,13 @@ main { flex: 1 0 auto; }
 
 .island-intro .lead { margin-bottom: 0; text-wrap: pretty; }
 
+/* Ohne Buehne gibt es weder Routen noch Deko. Bei der Deko traegt das
+   doppelt: Es sind leere Elemente mit CSS-Hintergrund, und Hintergruende
+   einer nicht passenden Medienabfrage holt der Browser gar nicht erst. Ein
+   ausgeblendetes <img> haette er geladen — das Telefon zahlte 166 KB fuer
+   Moewen, die es nie zeigt. */
 .campus-map-art,
-.map-compass { display: none; }
+.map-deko { display: none; }
 
 .island-map {
   display: grid;
@@ -557,7 +571,7 @@ main { flex: 1 0 auto; }
 .island-card {
   position: relative;
   display: grid;
-  grid-template-columns: 108px minmax(0, 1fr);
+  grid-template-columns: 120px minmax(0, 1fr);
   gap: 14px;
   width: 100%;
   min-height: 168px;
@@ -585,10 +599,8 @@ main { flex: 1 0 auto; }
   position: relative;
   display: grid;
   place-items: center;
-  min-height: 146px;
-  padding: 12px;
-  align-items: center;
-  justify-content: center;
+  min-height: 150px;
+  padding: 10px;
   overflow: visible;
   border-radius: var(--radius-md);
   background:
@@ -781,21 +793,98 @@ main { flex: 1 0 auto; }
 .island-card.is-warten { border-color: var(--th-blue); background: linear-gradient(180deg, var(--th-white), #F1F8FC); }
 .island-card.is-warten .i-state { color: var(--th-blue-text); }
 
-@media (min-width: 760px) {
-  .campus-map { min-height: clamp(735px, 76vw, 900px); }
-  .island-intro {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 36%;
-    padding: clamp(26px, 4vw, 48px);
+
+/* ========================== Die Expeditionskarte ==========================
+
+   Die Bühne hat ein FESTES SEITENVERHÄLTNIS. Das ist der Kern des Umbaus.
+
+   Vorher war sie ein Kasten mit `min-height: clamp(735px, 76vw, 900px)` bei
+   voller Breite. Gemessen ergab das auf dem iPad hochkant 1,0:1 und auf
+   einem breiten Monitor 2,7:1 — dieselben Prozentangaben trafen also auf
+   Verhältnisse, die um den Faktor 2,7 auseinanderliegen. Jede Position war
+   höchstens auf einer Fensterbreite richtig; auf allen anderen lief der
+   Archipel auseinander.
+
+   Mit festem Verhältnis beschreibt eine Prozentangabe einen Ort auf der
+   KARTE statt einen Ort im FENSTER. Zwei Verhältnisse gibt es trotzdem,
+   weil ein iPad hochkant kein Querformat ist: 16:9 quer, 1:1 hoch. Jede
+   Lage hat weiter unten ihre eigene Anordnung.
+   ========================================================================= */
+
+@media (min-width: 700px) and (min-height: 560px) {
+  #screen-islands { border-color: rgba(140, 176, 201, .75); background: #CFE6F4; }
+
+  .campus-map {
+    /* Das Verhältnis steht in einer Variablen, weil es zweimal gebraucht
+       wird: einmal für aspect-ratio, einmal in der Breitenrechnung. */
+    --karte-ar: 16 / 9;
+    /* Abstand Insel → Infokarte. Er ist zugleich die Länge des
+       Verbindungsstrichs, damit beides nie auseinanderläuft. */
+    --karte-x: 2.6cqw;
+    --karte-w: 16cqw;
+    --karte-y: 0%;
+
+    /* Breite und Höhe zugleich begrenzt: Ohne den Höhenanteil ragt die
+       Karte auf einem 16:9-Monitor unter den Falz, und die untere
+       Inselreihe findet niemand.
+
+       125dvh statt 100dvh, weil `body { zoom: .8 }` dazwischenliegt.
+       Nachgemessen: Bei 1180 px Fensterhöhe liefert 100dvh hier 1180
+       Layout-Einheiten, die als 944 Bildschirmpixel ankommen — sichtbar
+       sind also 80 %. 100/0,8 = 125. Dieselbe Rechnung steht in .shell. */
+    width: min(100%, (125dvh - 200px) * var(--karte-ar));
+    aspect-ratio: var(--karte-ar);
+    margin-inline: auto;
+
+    /* Alles auf der Bühne bemisst sich an IHRER Breite (cqw), nicht am
+       Fenster. Sonst wüchse die Schrift einer Infokarte weiter, während die
+       Bühne unter ihr schrumpft — und die Karten stießen aneinander. Ein
+       `max(…rem, …cqw)` je Angabe hält die Untergrenze lesbar. */
+    container-type: inline-size;
+
+    background:
+      url("/media/campus/karte/see.webp") center / cover no-repeat,
+      #CFE6F4;
   }
-  .island-intro h1 { font-size: clamp(1.65rem, 2.6vw, 2.65rem); }
-  .island-intro .lead { max-width: 31ch; font-size: clamp(.88rem, 1.25vw, 1.02rem); }
+
+  /* ------------------------------------------------------------ Intro --- */
+
+  .campus-map .island-intro {
+    position: absolute;
+    z-index: 4;
+    left: 2.6cqw;
+    top: 3cqw;
+    width: 24cqw;
+    padding: 2cqw 2.2cqw;
+    border: 1px solid rgba(255, 255, 255, .85);
+    border-radius: 1.1cqw;
+    background: rgba(255, 255, 255, .93);
+    box-shadow: 0 1.1cqw 2.8cqw rgba(10, 39, 71, .16);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  .campus-map .island-intro .kicker {
+    min-height: 0;
+    margin-bottom: 1cqw;
+    padding: .45cqw 1cqw;
+    font-size: max(.6rem, .76cqw);
+  }
+  .campus-map .island-intro h1 {
+    max-width: none;
+    margin: 0 0 .8cqw;
+    font-size: max(1.05rem, 2.05cqw);
+  }
+  .campus-map .island-intro .lead {
+    max-width: none;
+    font-size: max(.74rem, 1.02cqw);
+    line-height: 1.42;
+  }
+
+  /* ----------------------------------------------------------- Routen --- */
 
   .campus-map-art {
     position: absolute;
-    z-index: 0;
+    z-index: 1;
     inset: 0;
     display: block;
     width: 100%;
@@ -804,52 +893,119 @@ main { flex: 1 0 auto; }
   }
   .campus-routes {
     fill: none;
-    stroke: var(--th-blue);
-    stroke-width: 1.7;
-    stroke-dasharray: 7 9;
+    stroke: var(--th-navy);
+    stroke-width: 2;
+    stroke-dasharray: 8 9;
     stroke-linecap: round;
-    opacity: 1;
   }
   .campus-routes path {
     marker-end: url(#route-arrow);
-    opacity: .82;
+    opacity: .62;
+    /* Ohne das skaliert der Strich mit der Bühne mit und wird auf einem
+       kleinen Fenster zum Haar, auf einem großen zum Balken. */
     vector-effect: non-scaling-stroke;
-    filter: drop-shadow(0 1px 0 rgba(246, 250, 252, .95));
     transition:
       opacity var(--duration-fast) ease,
       stroke-width var(--duration-fast) var(--ease-out);
   }
-  .campus-map.has-route-focus .campus-routes path { opacity: .24; }
+  .campus-map.has-route-focus .campus-routes path { opacity: .16; }
   .campus-map.has-route-focus .campus-routes path.is-route-focus {
-    stroke-width: 2.35;
+    stroke-width: 2.8;
     opacity: 1;
   }
-  .campus-map-art marker path { fill: var(--th-blue); }
-  .sea-waves {
-    fill: none;
-    stroke: #A9D2E6;
-    stroke-width: 1.5;
-    opacity: .72;
-  }
-  .map-compass {
+  .campus-map-art marker path { fill: var(--th-navy); }
+
+  /* ------------------------------------------------------------- Deko --- */
+
+  .map-deko {
     position: absolute;
     z-index: 1;
-    top: clamp(28px, 3.8vw, 44px);
-    right: clamp(28px, 3.8vw, 48px);
+    inset: 0;
     display: block;
-    width: clamp(136px, 11vw, 180px);
-    height: auto;
-    opacity: .88;
     pointer-events: none;
-    filter: drop-shadow(0 5px 9px rgba(10, 39, 71, .1));
+  }
+  /* Langschreibweise, nicht die Kurzform `background`: Die Kurzform setzt
+     background-image zurueck, und weil `.map-deko span` spezifischer ist
+     als `.deko-kompass`, haette sie jedes Motiv wieder geloescht. */
+  .map-deko span {
+    position: absolute;
+    display: block;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+  .deko-kompass {
+    right: 2.4cqw;
+    top: 2.8cqw;
+    width: 10.5cqw;
+    aspect-ratio: 300 / 296;
+    background-image: url("/media/campus/karte/kompass.webp");
+    opacity: .92;
+  }
+  .deko-boot {
+    width: 6cqw;
+    aspect-ratio: 319 / 420;
+    background-image: url("/media/campus/karte/segelboot.webp");
+  }
+  .deko-boot-a { left: 66%; top: 6%; }
+  .deko-boot-b { left: 46%; top: 64%; }
+  .deko-wal {
+    left: 36%;
+    top: 27%;
+    width: 7.5cqw;
+    aspect-ratio: 420 / 336;
+    background-image: url("/media/campus/karte/wal.webp");
+  }
+  .deko-moewen {
+    width: 6.5cqw;
+    aspect-ratio: 420 / 207;
+    background-image: url("/media/campus/karte/moewen.webp");
+  }
+  .deko-moewen-a { left: 59%; top: 4%; }
+  .deko-moewen-b { left: 87%; top: 33%; }
+  .deko-wellen {
+    width: 7cqw;
+    aspect-ratio: 520 / 294;
+    background-image: url("/media/campus/karte/wellen.webp");
+    opacity: .85;
+  }
+  .deko-wellen-a { left: 6%; top: 57%; }
+  .deko-wellen-b { left: 89%; top: 84%; }
+  .deko-wellen-c { left: 41%; top: 93%; }
+
+  /* --------------------------------------------------------- Stationen --- */
+
+  .island-map {
+    position: absolute;
+    z-index: 2;
+    inset: 0;
+    display: block;
+    padding: 0;
   }
 
-  .island-map { position: absolute; z-index: 2; inset: 0; display: block; padding: 0; }
-  .island-map-item { position: absolute; }
+  /* Jede Station steht mit ihrem MITTELPUNKT auf --x/--y und ist --w breit;
+     die Höhe folgt dem Seitenverhältnis des Motivs.
+
+     Vorher hatte der Kasten Breite UND Höhe in Prozent und darin ein
+     `object-fit: contain`. Positioniert wurde damit nicht das Motiv,
+     sondern der Kasten darum — wo die Insel darin lag, entschied ihr
+     Zuschnitt, und jede Angabe war eine Näherung. Jetzt sind die Motive
+     zugeschnitten (tools/karten-assets.js) und --x/--y meinen die Insel. */
+  /* Die Rückfallwerte sind Absicht: Eine Insel, für die unten keine
+     Position steht, landet mitten auf der Bühne über allen anderen. Ohne
+     sie fielen left/top/width auf `auto` zurück und die Station stünde
+     irgendwo am Rand — falsch, aber unauffällig falsch. */
+  .island-map-item {
+    position: absolute;
+    left: var(--x, 50%);
+    top: var(--y, 50%);
+    width: var(--w, 14%);
+    transform: translate(-50%, -50%);
+  }
+
   .island-card {
     display: block;
     width: 100%;
-    height: 100%;
     min-height: 0;
     padding: 0;
     overflow: visible;
@@ -862,32 +1018,47 @@ main { flex: 1 0 auto; }
   .island-card:focus-visible .i-content { outline: 3px solid var(--th-navy); outline-offset: 3px; }
   .island-card.is-done,
   .island-card.is-warten { border: 0; background: transparent; }
+
   .island-card .i-visual {
-    position: absolute;
+    position: static;
+    display: block;
     min-height: 0;
     padding: 0;
     border-radius: 0;
-    background: transparent;
+    background: none;
   }
+  /* height:auto statt contain: Der Kasten IST das Motiv. Die
+     width/height-Attribute am <img> kommen aus dem Katalog, damit die
+     Fläche schon vor dem Laden stimmt und nichts nachrutscht. */
   .island-card .i-visual img {
-    filter: drop-shadow(0 8px 8px rgba(10, 39, 71, .23));
+    width: 100%;
+    height: auto;
+    object-fit: fill;
+    filter: drop-shadow(0 .8cqw .8cqw rgba(10, 39, 71, .22));
     transition:
       filter var(--duration-fast) ease,
       transform var(--duration-fast) var(--ease-out);
   }
+
+  /* Die Infokarte hängt neben der Insel. Ihre Breite muss in cqw stehen,
+     nicht in Prozent: Prozent bezöge sich auf die Insel, und dann wäre die
+     Karte an HIDDENSEE halb so breit wie an VEJRØ. */
   .island-card .i-content {
     position: absolute;
     z-index: 2;
+    top: calc(50% + var(--karte-y));
     display: flex;
     justify-content: flex-start;
-    gap: 5px;
-    padding: clamp(10px, 1.25vw, 15px);
-    border: 1px solid var(--th-line-strong);
-    border-radius: 12px;
+    gap: .5cqw;
+    width: var(--karte-w);
+    padding: 1.1cqw 1.3cqw;
+    border: 1px solid rgba(160, 182, 202, .9);
+    border-radius: .9cqw;
     background: rgba(255, 255, 255, .95);
-    box-shadow: 0 9px 22px rgba(10, 39, 71, .14), inset 0 1px 0 rgba(255, 255, 255, .85);
+    box-shadow: 0 .8cqw 2cqw rgba(10, 39, 71, .17), inset 0 1px 0 rgba(255, 255, 255, .85);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
+    transform: translateY(-50%);
     transition:
       border-color var(--duration-fast) ease,
       box-shadow var(--duration-fast) ease,
@@ -895,112 +1066,59 @@ main { flex: 1 0 auto; }
   }
   .island-card.is-done .i-content { border-color: #8DAA17; background: rgba(255, 255, 255, .97); }
   .island-card.is-warten .i-content { border-color: var(--th-blue); background: rgba(255, 255, 255, .97); }
-  .island-card .i-code {
-    font-size: clamp(.64rem, .78vw, .72rem);
-    letter-spacing: .1em;
-  }
-  .island-card .i-title { font-size: clamp(.92rem, 1.22vw, 1.06rem); }
+
+  .island-card .i-code { font-size: max(.6rem, .8cqw); letter-spacing: .1em; }
+  .island-card .i-title { font-size: max(.84rem, 1.2cqw); line-height: 1.14; }
   .island-card .i-desc { display: none; }
   .island-card .i-state {
-    font-size: clamp(.7rem, .86vw, .78rem);
+    gap: .5cqw;
+    margin-top: .2cqw;
+    font-size: max(.68rem, .9cqw);
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
+  }
+  .island-card .i-state::before {
+    width: max(8px, .78cqw);
+    height: max(8px, .78cqw);
   }
   .island-card.is-warten .i-state {
     align-items: flex-start;
     white-space: normal;
     text-wrap: balance;
   }
-  .island-card.is-warten .i-state::before { margin-top: 4px; }
+  .island-card.is-warten .i-state::before { margin-top: .3cqw; }
+  .i-score { height: max(5px, .48cqw); }
   .island-card .i-open { display: none; }
 
-  .island-samsoe { left: 38%; top: 2%; width: 27%; height: 23%; }
-  .island-samsoe .i-visual { left: 0; top: 0; width: 45%; height: 100%; }
-  .island-samsoe .i-content { left: 30%; top: 29%; width: 64%; }
+  /* ------------------------------------------- Anschluss an die Insel ---
 
-  .island-vejro { left: 50%; top: 20%; width: 31%; height: 21%; }
-  .island-vejro .i-visual { left: 0; top: 25%; width: 43%; height: 75%; }
-  .island-vejro .i-content { left: 27%; top: 40%; width: 63%; }
-
-  .island-fehmarn { left: 8%; top: 29%; width: 32%; height: 25%; }
-  .island-fehmarn .i-visual { left: 47%; top: 4%; width: 53%; height: 96%; }
-  .island-fehmarn .i-content { left: 0; top: 29%; width: 47%; }
-
-  /* Usedom bleibt als eigene Station oberhalb von Poel. Die kompaktere
-     Silhouette verhindert, dass beide Inselmotive optisch ineinanderlaufen. */
-  .island-usedom { left: 27%; top: 45%; width: 34%; height: 21%; }
-  .island-usedom .i-visual { left: 43%; top: -4%; width: 53%; height: 94%; }
-  .island-usedom .i-content { left: 4%; top: 24%; width: 48%; }
-
-  .island-hiddensee { left: 70%; top: 33%; width: 29%; height: 38%; }
-  .island-hiddensee .i-visual {
-    left: 0;
-    top: 0;
-    width: 46%;
-    height: 100%;
-    transform: scale(1.2);
-  }
-  .island-hiddensee .i-content { left: 34%; top: 34%; width: 66%; }
-
-  .island-langeland { left: 11%; top: 68%; width: 33%; height: 26%; }
-  .island-langeland .i-visual {
-    left: 36%;
-    top: 0;
-    width: 43%;
-    height: 100%;
-    transform: scale(1.24);
-  }
-  .island-langeland .i-content { left: 0; top: 28%; width: 49%; }
-
-  .island-poel { left: 48%; top: 70%; width: 31%; height: 23%; }
-  .island-poel .i-visual { left: 0; top: 0; width: 55%; height: 100%; }
-  .island-poel .i-content { left: 43%; top: 31%; width: 55%; }
-
-  /* Rügen ist die Verpflegungsinsel und liegt bewusst abseits des Rings,
-     den die sieben Lerninseln bilden.
-
-     Die Ecke oben links sieht auf der Karte leer aus, ist es aber nicht:
-     Dort steht die Ueberschrift „Deine Schulungsexpedition" (.screen-head,
-     gemessen 0-36 % Breite und 0-30 % Hoehe). Eine Kachel dort laeuft
-     mitten durch den Titel. Frei ist allein die Ecke rechts unten —
-     Hiddensee endet bei 71 % Hoehe, Poel bei 79 % Breite.
-
-     Die bleibt schmal, deshalb hier als einzige Station Motiv ueber Text
-     statt nebeneinander: 19 % Kartenbreite sind rund 240 px, und darin
-     brechen zwei Betreuernamen neben einer Silhouette unbrauchbar um. */
-  .island-ruegen { left: 80%; top: 72%; width: 19%; height: 26%; }
-  .island-ruegen .i-visual { left: 0; top: 0; width: 100%; height: 44%; }
-  .island-ruegen .i-content { left: 0; top: 44%; width: 100%; }
-
-  .island-samsoe .i-content::after,
-  .island-vejro .i-content::after,
-  .island-hiddensee .i-content::after,
-  .island-poel .i-content::after,
-  .island-fehmarn .i-content::after,
-  .island-usedom .i-content::after,
-  .island-langeland .i-content::after {
+     Strich und Punkt sind ein Pseudoelement-Paar an der Infokarte. Der
+     Punkt ist zugleich der Stationspunkt, an dem die Engine die Routen
+     ansetzt (campusAnchor in engine.js) — er darf deshalb nicht
+     verschwinden, auch wenn er nur wie Zierde aussieht. */
+  .island-card .i-content::after {
     content: "";
     position: absolute;
     top: 50%;
-    width: clamp(14px, 2.6vw, 38px);
-    border-top: 1px solid #7890A7;
+    width: var(--karte-x);
+    border-top: 1px solid #56708C;
   }
-  .island-samsoe .i-content::before,
-  .island-vejro .i-content::before,
-  .island-hiddensee .i-content::before,
-  .island-poel .i-content::before,
-  .island-fehmarn .i-content::before,
-  .island-usedom .i-content::before,
-  .island-langeland .i-content::before {
+  .island-card .i-content::before {
     content: "";
     position: absolute;
-    top: calc(50% - 4px);
-    width: 8px;
-    height: 8px;
-    border: 2px solid #56708C;
+    top: calc(50% - max(4px, .42cqw));
+    width: max(8px, .84cqw);
+    height: max(8px, .84cqw);
+    border: max(2px, .2cqw) solid #24507A;
     border-radius: 50%;
     background: #F6FAFC;
   }
+
+  /* Karte rechts der Insel — Anschluss zeigt nach links. */
+  .island-samsoe .i-content,
+  .island-vejro .i-content,
+  .island-hiddensee .i-content,
+  .island-poel .i-content { left: calc(100% + var(--karte-x)); }
   .island-samsoe .i-content::after,
   .island-vejro .i-content::after,
   .island-hiddensee .i-content::after,
@@ -1008,25 +1126,157 @@ main { flex: 1 0 auto; }
   .island-samsoe .i-content::before,
   .island-vejro .i-content::before,
   .island-hiddensee .i-content::before,
-  .island-poel .i-content::before { right: calc(100% + clamp(10px, 2.6vw, 34px)); }
+  .island-poel .i-content::before { right: calc(100% + var(--karte-x) - max(4px, .42cqw)); }
+
+  /* Karte links der Insel — Anschluss zeigt nach rechts. */
+  .island-fehmarn .i-content,
+  .island-usedom .i-content,
+  .island-langeland .i-content { right: calc(100% + var(--karte-x)); }
   .island-fehmarn .i-content::after,
   .island-usedom .i-content::after,
   .island-langeland .i-content::after { left: 100%; }
   .island-fehmarn .i-content::before,
   .island-usedom .i-content::before,
-  .island-langeland .i-content::before { left: calc(100% + clamp(10px, 2.6vw, 34px)); }
+  .island-langeland .i-content::before { left: calc(100% + var(--karte-x) - max(4px, .42cqw)); }
 
-  /* Samsø ist deutlich schmaler als die übrigen Silhouetten. Der allgemeine
-     Verbinder schob den Anker bis auf die linke Inselseite. Ein kurzer,
-     eigener Anschluss hält den Punkt an der Box-/Inselkante. */
-  .island-samsoe .i-content::after { width: 8px; }
-  .island-samsoe .i-content::before { right: calc(100% + 4px); }
+  /* ------------------------------------------ Anordnung im Querformat ---
+
+     --x/--y ist der Mittelpunkt der Insel, --w ihre Breite, beides in
+     Prozent der Bühne. --karte-y verschiebt die Infokarte gegen die
+     Inselmitte, wo sie sonst an einem Nachbarn hängt.
+
+     ACHTUNG bei --karte-y: Der Wert liegt auf `top` der Infokarte und
+     zählt deshalb in Prozent der INSELHÖHE, nicht der Bühne. Bei VEJRØ
+     sind das zwei sehr verschiedene Dinge — die Insel ist 34 % der Bühne
+     hoch, −20 % davon sind also nur 7 % Bühne. Wer hier in Bühnenprozent
+     rechnet, verschiebt ein Drittel dessen, was er meint. */
+  /* ------------------------------------------------ Verpflegungsinsel ---
+
+     RÜGEN ruht: Es steht nicht in inseln.json und wird deshalb nicht
+     gezeichnet. Die Angaben bleiben trotzdem hier, damit der Wiedereinbau
+     zwei JSON-Eintraege bleibt und kein zweites Tagesprojekt wird — so war
+     die Mechanik gemeint, als sie gebaut wurde.
+
+     Anders als die sieben Lerninseln haengt die Kachel UNTER dem Motiv,
+     nicht daneben: Statt eines Fortschrittsbalkens stehen dort zwei Namen
+     mit Foto, und die brechen in einer Karte von 16 % Buehnenbreite
+     unbrauchbar um.
+
+     Der Platz ist die freie Wasserflaeche oben rechts, zwischen der
+     Infokarte von SAMSØ (endet bei 64 %) und der Kompassrose (beginnt bei
+     87 %). Sie liegt ausserhalb des Rings, den die sieben Lerninseln
+     bilden — genau dort, wo eine Station ohne Wissenscheck hingehoert.
+
+     OFFEN: Das Motiv ist noch die flache Silhouette aus
+     tools/ruegen-silhouette.js. Neben sieben isometrischen Dioramen faellt
+     sie auf. Vor dem Wiedereinbau gehoert ein achtes Motiv im Stil des
+     Asset-Packs dazu (05_prompts/ISLAND_PROMPT_TEMPLATE.md). */
+  .island-ruegen { --x: 74%; --y: 9%; --w: 7%; --karte-w: 16cqw; }
+  .island-ruegen .i-content {
+    left: 50%;
+    right: auto;
+    top: calc(100% + var(--karte-x));
+    transform: translateX(-50%);
+  }
+  /* Der Anschluss steht hier senkrecht: von der Oberkante der Kachel
+     hinauf zur Unterkante des Motivs. */
+  .island-ruegen .i-content::after {
+    left: 50%;
+    right: auto;
+    top: auto;
+    bottom: 100%;
+    width: 0;
+    height: var(--karte-x);
+    border-top: 0;
+    border-left: 1px solid #56708C;
+  }
+  .island-ruegen .i-content::before {
+    left: calc(50% - max(4px, .42cqw));
+    right: auto;
+    top: calc(-1 * var(--karte-x) - max(4px, .42cqw));
+  }
+  .island-ruegen .i-desc { display: none; }
+
+  /* Die Betreuungsreihe skaliert mit der Buehne wie alles andere auch. */
+  .i-crew { gap: .5cqw 1.2cqw; margin-top: .4cqw; }
+  .i-crew-bild {
+    width: max(20px, 1.9cqw);
+    height: max(20px, 1.9cqw);
+  }
+  .i-crew-name { font-size: max(.64rem, .88cqw); }
+
+  .island-samsoe    { --x: 39%; --y: 16%; --w: 12%; }
+  .island-fehmarn   { --x: 28%; --y: 41%; --w: 16%; }
+  .island-vejro     { --x: 56%; --y: 42%; --w: 19%; --karte-w: 15cqw; --karte-y: -12%; }
+  .island-hiddensee { --x: 80%; --y: 62%; --w: 8%;  --karte-w: 13cqw; --karte-x: 2.2cqw; }
+  .island-usedom    { --x: 36%; --y: 68%; --w: 9%;  --karte-y: -24%; }
+  .island-poel      { --x: 62%; --y: 79%; --w: 16%; --karte-y: 18%; }
+  .island-langeland { --x: 26%; --y: 82%; --w: 9%;  }
 }
 
-/* Auf hohen Browserfenstern nutzt die Expeditionskarte den vorhandenen Raum,
-   ohne die bewährten Proportionen auf typischen Querformaten zu verändern. */
-@media (min-width: 760px) and (min-height: 1000px) {
-  .campus-map { min-height: min(calc(100dvh - 170px), 1000px); }
+/* ------------------------------------------- Anordnung im Hochformat ---
+
+   Ein iPad hochkant ist kein schmales Querformat. Der Archipel bekommt
+   hier eine eigene Anordnung auf einer Bühne im Verhältnis 4:5 — bei
+   1000 px Bühnenbreite also 1250 px hoch, was auf einem iPad hochkant
+   fast genau die Fläche unter der Kopfzeile ist.
+
+   Zwei Stationen wechseln dabei die Seite: SAMSØ und HIDDENSEE stehen
+   hier am rechten Rand, ihre Infokarte hätte dort keinen Platz mehr. */
+@media (min-width: 700px) and (min-height: 560px) and (orientation: portrait) {
+  .campus-map {
+    --karte-ar: 4 / 5;
+    --karte-w: 19cqw;
+    --karte-x: 2.4cqw;
+  }
+  .campus-map .island-intro { width: 34cqw; }
+  .campus-map .island-intro h1 { font-size: max(1.05rem, 2.9cqw); }
+  .campus-map .island-intro .lead { font-size: max(.74rem, 1.5cqw); }
+  .campus-map .island-intro .kicker { font-size: max(.6rem, 1.1cqw); }
+
+  .island-card .i-code { font-size: max(.6rem, 1.15cqw); }
+  .island-card .i-title { font-size: max(.84rem, 1.65cqw); }
+  .island-card .i-state { font-size: max(.68rem, 1.25cqw); }
+
+  .deko-kompass { width: 14cqw; }
+  .deko-boot { width: 8cqw; }
+  .deko-boot-a { left: 85%; top: 18%; }
+  .deko-boot-b { left: 12%; top: 62%; }
+  .deko-wal { left: 8%; top: 38%; width: 10cqw; }
+  .deko-moewen { width: 9cqw; }
+  .deko-moewen-a { left: 46%; top: 3%; }
+  .deko-moewen-b { left: 6%; top: 68%; }
+  .deko-wellen { width: 9cqw; }
+  .deko-wellen-a { left: 4%; top: 44%; }
+  .deko-wellen-b { left: 87%; top: 92%; }
+  .deko-wellen-c { left: 42%; top: 96%; }
+
+  /* RÜGEN steht hochkant im freien Wasser links unten, zwischen der
+     Infokarte von USEDOM (endet bei 59 % Hoehe) und der von LANGELAND
+     (beginnt bei 80 %). */
+  .island-ruegen { --x: 13%; --y: 64%; --w: 12%; --karte-w: 18cqw; }
+
+  .island-samsoe    { --x: 72%; --y: 12%; --w: 20%; --karte-w: 20cqw; }
+  .island-fehmarn   { --x: 32%; --y: 30%; --w: 22%; --karte-w: 17cqw; }
+  .island-vejro     { --x: 62%; --y: 34%; --w: 26%; --karte-w: 20cqw; --karte-y: 0%; }
+  .island-usedom    { --x: 34%; --y: 55%; --w: 12%; --karte-w: 18cqw; --karte-y: 0%; }
+  .island-hiddensee { --x: 84%; --y: 55%; --w: 11%; --karte-w: 18cqw; --karte-x: 2.4cqw; }
+  .island-poel      { --x: 60%; --y: 80%; --w: 22%; --karte-w: 18cqw; --karte-y: 0%; }
+  .island-langeland { --x: 30%; --y: 84%; --w: 14%; --karte-w: 18cqw; }
+
+  /* Seitenwechsel für SAMSØ und HIDDENSEE: Karte links, Anschluss rechts. */
+  .island-samsoe .i-content,
+  .island-hiddensee .i-content {
+    left: auto;
+    right: calc(100% + var(--karte-x));
+  }
+  .island-samsoe .i-content::after,
+  .island-hiddensee .i-content::after { right: auto; left: 100%; }
+  .island-samsoe .i-content::before,
+  .island-hiddensee .i-content::before {
+    right: auto;
+    left: calc(100% + var(--karte-x) - max(4px, .42cqw));
+  }
 }
 
 /* ------------------------------------------------------------- Startbild --- */
@@ -3351,7 +3601,7 @@ main { flex: 1 0 auto; }
 /* Auf der Karte ist die Schaltfläche so groß wie die komplette Inselstation.
    Ein Schatten auf dieser unsichtbaren Fläche wirkt wie ein rechteckiger
    Rahmen. Deshalb reagieren hier nur Beschriftung und Silhouette. */
-@media (min-width: 760px) and (hover: hover) and (pointer: fine) {
+@media (min-width: 700px) and (min-height: 560px) and (hover: hover) and (pointer: fine) {
   .island-card:hover {
     border-color: transparent;
     box-shadow: none;

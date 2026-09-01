@@ -8,8 +8,8 @@
   <meta name="description" content="THITRONIK Campus: Wissenscheck nach jeder Schulungsinsel.">
   <meta name="robots" content="noindex, nofollow">
   <title>THITRONIK Campus: Wissenscheck</title>
-  <link rel="stylesheet" href="/assets/styles.css?v=1.25.0">
-  <link rel="stylesheet" href="/assets/thi.css?v=1.25.0">
+  <link rel="stylesheet" href="/assets/styles.css?v=1.27.0">
+  <link rel="stylesheet" href="/assets/thi.css?v=1.27.0">
 </head>
 <body>
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
@@ -77,33 +77,44 @@
             <p class="lead">Wähle eine Insel aus und starte den Wissenscheck.</p>
           </div>
 
-          <svg class="campus-map-art" id="campus-map-art" viewBox="0 0 1200 760" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+          <!-- Die Routen zeichnet die Engine: Sie misst die tatsaechlichen
+               Stationspunkte und rechnet daraus die Boegen. Feste d-Werte
+               hier waeren beim naechsten Verschieben einer Insel still
+               falsch. Der viewBox entspricht der 16:9-Buehne. -->
+          <svg class="campus-map-art" id="campus-map-art" viewBox="0 0 1600 900" aria-hidden="true" focusable="false">
             <defs>
               <marker id="route-arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
                 <path d="M0,0 L0,6 L6,3 z"></path>
               </marker>
             </defs>
             <g class="campus-routes">
-              <path data-route="fehmarn-samsoe" d="M312 326 C250 230 470 190 536 108"></path>
-              <path data-route="samsoe-vejro" d="M536 108 C560 140 665 180 658 258"></path>
-              <path data-route="vejro-hiddensee" d="M658 258 C735 290 860 310 916 400"></path>
-              <path data-route="hiddensee-poel" d="M916 400 C1015 480 850 560 692 629"></path>
-              <path data-route="poel-langeland" d="M692 629 C640 750 430 750 362 622"></path>
-              <path data-route="langeland-usedom" d="M362 622 C392 702 543 557 583 457"></path>
-              <path data-route="usedom-fehmarn" d="M583 457 C500 440 300 390 312 326"></path>
-            </g>
-            <g class="sea-waves">
-              <path d="M380 180 q8-12 16 0 q8-12 16 0 q8-12 16 0"></path>
-              <path d="M480 310 q8-12 16 0 q8-12 16 0 q8-12 16 0"></path>
-              <path d="M850 150 q8-12 16 0 q8-12 16 0 q8-12 16 0"></path>
-              <path d="M960 335 q8-12 16 0 q8-12 16 0 q8-12 16 0"></path>
-              <path d="M365 700 q8-12 16 0 q8-12 16 0 q8-12 16 0"></path>
-              <path d="M842 705 q8-12 16 0 q8-12 16 0 q8-12 16 0"></path>
+              <path data-route="fehmarn-samsoe"></path>
+              <path data-route="samsoe-vejro"></path>
+              <path data-route="vejro-hiddensee"></path>
+              <path data-route="hiddensee-poel"></path>
+              <path data-route="poel-langeland"></path>
+              <path data-route="langeland-usedom"></path>
+              <path data-route="usedom-fehmarn"></path>
             </g>
           </svg>
 
-          <img class="map-compass" src="/media/campus/campus-kompass-v2.webp"
-               alt="" aria-hidden="true" width="1254" height="1254">
+          <!-- Kompass, Boote, Wal, Moewen, Wellen. Leere Elemente mit
+               CSS-Hintergrund statt <img>, weil ein ausgeblendetes <img>
+               trotzdem geladen wird. Das Telefon zeigt die Buehne nicht und
+               soll die 166 KB Deko auch nicht holen; Hintergruende einer
+               nicht passenden Medienabfrage holt der Browser gar nicht
+               erst. -->
+          <div class="map-deko" aria-hidden="true">
+            <span class="deko-kompass"></span>
+            <span class="deko-boot deko-boot-a"></span>
+            <span class="deko-boot deko-boot-b"></span>
+            <span class="deko-wal"></span>
+            <span class="deko-moewen deko-moewen-a"></span>
+            <span class="deko-moewen deko-moewen-b"></span>
+            <span class="deko-wellen deko-wellen-a"></span>
+            <span class="deko-wellen deko-wellen-b"></span>
+            <span class="deko-wellen deko-wellen-c"></span>
+          </div>
 
           <ul class="island-map" id="island-grid" aria-label="Schulungsinseln"></ul>
         </div>
@@ -436,10 +447,10 @@
     <input name="score"><input name="total"><input name="percent"><input name="answers_json">
   </form>
 
-  <script src="/assets/engine.js?v=1.25.0" defer></script>
+  <script src="/assets/engine.js?v=1.27.0" defer></script>
   <!-- THI haengt seinen Schalter selbst in .masthead-tools ein und baut sein
        Panel an den Seitenkoerper. Faellt das Skript aus, fehlt nur THI —
        Kopfzeile und Quiz bleiben unberuehrt. -->
-  <script src="/assets/thi.js?v=1.25.0" defer></script>
+  <script src="/assets/thi.js?v=1.27.0" defer></script>
 </body>
 </html>

@@ -13,7 +13,7 @@
 
 (function () {
   const EVENT_SLUG = "campus-2026";
-  const ENGINE_VERSION = "1.26.0";
+  const ENGINE_VERSION = "1.27.0";
   const SUBMIT_ENDPOINT = "/.netlify/functions/submit-quiz";
 
   const LS_PARTICIPANT = "thitronik.campus.2026.participant";
@@ -547,12 +547,46 @@
     "usedom-fehmarn"
   ];
 
+  /* Wie weit sich eine Route aus der Geraden wölbt: Anteil der
+     Streckenlänge, um den die Kurvenmitte SENKRECHT zur Verbindung
+     versetzt wird. Vorzeichen ist die Richtung.
+
+     Vorher standen hier je Route zwei Kontrollpunkte als feste Zahlen im
+     Koordinatensystem der Karte — 28 Werte, die zu genau einer Anordnung
+     der Inseln passten. Beim Verschieben einer einzigen Station waren alle
+     Bögen daneben, und man sah es erst im Browser. Ein Anteil der
+     Streckenlänge überlebt jedes Verschieben: Die Route bleibt gleich
+     stark gewölbt, egal wie weit die Stationen auseinanderliegen.
+
+     Die Reise läuft im Uhrzeigersinn. Ein negativer Wert wölbt deshalb
+     nach AUSSEN, weg von der Mitte der Karte — dorthin, wo Platz ist. */
+  const ROUTEN_BOGEN = {
+    "fehmarn-samsoe": -.16,
+    "samsoe-vejro": -.16,
+    "vejro-hiddensee": -.14,
+    "hiddensee-poel": -.16,
+    "poel-langeland": -.20,
+    "langeland-usedom": -.16,
+    "usedom-fehmarn": -.22
+  };
+
   let campusRouteFrame = 0;
 
-  /** Ermittelt die Mitte des sichtbaren Stationspunkts. Die Punkte sind
-   *  Pseudoelemente, weil sie zugleich die kurze Verbindung zur Infobox
-   *  zeichnen. Ihre berechnete Position funktioniert auch bei höheren
-   *  Ergebnisboxen und an jedem Desktop-Breakpoint. */
+  /** Ob die Bühne überhaupt gezeichnet wird, beantwortet das Stylesheet.
+   *
+   *  Hier stand vorher `innerWidth < 760` — eine zweite Fassung derselben
+   *  Grenze, die schon einmal auseinandergelaufen ist. Die Medienabfrage
+   *  fragt inzwischen Breite UND Höhe ab; eine Zahl an dieser Stelle hätte
+   *  das nicht mitbekommen. Ob die Routenfläche sichtbar ist, weiß der
+   *  Browser besser als eine Kopie der Bedingung. */
+  function buehneAktiv() {
+    return Boolean(el.campusMapArt) &&
+      getComputedStyle(el.campusMapArt).display !== "none";
+  }
+
+  /** Ermittelt die Mitte des sichtbaren Stationspunkts, in Pixeln relativ
+   *  zur linken oberen Ecke der Bühne. Die Punkte sind Pseudoelemente, weil
+   *  sie zugleich die kurze Verbindung zur Infobox zeichnen. */
   function campusAnchor(slug, mapRect) {
     const content = el.islandGrid.querySelector(`.island-${slug} .i-content`);
     if (!content) return null;
@@ -570,58 +604,48 @@
     const screenY = rect.top + top + height / 2;
 
     return {
-      x: ((screenX - mapRect.left) / mapRect.width) * 1200,
-      y: ((screenY - mapRect.top) / mapRect.height) * 760
+      x: screenX - mapRect.left,
+      y: screenY - mapRect.top
     };
   }
 
+  /** Ein Bogen von a nach b, seitlich versetzt um einen Anteil der
+   *  Streckenlänge. Geschrieben als quadratische Bézier: ein einziger
+   *  Kontrollpunkt, und der lässt sich mit einer Zahl einstellen. */
   function campusCurve(name, a, b) {
-    const point = (p) => `${p.x.toFixed(1)} ${p.y.toFixed(1)}`;
-    let c1;
-    let c2;
+    const bogen = Object.prototype.hasOwnProperty.call(ROUTEN_BOGEN, name)
+      ? ROUTEN_BOGEN[name]
+      : -.16;
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+    const laenge = Math.hypot(dx, dy) || 1;
+    // Senkrechte auf der Verbindung, auf Länge 1 gebracht.
+    const versatz = laenge * bogen;
+    const mx = a.x + dx / 2 + (-dy / laenge) * versatz;
+    const my = a.y + dy / 2 + (dx / laenge) * versatz;
 
-    switch (name) {
-      case "fehmarn-samsoe":
-        c1 = { x: a.x - 60, y: a.y - 96 };
-        c2 = { x: b.x - 66, y: b.y + 82 };
-        break;
-      case "samsoe-vejro":
-        c1 = { x: a.x + 24, y: a.y + 32 };
-        c2 = { x: b.x + 7, y: b.y - 78 };
-        break;
-      case "vejro-hiddensee":
-        c1 = { x: a.x + 77, y: a.y + 32 };
-        c2 = { x: b.x - 56, y: b.y - 90 };
-        break;
-      case "hiddensee-poel":
-        c1 = { x: a.x + 99, y: a.y + 80 };
-        c2 = { x: b.x + 158, y: b.y - 69 };
-        break;
-      case "poel-langeland":
-        c1 = { x: a.x - 52, y: a.y + 121 };
-        c2 = { x: b.x + 68, y: b.y + 128 };
-        break;
-      case "langeland-usedom":
-        c1 = { x: a.x + 30, y: a.y + 80 };
-        c2 = { x: b.x - 40, y: b.y + 100 };
-        break;
-      case "usedom-fehmarn":
-        c1 = { x: a.x - 83, y: a.y - 17 };
-        c2 = { x: b.x - 12, y: b.y + 64 };
-        break;
-      default:
-        c1 = { x: a.x + (b.x - a.x) / 3, y: a.y };
-        c2 = { x: a.x + ((b.x - a.x) * 2) / 3, y: b.y };
-    }
-
-    return `M ${point(a)} C ${point(c1)}, ${point(c2)}, ${point(b)}`;
+    const p = (punkt) => `${punkt.x.toFixed(1)} ${punkt.y.toFixed(1)}`;
+    return `M ${p(a)} Q ${mx.toFixed(1)} ${my.toFixed(1)}, ${p(b)}`;
   }
 
   function updateCampusRoutes() {
-    if (!el.campusMap || !el.campusMapArt || el.screens.islands.hidden || innerWidth < 760) return;
+    if (!el.campusMap || !el.campusMapArt) return;
+    if (el.screens.islands.hidden || !buehneAktiv()) return;
 
     const mapRect = el.campusMap.getBoundingClientRect();
     if (!mapRect.width || !mapRect.height) return;
+
+    /* Der viewBox wird auf die gemessene Bühne gesetzt, statt fest im
+       Quelltext zu stehen. Damit ist eine Benutzereinheit genau ein Pixel:
+       Strichstärke, Strichelung und Pfeilspitze stimmen in jedem Format,
+       und die Bögen werden nicht verzerrt, wenn die Bühne hochkant 1:1
+       statt quer 16:9 ist. Ein fester viewBox mit
+       `preserveAspectRatio="none"` hätte die Pfeilspitzen im Querformat um
+       den Faktor 1,8 in die Breite gezogen. */
+    el.campusMapArt.setAttribute(
+      "viewBox",
+      `0 0 ${mapRect.width.toFixed(1)} ${mapRect.height.toFixed(1)}`
+    );
 
     CAMPUS_ROUTES.forEach((name) => {
       const [from, to] = name.split("-");
@@ -685,6 +709,14 @@
       li.className = `island-map-item island-${island.slug}`;
       li.style.setProperty("--island-order", index);
 
+      // width/height stehen im Katalog, weil die Insel auf der Buehne ihre
+      // Hoehe aus dem Seitenverhaeltnis des Motivs zieht. Ohne die Angaben
+      // ist der Kasten bis zum Laden 0 hoch — und die Routen, die an den
+      // Stationspunkten haengen, wuerden einmal falsch gezeichnet.
+      const masse = island.imageBreite && island.imageHoehe
+        ? ` width="${Number(island.imageBreite)}" height="${Number(island.imageHoehe)}"`
+        : "";
+
       // Die Verpflegungsinsel fuehrt nirgendwo hin. Ein Knopf, der nichts
       // tut, ist schlechter als kein Knopf: Er verspricht ein Quiz, das es
       // nicht gibt. Deshalb ein div, und statt des Fortschritts stehen die
@@ -694,7 +726,7 @@
         const kachel = document.createElement("div");
         kachel.className = "island-card is-service";
         kachel.innerHTML = `
-        ${island.image ? `<span class="i-visual" aria-hidden="true"><img src="${escapeHtml(island.image)}" alt="" loading="lazy"></span>` : ""}
+        ${island.image ? `<span class="i-visual" aria-hidden="true"><img src="${escapeHtml(island.image)}" alt="" loading="lazy"${masse}></span>` : ""}
         <span class="i-content">
           <span class="i-code">${escapeHtml(island.code)}</span>
           <span class="i-title">${escapeHtml(island.title)}</span>
@@ -711,7 +743,7 @@
       card.className = "island-card" + (entry ? (unterwegs ? " is-warten" : " is-done") : "");
       if (entry) card.style.setProperty("--score", Math.max(0, Math.min(100, Number(entry.percent) || 0)));
       card.innerHTML = `
-        ${island.image ? `<span class="i-visual" aria-hidden="true"><img src="${escapeHtml(island.image)}" alt="" loading="lazy"></span>` : ""}
+        ${island.image ? `<span class="i-visual" aria-hidden="true"><img src="${escapeHtml(island.image)}" alt="" loading="lazy"${masse}></span>` : ""}
         <span class="i-content">
           <span class="i-code">${escapeHtml(island.code)}</span>
           <span class="i-title">${escapeHtml(island.title)}</span>

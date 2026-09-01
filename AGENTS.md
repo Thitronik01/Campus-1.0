@@ -220,8 +220,31 @@ Layout- und Bildschirmpixel fallen dadurch auseinander:
   Mindestmaß von 44. Deshalb `calc(var(--tap) + 12px)` statt fester Zahlen.
 - `100vw` und `100dvh` verhalten sich uneinheitlich. Statt Breite oder Höhe
   lieber gegenüberliegende Kanten setzen.
+- Muss es doch eine Höhe sein: **`100dvh` liefert die volle Fensterhöhe in
+  Layout-Einheiten, sichtbar sind davon 80 %.** Nachgemessen bei 1180 px
+  Fensterhöhe: `height: 100dvh` ergab 944 Bildschirmpixel. Wer den Schirm
+  füllen will, rechnet `100/0,8 = 125dvh` — so steht es in `.shell` und in
+  der Breitenrechnung der Expeditionskarte.
 - Medienabfragen sehen den **Viewport**, das Layout rechnet mit
   `Viewport / 0.8`. Zwischen 640 und 800 px klaffen die beiden auseinander.
+
+### Prozent bezieht sich auf den Elternkasten, nicht auf das, was man meint
+
+Auf der Expeditionskarte sitzt die Infokarte einer Insel absolut **in** der
+Insel. `top: calc(50% + var(--karte-y))` zählt deshalb in Prozent der
+INSELHÖHE, nicht der Bühne. VEJRØ ist 34 % der Bühne hoch — `-12 %` sind
+also gut 4 % Bühne, ein Drittel dessen, was die Zahl suggeriert.
+
+Zweimal wurde daraufhin nachgebessert, bis die Messung im Browser zeigte,
+warum die Verschiebung nichts bewirkte. Deshalb steht die Breite der
+Infokarte in `cqw` (Prozent der BÜHNENbreite) und nicht in Prozent: Sonst
+wäre die Karte an HIDDENSEE halb so breit wie an VEJRØ.
+
+Gleiche Familie: Die Kurzform `background: center / contain no-repeat` an
+`.map-deko span` setzt `background-image` zurück — und weil `.map-deko span`
+spezifischer ist als `.deko-kompass`, löschte sie jedes Motiv wieder. Die
+Kompassrose fehlte, ohne dass eine Datei fehlte. Bei geteilten Grundlagen
+plus einzelnen Motiven gehören Langschreibweisen hin.
 
 ### Vor dem Löschen eines Bildes nachsehen, wer darauf zeigt
 
@@ -286,6 +309,25 @@ Zwei Ebenen in der JSON — `personen` und `inseln` —, weil eine Person mehrer
 Inseln betreut und sonst beim nächsten Fotowechsel an drei Stellen stünde.
 Ohne Eintrag bleibt der Streifen ausgeblendet. Beschrieben in
 [`Campus Quiz/README.md`](Campus%20Quiz/README.md).
+
+### Die Expeditionskarte
+
+Die Übersicht unter `/quiz` ist eine Bühne mit **festem Seitenverhältnis** —
+16:9 quer, 4:5 hoch, darunter die Kachelliste. Vorher war sie ein Kasten
+über die volle Breite; gemessen ergab das auf dem iPad hochkant 1,0:1 und
+auf einem breiten Monitor 2,7:1, und dieselben Prozentangaben konnten
+unmöglich für beides stimmen.
+
+Die Motive erzeugt `tools/karten-assets.js` aus dem Asset-Pack unter
+`export/thitronik_campus_asset_pack/` — 28 MB PNG hinein, rund 620 KB WebP
+heraus. Das Pack ist wie die übrigen Bildquellen **nicht** versioniert; das
+Ergebnis unter `public/media/inseln/` und `public/media/campus/karte/` ist
+es. Beschrieben in [`Campus Quiz/README.md`](Campus%20Quiz/README.md),
+Abschnitte „Die Expeditionskarte" und „Die Motive der Karte".
+
+Wer eine Insel verschiebt, misst nach — der Abschnitt im README enthält
+dafür einen Konsolen-Schnipsel, der alle Überschneidungen in einem Zug
+auflistet.
 
 ### Insel-Bühnen aus Einzelmotiven
 

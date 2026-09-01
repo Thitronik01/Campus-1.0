@@ -63,9 +63,22 @@ const ARBEITSKARTE_ZIEL = "arbeitskarte";
  *  den, der hochlaedt, und hat im ausgelieferten Verzeichnis nichts zu
  *  suchen. */
 const BOGEN_AUSGENOMMEN = new Set(["_headers", "README.txt"]);
+/* Bilder, die nicht an einer einzelnen Insel haengen und deshalb in jedes
+   Paket muessen. `karte/` ist die Deko der Expeditionskarte; sie wird
+   ausschliesslich in der Karten-Medienabfrage als CSS-Hintergrund
+   eingebunden, ein Telefon holt sie also nicht.
+
+   `campus-hintergrund-v1.webp` und `campus-kompass-v2.webp` stehen seit dem
+   Umbau der Karte nicht mehr hier: Seegrund und Kompassrose kommen jetzt
+   aus dem Asset-Pack. Die Dateien liegen weiter in public/media/campus/,
+   ausgeliefert werden sie nicht mehr. */
 const GEMEINSAME_MEDIEN = [
-  path.join("media", "campus", "campus-hintergrund-v1.webp"),
-  path.join("media", "campus", "campus-kompass-v2.webp"),
+  path.join("media", "campus", "karte", "see.webp"),
+  path.join("media", "campus", "karte", "kompass.webp"),
+  path.join("media", "campus", "karte", "segelboot.webp"),
+  path.join("media", "campus", "karte", "wal.webp"),
+  path.join("media", "campus", "karte", "moewen.webp"),
+  path.join("media", "campus", "karte", "wellen.webp"),
   path.join("media", "campus", "campus-hex-fragen.webp"),
   path.join("media", "campus", "campus-hex-fragetypen.webp"),
   path.join("media", "campus", "campus-hex-aufloesung.webp"),
