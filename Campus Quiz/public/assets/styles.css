@@ -80,6 +80,19 @@
   --ui-scale: .8;
   --content: 2400px;
   --tap: 55px;
+
+  /* Ebenen der Archipelkarte, von unten nach oben. Benannt statt gezaehlt:
+     `z-index: 3` sagt nicht, ob es ueber oder unter der Route liegen soll,
+     und beim naechsten Element raet man wieder. Die Luecken zwischen den
+     Zehnern sind Platz fuer Nachtraege ohne Umnummerierung. */
+  --ebene-meer: 0;
+  --ebene-deko: 10;
+  --ebene-route: 20;
+  --ebene-insel: 30;
+  --ebene-wegpunkt: 40;
+  --ebene-karte: 50;
+  --ebene-aktiv: 60;
+  --ebene-kopf: 100;
 }
 
 * { box-sizing: border-box; }
@@ -811,7 +824,18 @@ main { flex: 1 0 auto; }
    Lage hat weiter unten ihre eigene Anordnung.
    ========================================================================= */
 
-@media (min-width: 700px) and (min-height: 560px) {
+/* ============ Die Szene: ueberall dieselbe Karte ============
+
+   Diese Regeln standen in `@media (min-width: 700px) and (min-height:
+   560px)`, also hinter einer Bedingung an die GROESSE DES FENSTERS. Damit
+   war die Anordnung des Archipels an das Geraet gebunden: Unterhalb der
+   Schwelle gab es die Karte gar nicht, und darueber eine zweite Fassung
+   fuer das Hochformat. Drei Karten, die dasselbe zeigen sollten.
+
+   Die Szene ist jetzt bedingungslos. Sie ist 16:9, ihre Inseln stehen in
+   Prozent ihrer selbst, und sie sieht auf jedem Geraet gleich aus. Was
+   sich unterscheidet, steht weiter unten unter „Ausschnitt je Geraet":
+   wie gross der Ausschnitt ist und ob geschoben werden muss. */
   #screen-islands { border-color: rgba(140, 176, 201, .75); background: #CFE6F4; }
 
   .campus-map {
@@ -822,7 +846,6 @@ main { flex: 1 0 auto; }
        Verbindungsstrichs, damit beides nie auseinanderläuft. */
     --karte-x: 2.6cqw;
     --karte-w: 16cqw;
-    --karte-y: 0%;
 
     /* Breite und Höhe zugleich begrenzt: Ohne den Höhenanteil ragt die
        Karte auf einem 16:9-Monitor unter den Falz, und die untere
@@ -835,13 +858,17 @@ main { flex: 1 0 auto; }
     width: min(100%, (125dvh - 200px) * var(--karte-ar));
     aspect-ratio: var(--karte-ar);
     margin-inline: auto;
+  }
 
+  /* Der Meeresgrund gehört an die SZENE, nicht an den Ausschnitt: Wird
+     geschoben, muss er mitwandern, sonst schwimmt der Archipel über einem
+     stehenden Meer. */
+  .campus-szene {
     /* Alles auf der Bühne bemisst sich an IHRER Breite (cqw), nicht am
        Fenster. Sonst wüchse die Schrift einer Infokarte weiter, während die
        Bühne unter ihr schrumpft — und die Karten stießen aneinander. Ein
        `max(…rem, …cqw)` je Angabe hält die Untergrenze lesbar. */
     container-type: inline-size;
-
     background:
       url("/media/campus/karte/see.webp") center / cover no-repeat,
       #CFE6F4;
@@ -851,7 +878,7 @@ main { flex: 1 0 auto; }
 
   .campus-map .island-intro {
     position: absolute;
-    z-index: 4;
+    z-index: var(--ebene-karte);
     left: 2.6cqw;
     top: 3cqw;
     width: 24cqw;
@@ -884,7 +911,7 @@ main { flex: 1 0 auto; }
 
   .campus-map-art {
     position: absolute;
-    z-index: 1;
+    z-index: var(--ebene-route);
     inset: 0;
     display: block;
     width: 100%;
@@ -915,11 +942,21 @@ main { flex: 1 0 auto; }
   }
   .campus-map-art marker path { fill: var(--th-navy); }
 
+  /* Die Wegpunkte liegen jetzt im SVG, an denselben Ankern wie die
+     Routenenden. `non-scaling-stroke` haelt den Ring auf jeder Buehne
+     gleich dick — sonst wird er auf dem Telefon zum Haar. */
+  .campus-wegpunkte circle {
+    fill: #F6FAFC;
+    stroke: #24507A;
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+  }
+
   /* ------------------------------------------------------------- Deko --- */
 
   .map-deko {
     position: absolute;
-    z-index: 1;
+    z-index: var(--ebene-deko);
     inset: 0;
     display: block;
     pointer-events: none;
@@ -947,7 +984,13 @@ main { flex: 1 0 auto; }
     aspect-ratio: 319 / 420;
     background-image: url("/media/campus/karte/segelboot.webp");
   }
-  .deko-boot-a { left: 66%; top: 6%; }
+  /* Die Deko steht dort, wo nach Inseln und Infokarten Platz bleibt —
+     nachgemessen mit einem Belegungsraster, nicht geschaetzt. Vorher lagen
+     das Segelboot und beide Moewenschwaerme unter den Infokarten von SAMSO
+     und VEJRO: Das Boot war zu 13 % verdeckt und sah aus, als schiebe es
+     sich hinter der Insel hervor. Deko gehoert ins freie Wasser, sonst
+     wirkt sie wie ein Fehler. */
+  .deko-boot-a { left: 71%; top: 6%; }
   .deko-boot-b { left: 46%; top: 64%; }
   .deko-wal {
     left: 36%;
@@ -961,15 +1004,15 @@ main { flex: 1 0 auto; }
     aspect-ratio: 420 / 207;
     background-image: url("/media/campus/karte/moewen.webp");
   }
-  .deko-moewen-a { left: 59%; top: 4%; }
-  .deko-moewen-b { left: 87%; top: 33%; }
+  .deko-moewen-a { left: 40%; top: 40%; }
+  .deko-moewen-b { left: 88%; top: 44%; }
   .deko-wellen {
     width: 7cqw;
     aspect-ratio: 520 / 294;
     background-image: url("/media/campus/karte/wellen.webp");
     opacity: .85;
   }
-  .deko-wellen-a { left: 6%; top: 57%; }
+  .deko-wellen-a { left: 1%; top: 56%; }
   .deko-wellen-b { left: 89%; top: 84%; }
   .deko-wellen-c { left: 41%; top: 93%; }
 
@@ -997,11 +1040,16 @@ main { flex: 1 0 auto; }
      irgendwo am Rand — falsch, aber unauffällig falsch. */
   .island-map-item {
     position: absolute;
+    z-index: var(--ebene-insel);
     left: var(--x, 50%);
     top: var(--y, 50%);
     width: var(--w, 14%);
     transform: translate(-50%, -50%);
   }
+  /* Die angefasste Station nach vorn — sonst schiebt sich die Infokarte
+     der Nachbarinsel darueber, sobald sie sich beim Hover hebt. */
+  .island-map-item:hover,
+  .island-map-item:focus-within { z-index: var(--ebene-aktiv); }
 
   .island-card {
     display: block;
@@ -1040,13 +1088,15 @@ main { flex: 1 0 auto; }
       transform var(--duration-fast) var(--ease-out);
   }
 
-  /* Die Infokarte hängt neben der Insel. Ihre Breite muss in cqw stehen,
-     nicht in Prozent: Prozent bezöge sich auf die Insel, und dann wäre die
-     Karte an HIDDENSEE halb so breit wie an VEJRØ. */
+  /* Die Infokarte hängt neben der Insel. Breite und Versatz stehen in cqw —
+     Prozent bezöge sich auf die INSEL, und dann wäre die Karte an HIDDENSEE
+     halb so breit wie an VEJRØ und ihr Versatz an jeder Insel ein anderer.
+     `--karte-y-szene` kommt aus KARTE.inseln und ist bereits in Einheiten
+     der Szene umgerechnet. */
   .island-card .i-content {
     position: absolute;
-    z-index: 2;
-    top: calc(50% + var(--karte-y));
+    z-index: var(--ebene-karte);
+    top: calc(50% + var(--karte-y-szene, 0cqw));
     display: flex;
     justify-content: flex-start;
     gap: .5cqw;
@@ -1103,41 +1153,19 @@ main { flex: 1 0 auto; }
     width: var(--karte-x);
     border-top: 1px solid #56708C;
   }
-  .island-card .i-content::before {
-    content: "";
-    position: absolute;
-    top: calc(50% - max(4px, .42cqw));
-    width: max(8px, .84cqw);
-    height: max(8px, .84cqw);
-    border: max(2px, .2cqw) solid #24507A;
-    border-radius: 50%;
-    background: #F6FAFC;
-  }
 
-  /* Karte rechts der Insel — Anschluss zeigt nach links. */
-  .island-samsoe .i-content,
-  .island-vejro .i-content,
-  .island-hiddensee .i-content,
-  .island-poel .i-content { left: calc(100% + var(--karte-x)); }
-  .island-samsoe .i-content::after,
-  .island-vejro .i-content::after,
-  .island-hiddensee .i-content::after,
-  .island-poel .i-content::after { right: 100%; }
-  .island-samsoe .i-content::before,
-  .island-vejro .i-content::before,
-  .island-hiddensee .i-content::before,
-  .island-poel .i-content::before { right: calc(100% + var(--karte-x) - max(4px, .42cqw)); }
+  /* Auf welcher Seite die Infokarte haengt, sagt `data-karte` — gesetzt aus
+     KARTE.inseln in engine.js. Vorher standen hier sieben Inselnamen in
+     sechs Selektorlisten: Wer eine Insel auf die andere Seite holte, musste
+     sie in allen sechs finden, und der Anschlussstrich zeigte danach gern
+     in die falsche Richtung. Ein Attribut kann das nicht halb tun. */
+  [data-karte="rechts"] .i-content { left: calc(100% + var(--karte-x)); }
+  [data-karte="rechts"] .i-content::after { right: 100%; }
 
-  /* Karte links der Insel — Anschluss zeigt nach rechts. */
-  .island-fehmarn .i-content,
-  .island-usedom .i-content,
-  .island-langeland .i-content { right: calc(100% + var(--karte-x)); }
-  .island-fehmarn .i-content::after,
-  .island-usedom .i-content::after,
-  .island-langeland .i-content::after { left: 100%; }
-  .island-fehmarn .i-content::before,
-  .island-usedom .i-content::before,
-  .island-langeland .i-content::before { left: calc(100% + var(--karte-x) - max(4px, .42cqw)); }
+
+  [data-karte="links"] .i-content { right: calc(100% + var(--karte-x)); }
+  [data-karte="links"] .i-content::after { left: 100%; }
+
 
   /* ------------------------------------------ Anordnung im Querformat ---
 
@@ -1205,84 +1233,163 @@ main { flex: 1 0 auto; }
   }
   .i-crew-name { font-size: max(.64rem, .88cqw); }
 
-  /* Die Anordnung ist nachgemessen, nicht geschaetzt: Ein Belegungsraster
-     ueber die Buehne zeigte 64 % genutzte Flaeche und ein totes Rechteck
-     oben rechts (64-86 % Breite auf 4-28 % Hoehe), waehrend links unten
-     alles gedraengt stand. Zwei Ecken sind gesetzt und muessen frei
-     bleiben: die Intro-Karte oben links (3-27 % x 5-33 %) und die
-     Kompassrose oben rechts (87-98 % x 5-23 %). */
-  .island-samsoe    { --x: 50%; --y: 12%; --w: 13%; }
-  .island-fehmarn   { --x: 28%; --y: 42%; --w: 16%; }
-  .island-vejro     { --x: 62%; --y: 41%; --w: 20%; --karte-w: 15cqw; --karte-y: -12%; }
-  .island-hiddensee { --x: 80%; --y: 62%; --w: 9%;  --karte-w: 13cqw; --karte-x: 2.2cqw; }
-  .island-usedom    { --x: 35%; --y: 74%; --w: 10%; --karte-y: -33%; }
-  .island-poel      { --x: 61%; --y: 80%; --w: 17%; --karte-y: 18%; }
-  .island-langeland { --x: 24%; --y: 85%; --w: 10%; }
+  /* Die Anordnung steht nicht mehr hier, sondern in `KARTE.inseln` in
+     engine.js, und wird beim Zeichnen als --x/--y/--w gesetzt. Zwei Gruende:
+     Die Routen brauchen dieselben Zahlen, um ihre Anker zu rechnen, statt
+     sie aus dem DOM zu messen — und es gab die Werte zweimal, einmal fuer
+     quer und einmal fuer hoch. Zwei Anordnungen fuer sieben Inseln laufen
+     auseinander, sobald jemand nur eine davon anfasst. */
+
+/* ---------------------------------------- Ausschnitt statt zweiter Karte ---
+
+   Hier stand eine EIGENE Anordnung fuer das Hochformat: sieben weitere
+   Positionen auf einer 4:5-Buehne, zwei Inseln mit gewechselter Kartenseite,
+   die Deko noch einmal verteilt. Also zwei Archipele, die dasselbe zeigen
+   sollten und beim naechsten Verschieben einer Insel auseinanderliefen —
+   genau das, was die Vorgabe „nicht drei unabhaengig gestaltete Karten"
+   ausschliesst.
+
+   Jetzt gibt es EINE Szene im Verhaeltnis 16:9. Was sich zwischen den
+   Geraeten unterscheidet, ist allein der AUSSCHNITT, durch den man sie
+   sieht:
+
+     Desktop ab 1180 px   Szene passt vollstaendig, kein Schieben
+     Tablet quer          dieselbe Szene, proportional kleiner
+     Tablet hoch, Telefon Szene bleibt 16:9 und breiter als der Ausschnitt;
+                          geschoben wird mit dem Finger
+
+   Die Szene wird dabei nie gestaucht: `--szene-breite` setzt ihre Breite,
+   die Hoehe folgt aus `aspect-ratio`. Waagerechter und senkrechter Massstab
+   bleiben damit gleich, und keine Insel verschiebt sich gegen eine andere. */
+
+.campus-map {
+  position: relative;
+  overflow: hidden;
+  touch-action: pan-y;
 }
 
-/* ------------------------------------------- Anordnung im Hochformat ---
+.campus-szene {
+  container-type: inline-size;
+  position: relative;
+  width: var(--szene-breite, 100%);
+  aspect-ratio: 16 / 9;
+  /* translate3d statt top/left: Das Schieben laeuft dann auf der
+     Grafikkarte und loest kein Neuberechnen des Layouts aus. Ohne das
+     ruckelt es auf dem iPad sichtbar, weil bei jedem Zeigerereignis
+     sieben Inseln, sieben Karten und sieben Bezierkurven neu vermessen
+     wuerden. */
+  transform: translate3d(var(--pan-x, 0px), var(--pan-y, 0px), 0);
+  will-change: transform;
+}
 
-   Ein iPad hochkant ist kein schmales Querformat. Der Archipel bekommt
-   hier eine eigene Anordnung auf einer Bühne im Verhältnis 4:5 — bei
-   1000 px Bühnenbreite also 1250 px hoch, was auf einem iPad hochkant
-   fast genau die Fläche unter der Kopfzeile ist.
+/* Wird geschoben, soll nichts nachlaufen — sonst haengt die Karte am
+   Finger. Der Uebergang gilt nur beim Loslassen und beim Einrasten. */
+.campus-map.is-schiebend .campus-szene { transition: none; }
+.campus-map:not(.is-schiebend) .campus-szene {
+  transition: transform var(--duration-fast) var(--ease-out);
+}
 
-   Zwei Stationen wechseln dabei die Seite: SAMSØ und HIDDENSEE stehen
-   hier am rechten Rand, ihre Infokarte hätte dort keinen Platz mehr. */
-@media (min-width: 700px) and (min-height: 560px) and (orientation: portrait) {
+/* Der Hinweis erscheint nur, wo wirklich geschoben werden kann. */
+.map-schiebehinweis {
+  position: absolute;
+  z-index: var(--ebene-karte);
+  right: 10px;
+  bottom: 10px;
+  display: none;
+  gap: 6px;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .92);
+  color: var(--th-navy);
+  font-size: .72rem;
+  font-weight: 600;
+  pointer-events: none;
+}
+.campus-map.kann-schieben .map-schiebehinweis { display: flex; }
+.campus-map.hat-geschoben .map-schiebehinweis { display: none; }
+
+/* ------------------------------------------------- Ausschnitt je Gerät ---
+
+   Drei Bereiche, eine Szene. Was sich ändert, ist NUR die Größe des
+   Ausschnitts und ob die Szene hineinpasst.
+
+     ab 1180 px      Szene passt vollständig, nichts zu schieben
+     768–1179 px     dieselbe Szene, proportional kleiner
+     unter 768 px    Szene bleibt auf Mindestbreite, wird geschoben
+
+   Die Breite der Szene steht in `--szene-breite`. Nur diese eine Zahl
+   entscheidet, ob geschoben wird — die Engine fragt nicht die Fensterbreite
+   ab, sondern misst, ob die Szene über den Ausschnitt hinausragt. Damit
+   kann die Grenze im Stylesheet nicht von einer zweiten Fassung im Skript
+   abweichen, wie es hier schon einmal passiert ist. */
+
+/* Tablet quer und kleiner Desktop: dieselbe Komposition, weniger Polster.
+   Die Infokarten dürfen schrumpfen, die Trefferflächen nicht. */
+@media (max-width: 1179px) {
+  .campus-map .island-intro { padding: 1.5cqw 1.7cqw; }
+  .island-card .i-content { padding: .9cqw 1.1cqw; }
+  .island-card .i-content { box-shadow: 0 .5cqw 1.2cqw rgba(10, 39, 71, .14); }
+}
+
+/* Hochformat auf dem Tablet und alles unter 768 px: Die Szene bleibt 16:9
+   und behält ihre Mindestbreite. Sie ragt dann über den Ausschnitt hinaus,
+   und man schiebt sie.
+
+   Warum nicht einfach die ganze Szene auf 390 px stauchen: VEJRØ wäre dort
+   80 px breit, HIDDENSEE keine 25. Motive in dieser Größe sind kein Bild
+   mehr, und die Trefferfläche fiele weit unter das Mindestmaß. */
+@media (max-width: 767px), (orientation: portrait) and (max-width: 1024px) {
   .campus-map {
-    --karte-ar: 4 / 5;
-    --karte-w: 19cqw;
-    --karte-x: 2.4cqw;
+    /* Die Szene ist mindestens so hoch wie der Ausschnitt, sonst bleiben
+       ueber und unter dem Archipel leere Baender: Eine 16:9-Szene in einem
+       hochkanten Fenster ist immer breiter als hoch. Aus der Hoehe des
+       Ausschnitts mal 16/9 folgt die Breite, bei der sie ihn genau fuellt;
+       die 940 px sind die Untergrenze fuer die Lesbarkeit der Motive. */
+    --aussch-hoehe: min(78dvh, 620px);
+    /* Zwei Untergrenzen in einer Zahl: Die Szene ist nie schmaler als
+       `--szene-min` (sonst werden die Motive unlesbar) und nie niedriger
+       als der Ausschnitt (sonst bleibt darunter ein leeres Band). Wer die
+       Mindestbreite je Geraet aendert, fasst nur `--szene-min` an. */
+    --szene-min: 1040px;
+    --szene-breite: max(var(--szene-min), calc(var(--aussch-hoehe) * 16 / 9));
+    width: 100%;
+    /* Feste Höhe statt aspect-ratio: Der Ausschnitt ist ein Fenster auf die
+       Szene, nicht die Szene selbst. 62dvh lässt Kopfzeile und
+       Tagesabschluss sichtbar — 125dvh-Rechnung wie in .shell, weil
+       `body { zoom: .8 }` dazwischenliegt. */
+    height: var(--aussch-hoehe);
+    aspect-ratio: auto;
+    border-radius: 14px;
+    cursor: grab;
   }
-  .campus-map .island-intro { width: 34cqw; }
-  .campus-map .island-intro h1 { font-size: max(1.05rem, 2.9cqw); }
-  .campus-map .island-intro .lead { font-size: max(.74rem, 1.5cqw); }
-  .campus-map .island-intro .kicker { font-size: max(.6rem, 1.1cqw); }
+  .campus-map.is-schiebend { cursor: grabbing; }
+}
 
-  .island-card .i-code { font-size: max(.6rem, 1.15cqw); }
-  .island-card .i-title { font-size: max(.84rem, 1.65cqw); }
-  .island-card .i-state { font-size: max(.68rem, 1.25cqw); }
+/* Tablet hochkant hat Hoehe im Ueberfluss — 620 px liessen darunter ein
+   leeres Drittel stehen. Der Deckel steigt hier, die Rechnung bleibt
+   dieselbe: Die Szene folgt der Hoehe des Ausschnitts. */
+@media (orientation: portrait) and (min-width: 768px) and (max-width: 1024px) {
+  .campus-map { --aussch-hoehe: min(74dvh, 980px); }
+}
 
-  .deko-kompass { width: 14cqw; }
-  .deko-boot { width: 8cqw; }
-  .deko-boot-a { left: 85%; top: 18%; }
-  .deko-boot-b { left: 12%; top: 62%; }
-  .deko-wal { left: 8%; top: 38%; width: 10cqw; }
-  .deko-moewen { width: 9cqw; }
-  .deko-moewen-a { left: 46%; top: 3%; }
-  .deko-moewen-b { left: 6%; top: 68%; }
-  .deko-wellen { width: 9cqw; }
-  .deko-wellen-a { left: 4%; top: 44%; }
-  .deko-wellen-b { left: 87%; top: 92%; }
-  .deko-wellen-c { left: 42%; top: 96%; }
-
-  /* RÜGEN steht hochkant im freien Wasser links unten, zwischen der
-     Infokarte von USEDOM (endet bei 59 % Hoehe) und der von LANGELAND
-     (beginnt bei 80 %). */
-  .island-ruegen { --x: 13%; --y: 64%; --w: 12%; --karte-w: 18cqw; }
-
-  .island-samsoe    { --x: 72%; --y: 12%; --w: 20%; --karte-w: 20cqw; }
-  .island-fehmarn   { --x: 32%; --y: 30%; --w: 22%; --karte-w: 17cqw; }
-  .island-vejro     { --x: 62%; --y: 34%; --w: 26%; --karte-w: 20cqw; --karte-y: 0%; }
-  .island-usedom    { --x: 34%; --y: 55%; --w: 12%; --karte-w: 18cqw; --karte-y: 0%; }
-  .island-hiddensee { --x: 84%; --y: 55%; --w: 11%; --karte-w: 18cqw; --karte-x: 2.4cqw; }
-  .island-poel      { --x: 60%; --y: 80%; --w: 22%; --karte-w: 18cqw; --karte-y: 0%; }
-  .island-langeland { --x: 30%; --y: 84%; --w: 14%; --karte-w: 18cqw; }
-
-  /* Seitenwechsel für SAMSØ und HIDDENSEE: Karte links, Anschluss rechts. */
-  .island-samsoe .i-content,
-  .island-hiddensee .i-content {
-    left: auto;
-    right: calc(100% + var(--karte-x));
+/* Telefon: Die Infokarten verschwinden von der Szene. Sieben weiße Kästen
+   auf 390 px verdecken genau das, was man ansehen will — die Inseln. Die
+   Auskunft kommt beim Antippen im Bogen von unten. */
+@media (max-width: 767px) {
+  .campus-map { --szene-min: 940px; }
+  .island-card .i-content { display: none; }
+  /* Die Trefferfläche folgt nicht mehr der Kontur des Motivs: HIDDENSEE ist
+     schmal, und eine 30 px breite Insel trifft niemand mit dem Daumen. */
+  .island-card {
+    min-width: var(--tap);
+    min-height: var(--tap);
   }
-  .island-samsoe .i-content::after,
-  .island-hiddensee .i-content::after { right: auto; left: 100%; }
-  .island-samsoe .i-content::before,
-  .island-hiddensee .i-content::before {
-    right: auto;
-    left: calc(100% + var(--karte-x) - max(4px, .42cqw));
-  }
+  .island-card .i-visual { pointer-events: none; }
+  /* Die Deko bleibt dem Telefon erspart: 141 KB Kompass, Boote, Wal und
+     Möwen, die auf dem geschobenen Ausschnitt kaum je im Bild sind.
+     Hintergründe einer nicht passenden Abfrage holt der Browser nicht. */
+  .map-deko { display: none; }
 }
 
 /* ------------------------------------------------------------- Startbild --- */
@@ -1880,6 +1987,10 @@ main { flex: 1 0 auto; }
   pointer-events: none;
 }
 
+/* ACHTUNG: Hoehe und Breite werden weiter unten von der gemeinsamen
+   Produktbuehne ueberschrieben (`width: min(...)`, `height: auto`). Wer
+   hier an der Groesse dreht, aendert nichts — das kostet sonst eine
+   Viertelstunde Suche. */
 .poel-start-haendler {
   position: absolute;
   bottom: 1.5%;
@@ -2572,12 +2683,19 @@ main { flex: 1 0 auto; }
    Position. Kein Motiv wird gestreckt oder beschnitten. */
 .samsoe-start-vehicle { left: 6%; bottom: 2%; width: min(48%, 790px); }
 .samsoe-start-technician { right: 4%; bottom: 0; width: min(36%, 620px); }
-.hiddensee-start-contact { bottom: 1%; left: 57%; width: min(56%, 820px); }
+/* Wie bei POEL: 56 % liessen das Motiv mit 483x322 in einer 863x649-Buehne
+   stehen — 28 % der Flaeche, der Rest leeres Dunkelblau. Auf dem iPad las
+   sich das als vergessene Seite. */
+.hiddensee-start-contact { bottom: 1%; left: 57%; width: min(72%, 1000px); }
+/* 72 % liessen das Motiv auf dem iPad quer mit 621x349 aus einem
+   1200x675-Bild stehen — gut die halbe native Groesse, ringsum leeres
+   Dunkelblau. Es liegt hinter dem Text (z-index 1 gegen 3) und darf
+   deshalb hoeher steigen, ohne ihn zu verdecken. */
 .poel-start-haendler {
   right: 4%;
   bottom: -2%;
   left: auto;
-  width: min(72%, 1050px);
+  width: min(80%, 1120px);
   max-width: none;
   height: auto;
   transform: none;
@@ -3607,7 +3725,7 @@ main { flex: 1 0 auto; }
 /* Auf der Karte ist die Schaltfläche so groß wie die komplette Inselstation.
    Ein Schatten auf dieser unsichtbaren Fläche wirkt wie ein rechteckiger
    Rahmen. Deshalb reagieren hier nur Beschriftung und Silhouette. */
-@media (min-width: 700px) and (min-height: 560px) and (hover: hover) and (pointer: fine) {
+@media (hover: hover) and (pointer: fine) {
   .island-card:hover {
     border-color: transparent;
     box-shadow: none;
@@ -3935,7 +4053,7 @@ main { flex: 1 0 auto; }
    Infokarte im Fluss. Auf der Buehne ist sie mit `translateY(-50%)`
    zentriert, und `none` verschoebe sie um ihre halbe Hoehe. Reduzierte
    Bewegung heisst: kein Heben, kein Druck — nicht: keine Zentrierung. */
-@media (prefers-reduced-motion: reduce) and (min-width: 700px) and (min-height: 560px) {
+@media (prefers-reduced-motion: reduce) {
   .island-card:hover .i-content,
   .island-card:active .i-content { transform: translateY(-50%); }
 }
@@ -3997,4 +4115,118 @@ main { flex: 1 0 auto; }
   .screen { box-shadow: none; border-color: #999; }
   .score-card { background: #fff; color: #000; border: 1px solid #999; }
   .score-card * { color: #000 !important; }
+}
+
+/* ------------------------------------------------ Inselbogen (Telefon) ---
+
+   Die mobile Auskunft zu einer Insel. Ein <dialog>, damit Fokusfalle,
+   Escape und der Verschluss beim Klick daneben nicht von Hand gebaut werden
+   muessen — das sind die drei Dinge, die an selbstgebauten Overlays
+   zuverlaessig fehlen.
+
+   Der Bogen faehrt von unten herein statt in der Mitte zu erscheinen: Der
+   Daumen ist unten, und die Karte darueber bleibt sichtbar, damit klar
+   bleibt, welche Insel gemeint war. */
+
+.insel-bogen {
+  position: fixed;
+  z-index: var(--ebene-kopf);
+  inset: auto 0 0 0;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 22px 20px calc(20px + env(safe-area-inset-bottom));
+  border: 0;
+  border-radius: 18px 18px 0 0;
+  background: var(--th-white);
+  box-shadow: 0 -12px 40px rgba(10, 39, 71, .28);
+  color: var(--th-navy);
+}
+.insel-bogen::backdrop { background: rgba(10, 39, 71, .45); }
+
+/* Der Griff oben ist eine reine Sehhilfe: Er sagt „das hier kam von
+   unten und geht auch wieder dorthin". */
+.insel-bogen::before {
+  content: "";
+  display: block;
+  width: 44px;
+  height: 4px;
+  margin: -8px auto 14px;
+  border-radius: 999px;
+  background: rgba(10, 39, 71, .18);
+}
+
+.insel-bogen[open] { animation: bogen-herein var(--duration-base, .24s) var(--ease-out); }
+@keyframes bogen-herein {
+  from { transform: translateY(100%); }
+  to { transform: none; }
+}
+
+.insel-bogen-zu {
+  position: absolute;
+  top: 14px;
+  right: 12px;
+  width: var(--tap);
+  height: var(--tap);
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+.insel-bogen-zu::before,
+.insel-bogen-zu::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 16px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--th-navy);
+}
+.insel-bogen-zu::before { transform: translate(-50%, -50%) rotate(45deg); }
+.insel-bogen-zu::after { transform: translate(-50%, -50%) rotate(-45deg); }
+
+.insel-bogen-code {
+  margin: 0 0 2px;
+  color: var(--th-blue-text);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.insel-bogen-titel { margin: 0 0 6px; font-size: 1.25rem; line-height: 1.2; }
+.insel-bogen-thema { margin: 0 0 12px; color: var(--th-slate); font-size: .92rem; }
+.insel-bogen-stand { margin: 0 0 10px; font-size: .88rem; font-weight: 600; }
+.insel-bogen-score {
+  height: 8px;
+  margin: 0 0 16px;
+  border-radius: 999px;
+  background: rgba(10, 39, 71, .1);
+  overflow: hidden;
+}
+.insel-bogen-score span {
+  display: block;
+  width: calc(var(--score, 0) * 1%);
+  height: 100%;
+  border-radius: 999px;
+  background: var(--th-lime, #A8C818);
+}
+.insel-bogen-start {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: var(--tap);
+  text-decoration: none;
+}
+
+/* Ueber 767 px gibt es den Bogen nicht: Dort steht die Infokarte auf der
+   Szene, und ein zweiter Weg zur selben Auskunft verwirrt nur. */
+@media (min-width: 768px) {
+  .insel-bogen[open] { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .insel-bogen[open] { animation: none; }
 }

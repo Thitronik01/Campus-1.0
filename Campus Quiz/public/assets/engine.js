@@ -13,7 +13,7 @@
 
 (function () {
   const EVENT_SLUG = "campus-2026";
-  const ENGINE_VERSION = "1.28.0";
+  const ENGINE_VERSION = "1.29.0";
   const SUBMIT_ENDPOINT = "/.netlify/functions/submit-quiz";
 
   const LS_PARTICIPANT = "thitronik.campus.2026.participant";
@@ -60,6 +60,15 @@
     },
 
     campusMap: $("campus-map"),
+    campusSzene: $("campus-szene"),
+    bogen: $("insel-bogen"),
+    bogenZu: $("bogen-zu"),
+    bogenCode: $("bogen-code"),
+    bogenTitel: $("bogen-titel"),
+    bogenThema: $("bogen-thema"),
+    bogenStand: $("bogen-stand"),
+    bogenScore: $("bogen-score"),
+    bogenStart: $("bogen-start"),
     campusMapArt: $("campus-map-art"),
     islandGrid: $("island-grid"),
     arbeitskarteLink: $("arbeitskarte-link"),
@@ -557,6 +566,57 @@
     }).join("");
   }
 
+  /* ====================== Die Karte: eine Konfiguration ==================
+
+     ALLE Masse der Archipelkarte stehen hier und nirgends sonst. Vorher
+     lagen die Inselpositionen in zwei CSS-Bloecken (quer und hoch) und die
+     Routen wurden zur Laufzeit aus dem DOM GEMESSEN: `campusAnchor()` las
+     die Pixelposition der Wegpunkte, `updateCampusRoutes()` setzte den
+     viewBox auf die gemessene Pixelgroesse. Das waren drei Quellen fuer
+     eine Anordnung, die nur zufaellig uebereinstimmten — und die Messung
+     lief zuverlaessig, bevor die Motive geladen waren, also gegen Kaesten
+     der Hoehe 0.
+
+     Jetzt gibt es EINE Szene: 1600 x 900 virtuelle Einheiten, 16:9. Jede
+     Zahl unten ist ein Prozentwert DIESER Szene — nicht des Fensters, nicht
+     des Elternkastens. Inseln, Infokarten, Wegpunkte und Routen lesen
+     dieselben Werte, also koennen sie beim Skalieren nicht auseinander
+     laufen. Die Szene ist ueberall dieselbe; nur der Ausschnitt, durch den
+     man sie sieht, aendert sich je nach Geraet.
+
+     `scale` ist die Groesse der LANGEN Kante als Vielfaches von `basis`.
+     Nicht die Breite: HIDDENSEE ist hochkant und USEDOM noch schmaler —
+     gleiche Breite hiesse bei ihnen die doppelte Hoehe. Die kurze Kante
+     folgt dem Seitenverhaeltnis des Motivs aus dem Katalog.
+
+     Drei Groessenklassen: VEJRO fuehrt (1.15), FEHMARN und POEL tragen
+     (0.95), der Rest ordnet sich unter (0.75-0.82). Die Mitte der Szene
+     bleibt frei — dort liegen nur Segelboot, Walfluke, Wellen und Moewen. */
+  const KARTE = {
+    szene: { breite: 1600, hoehe: 900 },
+
+    /** Lange Kante bei scale 1, in Prozent der SZENENBREITE. */
+    basis: 18,
+
+    /** Infokarte: Breite und Abstand zur Insel, in Prozent der Szenenbreite. */
+    karteBreite: 15.5,
+    karteAbstand: 2.4,
+
+    /* x/y ist der Mittelpunkt des Motivs. `karte` ist die Seite, auf der die
+       Infokarte haengt — nach AUSSEN, damit die Mitte frei bleibt. `karteY`
+       verschiebt sie senkrecht, in Prozent der SZENENHOEHE (nicht der
+       Inselhoehe: das war die Falle, die zweimal Zeit gekostet hat). */
+    inseln: {
+      fehmarn:   { x: 26, y: 45, scale:  .95, karte: "links",  karteY:   0 },
+      samsoe:    { x: 44, y: 13, scale:  .80, karte: "rechts", karteY:   0 },
+      vejro:     { x: 64, y: 39, scale: 1.15, karte: "rechts", karteY:  -4 },
+      hiddensee: { x: 78, y: 60, scale:  .75, karte: "rechts", karteY:   0 },
+      poel:      { x: 63, y: 81, scale:  .95, karte: "rechts", karteY:   3 },
+      langeland: { x: 25, y: 86, scale:  .78, karte: "links",  karteY:   0 },
+      usedom:    { x: 34, y: 70, scale:  .82, karte: "links",  karteY:  -5.5 }
+    }
+  };
+
   const CAMPUS_ROUTES = [
     "fehmarn-samsoe",
     "samsoe-vejro",
@@ -604,28 +664,40 @@
       getComputedStyle(el.campusMapArt).display !== "none";
   }
 
-  /** Ermittelt die Mitte des sichtbaren Stationspunkts, in Pixeln relativ
-   *  zur linken oberen Ecke der Bühne. Die Punkte sind Pseudoelemente, weil
-   *  sie zugleich die kurze Verbindung zur Infobox zeichnen. */
-  function campusAnchor(slug, mapRect) {
-    const content = el.islandGrid.querySelector(`.island-${slug} .i-content`);
-    if (!content) return null;
+  /** Breite eines Motivs in Prozent der Szenenbreite.
+   *
+   *  `scale` beschreibt die LANGE Kante. Bei einem hochkanten Motiv ist das
+   *  die Hoehe, die Breite folgt also dem Seitenverhaeltnis. Ohne diese
+   *  Umrechnung waere USEDOM (291x620) bei gleicher Breite doppelt so hoch
+   *  wie FEHMARN und wuerde die Szene sprengen. */
+  function inselBreite(slug) {
+    const cfg = KARTE.inseln[slug];
+    if (!cfg) return 0;
+    const insel = (state.catalog.inseln || []).find((i) => i.slug === slug);
+    const bw = Number(insel && insel.imageBreite) || 1;
+    const bh = Number(insel && insel.imageHoehe) || 1;
+    return KARTE.basis * cfg.scale * (bw / Math.max(bw, bh));
+  }
 
-    const rect = content.getBoundingClientRect();
-    const dot = getComputedStyle(content, "::before");
-    const width = parseFloat(dot.width) || 8;
-    const height = parseFloat(dot.height) || 8;
-    const left = parseFloat(dot.left);
-    const right = parseFloat(dot.right);
-    const top = parseFloat(dot.top);
-    const screenX = Number.isFinite(left)
-      ? rect.left + left + width / 2
-      : rect.right - right - width / 2;
-    const screenY = rect.top + top + height / 2;
-
+  /** Der Stationspunkt einer Insel — in SZENENEINHEITEN, nicht in Pixeln.
+   *
+   *  Er liegt auf der Kante des Motivs, die zur Infokarte zeigt, auf deren
+   *  Hoehe. Dort sitzt auch der sichtbare Punkt: Die Infokarte haengt mit
+   *  `karteAbstand` daneben, ihr Punkt-Pseudoelement genau um diesen
+   *  Abstand zurueckversetzt.
+   *
+   *  Vorher wurde diese Stelle aus dem DOM gemessen. Das ging so lange gut,
+   *  wie das Motiv geladen war — davor lieferte der Kasten Hoehe 0 und die
+   *  Route wurde einmal falsch gezeichnet. Aus der Konfiguration gerechnet
+   *  stimmt sie ab dem ersten Bild. */
+  function campusAnchor(slug) {
+    const cfg = KARTE.inseln[slug];
+    if (!cfg) return null;
+    const halb = inselBreite(slug) / 2;
+    const richtung = cfg.karte === "links" ? -1 : 1;
     return {
-      x: screenX - mapRect.left,
-      y: screenY - mapRect.top
+      x: (cfg.x + richtung * halb) / 100 * KARTE.szene.breite,
+      y: (cfg.y + (cfg.karteY || 0)) / 100 * KARTE.szene.hoehe
     };
   }
 
@@ -648,35 +720,98 @@
     return `M ${p(a)} Q ${mx.toFixed(1)} ${my.toFixed(1)}, ${p(b)}`;
   }
 
+  /** Zeichnet die Routen im Koordinatensystem der Szene.
+   *
+   *  Der viewBox ist fest — 1600 x 900 — und wird NICHT mehr auf die
+   *  gemessene Buehne gesetzt. Damit haengt die Zeichnung an keiner
+   *  Pixelgroesse mehr: Sie stimmt vor dem ersten Bild genauso wie danach,
+   *  bei jeder Fensterbreite und in jedem Ausschnitt. `xMidYMid meet` haelt
+   *  waagerechten und senkrechten Massstab gleich — nichts wird gestaucht.
+   *
+   *  Die Strichstaerke steht deshalb in Szeneneinheiten und wird ueber
+   *  `vector-effect: non-scaling-stroke` im Stylesheet wieder auf eine
+   *  geraetetreue Dicke gebracht. */
   function updateCampusRoutes() {
     if (!el.campusMap || !el.campusMapArt) return;
     if (el.screens.islands.hidden || !buehneAktiv()) return;
 
-    const mapRect = el.campusMap.getBoundingClientRect();
-    if (!mapRect.width || !mapRect.height) return;
-
-    /* Der viewBox wird auf die gemessene Bühne gesetzt, statt fest im
-       Quelltext zu stehen. Damit ist eine Benutzereinheit genau ein Pixel:
-       Strichstärke, Strichelung und Pfeilspitze stimmen in jedem Format,
-       und die Bögen werden nicht verzerrt, wenn die Bühne hochkant 1:1
-       statt quer 16:9 ist. Ein fester viewBox mit
-       `preserveAspectRatio="none"` hätte die Pfeilspitzen im Querformat um
-       den Faktor 1,8 in die Breite gezogen. */
-    el.campusMapArt.setAttribute(
-      "viewBox",
-      `0 0 ${mapRect.width.toFixed(1)} ${mapRect.height.toFixed(1)}`
-    );
-
     CAMPUS_ROUTES.forEach((name) => {
       const [from, to] = name.split("-");
-      const a = campusAnchor(from, mapRect);
-      const b = campusAnchor(to, mapRect);
+      const a = campusAnchor(from);
+      const b = campusAnchor(to);
       const path = el.campusMapArt.querySelector(`[data-route="${name}"]`);
       if (a && b && path) path.setAttribute("d", campusCurve(name, a, b));
     });
+
+    /* Die Wegpunkte an dieselben Anker. Ein Kreis je Station, aus derselben
+       Rechnung wie die Routenenden — damit koennen sie nicht auseinander
+       laufen. Der Radius steht in Szeneneinheiten und wird ueber
+       `vector-effect` wieder auf eine geraetetreue Strichstaerke gebracht. */
+    const punkte = el.campusMapArt.querySelector(".campus-wegpunkte");
+    if (!punkte) return;
+    const vorhanden = new Set();
+    Object.keys(KARTE.inseln).forEach((slug) => {
+      if (!el.islandGrid.querySelector(`.island-${slug}`)) return;
+      const a = campusAnchor(slug);
+      if (!a) return;
+      vorhanden.add(slug);
+      let kreis = punkte.querySelector(`[data-wegpunkt="${slug}"]`);
+      if (!kreis) {
+        kreis = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        kreis.setAttribute("data-wegpunkt", slug);
+        kreis.setAttribute("r", "7");
+        punkte.appendChild(kreis);
+      }
+      kreis.setAttribute("cx", a.x.toFixed(1));
+      kreis.setAttribute("cy", a.y.toFixed(1));
+    });
+    punkte.querySelectorAll("[data-wegpunkt]").forEach((k) => {
+      if (!vorhanden.has(k.dataset.wegpunkt)) k.remove();
+    });
   }
 
+  /** Schreibt Position, Groesse und Kartenlage jeder Insel aus der
+   *  Konfiguration in die CSS-Variablen ihrer Station.
+   *
+   *  Die Werte standen vorher in zwei CSS-Bloecken — einer fuer quer, einer
+   *  fuer hoch. Zwei Anordnungen fuer dieselben sieben Inseln laufen
+   *  auseinander, sobald jemand nur eine davon anfasst. Jetzt gibt es eine,
+   *  und die Geraete unterscheiden sich nur noch im Ausschnitt. */
+  function applyKartenLayout(li, slug) {
+    const cfg = KARTE.inseln[slug];
+    if (!cfg) return;
+    const breite = inselBreite(slug);
+    li.style.setProperty("--x", `${cfg.x}%`);
+    li.style.setProperty("--y", `${cfg.y}%`);
+    li.style.setProperty("--w", `${breite.toFixed(2)}%`);
+    li.style.setProperty("--karte-w", `${KARTE.karteBreite}cqw`);
+    li.style.setProperty("--karte-x", `${KARTE.karteAbstand}cqw`);
+    // karteY steht in Prozent der SZENENHOEHE. Die Infokarte ist an der
+    // Insel aufgehaengt, deren Hoehe je Motiv anders ist — deshalb wird
+    // hier in cqw umgerechnet statt in Prozent weitergereicht.
+    const versatz = (cfg.karteY || 0) * (KARTE.szene.hoehe / KARTE.szene.breite);
+    li.style.setProperty("--karte-y-szene", `${versatz.toFixed(2)}cqw`);
+    li.dataset.karte = cfg.karte;
+  }
+
+  /** Routen neu zeichnen.
+   *
+   *  SOFORT, nicht im naechsten Frame. Der Umweg ueber `requestAnimationFrame`
+   *  stammt aus der Zeit, als die Anker aus dem DOM gemessen wurden — dafuer
+   *  musste das Layout stehen. Seit sie aus der Konfiguration kommen, gibt es
+   *  nichts abzuwarten, und das Warten hat aktiv geschadet: Ein Browser haelt
+   *  `requestAnimationFrame` in einem unsichtbaren Tab an. Wer den Campus in
+   *  einem Hintergrundtab oeffnete, bekam eine Karte ganz ohne Routen —
+   *  nachgemessen bei `document.visibilityState === "hidden"`, alle sieben
+   *  Pfade leer.
+   *
+   *  Beim Zusammenlegen vieler Groessenaenderungen ist ein Frame dagegen
+   *  sinnvoll; dafuer gibt es `scheduleCampusRoutes`. */
   function scheduleCampusRoutes() {
+    updateCampusRoutes();
+  }
+
+  function coalesceCampusRoutes() {
     if (campusRouteFrame) cancelAnimationFrame(campusRouteFrame);
     campusRouteFrame = requestAnimationFrame(() => {
       campusRouteFrame = 0;
@@ -692,6 +827,199 @@
     routes.forEach((path) => {
       const stations = path.dataset.route.split("-");
       path.classList.toggle("is-route-focus", active && stations.includes(slug));
+    });
+  }
+
+  /* ===================== Die Karte mit dem Finger schieben ===============
+
+     Auf einem breiten Schirm passt die Szene vollstaendig in den Ausschnitt
+     und es gibt nichts zu schieben. Auf einem Telefon waere dieselbe Szene
+     auf 390 px zusammengedrueckt: Die Motive verlieren jede Lesbarkeit, und
+     die Trefferflaechen fallen weit unter das Mindestmass. Deshalb bleibt
+     die Szene dort auf einer Mindestbreite stehen und ragt ueber den
+     Ausschnitt hinaus — man schiebt sie wie eine Seekarte auf dem Tisch.
+
+     Wichtig dabei:
+
+     - Verschoben wird ueber `translate3d` in CSS-Variablen. Wer `left`/`top`
+       animiert, loest bei JEDEM Zeigerereignis ein neues Layout aus, und
+       zwar fuer sieben Inseln, sieben Infokarten und sieben Bezierkurven.
+     - Der Weg wird geklemmt. Ohne das laesst sich der Archipel aus dem
+       Ausschnitt schieben, und der Teilnehmer sieht leeres Wasser ohne zu
+       wissen, wohin er zurueck muss.
+     - `touch-action: pan-y` am Ausschnitt: Waagerecht schiebt die Karte,
+       senkrecht scrollt weiterhin die Seite. Sonst haengt der Teilnehmer in
+       der Karte fest und kommt nicht mehr zum Tagesabschluss darunter. */
+
+  const pan = { x: 0, y: 0, aktiv: false, id: null, startX: 0, startY: 0, vonX: 0, vonY: 0, weg: 0 };
+
+  function panGrenzen() {
+    if (!el.campusMap || !el.campusSzene) return { x: 0, y: 0 };
+    const aus = el.campusMap.getBoundingClientRect();
+    const szene = el.campusSzene.getBoundingClientRect();
+    // Was ueber den Ausschnitt hinausragt, ist der Weg, den man schieben
+    // darf — nie mehr. Passt die Szene hinein, ist der Weg null.
+    return {
+      x: Math.max(0, Math.round(szene.width - aus.width)),
+      y: Math.max(0, Math.round(szene.height - aus.height))
+    };
+  }
+
+  function panSchreiben() {
+    if (!el.campusSzene) return;
+    el.campusSzene.style.setProperty("--pan-x", `${pan.x}px`);
+    el.campusSzene.style.setProperty("--pan-y", `${pan.y}px`);
+  }
+
+  function panKlemmen() {
+    const g = panGrenzen();
+    pan.x = Math.min(0, Math.max(-g.x, pan.x));
+    pan.y = Math.min(0, Math.max(-g.y, pan.y));
+    if (el.campusMap) {
+      el.campusMap.classList.toggle("kann-schieben", g.x > 4 || g.y > 4);
+    }
+    panSchreiben();
+  }
+
+  /** Holt eine Insel in den sichtbaren Ausschnitt.
+   *
+   *  Noetig fuer die Tastatur: Wer sich durch die sieben Stationen tabbt,
+   *  landet sonst auf einem Knopf ausserhalb des Ausschnitts und sieht den
+   *  Fokusring nicht. `scrollIntoView` hilft hier nicht — geschoben wird
+   *  per transform, nicht gescrollt. */
+  function panZuInsel(slug) {
+    if (!el.campusMap || !el.campusSzene) return;
+    const g = panGrenzen();
+    if (!g.x && !g.y) return;
+    const li = el.islandGrid.querySelector(`.island-${slug}`);
+    if (!li) return;
+
+    const aus = el.campusMap.getBoundingClientRect();
+    const insel = li.getBoundingClientRect();
+    const mitteX = insel.left + insel.width / 2 - aus.left;
+    const mitteY = insel.top + insel.height / 2 - aus.top;
+    pan.x += aus.width / 2 - mitteX;
+    pan.y += aus.height / 2 - mitteY;
+    panKlemmen();
+  }
+
+  /* ======================== Der Inselbogen (Telefon) ====================
+
+     Ob der Bogen gebraucht wird, entscheidet dieselbe Grenze wie im
+     Stylesheet — aber nicht als zweite Zahl im Skript, sondern indem
+     gefragt wird, ob die Infokarte ueberhaupt sichtbar ist. Eine Kopie der
+     Bedingung ist hier schon einmal auseinandergelaufen (siehe
+     `buehneAktiv`), und dieselbe Falle noch einmal zu stellen waere
+     leichtfertig. */
+  function bogenNoetig() {
+    if (!el.bogen || typeof el.bogen.showModal !== "function") return false;
+    const karte = el.islandGrid.querySelector(".island-card .i-content");
+    return Boolean(karte) && getComputedStyle(karte).display === "none";
+  }
+
+  function zeigeBogen(island, entry, unterwegs) {
+    if (!el.bogen) return;
+    el.bogenCode.textContent = island.code || island.name || "";
+    el.bogenTitel.textContent = island.title || island.name || "";
+    el.bogenThema.textContent = island.beschreibung || "";
+    el.bogenStand.textContent = !entry
+      ? "Noch nicht begonnen"
+      : unterwegs
+        ? `Abgeschlossen · ${entry.percent} % – noch nicht gesendet`
+        : `Abgeschlossen · ${entry.percent} %`;
+
+    const prozent = entry ? Math.max(0, Math.min(100, Number(entry.percent) || 0)) : 0;
+    el.bogenScore.hidden = !entry;
+    el.bogenScore.style.setProperty("--score", prozent);
+
+    el.bogenStart.textContent = entry ? "Wissenscheck wiederholen" : "Wissenscheck starten";
+    el.bogenStart.href = `/quiz/${island.slug}`;
+    el.bogenStart.dataset.slug = island.slug;
+
+    if (!el.bogen.open) el.bogen.showModal();
+  }
+
+  function bogenEinrichten() {
+    if (!el.bogen) return;
+    el.bogenZu.addEventListener("click", () => el.bogen.close());
+
+    /* Der Startknopf ist ein <a> mit echter Adresse: Wer ihn mit der
+       mittleren Maustaste oeffnet oder das Ziel kopiert, bekommt eine
+       brauchbare URL. Der Klick selbst bleibt aber im Einseiter. */
+    el.bogenStart.addEventListener("click", (ev) => {
+      if (ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.button !== 0) return;
+      ev.preventDefault();
+      el.bogen.close();
+      history.pushState({}, "", `/quiz/${el.bogenStart.dataset.slug}`);
+      route();
+    });
+
+    /* Klick auf den Hintergrund schliesst. <dialog> meldet solche Klicks am
+       Dialog selbst — die Flaeche daneben gehoert technisch dazu. */
+    el.bogen.addEventListener("click", (ev) => {
+      if (ev.target === el.bogen) el.bogen.close();
+    });
+  }
+
+  function panEinrichten() {
+    if (!el.campusMap || !el.campusSzene) return;
+
+    el.campusMap.addEventListener("pointerdown", (ev) => {
+      const g = panGrenzen();
+      if (!g.x && !g.y) return;
+      if (ev.pointerType === "mouse" && ev.button !== 0) return;
+      pan.aktiv = true;
+      pan.id = ev.pointerId;
+      pan.startX = ev.clientX;
+      pan.startY = ev.clientY;
+      pan.vonX = pan.x;
+      pan.vonY = pan.y;
+      pan.weg = 0;
+      el.campusMap.classList.add("is-schiebend");
+    });
+
+    el.campusMap.addEventListener("pointermove", (ev) => {
+      if (!pan.aktiv || ev.pointerId !== pan.id) return;
+      const dx = ev.clientX - pan.startX;
+      const dy = ev.clientY - pan.startY;
+      pan.weg = Math.max(pan.weg, Math.hypot(dx, dy));
+      // Erst ab ein paar Pixeln uebernehmen: Sonst wird jeder Tipp mit
+      // zitternder Hand zum Schieben und der Knopf darunter loest nicht aus.
+      if (pan.weg < 4) return;
+      if (!el.campusMap.hasPointerCapture(ev.pointerId)) {
+        el.campusMap.setPointerCapture(ev.pointerId);
+      }
+      pan.x = pan.vonX + dx;
+      pan.y = pan.vonY + dy;
+      panKlemmen();
+      el.campusMap.classList.add("hat-geschoben");
+    });
+
+    const loslassen = (ev) => {
+      if (!pan.aktiv || (ev && ev.pointerId !== pan.id)) return;
+      pan.aktiv = false;
+      pan.id = null;
+      el.campusMap.classList.remove("is-schiebend");
+      panKlemmen();
+    };
+    el.campusMap.addEventListener("pointerup", loslassen);
+    el.campusMap.addEventListener("pointercancel", loslassen);
+
+    /* Ein Schieben darf nicht als Klick auf die darunterliegende Insel
+       enden. Die Schwelle ist dieselbe wie oben. */
+    el.campusMap.addEventListener("click", (ev) => {
+      if (pan.weg >= 4) {
+        ev.stopPropagation();
+        ev.preventDefault();
+        pan.weg = 0;
+      }
+    }, true);
+
+    el.islandGrid.addEventListener("focusin", (ev) => {
+      const li = ev.target.closest(".island-map-item");
+      if (!li) return;
+      const treffer = li.className.match(/island-([a-z0-9-]+)/);
+      if (treffer) panZuInsel(treffer[1]);
     });
   }
 
@@ -728,6 +1056,7 @@
       const li = document.createElement("li");
       li.className = `island-map-item island-${island.slug}`;
       li.style.setProperty("--island-order", index);
+      applyKartenLayout(li, island.slug);
 
       // width/height stehen im Katalog, weil die Insel auf der Buehne ihre
       // Hoehe aus dem Seitenverhaeltnis des Motivs zieht. Ohne die Angaben
@@ -761,6 +1090,18 @@
       const card = document.createElement("button");
       card.type = "button";
       card.className = "island-card" + (entry ? (unterwegs ? " is-warten" : " is-done") : "");
+      /* Auf dem Telefon zeigt die Karte nur das Motiv; die Beschriftung
+         steht im Bogen unten. Ohne eigenen Namen hiesse der Knopf dort fuer
+         eine Vorlesehilfe schlicht "Schaltflaeche". Der Name traegt deshalb
+         Insel, Thema und Stand — dieselbe Auskunft, die das Auge bekommt. */
+      card.setAttribute("aria-label", [
+        island.name || island.code,
+        island.title,
+        !entry ? "noch nicht begonnen"
+          : unterwegs ? `abgeschlossen mit ${entry.percent} Prozent, noch nicht gesendet`
+            : `abgeschlossen mit ${entry.percent} Prozent`,
+        "Wissenscheck öffnen"
+      ].filter(Boolean).join(" – "));
       if (entry) card.style.setProperty("--score", Math.max(0, Math.min(100, Number(entry.percent) || 0)));
       card.innerHTML = `
         ${island.image ? `<span class="i-visual" aria-hidden="true"><img src="${escapeHtml(medienUrl(island.image))}" alt="" loading="lazy"${masse}></span>` : ""}
@@ -777,6 +1118,15 @@
         </span>
         <span class="i-open" aria-hidden="true"></span>`;
       card.addEventListener("click", () => {
+        /* Auf dem Telefon fuehrt der erste Tipp nicht direkt in den
+           Wissenscheck. Die Insel traegt dort keine Beschriftung — wer
+           antippt, weiss noch nicht sicher, wo er landet. Der Bogen zeigt
+           Name, Thema und Stand und laesst die Wahl. Ab 768 px steht die
+           Infokarte daneben, dort ist der Umweg ueberfluessig. */
+        if (bogenNoetig()) {
+          zeigeBogen(island, entry, unterwegs);
+          return;
+        }
         history.pushState({}, "", `/quiz/${island.slug}`);
         route();
       });
@@ -820,6 +1170,12 @@
     el.mastheadMeta.hidden = true;
     show("islands");
     scheduleCampusRoutes();
+    /* Direkt, nicht im naechsten Frame: `requestAnimationFrame` ruht in
+       einem unsichtbaren Tab. Wer den Campus im Hintergrund oeffnete, bekam
+       eine Karte, die sich nicht schieben liess, bis er das Fenster
+       anfasste — nachgemessen im Hochformat, Szene 34 px breiter als der
+       Ausschnitt und `kann-schieben` trotzdem aus. */
+    panKlemmen();
   }
 
   // ------------------------------------------------------------ Startbild ---
@@ -2285,7 +2641,28 @@
   });
 
   window.addEventListener("popstate", route);
-  window.addEventListener("resize", scheduleCampusRoutes, { passive: true });
+  /* Bei jeder Groessenaenderung neu klemmen: Wird das Fenster breiter, passt
+     die Szene womoeglich vollstaendig hinein — ein alter Versatz liesse sie
+     dann schief im Ausschnitt stehen. Die Routen selbst brauchen das nicht
+     mehr (sie stehen in Szeneneinheiten), der Aufruf bleibt aber fuer den
+     Fall, dass eine Station erst nach dem Zeichnen dazukommt. */
+  window.addEventListener("resize", () => {
+    coalesceCampusRoutes();
+    panKlemmen();
+  }, { passive: true });
+
+  /* Sicherheitsnetz: Wird der Tab erst spaeter sichtbar, ist alles bereits
+     gezeichnet — aber eine Groessenaenderung im Hintergrund kann der Browser
+     verschluckt haben. Einmal nachziehen kostet nichts. */
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+      updateCampusRoutes();
+      panKlemmen();
+    }
+  });
+  window.addEventListener("orientationchange", () => {
+    panKlemmen();
+  }, { passive: true });
 
   // ---------------------------------------------------------------- Start ---
 
@@ -2333,6 +2710,8 @@
 
   async function boot() {
     el.colophon.textContent = DEMO ? "Vorschaumodus: nichts wird gespeichert" : "Wissenscheck";
+    panEinrichten();
+    bogenEinrichten();
 
     try {
       state.catalog = await fetchJson("/data/inseln.json");

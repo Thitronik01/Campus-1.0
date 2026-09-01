@@ -70,18 +70,29 @@
 
       <!-- ==================== Inselübersicht ==================== -->
       <section class="screen" id="screen-islands" aria-labelledby="islands-title" hidden>
+        <!-- #campus-map ist der AUSSCHNITT, .campus-szene die Karte selbst.
+             Getrennt, weil auf schmalen Geraeten die Szene breiter als der
+             Ausschnitt bleibt und mit dem Finger geschoben wird. Alles, was
+             zur Karte gehoert, liegt in der Szene und skaliert mit ihr. -->
         <div class="campus-map" id="campus-map">
+          <div class="campus-szene" id="campus-szene">
           <div class="screen-head island-intro">
             <p class="kicker">Campus 2026</p>
             <h1 id="islands-title">Dein Schulungsarchipel</h1>
             <p class="lead">Wähle eine Insel aus und starte den Wissenscheck.</p>
           </div>
 
-          <!-- Die Routen zeichnet die Engine: Sie misst die tatsaechlichen
-               Stationspunkte und rechnet daraus die Boegen. Feste d-Werte
-               hier waeren beim naechsten Verschieben einer Insel still
-               falsch. Der viewBox entspricht der 16:9-Buehne. -->
-          <svg class="campus-map-art" id="campus-map-art" viewBox="0 0 1600 900" aria-hidden="true" focusable="false">
+          <!-- Die Routen zeichnet die Engine aus KARTE.inseln — dieselben
+               Zahlen, aus denen auch die Inselpositionen kommen. Feste
+               d-Werte hier waeren beim naechsten Verschieben einer Insel
+               still falsch.
+
+               Der viewBox ist FEST und wird nicht mehr auf die gemessene
+               Buehne gesetzt: 1600 x 900 sind die Einheiten der Szene.
+               `xMidYMid meet` haelt waagerechten und senkrechten Massstab
+               gleich, damit die Boegen und Pfeilspitzen in keinem Format
+               gestaucht werden. -->
+          <svg class="campus-map-art" id="campus-map-art" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
             <defs>
               <marker id="route-arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
                 <path d="M0,0 L0,6 L6,3 z"></path>
@@ -96,6 +107,11 @@
               <path data-route="langeland-usedom"></path>
               <path data-route="usedom-fehmarn"></path>
             </g>
+            <!-- Die Wegpunkte zeichnet die Engine an dieselben Anker wie die
+                 Routenenden. Vorher war das ein CSS-Pseudoelement an der
+                 Infokarte: zwei Zeichensysteme fuer denselben Punkt, die
+                 getrennt gerundet wurden und um rund 7 px auseinanderlagen. -->
+            <g class="campus-wegpunkte"></g>
           </svg>
 
           <!-- Kompass, Boote, Wal, Moewen, Wellen. Leere Elemente mit
@@ -117,7 +133,24 @@
           </div>
 
           <ul class="island-map" id="island-grid" aria-label="Schulungsinseln"></ul>
+          </div>
+          <p class="map-schiebehinweis" aria-hidden="true">Karte verschieben</p>
         </div>
+
+        <!-- Auf dem Telefon liegen die Infokarten nicht auf der Szene, sonst
+             verdecken sieben weisse Kaesten die Inseln. Beim Antippen faehrt
+             stattdessen dieser Bogen von unten herein. Ein <dialog> statt
+             eines eigenen Overlays: Fokusfalle, Escape und der
+             Hintergrund-Verschluss kommen vom Browser. -->
+        <dialog class="insel-bogen" id="insel-bogen" aria-labelledby="bogen-titel">
+          <button class="insel-bogen-zu" id="bogen-zu" type="button" aria-label="Schliessen"></button>
+          <p class="insel-bogen-code" id="bogen-code"></p>
+          <h2 class="insel-bogen-titel" id="bogen-titel"></h2>
+          <p class="insel-bogen-thema" id="bogen-thema"></p>
+          <p class="insel-bogen-stand" id="bogen-stand"></p>
+          <div class="insel-bogen-score" id="bogen-score" hidden><span></span></div>
+          <a class="btn btn-primary insel-bogen-start" id="bogen-start" href="#">Wissenscheck starten</a>
+        </dialog>
 
       </section>
 

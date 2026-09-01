@@ -379,71 +379,97 @@ werden Kanten an Kabeln und Schriftzügen matschig). Braucht einmalig
 `npm install sharp --no-save`. `check-fragen.js` warnt, wenn ein Bild darüber
 liegt.
 
-### Die Expeditionskarte
+### Die Archipelkarte
 
-Die Übersicht unter `/quiz` ist keine Kachelliste mit Hintergrundbild,
-sondern eine **Bühne mit festem Seitenverhältnis**. Das ist der Unterschied,
-an dem alles andere hängt.
+Die Übersicht unter `/quiz` ist **eine Szene im Verhältnis 16:9**, und zwar
+auf jedem Gerät dieselbe. Was sich zwischen Desktop, Tablet und Telefon
+unterscheidet, ist allein der **Ausschnitt**, durch den man sie sieht.
 
-Vorher war die Karte ein Kasten über die volle Breite mit
-`min-height: clamp(735px, 76vw, 900px)`. Gemessen ergab das auf dem iPad
-hochkant 1,0:1 und auf einem breiten Monitor 2,7:1 — dieselben
-Prozentangaben trafen also auf Verhältnisse, die um den Faktor 2,7
-auseinanderliegen. Jede Insel saß höchstens auf einer Fensterbreite richtig.
+Vorher gab es drei Karten: eine Anordnung für quer, eine zweite für hoch und
+auf dem Telefon eine Kachelliste. Drei Fassungen desselben Archipels laufen
+auseinander, sobald jemand nur eine davon anfasst.
 
-Jetzt beschreibt eine Prozentangabe einen Ort auf der **Karte** statt einen
-Ort im **Fenster**:
+**Alle Maße stehen in `KARTE` in `public/assets/engine.js`** — und nur dort:
 
-| | Verhältnis | gilt für |
-|---|---|---|
-| Querformat | 16:9 | Monitor, iPad quer |
-| Hochformat | 4:5 | iPad hochkant |
-| Liste | — | Telefon |
-
-Die Bühne erscheint ab `min-width: 700px` **und** `min-height: 560px`. Beide
-Bedingungen zusammen, weil die Breite allein zweimal daneben liegt: Ein iPad
-mini ist hochkant 744 px breit und fiel mit der alten 760-px-Grenze auf die
-Liste zurück; ein iPhone quer ist 844 px breit und bekam die Karte auf
-390 px Höhe.
-
-**Eine Insel verschieben.** Je Insel und Lage steht eine Zeile in
-`styles.css`:
-
-```css
-.island-vejro { --x: 56%; --y: 42%; --w: 19%; --karte-w: 15cqw; --karte-y: -12%; }
+```js
+const KARTE = {
+  szene: { breite: 1600, hoehe: 900 },
+  basis: 18,          // lange Kante bei scale 1, in % der Szenenbreite
+  karteBreite: 15.5,  // Infokarte, in % der Szenenbreite
+  karteAbstand: 2.4,
+  inseln: {
+    vejro: { x: 64, y: 39, scale: 1.15, karte: "rechts", karteY: -4 },
+    …
+  }
+};
 ```
 
-`--x`/`--y` ist der **Mittelpunkt** des Motivs, `--w` seine Breite; die Höhe
-folgt dem Seitenverhältnis des Bildes. `--karte-w` ist die Breite der
-Infokarte, `--karte-y` verschiebt sie gegen die Inselmitte.
+`x`/`y` ist der Mittelpunkt des Motivs in Prozent der SZENE. `scale` ist die
+**lange** Kante als Vielfaches von `basis` — nicht die Breite: HIDDENSEE ist
+hochkant und USEDOM noch schmaler, gleiche Breite hieße bei ihnen die
+doppelte Höhe. Die kurze Kante folgt dem Seitenverhältnis aus dem Katalog.
+`karte` ist die Seite der Infokarte, `karteY` ihr senkrechter Versatz in
+Prozent der SZENENHÖHE.
 
-> **`--karte-y` zählt in Prozent der INSELHÖHE, nicht der Bühne.** VEJRØ ist
-> 34 % der Bühne hoch — −12 % davon sind gut 4 % Bühne. Wer hier in
-> Bühnenprozent rechnet, verschiebt ein Drittel dessen, was er meint.
+Drei Größenklassen: VEJRØ führt mit 1.15, FEHMARN und POEL tragen mit 0.95,
+die übrigen ordnen sich mit 0.75–0.82 unter. Die Mitte bleibt frei — dort
+liegen nur Segelboot, Walfluke, Wellen und Möwen.
 
-Alle Maße innerhalb der Bühne stehen in `cqw` (Prozent der Bühnenbreite) mit
-einer `max(…rem, …cqw)`-Untergrenze. Sonst wüchse die Schrift einer
-Infokarte weiter, während die Bühne unter ihr schrumpft, und die Karten
-stießen aneinander.
+**Die Routen** kommen aus derselben Quelle. `campusAnchor()` rechnet den
+Stationspunkt einer Insel aus `KARTE`; der `viewBox` steht fest auf
+`0 0 1600 900` mit `preserveAspectRatio="xMidYMid meet"`. Vorher wurden die
+Anker aus dem DOM **gemessen** und der viewBox auf die gemessene Pixelgröße
+gesetzt — zwei Systeme, die nur zufällig übereinstimmten, und die Messung
+lief zuverlässig, bevor die Motive geladen waren.
+
+`ROUTEN_BOGEN` gibt je Route an, wie weit sich der Bogen wölbt, als Anteil
+der Streckenlänge. Die Reise läuft im Uhrzeigersinn; ein negativer Wert
+wölbt nach außen.
+
+**Der Ausschnitt** je Gerät:
+
+| | Ausschnitt | Szene | Schieben |
+|---|---|---|---|
+| ab 1180 px | volle Breite, 16:9 | passt hinein | nein |
+| 768–1179 px quer | dieselbe, kleiner | passt hinein | nein |
+| Tablet hochkant | Höhe des Fensters | breiter als der Ausschnitt | ja |
+| unter 768 px | Höhe des Fensters | mindestens 940 px breit | ja |
+
+Nur `--szene-min` und `--aussch-hoehe` unterscheiden sich; die Szenenbreite
+folgt daraus als `max(--szene-min, --aussch-hoehe * 16/9)`. Damit ist die
+Szene nie schmaler als lesbar und nie niedriger als der Ausschnitt.
+
+Geschoben wird über `translate3d` in `--pan-x`/`--pan-y`, geklemmt auf den
+tatsächlichen Überstand. `touch-action: pan-y` lässt die Seite weiter
+senkrecht scrollen. Ob überhaupt geschoben werden kann, **misst** die Engine
+(Szene breiter als Ausschnitt) — sie fragt keine Fensterbreite ab, damit die
+Grenze im Stylesheet nicht von einer zweiten Fassung im Skript abweichen
+kann.
+
+**Auf dem Telefon** liegen die Infokarten nicht auf der Szene: Sieben weiße
+Kästen auf 390 px verdecken genau das, was man ansehen will. Ein Tipp öffnet
+stattdessen den **Inselbogen** — ein `<dialog>`, das Fokusfalle, Escape und
+den Verschluss beim Klick daneben vom Browser bekommt.
 
 **Nachmessen statt schauen.** Ob sich etwas überschneidet, beantwortet der
 Browser in einem Zug — in der Konsole auf `/quiz`:
 
 ```js
-const m = document.getElementById('campus-map').getBoundingClientRect();
+const m = document.getElementById('campus-szene').getBoundingClientRect();
 const box = e => { const b = e.getBoundingClientRect(); return [
   (b.left-m.left)/m.width*100, (b.top-m.top)/m.height*100,
   (b.right-m.left)/m.width*100, (b.bottom-m.top)/m.height*100]; };
-const r = {};
+const r = { INTRO: box(document.querySelector('.island-intro')) };
 document.querySelectorAll('.island-map-item').forEach(li => {
-  const s = li.className.replace('island-map-item island-', '');
+  const s = li.className.replace('island-map-item','').replace('island-','').trim();
   r['I '+s] = box(li.querySelector('.i-visual'));
-  r['K '+s] = box(li.querySelector('.i-content'));
+  const k = li.querySelector('.i-content');
+  if (getComputedStyle(k).display !== 'none') r['K '+s] = box(k);
 });
 const e = Object.entries(r), treffer = [];
 for (let i=0;i<e.length;i++) for (let j=i+1;j<e.length;j++) {
   const [na,a]=e[i],[nb,b]=e[j];
-  if (na.slice(2)===nb.slice(2)) continue;
+  if (na.length>2 && nb.length>2 && na.slice(2)===nb.slice(2)) continue;
   const ox=Math.min(a[2],b[2])-Math.max(a[0],b[0]);
   const oy=Math.min(a[3],b[3])-Math.max(a[1],b[1]);
   if (ox>0.3 && oy>0.3) treffer.push(`${na} x ${nb}`);
@@ -451,14 +477,10 @@ for (let i=0;i<e.length;i++) for (let j=i+1;j<e.length;j++) {
 treffer;
 ```
 
-**Die Routen** zeichnet die Engine, nicht das HTML: `updateCampusRoutes()`
-misst die Stationspunkte — das sind die kleinen Ringe an den Infokarten,
-Pseudoelemente von `.i-content` — und legt einen Bogen dazwischen.
-`ROUTEN_BOGEN` gibt je Route an, wie weit er sich wölbt, als **Anteil der
-Streckenlänge**. Vorher standen dort 28 feste Kontrollpunkte, die zu genau
-einer Anordnung passten; ein Anteil überlebt jedes Verschieben. Der
-`viewBox` wird auf die gemessene Bühne gesetzt, damit eine Benutzereinheit
-ein Pixel ist und die Pfeilspitzen in beiden Formaten stimmen.
+Geprüft auf 1920x1080, 1440x900, 1366x768, 1180x820, 1024x768, 820x1180,
+768x1024, 430x932, 390x844 und 375x812: keine Überschneidung, nichts
+außerhalb der Szene, kleinste Trefferfläche 50 px, kein waagerechtes
+Seitenscrollen.
 
 ### Die Motive der Karte
 

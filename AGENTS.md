@@ -282,6 +282,34 @@ Zustand ergänzt, schreibt die Grundlage mit: `translateY(calc(-50% - 2px))`,
 `prefers-reduced-motion` — dort ist die Regel jetzt auf die Bühne begrenzt,
 weil `none` in der Kachelliste richtig bleibt.
 
+### Ein modaler `<dialog>` entkommt dem `zoom` seiner Vorfahren
+
+Der Inselbogen auf dem Telefon steht optisch da, wo er hingehört. Gemessen
+sah er falsch aus: `top: 808px` bei 844 px Fensterhöhe, dazu ein
+`transform` von 246 px — also scheinbar unterhalb des Bildschirms.
+
+Ein modaler `<dialog>` wird in die **Top-Layer** befördert und liegt damit
+außerhalb des Teilbaums, auf dem `body { zoom: .8 }` wirkt. Seine eigenen
+Maße stehen in echten Pixeln, `getBoundingClientRect()` an anderen Elementen
+liefert gezoomte. Wer beides vergleicht, vergleicht zwei Systeme.
+
+Ein Screenshot hat es in zehn Sekunden entschieden. Bei Elementen in der
+Top-Layer — `<dialog>`, Popover, Fullscreen — gilt die Messung erst nach
+einem Blick.
+
+### Die Karte zeichnet sich nicht, wenn der Tab im Hintergrund liegt
+
+`requestAnimationFrame` ruht in einem unsichtbaren Tab. Solange die Routen
+aus dem DOM gemessen wurden, musste das Zeichnen auf einen Frame warten —
+und wer den Campus in einem Hintergrundtab öffnete, bekam eine Karte ganz
+ohne Routen, bis er das Fenster anfasste. Nachgemessen bei
+`document.visibilityState === "hidden"`: alle sieben Pfade leer.
+
+Seit die Anker aus `KARTE` gerechnet werden, gibt es nichts abzuwarten; das
+Zeichnen läuft sofort. Ein Frame ist nur noch zum Bündeln vieler
+Größenänderungen da. **Wer etwas in `requestAnimationFrame` legt, fragt sich
+vorher, ob es auch in einem unsichtbaren Tab passieren muss.**
+
 ### Vor dem Löschen eines Bildes nachsehen, wer darauf zeigt
 
 `lan-start-schluesseluebergabe.webp` sah nach dem Umbau der Langeland-Bühne
