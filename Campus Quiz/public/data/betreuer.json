@@ -7,7 +7,7 @@
     "rolle": "Optional. Erscheint als kleine Zeile ueber dem Namen."
   },
   "_fotos": "Erzeugt mit `node tools/betreuer-fotos.js \"../export/Bilder Thitronik Mitarbeiter\"`. Die Originale sind Querformat von der Website; das Werkzeug schneidet sie mit sharps `attention` auf 320x320, damit im runden Ausschnitt das Gesicht steht und nicht der Pullover. Wer eine Person ergaenzt, traegt sie dort UND hier ein.",
-  "_offen": "Stand 31.08.2026 — die 'koennen'-Zeilen sind aus dem Inselthema abgeleitet und redaktionell noch nicht bestaetigt. Sie sagen bisher, wofuer die Insel steht, nicht wofuer man genau diese Person anspricht. Die Schreibweisen folgen den Dateinamen der Mitarbeiterfotos, auch wo sie von der Zuruf-Liste abweichen: Mark Thitje (nicht Thietje), Carolin Kinder (nicht Caroline). RUEGEN, die Verpflegungsinsel mit Hermine Bender und Carolin Kinder, ist am 31.08.2026 vorerst aus dem Frontend genommen worden — sie steht nicht mehr in inseln.json. Ihre Fotos liegen weiter unter media/betreuer/, die Mechanik fuer Inseln ohne Wissenscheck ist vollstaendig erhalten. Wie sie zurueckkommt, steht im README unter 'Eine Insel ohne Wissenscheck'.",
+  "_offen": "Stand 31.08.2026 — die 'koennen'-Zeilen sind aus dem Inselthema abgeleitet und redaktionell noch nicht bestaetigt. Sie sagen bisher, wofuer die Insel steht, nicht wofuer man genau diese Person anspricht. Zwei Schreibweisen sind am 01.09.2026 vom Auftraggeber bestaetigt und korrigiert worden: Mark Thietje (vorher Thitje) und Regina Hayn (vorher Heyn). Schluessel, Bildpfad und Dateiname wurden mitgezogen, damit der Tippfehler nicht im Dateinamen stehen bleibt. OFFEN bleibt Carolin Kinder (nicht Caroline) - dieselbe Herkunft, naemlich der Dateiname des Fotos, aber noch nicht bestaetigt. RUEGEN, die Verpflegungsinsel mit Hermine Bender und Carolin Kinder, ist am 31.08.2026 vorerst aus dem Frontend genommen worden — sie steht nicht mehr in inseln.json. Ihre Fotos liegen weiter unter media/betreuer/, die Mechanik fuer Inseln ohne Wissenscheck ist vollstaendig erhalten. Wie sie zurueckkommt, steht im README unter 'Eine Insel ohne Wissenscheck'.",
 
   "personen": {
     "dennis-behrendt": {
@@ -65,20 +65,20 @@
       "koennen": "Konfigurator und Angebotsentwurf",
       "bild": "/media/betreuer/thomas-schapke.webp"
     },
-    "regina-heyn": {
-      "name": "Regina Heyn",
+    "regina-hayn": {
+      "name": "Regina Hayn",
       "koennen": "Produkte am Display erklären",
-      "bild": "/media/betreuer/regina-heyn.webp"
+      "bild": "/media/betreuer/regina-hayn.webp"
     },
     "stephan-manns": {
       "name": "Stephan Manns",
       "koennen": "Händlerbereich und Produktneuheiten",
       "bild": "/media/betreuer/stephan-manns.webp"
     },
-    "mark-thitje": {
-      "name": "Mark Thitje",
+    "mark-thietje": {
+      "name": "Mark Thietje",
       "koennen": "CampLock, VanLock und Wasserschutz",
-      "bild": "/media/betreuer/mark-thitje.webp"
+      "bild": "/media/betreuer/mark-thietje.webp"
     }
   },
 
@@ -87,8 +87,8 @@
     "samsoe": ["anton-passau", "steffen-kunz"],
     "langeland": ["peer-flaig", "mark-havenstein"],
     "hiddensee": ["julie-marier", "miriam-batliner", "emmanuel-simon", "delphine-passaret"],
-    "usedom": ["thomas-schapke", "regina-heyn"],
+    "usedom": ["thomas-schapke", "regina-hayn"],
     "poel": ["stephan-manns"],
-    "vejro": ["stephan-manns", "mark-thitje"]
+    "vejro": ["stephan-manns", "mark-thietje"]
   }
 }

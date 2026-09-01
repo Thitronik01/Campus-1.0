@@ -26,7 +26,11 @@ function check(label, condition) {
   checks.push(label);
 }
 
-check("48 produktive Materialpositionen übernommen", initialMaterials.length === 48);
+/* 47 statt vormals 48: Das "Netzteil GBA-I 230 V" (100083) ist aus dem
+   Angebot und im September 2026 aus dem Katalog genommen worden. Die Zahl
+   steht hier, damit ein versehentliches Loeschen auffaellt — wer sie
+   aendert, sollte wissen, welche Position warum entfallen ist. */
+check("47 produktive Materialpositionen übernommen", initialMaterials.length === 47);
 check("NFC Modul kanonisch geschrieben", initialMaterials.some((item) => item.artikel === "NFC Modul" && item.artNr === "105299"));
 check("Pro-Finder kanonisch geschrieben", initialMaterials.some((item) => item.artikel === "Pro-Finder" && item.artNr === "100699"));
 check("13 Übergabepunkte übernommen", checklistItemsUebergabe.length === 13);
@@ -50,7 +54,7 @@ check("Arbeitskarte wird in der lokalen Historie gespeichert", history.length ==
 const loaded = loadInitialCard(storage);
 check("Reload erhält Kunden- und Fahrzeugdaten", loaded.formData.kunde.name === "Testkunde" && loaded.formData.kunde.kennzeichen === "PLÖ AK 1");
 check("Reload erhält Fotos, Skizzen und Unterschriften", loaded.formData.vorschadenFotos.front.includes("FOTO") && loaded.sketches.front.includes("SKIZZE") && loaded.formData.uebergabe.unterschriftKunde.includes("UEBERGABE"));
-check("Reload erhält alle Materialien und Verbaut-Status", loaded.materials.length === 48 && loaded.materials[0].verbaut && loaded.materials[0].notiz === "Testnotiz");
+check("Reload erhält alle Materialien und Verbaut-Status", loaded.materials.length === initialMaterials.length && loaded.materials[0].verbaut && loaded.materials[0].notiz === "Testnotiz");
 
 const imported = normalizeWorkCard({
   formData: { kunde: { name: "Import" }, uebergabe: { datum: "2026-08-28" } },

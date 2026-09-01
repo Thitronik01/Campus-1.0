@@ -47,7 +47,7 @@ export const initialMaterials = [
   ["11","Zubehör","Funk-Kabelschleife 868, weiß","100761"],["12","Zubehör","Funk-Kabelschleife 868, schwarz","101068"],
   ["13","Zubehör","Funk-Kabelschleife XL, weiß","100944"],["14","Zubehör","Funk-Kabelschleife XL, schwarz","101074"],
   ["15","Zubehör","Zusatzsirene","100190"],["16","Zubehör","Back-up Sirene","100089"],
-  ["17","Zubehör","Netzteil GBA-I 230 V","100083"],["18","Zubehör","Universalanschlusskabel 12/24 V","100097"],
+  ["18","Zubehör","Universalanschlusskabel 12/24 V","100097"],
   ["19","Zubehör","BT-connect / Vernetzungsmodul","101290"],["20","Zubehör","NFC Modul","105299"],
   ["21","Zubehör","THITRONIK KeyCard","105300"],["22","Zubehör","THITRONIK KeyTag","105301"],
   ["23","Zubehör","THITRONIK KeyStrap M schwarz","105302"],["24","Zubehör","THITRONIK KeyStrap M weiß","105464"],

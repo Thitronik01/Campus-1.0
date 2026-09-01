@@ -84,7 +84,6 @@ export const initialMaterials = [
   { id: "14", gruppe: "Zubehör", artikel: "Funk-Kabelschleife XL, schwarz", artNr: "101074", menge: 1, verbaut: false, notiz: "" },
   { id: "15", gruppe: "Zubehör", artikel: "Zusatzsirene", artNr: "100190", menge: 1, verbaut: false, notiz: "" },
   { id: "16", gruppe: "Zubehör", artikel: "Back-up Sirene", artNr: "100089", menge: 1, verbaut: false, notiz: "" },
-  { id: "17", gruppe: "Zubehör", artikel: "Netzteil GBA-I 230 V", artNr: "100083", menge: 1, verbaut: false, notiz: "" },
   { id: "18", gruppe: "Zubehör", artikel: "Universalanschlusskabel 12/24 V", artNr: "100097", menge: 1, verbaut: false, notiz: "" },
   { id: "19", gruppe: "Zubehör", artikel: "BT-connect / Vernetzungsmodul", artNr: "101290", menge: 1, verbaut: false, notiz: "" },
   { id: "20", gruppe: "Zubehör", artikel: "NFC-Modul", artNr: "105299", menge: 1, verbaut: false, notiz: "" },
