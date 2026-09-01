@@ -180,6 +180,31 @@ Geprüft wird das derzeit **nicht** — die Paketprüfung vergleicht nur, ob die
 Marken zur Fassung passen, und das tun sie immer, weil der Bau sie von dort
 nimmt. Siehe Rückstand in [`BACKLOG.md`](BACKLOG.md).
 
+### Ein Bild unter gleichem Namen auszutauschen erreicht niemanden
+
+Dieselbe Regel gilt für `/media/*`, und dort fiel sie zuerst auf. Im
+September 2026 wurden aus den flachen Silhouetten die isometrischen
+Dioramen — `fehmarn.webp` hieß danach aber weiter `fehmarn.webp`. Auf der
+veröffentlichten Seite lagen die neuen Motive, byte-identisch mit dem Repo;
+jeder Browser, der den Campus vorher offen hatte, zeigte trotzdem die alten.
+Nicht als Rest im Cache, den ein Neuladen räumt: `immutable` heißt, dass ein
+Jahr lang **gar nicht erst nachgefragt** wird.
+
+Das Trügerische daran ist das Mischbild. Die Bühne, der Kompass und der Wal
+erschienen sofort, weil `styles.css` seine Fassung in der URL trägt und die
+Dekodateien neue Namen hatten. Nur die Inseln blieben alt. Das sieht nach
+einem Fehler in der Karte aus und ist keiner.
+
+Deshalb geht jede URL unter `/media/`, die aus der Engine kommt, durch
+`medienUrl()` und trägt `?v=ENGINE_VERSION`. Wer ein Motiv unter gleichem
+Namen ersetzt, zählt die Fassung hoch — sonst ist die Arbeit für alle
+unsichtbar, die schon einmal da waren.
+
+**Noch offen:** Die Kartendekoration steht als `background-image` in
+`styles.css` und trägt keine Fassung. Heute unkritisch, weil die Dateien neu
+sind; wer `see.webp` oder `kompass.webp` unter gleichem Namen ersetzt, tappt
+in dieselbe Falle.
+
 ### Netlify packt ESM-Functions mit nft — und nft folgt nur statischen Importen
 
 `netlify/functions/thi.mjs` ist ESM und wird deshalb nicht von esbuild,

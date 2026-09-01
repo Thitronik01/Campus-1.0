@@ -13,7 +13,7 @@
 
 (function () {
   const EVENT_SLUG = "campus-2026";
-  const ENGINE_VERSION = "1.27.0";
+  const ENGINE_VERSION = "1.27.1";
   const SUBMIT_ENDPOINT = "/.netlify/functions/submit-quiz";
 
   const LS_PARTICIPANT = "thitronik.campus.2026.participant";
@@ -504,6 +504,26 @@
     return response.json();
   }
 
+  /** Hängt die Fassung an eine Datei unter /media/.
+   *
+   *  `netlify.toml` liefert `/media/*` mit `max-age=31536000, immutable`
+   *  aus. `immutable` heißt: Der Browser fragt ein Jahr lang nicht nach, ob
+   *  es etwas Neues gibt — auch beim Neuladen nicht. Das geht nur gut,
+   *  solange ein geänderter Inhalt auch einen geänderten Namen bekommt.
+   *
+   *  Genau das war im September 2026 nicht der Fall: Aus den flachen
+   *  Silhouetten wurden die Dioramen, `fehmarn.webp` hieß aber weiter
+   *  `fehmarn.webp`. Wer den Campus vorher offen hatte, bekam die neuen
+   *  Motive nie zu sehen — die Karte war neu, die Inseln darauf alt.
+   *
+   *  Für `/assets/*` gilt dieselbe Regel und geht gut, weil `engine.js` und
+   *  `styles.css` ihre Fassung in der URL tragen. Hier fehlte sie. */
+  function medienUrl(pfad) {
+    if (!pfad) return pfad;
+    const separator = pfad.includes("?") ? "&" : "?";
+    return `${pfad}${separator}v=${encodeURIComponent(ENGINE_VERSION)}`;
+  }
+
   // -------------------------------------------------------- Inselübersicht --
 
   /** Hat diese Insel einen Wissenscheck?
@@ -530,7 +550,7 @@
 
     return liste.map((person) => {
       const foto = person.bild
-        ? `<img src="${escapeHtml(person.bild)}" alt="" width="240" height="240" loading="lazy" decoding="async">`
+        ? `<img src="${escapeHtml(medienUrl(person.bild))}" alt="" width="240" height="240" loading="lazy" decoding="async">`
         : escapeHtml(person.name.split(/\s+/).slice(0, 2).map((t) => t.charAt(0)).join(""));
       return `<span class="i-crew-person"><span class="i-crew-bild${person.bild ? "" : " ohne-foto"}">${foto}</span>` +
         `<span class="i-crew-name">${escapeHtml(person.name)}</span></span>`;
@@ -726,7 +746,7 @@
         const kachel = document.createElement("div");
         kachel.className = "island-card is-service";
         kachel.innerHTML = `
-        ${island.image ? `<span class="i-visual" aria-hidden="true"><img src="${escapeHtml(island.image)}" alt="" loading="lazy"${masse}></span>` : ""}
+        ${island.image ? `<span class="i-visual" aria-hidden="true"><img src="${escapeHtml(medienUrl(island.image))}" alt="" loading="lazy"${masse}></span>` : ""}
         <span class="i-content">
           <span class="i-code">${escapeHtml(island.code)}</span>
           <span class="i-title">${escapeHtml(island.title)}</span>
@@ -743,7 +763,7 @@
       card.className = "island-card" + (entry ? (unterwegs ? " is-warten" : " is-done") : "");
       if (entry) card.style.setProperty("--score", Math.max(0, Math.min(100, Number(entry.percent) || 0)));
       card.innerHTML = `
-        ${island.image ? `<span class="i-visual" aria-hidden="true"><img src="${escapeHtml(island.image)}" alt="" loading="lazy"${masse}></span>` : ""}
+        ${island.image ? `<span class="i-visual" aria-hidden="true"><img src="${escapeHtml(medienUrl(island.image))}" alt="" loading="lazy"${masse}></span>` : ""}
         <span class="i-content">
           <span class="i-code">${escapeHtml(island.code)}</span>
           <span class="i-title">${escapeHtml(island.title)}</span>
@@ -840,7 +860,7 @@
       bild.className = "betreuung-bild";
       if (person.bild) {
         const img = document.createElement("img");
-        img.src = person.bild;
+        img.src = medienUrl(person.bild);
         img.alt = "";
         img.width = 240;
         img.height = 240;
