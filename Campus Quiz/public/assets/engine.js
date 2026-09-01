@@ -13,7 +13,7 @@
 
 (function () {
   const EVENT_SLUG = "campus-2026";
-  const ENGINE_VERSION = "1.29.0";
+  const ENGINE_VERSION = "1.31.0";
   const SUBMIT_ENDPOINT = "/.netlify/functions/submit-quiz";
 
   const LS_PARTICIPANT = "thitronik.campus.2026.participant";
@@ -617,38 +617,15 @@
     }
   };
 
-  const CAMPUS_ROUTES = [
-    "fehmarn-samsoe",
-    "samsoe-vejro",
-    "vejro-hiddensee",
-    "hiddensee-poel",
-    "poel-langeland",
-    "langeland-usedom",
-    "usedom-fehmarn"
-  ];
+  /* Die Rundreise als gestrichelte Boegen ist ausgebaut. Sie kreuzte
+     Inseln und Infokarten: Ein Bogen zwischen zwei Stationen weiss nichts
+     von dem, was zwischen ihnen liegt, und keine Woelbungszahl loest das.
+     Hier standen die Stationsfolge und je Route ein Bogenanteil.
 
-  /* Wie weit sich eine Route aus der Geraden wölbt: Anteil der
-     Streckenlänge, um den die Kurvenmitte SENKRECHT zur Verbindung
-     versetzt wird. Vorzeichen ist die Richtung.
-
-     Vorher standen hier je Route zwei Kontrollpunkte als feste Zahlen im
-     Koordinatensystem der Karte — 28 Werte, die zu genau einer Anordnung
-     der Inseln passten. Beim Verschieben einer einzigen Station waren alle
-     Bögen daneben, und man sah es erst im Browser. Ein Anteil der
-     Streckenlänge überlebt jedes Verschieben: Die Route bleibt gleich
-     stark gewölbt, egal wie weit die Stationen auseinanderliegen.
-
-     Die Reise läuft im Uhrzeigersinn. Ein negativer Wert wölbt deshalb
-     nach AUSSEN, weg von der Mitte der Karte — dorthin, wo Platz ist. */
-  const ROUTEN_BOGEN = {
-    "fehmarn-samsoe": -.16,
-    "samsoe-vejro": -.16,
-    "vejro-hiddensee": -.14,
-    "hiddensee-poel": -.16,
-    "poel-langeland": -.20,
-    "langeland-usedom": -.16,
-    "usedom-fehmarn": -.22
-  };
+     Was bleibt, sind die ANKER in KARTE. `campusAnchor()` rechnet sie
+     weiter, die Wegpunkte zeichnen sich daraus, und ein neuer Entwurf fuer
+     die Linienfuehrung braucht nur eine Zeichenfunktion — nicht noch einmal
+     das ganze Koordinatensystem. */
 
   let campusRouteFrame = 0;
 
@@ -701,52 +678,21 @@
     };
   }
 
-  /** Ein Bogen von a nach b, seitlich versetzt um einen Anteil der
-   *  Streckenlänge. Geschrieben als quadratische Bézier: ein einziger
-   *  Kontrollpunkt, und der lässt sich mit einer Zahl einstellen. */
-  function campusCurve(name, a, b) {
-    const bogen = Object.prototype.hasOwnProperty.call(ROUTEN_BOGEN, name)
-      ? ROUTEN_BOGEN[name]
-      : -.16;
-    const dx = b.x - a.x;
-    const dy = b.y - a.y;
-    const laenge = Math.hypot(dx, dy) || 1;
-    // Senkrechte auf der Verbindung, auf Länge 1 gebracht.
-    const versatz = laenge * bogen;
-    const mx = a.x + dx / 2 + (-dy / laenge) * versatz;
-    const my = a.y + dy / 2 + (dx / laenge) * versatz;
-
-    const p = (punkt) => `${punkt.x.toFixed(1)} ${punkt.y.toFixed(1)}`;
-    return `M ${p(a)} Q ${mx.toFixed(1)} ${my.toFixed(1)}, ${p(b)}`;
-  }
-
-  /** Zeichnet die Routen im Koordinatensystem der Szene.
+  /** Zeichnet die Wegpunkte im Koordinatensystem der Szene.
    *
-   *  Der viewBox ist fest — 1600 x 900 — und wird NICHT mehr auf die
-   *  gemessene Buehne gesetzt. Damit haengt die Zeichnung an keiner
-   *  Pixelgroesse mehr: Sie stimmt vor dem ersten Bild genauso wie danach,
-   *  bei jeder Fensterbreite und in jedem Ausschnitt. `xMidYMid meet` haelt
+   *  Der viewBox ist fest — 1600 x 900 — und wird NICHT auf die gemessene
+   *  Buehne gesetzt. Damit haengt die Zeichnung an keiner Pixelgroesse:
+   *  Sie stimmt vor dem ersten Bild genauso wie danach, bei jeder
+   *  Fensterbreite und in jedem Ausschnitt. `xMidYMid meet` haelt
    *  waagerechten und senkrechten Massstab gleich — nichts wird gestaucht.
    *
-   *  Die Strichstaerke steht deshalb in Szeneneinheiten und wird ueber
-   *  `vector-effect: non-scaling-stroke` im Stylesheet wieder auf eine
-   *  geraetetreue Dicke gebracht. */
+   *  Ein Kreis je Station, gerechnet aus KARTE. Der Radius steht in
+   *  Szeneneinheiten und wird ueber `vector-effect: non-scaling-stroke` im
+   *  Stylesheet auf eine geraetetreue Strichstaerke gebracht. */
   function updateCampusRoutes() {
     if (!el.campusMap || !el.campusMapArt) return;
     if (el.screens.islands.hidden || !buehneAktiv()) return;
 
-    CAMPUS_ROUTES.forEach((name) => {
-      const [from, to] = name.split("-");
-      const a = campusAnchor(from);
-      const b = campusAnchor(to);
-      const path = el.campusMapArt.querySelector(`[data-route="${name}"]`);
-      if (a && b && path) path.setAttribute("d", campusCurve(name, a, b));
-    });
-
-    /* Die Wegpunkte an dieselben Anker. Ein Kreis je Station, aus derselben
-       Rechnung wie die Routenenden — damit koennen sie nicht auseinander
-       laufen. Der Radius steht in Szeneneinheiten und wird ueber
-       `vector-effect` wieder auf eine geraetetreue Strichstaerke gebracht. */
     const punkte = el.campusMapArt.querySelector(".campus-wegpunkte");
     if (!punkte) return;
     const vorhanden = new Set();
@@ -816,17 +762,6 @@
     campusRouteFrame = requestAnimationFrame(() => {
       campusRouteFrame = 0;
       updateCampusRoutes();
-    });
-  }
-
-  function setCampusRouteFocus(slug, active) {
-    if (!el.campusMap || !el.campusMapArt) return;
-
-    const routes = el.campusMapArt.querySelectorAll("[data-route]");
-    el.campusMap.classList.toggle("has-route-focus", active);
-    routes.forEach((path) => {
-      const stations = path.dataset.route.split("-");
-      path.classList.toggle("is-route-focus", active && stations.includes(slug));
     });
   }
 
@@ -1033,7 +968,6 @@
     const abgeschlossen = quizInseln.filter((island) => done[island.slug]).length;
     const fortschritt = total ? Math.round((abgeschlossen / total) * 100) : 0;
 
-    setCampusRouteFocus("", false);
     // Was noch im Ausgang liegt, darf auf der Kachel nicht wie erledigt
     // aussehen - es ist auf diesem Gerät fertig, aber nirgends angekommen.
     const wartend = new Set(outboxAlle().map((e) => e.payload.session_id));
@@ -1130,13 +1064,6 @@
         history.pushState({}, "", `/quiz/${island.slug}`);
         route();
       });
-      const syncRouteFocus = () => requestAnimationFrame(() => {
-        setCampusRouteFocus(island.slug, card.matches(":hover, :focus-visible"));
-      });
-      card.addEventListener("pointerenter", syncRouteFocus);
-      card.addEventListener("pointerleave", syncRouteFocus);
-      card.addEventListener("focus", syncRouteFocus);
-      card.addEventListener("blur", syncRouteFocus);
       li.appendChild(card);
       el.islandGrid.appendChild(li);
     });

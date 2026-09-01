@@ -82,35 +82,22 @@
             <p class="lead">Wähle eine Insel aus und starte den Wissenscheck.</p>
           </div>
 
-          <!-- Die Routen zeichnet die Engine aus KARTE.inseln — dieselben
-               Zahlen, aus denen auch die Inselpositionen kommen. Feste
-               d-Werte hier waeren beim naechsten Verschieben einer Insel
-               still falsch.
+          <!-- Die Rundreise als gestrichelte Boegen ist RAUS.
 
-               Der viewBox ist FEST und wird nicht mehr auf die gemessene
-               Buehne gesetzt: 1600 x 900 sind die Einheiten der Szene.
-               `xMidYMid meet` haelt waagerechten und senkrechten Massstab
-               gleich, damit die Boegen und Pfeilspitzen in keinem Format
-               gestaucht werden. -->
+               Sie fuehrte quer ueber die Buehne und kreuzte dabei Inseln und
+               Infokarten — ein Bogen zwischen zwei Stationen weiss nichts von
+               dem, was zwischen ihnen liegt. Eine Linienfuehrung, die das
+               vermeidet, ist ein eigener Entwurf und keine Zahl an einer
+               Kurve; sie kommt wieder, wenn sie steht.
+
+               Die Anker dafuer bleiben in KARTE stehen: `campusAnchor()`
+               rechnet sie weiter, die Wegpunkte zeichnen sich daraus. Der
+               Wiedereinbau ist damit eine Zeichenfunktion, nicht noch einmal
+               das ganze Koordinatensystem. -->
           <svg class="campus-map-art" id="campus-map-art" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
-            <defs>
-              <marker id="route-arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
-                <path d="M0,0 L0,6 L6,3 z"></path>
-              </marker>
-            </defs>
-            <g class="campus-routes">
-              <path data-route="fehmarn-samsoe"></path>
-              <path data-route="samsoe-vejro"></path>
-              <path data-route="vejro-hiddensee"></path>
-              <path data-route="hiddensee-poel"></path>
-              <path data-route="poel-langeland"></path>
-              <path data-route="langeland-usedom"></path>
-              <path data-route="usedom-fehmarn"></path>
-            </g>
-            <!-- Die Wegpunkte zeichnet die Engine an dieselben Anker wie die
-                 Routenenden. Vorher war das ein CSS-Pseudoelement an der
-                 Infokarte: zwei Zeichensysteme fuer denselben Punkt, die
-                 getrennt gerundet wurden und um rund 7 px auseinanderlagen. -->
+            <!-- Der Wegpunkt einer Station: markiert, wo die Infokarte an
+                 ihrer Insel haengt. Er gehoert zur Karte, nicht zur Route,
+                 und bleibt deshalb. -->
             <g class="campus-wegpunkte"></g>
           </svg>
 

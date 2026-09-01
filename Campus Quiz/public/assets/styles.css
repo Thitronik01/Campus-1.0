@@ -907,7 +907,7 @@ main { flex: 1 0 auto; }
     line-height: 1.42;
   }
 
-  /* ----------------------------------------------------------- Routen --- */
+  /* -------------------------------------------------------- Wegpunkte --- */
 
   .campus-map-art {
     position: absolute;
@@ -918,33 +918,9 @@ main { flex: 1 0 auto; }
     height: 100%;
     pointer-events: none;
   }
-  .campus-routes {
-    fill: none;
-    stroke: var(--th-navy);
-    stroke-width: 2;
-    stroke-dasharray: 8 9;
-    stroke-linecap: round;
-  }
-  .campus-routes path {
-    marker-end: url(#route-arrow);
-    opacity: .62;
-    /* Ohne das skaliert der Strich mit der Bühne mit und wird auf einem
-       kleinen Fenster zum Haar, auf einem großen zum Balken. */
-    vector-effect: non-scaling-stroke;
-    transition:
-      opacity var(--duration-fast) ease,
-      stroke-width var(--duration-fast) var(--ease-out);
-  }
-  .campus-map.has-route-focus .campus-routes path { opacity: .16; }
-  .campus-map.has-route-focus .campus-routes path.is-route-focus {
-    stroke-width: 2.8;
-    opacity: 1;
-  }
-  .campus-map-art marker path { fill: var(--th-navy); }
-
-  /* Die Wegpunkte liegen jetzt im SVG, an denselben Ankern wie die
-     Routenenden. `non-scaling-stroke` haelt den Ring auf jeder Buehne
-     gleich dick — sonst wird er auf dem Telefon zum Haar. */
+  /* Der Wegpunkt einer Station, gerechnet aus KARTE.
+     `non-scaling-stroke` haelt den Ring auf jeder Buehne gleich dick —
+     sonst wird er auf dem Telefon zum Haar. */
   .campus-wegpunkte circle {
     fill: #F6FAFC;
     stroke: #24507A;
@@ -3842,6 +3818,22 @@ main { flex: 1 0 auto; }
   }
   .result-layout { grid-template-columns: 1fr; }
   .score-card { position: static; }
+}
+
+/* Hochkant ist kein schmales Querformat.
+
+   Die Regel oben haelt die Zweispaltigkeit „bei Tabletbreite" fuer alle
+   Inseln — richtig fuer das Tablet QUER, wo neben dem Motiv wirklich Platz
+   ist. Hochkant trifft dieselbe Abfrage zu und quetscht das Motiv dann auf
+   gut die halbe Breite: gemessen 535 px in einem 1025 px breiten Layout,
+   waehrend unter der Buehne Platz frei blieb. Beide Spalten waren zu eng,
+   und keine hatte einen Grund dafuer.
+
+   Hochkant wird deshalb gestapelt: Motiv oben ueber die volle Breite, die
+   Teilnehmerangaben darunter. Das ist zugleich die natuerliche
+   Lesereihenfolge — erst sehen, worum es geht, dann die Daten eingeben. */
+@media (orientation: portrait) and (max-width: 1024px) {
+  #screen-start[data-island] .start-layout { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 759px) {
