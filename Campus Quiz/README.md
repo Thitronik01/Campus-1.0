@@ -381,75 +381,73 @@ liegt.
 
 ### Die Archipelkarte
 
-Die Übersicht unter `/quiz` ist **eine Szene im Verhältnis 16:9**, und zwar
-auf jedem Gerät dieselbe. Was sich zwischen Desktop, Tablet und Telefon
-unterscheidet, ist allein der **Ausschnitt**, durch den man sie sieht.
+Die Übersicht unter `/quiz` gibt es in **drei bewusst verschiedenen
+Kompositionen** — nicht als eine Karte in drei Größen:
 
-Vorher gab es drei Karten: eine Anordnung für quer, eine zweite für hoch und
-auf dem Telefon eine Kachelliste. Drei Fassungen desselben Archipels laufen
-auseinander, sobald jemand nur eine davon anfasst.
+| | Darstellung |
+|---|---|
+| Desktop und quer ab 768 px | Szene `quer`, 1600 × 900 (16:9): VEJRØ zentral, sechs Inseln radial darum, Orbitkreise und Strahlen, Hinweiskarte unten rechts |
+| Tablet hochkant 768–1199 px | Szene `hoch`, 900 × 1200 (3:4): dieselben sieben Inseln senkrecht komponiert, Infokarten unter den Motiven, Werkzeuge als schwebende Leiste unten |
+| unter 768 px | keine Szene, sondern der **Orbit**: die aktive Insel groß im Rampenlicht, die übrigen sechs als runde Stationen auf einem Ring |
 
-**Alle Maße stehen in `KARTE` in `public/assets/engine.js`** — und nur dort:
+**Alle Maße stehen in `KARTE` in `public/assets/engine.js`** — und nur dort.
+Jede Insel trägt ihre beiden Szenenpositionen und ihren Platz im Karussell:
 
 ```js
 const KARTE = {
-  szene: { breite: 1600, hoehe: 900 },
-  basis: 18,          // lange Kante bei scale 1, in % der Szenenbreite
-  karteBreite: 15.5,  // Infokarte, in % der Szenenbreite
-  karteAbstand: 2.4,
+  szenen: {
+    quer: { breite: 1600, hoehe: 900,  basis: 18, karteBreite: 15.5, karteAbstand: 2.4 },
+    hoch: { breite: 900,  hoehe: 1200, basis: 26, karteBreite: 24,   karteAbstand: 2 }
+  },
   inseln: {
-    vejro: { x: 64, y: 39, scale: 1.15, karte: "rechts", karteY: -4 },
+    vejro: { mobil: 0,
+             quer: { x: 50, y: 45, scale: 1.25, karte: "unten", karteY: -9 },
+             hoch: { x: 50, y: 48, scale: 1.15, karte: "unten", karteY: -5 } },
     …
   }
 };
 ```
 
-`x`/`y` ist der Mittelpunkt des Motivs in Prozent der SZENE. `scale` ist die
-**lange** Kante als Vielfaches von `basis` — nicht die Breite: HIDDENSEE ist
-hochkant und USEDOM noch schmaler, gleiche Breite hieße bei ihnen die
-doppelte Höhe. Die kurze Kante folgt dem Seitenverhältnis aus dem Katalog.
-`karte` ist die Seite der Infokarte, `karteY` ihr senkrechter Versatz in
-Prozent der SZENENHÖHE.
+`x`/`y` ist der Mittelpunkt des Motivs in Prozent der jeweiligen SZENE.
+`scale` ist die **lange** Kante als Vielfaches von `basis` — nicht die
+Breite: HIDDENSEE ist hochkant und USEDOM noch schmaler, gleiche Breite
+hieße bei ihnen die doppelte Höhe. `karte` ist die Lage der Infokarte
+(`links`/`rechts`/`unten`), `karteY` ihr senkrechter Versatz in Prozent der
+SZENENHÖHE. `abstand` überschreibt je Insel den Abstand zur Karte in cqw —
+**negativ heißt: die Karte überlappt das Motiv leicht**; Anschlussstrich
+und Wegpunkt entfallen dann (`data-anschluss="aus"`).
 
-Drei Größenklassen: VEJRØ führt mit 1.15, FEHMARN und POEL tragen mit 0.95,
-die übrigen ordnen sich mit 0.75–0.82 unter. Die Mitte bleibt frei — dort
-liegen nur Segelboot, Walfluke, Wellen und Möwen.
+Welche Anordnung gilt, sagt das Stylesheet über `--anordnung` an
+`.campus-map`; die Engine liest den Wert ab (`kartenAnordnung()`), statt
+die Medienabfrage zu kopieren. Beim Wechsel (Tablet gedreht) zieht
+`layoutNachziehen()` die Positionen nach.
 
-**Die Routen** kommen aus derselben Quelle. `campusAnchor()` rechnet den
-Stationspunkt einer Insel aus `KARTE`; der `viewBox` steht fest auf
-`0 0 1600 900` mit `preserveAspectRatio="xMidYMid meet"`. Vorher wurden die
-Anker aus dem DOM **gemessen** und der viewBox auf die gemessene Pixelgröße
-gesetzt — zwei Systeme, die nur zufällig übereinstimmten, und die Messung
-lief zuverlässig, bevor die Motive geladen waren.
+**Orbitkreise und Strahlen** zeichnet `zeichneOrbitlinien()` aus `KARTE` in
+das SVG; der `viewBox` folgt der Anordnung (`0 0 1600 900` bzw.
+`0 0 900 1200`) und wird nie auf gemessene Pixel gesetzt. Strahlen laufen
+von VEJRØ nach außen und können konstruktionsbedingt nichts kreuzen — sie
+werden am Orbitkreis und vor der Zielinsel beschnitten. Die alten
+Rundreise-Bögen (`ROUTEN_BOGEN`) sind ausgebaut, ihre Anker (`campusAnchor`)
+rechnen weiter die Wegpunkte.
 
-`ROUTEN_BOGEN` gibt je Route an, wie weit sich der Bogen wölbt, als Anteil
-der Streckenlänge. Die Reise läuft im Uhrzeigersinn; ein negativer Wert
-wölbt nach außen.
+Das **Schieben** der Szene bleibt als Mechanik liegen und schaltet sich
+selbst ab: Beide Szenen passen in ihren Ausschnitt, der Weg ist null.
 
-**Der Ausschnitt** je Gerät:
+**Der Orbit auf dem Telefon** (`orbitZeichnen()` in engine.js, Markup in
+`index.html`): Ein Index läuft über die Reihenfolge aus `mobil` (VEJRØ ist
+0 und damit Start). Die aktive Insel steht groß im weißen Rampenlicht mit
+Name, Thema, Stand und „Starten"; die übrigen sechs rücken im Kreis weiter
+— die nächste immer oben, ihr Name in der Pille darüber, der vierte
+Ringplatz liegt unsichtbar hinter dem Rampenlicht. Gewechselt wird per
+Wisch, Pfeil, Punkt oder Tipp auf eine Station. Darunter: Wisch-Hinweis,
+Fortschrittskarte mit conic-Ring und die feste Navigation (Start,
+Arbeitskarte, Feedback, THI). Die Szene ist auf dem Telefon
+`display: none` — Seegrund und Deko werden dort gar nicht erst geladen,
+die Inselmotive braucht der Orbit ohnehin.
 
-| | Ausschnitt | Szene | Schieben |
-|---|---|---|---|
-| ab 1180 px | volle Breite, 16:9 | passt hinein | nein |
-| 768–1179 px quer | dieselbe, kleiner | passt hinein | nein |
-| Tablet hochkant | Höhe des Fensters | breiter als der Ausschnitt | ja |
-| unter 768 px | Höhe des Fensters | mindestens 940 px breit | ja |
-
-Nur `--szene-min` und `--aussch-hoehe` unterscheiden sich; die Szenenbreite
-folgt daraus als `max(--szene-min, --aussch-hoehe * 16/9)`. Damit ist die
-Szene nie schmaler als lesbar und nie niedriger als der Ausschnitt.
-
-Geschoben wird über `translate3d` in `--pan-x`/`--pan-y`, geklemmt auf den
-tatsächlichen Überstand. `touch-action: pan-y` lässt die Seite weiter
-senkrecht scrollen. Ob überhaupt geschoben werden kann, **misst** die Engine
-(Szene breiter als Ausschnitt) — sie fragt keine Fensterbreite ab, damit die
-Grenze im Stylesheet nicht von einer zweiten Fassung im Skript abweichen
-kann.
-
-**Auf dem Telefon** liegen die Infokarten nicht auf der Szene: Sieben weiße
-Kästen auf 390 px verdecken genau das, was man ansehen will. Ein Tipp öffnet
-stattdessen den **Inselbogen** — ein `<dialog>`, das Fokusfalle, Escape und
-den Verschluss beim Klick daneben vom Browser bekommt.
+Der **Inselbogen** (`<dialog>`) bleibt für den Fall bestehen, dass eine
+Infokarte einmal nicht sichtbar ist; im Orbit führt „Starten" direkt zum
+Startbildschirm der Insel.
 
 **Nachmessen statt schauen.** Ob sich etwas überschneidet, beantwortet der
 Browser in einem Zug — in der Konsole auf `/quiz`:
@@ -459,9 +457,9 @@ const m = document.getElementById('campus-szene').getBoundingClientRect();
 const box = e => { const b = e.getBoundingClientRect(); return [
   (b.left-m.left)/m.width*100, (b.top-m.top)/m.height*100,
   (b.right-m.left)/m.width*100, (b.bottom-m.top)/m.height*100]; };
-const r = { INTRO: box(document.querySelector('.island-intro')) };
+const r = { HINWEIS: box(document.querySelector('.karten-hinweis')) };
 document.querySelectorAll('.island-map-item').forEach(li => {
-  const s = li.className.replace('island-map-item','').replace('island-','').trim();
+  const s = li.dataset.slug;
   r['I '+s] = box(li.querySelector('.i-visual'));
   const k = li.querySelector('.i-content');
   if (getComputedStyle(k).display !== 'none') r['K '+s] = box(k);
@@ -477,10 +475,11 @@ for (let i=0;i<e.length;i++) for (let j=i+1;j<e.length;j++) {
 treffer;
 ```
 
-Geprüft auf 1920x1080, 1440x900, 1366x768, 1180x820, 1024x768, 820x1180,
-768x1024, 430x932, 390x844 und 375x812: keine Überschneidung, nichts
-außerhalb der Szene, kleinste Trefferfläche 50 px, kein waagerechtes
-Seitenscrollen.
+Geprüft nach dem Umbau auf die drei Kompositionen: 1920x1080, 1440x900 und
+1024x768 (Szene quer), 820x1180 (Szene hoch), 390x844 und 360x740 (Orbit) —
+keine Überschneidung, nichts außerhalb der Szene, kein waagerechtes
+Seitenscrollen. Auf dem Telefon misst der Schnipsel nichts (die Szene ist
+dort nicht im Layout); der Orbit hat feste Plätze und braucht keine Messung.
 
 ### Die Motive der Karte
 

@@ -13,7 +13,7 @@
 
 (function () {
   const EVENT_SLUG = "campus-2026";
-  const ENGINE_VERSION = "1.31.0";
+  const ENGINE_VERSION = "1.32.0";
   const SUBMIT_ENDPOINT = "/.netlify/functions/submit-quiz";
 
   const LS_PARTICIPANT = "thitronik.campus.2026.participant";
@@ -71,6 +71,40 @@
     bogenStart: $("bogen-start"),
     campusMapArt: $("campus-map-art"),
     islandGrid: $("island-grid"),
+
+    orbit: $("orbit"),
+    orbitPille: $("orbit-pille"),
+    orbitBuehne: $("orbit-buehne"),
+    orbitThumbs: $("orbit-thumbs"),
+    orbitHeroBild: $("orbit-hero-bild"),
+    orbitHeroCode: $("orbit-hero-code"),
+    orbitHeroTitel: $("orbit-hero-titel"),
+    orbitHeroStand: $("orbit-hero-stand"),
+    orbitStart: $("orbit-start"),
+    orbitZurueck: $("orbit-zurueck"),
+    orbitWeiter: $("orbit-weiter"),
+    orbitPunkte: $("orbit-punkte"),
+    orbitFortschrittCopy: $("orbit-fortschritt-copy"),
+    orbitFortschrittWert: $("orbit-fortschritt-wert"),
+    orbitFortschrittRing: $("orbit-fortschritt-ring"),
+
+    menueKnopf: $("menue-knopf"),
+    menueDialog: $("menue-dialog"),
+    menueZu: $("menue-zu"),
+    menueArbeitskarte: $("menue-arbeitskarte"),
+    menueFeedback: $("menue-feedback"),
+    menueThi: $("menue-thi"),
+    kopfAvatar: $("kopf-avatar"),
+    campusProgressKurz: $("campus-progress-kurz"),
+    campusProgressKurzwert: $("campus-progress-kurzwert"),
+
+    aktionArbeitskarte: $("aktion-arbeitskarte"),
+    aktionFeedback: $("aktion-feedback"),
+    aktionThi: $("aktion-thi"),
+    mobilNavArbeitskarte: $("mobil-nav-arbeitskarte"),
+    mobilNavFeedback: $("mobil-nav-feedback"),
+    mobilNavThi: $("mobil-nav-thi"),
+
     arbeitskarteLink: $("arbeitskarte-link"),
     tagesabschluss: $("tagesabschluss"),
     ausgang: $("ausgang"),
@@ -226,6 +260,11 @@
       node.hidden = key !== name;
     });
     el.mastheadProgress.hidden = name !== "islands";
+    /* Die Karten-Kopfzeile (Hamburger, Avatar, Kompaktfortschritt, mobile
+       Leisten) gilt nur auf der Uebersicht. Ueber eine Klasse am <body>
+       statt sieben einzelner hidden-Schalter: Das Stylesheet entscheidet
+       je Geraet, was davon sichtbar ist. */
+    document.body.classList.toggle("ist-karte", name === "islands");
     // Der Ausgangshinweis hängt am Bildschirm, nicht am Sendezustand.
     if (el.ausgang) paintAusgang();
     window.scrollTo({ top: 0, behavior: "auto" });
@@ -593,29 +632,63 @@
      (0.95), der Rest ordnet sich unter (0.75-0.82). Die Mitte der Szene
      bleibt frei — dort liegen nur Segelboot, Walfluke, Wellen und Moewen. */
   const KARTE = {
-    szene: { breite: 1600, hoehe: 900 },
+    /* ZWEI Anordnungen, ein Datensatz je Insel. Quer ist die Archipelkarte
+       fuer Desktop und Tablet im Querformat, hoch die eigene senkrechte
+       Komposition fuer das Tablet im Hochformat. Das Telefon zeigt keine
+       Szene mehr, sondern den Orbit (siehe unten) — dafuer steht `mobil`
+       als Reihenfolge im Karussell, VEJRO ist mit 0 der Startpunkt.
 
-    /** Lange Kante bei scale 1, in Prozent der SZENENBREITE. */
-    basis: 18,
+       Welche Anordnung gilt, sagt das STYLESHEET ueber `--anordnung` an
+       `.campus-map` — nicht eine zweite Fassung der Medienabfrage hier im
+       Skript. Die Kopie einer Grenze ist in diesem Projekt schon einmal
+       auseinandergelaufen (siehe buehneAktiv). */
+    szenen: {
+      quer: { breite: 1600, hoehe: 900,  basis: 18, karteBreite: 15.5, karteAbstand: 2.4 },
+      hoch: { breite: 900,  hoehe: 1200, basis: 26, karteBreite: 24,   karteAbstand: 2 }
+    },
 
-    /** Infokarte: Breite und Abstand zur Insel, in Prozent der Szenenbreite. */
-    karteBreite: 15.5,
-    karteAbstand: 2.4,
+    /* x/y ist der Mittelpunkt des Motivs in Prozent der jeweiligen Szene.
+       `karte` ist die Seite der Infokarte: links/rechts wie gehabt, `unten`
+       haengt sie mittig unter das Motiv (im Hochformat ueberall, weil
+       seitliche Karten dort aus der Szene laufen). `karteY` verschiebt in
+       Prozent der SZENENHOEHE. `abstand` ueberschreibt je Insel den Abstand
+       zur Karte in cqw — NEGATIV heisst: die Karte ueberlappt das Motiv
+       leicht, wie in der Vorlage; der Anschlussstrich entfaellt dann.
 
-    /* x/y ist der Mittelpunkt des Motivs. `karte` ist die Seite, auf der die
-       Infokarte haengt — nach AUSSEN, damit die Mitte frei bleibt. `karteY`
-       verschiebt sie senkrecht, in Prozent der SZENENHOEHE (nicht der
-       Inselhoehe: das war die Falle, die zweimal Zeit gekostet hat). */
+       VEJRO ist der gemeinsame Mittelpunkt und deutlich am groessten, die
+       sechs Themeninseln bilden den Ring darum. */
     inseln: {
-      fehmarn:   { x: 26, y: 45, scale:  .95, karte: "links",  karteY:   0 },
-      samsoe:    { x: 44, y: 13, scale:  .80, karte: "rechts", karteY:   0 },
-      vejro:     { x: 64, y: 39, scale: 1.15, karte: "rechts", karteY:  -4 },
-      hiddensee: { x: 78, y: 60, scale:  .75, karte: "rechts", karteY:   0 },
-      poel:      { x: 63, y: 81, scale:  .95, karte: "rechts", karteY:   3 },
-      langeland: { x: 25, y: 86, scale:  .78, karte: "links",  karteY:   0 },
-      usedom:    { x: 34, y: 70, scale:  .82, karte: "links",  karteY:  -5.5 }
+      vejro:     { mobil: 0,
+                   quer: { x: 50, y: 45, scale: 1.25, karte: "unten",  karteY: -9 },
+                   hoch: { x: 50, y: 48, scale: 1.15, karte: "unten",  karteY: -5 } },
+      samsoe:    { mobil: 1,
+                   quer: { x: 47, y: 14, scale:  .80, karte: "rechts", karteY: 0 },
+                   hoch: { x: 50, y: 13, scale:  .80, karte: "unten",  karteY: -2 } },
+      fehmarn:   { mobil: 2,
+                   quer: { x: 23, y: 33, scale:  .95, karte: "links",  karteY: 5, abstand: -3.5 },
+                   hoch: { x: 20, y: 35, scale:  .95, karte: "unten",  karteY: -2 } },
+      hiddensee: { mobil: 3,
+                   quer: { x: 75, y: 36, scale:  .82, karte: "rechts", karteY: 6, abstand: -1 },
+                   hoch: { x: 78, y: 34, scale:  .78, karte: "unten",  karteY: -2 } },
+      usedom:    { mobil: 4,
+                   quer: { x: 22, y: 68, scale:  .90, karte: "links",  karteY: 5, abstand: -1 },
+                   hoch: { x: 18, y: 65, scale:  .85, karte: "unten",  karteY: -2 } },
+      langeland: { mobil: 5,
+                   quer: { x: 46, y: 83, scale:  .72, karte: "rechts", karteY: 5, abstand: -2.5 },
+                   hoch: { x: 48, y: 81, scale:  .80, karte: "unten",  karteY: -3 } },
+      poel:      { mobil: 6,
+                   quer: { x: 71, y: 66, scale:  .95, karte: "rechts", karteY: 1, abstand: 1 },
+                   hoch: { x: 77, y: 65, scale:  .95, karte: "unten",  karteY: -2 } }
     }
   };
+
+  /** Welche Anordnung die Szene gerade zeigt — gefragt wird das Stylesheet,
+   *  das `--anordnung` an `.campus-map` je Medienabfrage setzt. */
+  function kartenAnordnung() {
+    if (!el.campusMap) return "quer";
+    const wert = getComputedStyle(el.campusMap).getPropertyValue("--anordnung").trim();
+    return wert === "hoch" ? "hoch" : "quer";
+  }
 
   /* Die Rundreise als gestrichelte Boegen ist ausgebaut. Sie kreuzte
      Inseln und Infokarten: Ein Bogen zwischen zwei Stationen weiss nichts
@@ -647,13 +720,30 @@
    *  die Hoehe, die Breite folgt also dem Seitenverhaeltnis. Ohne diese
    *  Umrechnung waere USEDOM (291x620) bei gleicher Breite doppelt so hoch
    *  wie FEHMARN und wuerde die Szene sprengen. */
-  function inselBreite(slug) {
-    const cfg = KARTE.inseln[slug];
+  function inselBreite(slug, anordnung) {
+    const a = anordnung || kartenAnordnung();
+    const eintrag = KARTE.inseln[slug];
+    const cfg = eintrag && eintrag[a];
     if (!cfg) return 0;
     const insel = (state.catalog.inseln || []).find((i) => i.slug === slug);
     const bw = Number(insel && insel.imageBreite) || 1;
     const bh = Number(insel && insel.imageHoehe) || 1;
-    return KARTE.basis * cfg.scale * (bw / Math.max(bw, bh));
+    return KARTE.szenen[a].basis * cfg.scale * (bw / Math.max(bw, bh));
+  }
+
+  /** Mittelpunkt und halbe Breite eines Motivs in SZENENEINHEITEN — die
+   *  Ankerpunkte fuer Orbitkreise und Strahlen. */
+  function inselMitte(slug, anordnung) {
+    const a = anordnung || kartenAnordnung();
+    const eintrag = KARTE.inseln[slug];
+    const cfg = eintrag && eintrag[a];
+    if (!cfg) return null;
+    const szene = KARTE.szenen[a];
+    return {
+      x: cfg.x / 100 * szene.breite,
+      y: cfg.y / 100 * szene.hoehe,
+      halb: inselBreite(slug, a) / 2 / 100 * szene.breite
+    };
   }
 
   /** Der Stationspunkt einer Insel — in SZENENEINHEITEN, nicht in Pixeln.
@@ -668,13 +758,20 @@
    *  Route wurde einmal falsch gezeichnet. Aus der Konfiguration gerechnet
    *  stimmt sie ab dem ersten Bild. */
   function campusAnchor(slug) {
-    const cfg = KARTE.inseln[slug];
+    const a = kartenAnordnung();
+    const eintrag = KARTE.inseln[slug];
+    const cfg = eintrag && eintrag[a];
     if (!cfg) return null;
-    const halb = inselBreite(slug) / 2;
+    /* Ueberlappt die Infokarte das Motiv oder haengt sie darunter, gibt es
+       keinen Anschlussstrich — und ohne Strich waere der Wegpunkt ein Ring
+       mitten unter der Karte. Dann lieber keiner. */
+    const abstand = cfg.abstand !== undefined ? cfg.abstand : KARTE.szenen[a].karteAbstand;
+    if (cfg.karte === "unten" || abstand <= 0) return null;
+    const halb = inselBreite(slug, a) / 2;
     const richtung = cfg.karte === "links" ? -1 : 1;
     return {
-      x: (cfg.x + richtung * halb) / 100 * KARTE.szene.breite,
-      y: (cfg.y + (cfg.karteY || 0)) / 100 * KARTE.szene.hoehe
+      x: (cfg.x + richtung * halb) / 100 * KARTE.szenen[a].breite,
+      y: (cfg.y + (cfg.karteY || 0)) / 100 * KARTE.szenen[a].hoehe
     };
   }
 
@@ -692,6 +789,13 @@
   function updateCampusRoutes() {
     if (!el.campusMap || !el.campusMapArt) return;
     if (el.screens.islands.hidden || !buehneAktiv()) return;
+
+    /* Der viewBox folgt der Anordnung: 1600x900 quer, 900x1200 hoch. Er
+       bleibt fest je Anordnung und wird NICHT auf gemessene Pixel gesetzt —
+       die Zeichnung haengt damit an keiner Fenstergroesse. */
+    const anordnung = kartenAnordnung();
+    const szene = KARTE.szenen[anordnung];
+    el.campusMapArt.setAttribute("viewBox", `0 0 ${szene.breite} ${szene.hoehe}`);
 
     const punkte = el.campusMapArt.querySelector(".campus-wegpunkte");
     if (!punkte) return;
@@ -714,6 +818,55 @@
     punkte.querySelectorAll("[data-wegpunkt]").forEach((k) => {
       if (!vorhanden.has(k.dataset.wegpunkt)) k.remove();
     });
+
+    zeichneOrbitlinien(anordnung);
+  }
+
+  /** Die Expeditionsmetapher der Karte: feine Kreise um VEJRO und
+   *  gepunktete Strahlen zu den sechs Themeninseln.
+   *
+   *  Anders als die frueheren Rundreise-Boegen koennen die Strahlen nichts
+   *  kreuzen: Sie laufen von der Mitte nach aussen, und zwischen Mitte und
+   *  Insel liegt konstruktionsbedingt nur Wasser. Beschnitten werden sie an
+   *  beiden Enden — am Orbitkreis und vor der Zielinsel —, damit sie unter
+   *  keinem Motiv verschwinden. Alles in Szeneneinheiten aus KARTE, nichts
+   *  wird aus dem DOM gemessen. */
+  function zeichneOrbitlinien(anordnung) {
+    const gruppe = el.campusMapArt.querySelector(".campus-orbit");
+    if (!gruppe) return;
+    gruppe.textContent = "";
+
+    const mitte = inselMitte("vejro", anordnung);
+    if (!mitte) return;
+
+    const ns = "http://www.w3.org/2000/svg";
+    const radien = [mitte.halb * 1.16, mitte.halb * 1.38];
+    radien.forEach((r) => {
+      const kreis = document.createElementNS(ns, "circle");
+      kreis.setAttribute("cx", mitte.x.toFixed(1));
+      kreis.setAttribute("cy", mitte.y.toFixed(1));
+      kreis.setAttribute("r", r.toFixed(1));
+      gruppe.appendChild(kreis);
+    });
+
+    Object.keys(KARTE.inseln).forEach((slug) => {
+      if (slug === "vejro") return;
+      if (!el.islandGrid.querySelector(`.island-${slug}`)) return;
+      const ziel = inselMitte(slug, anordnung);
+      if (!ziel) return;
+      const dx = ziel.x - mitte.x;
+      const dy = ziel.y - mitte.y;
+      const abstand = Math.hypot(dx, dy);
+      const von = radien[1] + 10;
+      const bis = abstand - ziel.halb * 0.95;
+      if (bis <= von) return;
+      const linie = document.createElementNS(ns, "line");
+      linie.setAttribute("x1", (mitte.x + dx / abstand * von).toFixed(1));
+      linie.setAttribute("y1", (mitte.y + dy / abstand * von).toFixed(1));
+      linie.setAttribute("x2", (mitte.x + dx / abstand * bis).toFixed(1));
+      linie.setAttribute("y2", (mitte.y + dy / abstand * bis).toFixed(1));
+      gruppe.appendChild(linie);
+    });
   }
 
   /** Schreibt Position, Groesse und Kartenlage jeder Insel aus der
@@ -724,20 +877,45 @@
    *  auseinander, sobald jemand nur eine davon anfasst. Jetzt gibt es eine,
    *  und die Geraete unterscheiden sich nur noch im Ausschnitt. */
   function applyKartenLayout(li, slug) {
-    const cfg = KARTE.inseln[slug];
+    const a = kartenAnordnung();
+    const eintrag = KARTE.inseln[slug];
+    const cfg = eintrag && eintrag[a];
     if (!cfg) return;
-    const breite = inselBreite(slug);
+    const szene = KARTE.szenen[a];
+    const breite = inselBreite(slug, a);
     li.style.setProperty("--x", `${cfg.x}%`);
     li.style.setProperty("--y", `${cfg.y}%`);
     li.style.setProperty("--w", `${breite.toFixed(2)}%`);
-    li.style.setProperty("--karte-w", `${KARTE.karteBreite}cqw`);
-    li.style.setProperty("--karte-x", `${KARTE.karteAbstand}cqw`);
+    li.style.setProperty("--karte-w", `${szene.karteBreite}cqw`);
+    const abstand = cfg.abstand !== undefined ? cfg.abstand : szene.karteAbstand;
+    li.style.setProperty("--karte-x", `${abstand}cqw`);
     // karteY steht in Prozent der SZENENHOEHE. Die Infokarte ist an der
     // Insel aufgehaengt, deren Hoehe je Motiv anders ist — deshalb wird
     // hier in cqw umgerechnet statt in Prozent weitergereicht.
-    const versatz = (cfg.karteY || 0) * (KARTE.szene.hoehe / KARTE.szene.breite);
+    const versatz = (cfg.karteY || 0) * (szene.hoehe / szene.breite);
     li.style.setProperty("--karte-y-szene", `${versatz.toFixed(2)}cqw`);
     li.dataset.karte = cfg.karte;
+    // Ohne Abstand kein Anschluss: Strich und Punkt gehoeren nur an Karten,
+    // die neben ihrem Motiv haengen — nicht an ueberlappende oder unten
+    // angehaengte.
+    li.dataset.anschluss = (cfg.karte === "unten" || abstand <= 0) ? "aus" : "an";
+  }
+
+  /* Beim Wechsel der Anordnung (Tablet gedreht, Fenster schmaler gezogen)
+     stehen die Stationen noch auf den alten Prozentwerten. Nachgezogen wird
+     nur, wenn sich die Anordnung wirklich geaendert hat — bei jeder anderen
+     Groessenaenderung ist nichts zu tun, die Szene skaliert von selbst. */
+  let anordnungZuletzt = null;
+
+  function layoutNachziehen() {
+    if (!el.islandGrid || el.screens.islands.hidden) return;
+    const a = kartenAnordnung();
+    if (a === anordnungZuletzt) return;
+    anordnungZuletzt = a;
+    el.islandGrid.querySelectorAll(".island-map-item").forEach((li) => {
+      if (li.dataset.slug) applyKartenLayout(li, li.dataset.slug);
+    });
+    updateCampusRoutes();
   }
 
   /** Routen neu zeichnen.
@@ -896,6 +1074,218 @@
     });
   }
 
+  /* ========================= Der Orbit (Telefon) =========================
+
+     Unter 768 px gibt es keine geschobene Szene mehr, sondern eine eigene
+     Komposition: die aktive Insel gross im Rampenlicht, die sechs uebrigen
+     als kleine runde Stationen auf einem Ring darum. Gewechselt wird per
+     Wisch, Pfeil, Punkt oder Tipp auf eine Station; VEJRO ist Start und
+     bleibt der Mittelpunkt der Reihenfolge (KARTE.inseln[…].mobil).
+
+     Ein Index auf die Reihenfolge genuegt: Die Insel dahinter steht im
+     Rampenlicht, die uebrigen ruecken im Kreis weiter — die naechste immer
+     oben (ihr Name steht in der Pille darueber), danach im Uhrzeigersinn.
+     Der vierte Ringplatz liegt unten hinter dem Rampenlicht und bleibt
+     unsichtbar; sichtbar sind fuenf Stationen, wie in der Vorlage. */
+
+  const ORBIT_PLAETZE = [
+    { x: 50, y: 7 },               // oben — die naechste Insel
+    { x: 88, y: 30 },
+    { x: 87, y: 78 },
+    { x: 50, y: 100, versteckt: true },
+    { x: 13, y: 78 },
+    { x: 12, y: 30 }
+  ];
+
+  const orbit = { folge: [], aktiv: 0, thumbs: new Map(), punkte: [] };
+
+  /** Reihenfolge im Karussell. RUEGEN und andere Stationen ohne
+   *  Wissenscheck haben keinen `mobil`-Rang und bleiben dem Telefon
+   *  erspart — ein Rampenlicht ohne Startknopf verspraeche ein Quiz,
+   *  das es nicht gibt. */
+  function orbitFolge() {
+    if (!orbit.folge.length) {
+      orbit.folge = (state.catalog.inseln || [])
+        .filter((i) => hatWissenscheck(i) && KARTE.inseln[i.slug] && KARTE.inseln[i.slug].mobil !== undefined)
+        .sort((a, b) => KARTE.inseln[a.slug].mobil - KARTE.inseln[b.slug].mobil)
+        .map((i) => i.slug);
+    }
+    return orbit.folge;
+  }
+
+  function orbitInsel(slug) {
+    return (state.catalog.inseln || []).find((i) => i.slug === slug);
+  }
+
+  function orbitAufbauen() {
+    if (!el.orbitThumbs || orbit.thumbs.size) return;
+    const folge = orbitFolge();
+
+    folge.forEach((slug, index) => {
+      const insel = orbitInsel(slug);
+      if (!insel) return;
+      const li = document.createElement("li");
+      li.className = "orbit-station";
+      const knopf = document.createElement("button");
+      knopf.type = "button";
+      knopf.className = "orbit-thumb";
+      knopf.setAttribute("aria-label", `${insel.name || insel.code} – ${insel.title} – in die Mitte holen`);
+      if (insel.image) {
+        const bild = document.createElement("img");
+        bild.src = medienUrl(insel.image);
+        bild.alt = "";
+        if (insel.imageBreite) bild.width = Number(insel.imageBreite);
+        if (insel.imageHoehe) bild.height = Number(insel.imageHoehe);
+        bild.decoding = "async";
+        knopf.appendChild(bild);
+      }
+      knopf.addEventListener("click", () => orbitAktivieren(index));
+      li.appendChild(knopf);
+      el.orbitThumbs.appendChild(li);
+      orbit.thumbs.set(slug, li);
+
+      const punkt = document.createElement("button");
+      punkt.type = "button";
+      punkt.className = "orbit-punkt";
+      punkt.setAttribute("aria-label", `${insel.name || slug} anzeigen`);
+      punkt.addEventListener("click", () => orbitAktivieren(index));
+      el.orbitPunkte.appendChild(punkt);
+      orbit.punkte.push(punkt);
+    });
+
+    el.orbitZurueck.addEventListener("click", () => orbitAktivieren(orbit.aktiv - 1));
+    el.orbitWeiter.addEventListener("click", () => orbitAktivieren(orbit.aktiv + 1));
+
+    /* Wischen: waagerecht, ab 44 px, und deutlicher waagerecht als
+       senkrecht — sonst wird jedes Scrollen mit schraegem Daumen zum
+       Inselwechsel. Kein Pointer-Capture: Die Knoepfe auf der Buehne
+       sollen normale Klicks bleiben. */
+    const wisch = { x: 0, y: 0, id: null };
+    el.orbitBuehne.addEventListener("pointerdown", (ev) => {
+      wisch.id = ev.pointerId;
+      wisch.x = ev.clientX;
+      wisch.y = ev.clientY;
+    });
+    el.orbitBuehne.addEventListener("pointerup", (ev) => {
+      if (ev.pointerId !== wisch.id) return;
+      wisch.id = null;
+      const dx = ev.clientX - wisch.x;
+      const dy = ev.clientY - wisch.y;
+      if (Math.abs(dx) < 44 || Math.abs(dx) < Math.abs(dy)) return;
+      // Wisch nach links blaettert weiter, wie in jedem Karussell.
+      orbitAktivieren(orbit.aktiv + (dx < 0 ? 1 : -1));
+    });
+
+    /* Wie am Inselbogen: ein <a> mit echter Adresse fuer mittlere Maustaste
+       und Kopieren, der Klick selbst bleibt im Einseiter. */
+    el.orbitStart.addEventListener("click", (ev) => {
+      if (ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.button !== 0) return;
+      ev.preventDefault();
+      history.pushState({}, "", el.orbitStart.getAttribute("href"));
+      route();
+    });
+  }
+
+  function orbitAktivieren(index) {
+    const folge = orbitFolge();
+    if (!folge.length) return;
+    orbit.aktiv = ((index % folge.length) + folge.length) % folge.length;
+    const wartend = new Set(outboxAlle().map((e) => e.payload.session_id));
+    orbitZeichnen(loadDone(), wartend);
+  }
+
+  function orbitZeichnen(done, wartend) {
+    if (!el.orbit || !el.orbitThumbs) return;
+    orbitAufbauen();
+    const folge = orbitFolge();
+    if (!folge.length) return;
+    if (orbit.aktiv >= folge.length) orbit.aktiv = 0;
+
+    const aktivSlug = folge[orbit.aktiv];
+    const insel = orbitInsel(aktivSlug);
+    if (!insel) return;
+
+    const entry = done[aktivSlug];
+    const unterwegs = Boolean(entry && entry.session && wartend.has(entry.session));
+    if (insel.image) {
+      el.orbitHeroBild.src = medienUrl(insel.image);
+      if (insel.imageBreite) el.orbitHeroBild.width = Number(insel.imageBreite);
+      if (insel.imageHoehe) el.orbitHeroBild.height = Number(insel.imageHoehe);
+    }
+    el.orbitHeroCode.textContent = insel.code || insel.name || "";
+    el.orbitHeroTitel.textContent = insel.title || "";
+    el.orbitHeroStand.textContent = !entry
+      ? "Noch nicht begonnen"
+      : unterwegs
+        ? `Abgeschlossen · ${entry.percent} % – noch nicht gesendet`
+        : `Abgeschlossen · ${entry.percent} %`;
+    el.orbitStart.textContent = entry ? "Wiederholen" : "Starten";
+    el.orbitStart.setAttribute("href", `/quiz/${aktivSlug}`);
+    el.orbitStart.setAttribute("aria-label",
+      `${insel.name || insel.code}: Wissenscheck ${entry ? "wiederholen" : "starten"}`);
+
+    // Der Ring: die uebrigen sechs, die naechste oben, dann im Uhrzeigersinn.
+    folge.forEach((slug, i) => {
+      const li = orbit.thumbs.get(slug);
+      if (!li) return;
+      if (i === orbit.aktiv) {
+        li.dataset.platz = "mitte";
+        return;
+      }
+      const abstand = ((i - orbit.aktiv) % folge.length + folge.length) % folge.length;
+      const platz = ORBIT_PLAETZE[(abstand - 1) % ORBIT_PLAETZE.length];
+      li.dataset.platz = platz.versteckt ? "versteckt" : "ring";
+      li.style.setProperty("--px", `${platz.x}%`);
+      li.style.setProperty("--py", `${platz.y}%`);
+    });
+
+    // Die Pille nennt die Insel oben im Ring — die naechste Station.
+    const oben = orbitInsel(folge[(orbit.aktiv + 1) % folge.length]);
+    el.orbitPille.textContent = oben ? (oben.code || oben.name) : "";
+
+    orbit.punkte.forEach((punkt, i) => {
+      punkt.classList.toggle("ist-aktiv", i === orbit.aktiv);
+      if (i === orbit.aktiv) punkt.setAttribute("aria-current", "true");
+      else punkt.removeAttribute("aria-current");
+    });
+  }
+
+  /* ==================== Kopfzeile: Menue, THI, Avatar ==================== */
+
+  /** THI haengt seinen Schalter selbst in die Kopfzeile (thi.js). Der Orbit
+   *  und die Werkzeugleisten stossen denselben Schalter an, statt das Panel
+   *  ein zweites Mal zu bauen. Faellt thi.js aus, sagt der Hinweis
+   *  wenigstens, warum nichts passiert. */
+  function thiOeffnen() {
+    const schalter = document.getElementById("thi-schalter");
+    if (schalter) schalter.click();
+    else toast("THI ist gerade nicht verfügbar.");
+  }
+
+  function kopfEinrichten() {
+    el.menueKnopf.addEventListener("click", () => el.menueDialog.showModal());
+    el.menueZu.addEventListener("click", () => el.menueDialog.close());
+    el.menueDialog.addEventListener("click", (ev) => {
+      if (ev.target === el.menueDialog) el.menueDialog.close();
+    });
+    el.menueThi.addEventListener("click", () => {
+      el.menueDialog.close();
+      thiOeffnen();
+    });
+    [el.aktionThi, el.mobilNavThi].forEach((knopf) => {
+      knopf.addEventListener("click", thiOeffnen);
+    });
+
+    /* Der Avatar zeigt die Initialen des Teilnehmers, sobald es ihn gibt —
+       dieselbe Regel wie bei der Betreuung ohne Foto. Vorher bleibt das
+       neutrale Symbol aus dem HTML stehen. */
+    const teilnehmer = loadParticipant();
+    if (teilnehmer && teilnehmer.name) {
+      el.kopfAvatar.textContent = teilnehmer.name
+        .split(/\s+/).slice(0, 2).map((t) => t.charAt(0).toUpperCase()).join("");
+    }
+  }
+
   function panEinrichten() {
     if (!el.campusMap || !el.campusSzene) return;
 
@@ -952,9 +1342,7 @@
 
     el.islandGrid.addEventListener("focusin", (ev) => {
       const li = ev.target.closest(".island-map-item");
-      if (!li) return;
-      const treffer = li.className.match(/island-([a-z0-9-]+)/);
-      if (treffer) panZuInsel(treffer[1]);
+      if (li && li.dataset.slug) panZuInsel(li.dataset.slug);
     });
   }
 
@@ -983,12 +1371,25 @@
     el.campusProgressTrack.setAttribute("aria-valuetext", fortschrittText);
     el.campusProgressFill.style.width = `${fortschritt}%`;
 
+    // Dieselben Zahlen an den kompakteren Stellen: Kurzform im Tablet-Kopf
+    // und Fortschrittskarte samt Ring unter dem Telefon-Orbit.
+    el.campusProgressKurz.textContent = `${abgeschlossen} von ${total}`;
+    el.campusProgressKurzwert.textContent = `${fortschritt} %`;
+    el.orbitFortschrittCopy.textContent = fortschrittText;
+    el.orbitFortschrittWert.textContent = `${fortschritt} %`;
+    el.orbitFortschrittRing.style.setProperty("--pct", String(fortschritt));
+
     state.catalog.inseln.forEach((island, index) => {
       const entry = done[island.slug];
       // Altbestand ohne session gilt als versendet.
       const unterwegs = Boolean(entry && entry.session && wartend.has(entry.session));
       const li = document.createElement("li");
       li.className = `island-map-item island-${island.slug}`;
+      // Der Slug steht als data-Attribut dran, weil ihn zwei Stellen
+      // brauchen: das Nachziehen beim Anordnungswechsel und die Tastatur-
+      // Zentrierung. Aus dem Klassennamen gegriffen traefe die Suche nach
+      // `island-…` zuerst `island-map-item`.
+      li.dataset.slug = island.slug;
       li.style.setProperty("--island-order", index);
       applyKartenLayout(li, island.slug);
 
@@ -1095,6 +1496,10 @@
 
     el.mastheadTitle.textContent = "Wissenscheck";
     el.mastheadMeta.hidden = true;
+    // Der Orbit zeichnet aus denselben Daten wie die Karte — welcher von
+    // beiden sichtbar ist, entscheidet allein das Stylesheet.
+    orbitZeichnen(done, wartend);
+    anordnungZuletzt = kartenAnordnung();
     show("islands");
     scheduleCampusRoutes();
     /* Direkt, nicht im naechsten Frame: `requestAnimationFrame` ruht in
@@ -2574,6 +2979,7 @@
      mehr (sie stehen in Szeneneinheiten), der Aufruf bleibt aber fuer den
      Fall, dass eine Station erst nach dem Zeichnen dazukommt. */
   window.addEventListener("resize", () => {
+    layoutNachziehen();
     coalesceCampusRoutes();
     panKlemmen();
   }, { passive: true });
@@ -2583,11 +2989,13 @@
      verschluckt haben. Einmal nachziehen kostet nichts. */
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "visible") {
+      layoutNachziehen();
       updateCampusRoutes();
       panKlemmen();
     }
   });
   window.addEventListener("orientationchange", () => {
+    layoutNachziehen();
     panKlemmen();
   }, { passive: true });
 
@@ -2639,6 +3047,7 @@
     el.colophon.textContent = DEMO ? "Vorschaumodus: nichts wird gespeichert" : "Wissenscheck";
     panEinrichten();
     bogenEinrichten();
+    kopfEinrichten();
 
     try {
       state.catalog = await fetchJson("/data/inseln.json");
@@ -2662,10 +3071,20 @@
     if (state.catalog.feedback) {
       el.tagesabschluss.href = state.catalog.feedback;
       el.tagesabschluss.hidden = false;
+      // Dieselbe Adresse in Menue, Tablet-Leiste und Telefon-Navigation:
+      // Einzelpakete liefern sie nicht, dort bleiben die Eintraege weg.
+      [el.menueFeedback, el.aktionFeedback, el.mobilNavFeedback].forEach((a) => {
+        a.href = state.catalog.feedback;
+        a.hidden = false;
+      });
     }
     if (state.catalog.arbeitskarte) {
       el.arbeitskarteLink.href = state.catalog.arbeitskarte;
       el.arbeitskarteLink.hidden = false;
+      [el.menueArbeitskarte, el.aktionArbeitskarte, el.mobilNavArbeitskarte].forEach((a) => {
+        a.href = state.catalog.arbeitskarte;
+        a.hidden = false;
+      });
     }
 
     await route();

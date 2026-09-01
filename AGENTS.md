@@ -376,11 +376,16 @@ Ohne Eintrag bleibt der Streifen ausgeblendet. Beschrieben in
 
 ### Die Expeditionskarte
 
-Die Übersicht unter `/quiz` ist eine Bühne mit **festem Seitenverhältnis** —
-16:9 quer, 4:5 hoch, darunter die Kachelliste. Vorher war sie ein Kasten
-über die volle Breite; gemessen ergab das auf dem iPad hochkant 1,0:1 und
-auf einem breiten Monitor 2,7:1, und dieselben Prozentangaben konnten
-unmöglich für beides stimmen.
+Die Übersicht unter `/quiz` gibt es in **drei bewusst verschiedenen
+Kompositionen**: die Szene `quer` (1600 × 900, VEJRØ zentral im Ring der
+sechs Themeninseln) für Desktop und Querformat, die Szene `hoch`
+(900 × 1200) für das Tablet hochkant, und unter 768 px der **Orbit** — ein
+Karussell mit der aktiven Insel im Rampenlicht statt einer verkleinerten
+Karte. Beide Szenen und die Karussell-Reihenfolge lesen aus `KARTE` in
+`engine.js`; welche Anordnung gilt, sagt `--anordnung` im Stylesheet.
+Feste Seitenverhältnisse sind geblieben: Ein Kasten über die volle Breite
+ergab gemessen auf dem iPad hochkant 1,0:1 und auf einem breiten Monitor
+2,7:1 — dieselben Prozentangaben konnten unmöglich für beides stimmen.
 
 Die Motive erzeugt `tools/karten-assets.js` aus dem Asset-Pack unter
 `export/thitronik_campus_asset_pack/` — 28 MB PNG hinein, rund 620 KB WebP

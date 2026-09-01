@@ -387,6 +387,96 @@ h2 { font-size: clamp(1.15rem, 1.05rem + .4vw, 1.5rem); letter-spacing: -.015em;
 }
 .chip-quiet { color: var(--th-muted); font-weight: 600; }
 
+/* ------------------------------------- Karten-Kopf unterhalb Desktopbreite ---
+
+   Hamburger, Avatar und Kurzfortschritt existieren nur auf der Uebersicht
+   (body.ist-karte, gesetzt in show()) und dort erst unterhalb der
+   Desktopbreite. Hier stehen nur die Grundformen; eingeblendet wird in den
+   Medienabfragen der Karte weiter unten. */
+
+.menue-knopf {
+  display: none;
+  place-items: center;
+  width: var(--tap);
+  height: var(--tap);
+  padding: 0;
+  border: 1px solid var(--th-line-strong);
+  border-radius: 12px;
+  background: var(--th-white);
+  color: var(--th-navy);
+  box-shadow: 0 4px 14px rgba(10, 39, 71, .06);
+}
+.menue-knopf svg {
+  width: 26px;
+  height: 26px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.kopf-avatar {
+  display: none;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border: 1px solid var(--th-line-strong);
+  border-radius: 50%;
+  background: var(--info-bg);
+  color: var(--th-blue-text);
+  font-size: .95rem;
+  font-weight: 800;
+  letter-spacing: .02em;
+}
+.kopf-avatar svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.campus-progress-kompakt {
+  display: none;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 6px;
+  color: var(--th-navy);
+  font-variant-numeric: tabular-nums;
+}
+.campus-progress-kompakt strong { font-size: 1.05rem; line-height: 1.1; }
+.campus-progress-kompakt small {
+  padding-left: 10px;
+  border-left: 1px solid var(--th-line);
+  color: var(--th-muted);
+  font-size: .85rem;
+}
+
+/* Das gemeinsame Symbolfeld der Werkzeuge in Menue und Tablet-Leiste —
+   dasselbe Muster wie .ta-icon in der Kopfzeile. */
+.ka-icon {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--info-bg);
+  color: var(--th-blue-text);
+}
+.ka-icon svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 /* --------------------------------------------------------------- Schirm --- */
 
 main { flex: 1 0 auto; }
@@ -874,37 +964,63 @@ main { flex: 1 0 auto; }
       #CFE6F4;
   }
 
-  /* ------------------------------------------------------------ Intro --- */
+  /* ---------------------------------------------------------- Hinweis --- */
 
-  .campus-map .island-intro {
+  /* Unten rechts statt der grossen Intro-Karte oben links: Titel und
+     Fortschritt stehen bereits in der Kopfzeile, auf der Karte reicht die
+     Handlungsaufforderung. Blau statt Weiss, aber der dunkle Ton: Auf
+     Cyan (#3BA9D3) erreicht weisser Text nur 2,69:1 — gleiche Messung wie
+     bei --th-blue-text. */
+  .campus-map .karten-hinweis {
     position: absolute;
     z-index: var(--ebene-karte);
-    left: 2.6cqw;
-    top: 3cqw;
-    width: 24cqw;
-    padding: 2cqw 2.2cqw;
-    border: 1px solid rgba(255, 255, 255, .85);
+    right: 2.4cqw;
+    bottom: 2.2cqw;
+    display: flex;
+    gap: 1.1cqw;
+    align-items: flex-start;
+    width: 21.5cqw;
+    padding: 1.5cqw 1.7cqw;
+    border: 1px solid rgba(255, 255, 255, .35);
     border-radius: 1.1cqw;
-    background: rgba(255, 255, 255, .93);
-    box-shadow: 0 1.1cqw 2.8cqw rgba(10, 39, 71, .16);
+    background: rgba(27, 118, 153, .84);
+    box-shadow: 0 1.1cqw 2.8cqw rgba(10, 39, 71, .2);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
+    color: #fff;
   }
-  .campus-map .island-intro .kicker {
-    min-height: 0;
-    margin-bottom: 1cqw;
-    padding: .45cqw 1cqw;
-    font-size: max(.6rem, .76cqw);
+  .karten-hinweis-anker {
+    display: grid;
+    flex: 0 0 auto;
+    place-items: center;
+    width: 3.1cqw;
+    height: 3.1cqw;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .16);
   }
-  .campus-map .island-intro h1 {
+  .karten-hinweis-anker svg {
+    width: 62%;
+    height: 62%;
+    fill: none;
+    stroke: #fff;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .karten-hinweis-text { min-width: 0; }
+  .campus-map .karten-hinweis h1 {
     max-width: none;
-    margin: 0 0 .8cqw;
-    font-size: max(1.05rem, 2.05cqw);
+    margin: .2cqw 0 .4cqw;
+    color: #fff;
+    font-size: max(.95rem, 1.4cqw);
+    letter-spacing: -.01em;
   }
-  .campus-map .island-intro .lead {
+  .campus-map .karten-hinweis .lead {
     max-width: none;
-    font-size: max(.74rem, 1.02cqw);
-    line-height: 1.42;
+    margin: 0;
+    color: rgba(255, 255, 255, .92);
+    font-size: max(.72rem, .96cqw);
+    line-height: 1.4;
   }
 
   /* -------------------------------------------------------- Wegpunkte --- */
@@ -928,6 +1044,26 @@ main { flex: 1 0 auto; }
     vector-effect: non-scaling-stroke;
   }
 
+  /* Orbitkreise um VEJRO und gepunktete Strahlen zu den Themeninseln.
+     Zurueckhaltend: Sie sind Navigationsmetapher, nicht Inhalt. Die
+     Strichstaerke ist geraetetreu (non-scaling-stroke), die Dash-Muster
+     stehen in Szeneneinheiten und ruecken auf kleinen Buehnen enger
+     zusammen — dort ist auch die Karte kleiner, das passt. */
+  .campus-orbit circle {
+    fill: none;
+    stroke: rgba(255, 255, 255, .85);
+    stroke-width: 2;
+    stroke-dasharray: 5 9;
+    vector-effect: non-scaling-stroke;
+  }
+  .campus-orbit line {
+    stroke: rgba(255, 255, 255, .95);
+    stroke-width: 3.5;
+    stroke-dasharray: .1 15;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+  }
+
   /* ------------------------------------------------------------- Deko --- */
 
   .map-deko {
@@ -947,10 +1083,14 @@ main { flex: 1 0 auto; }
     background-size: contain;
     background-repeat: no-repeat;
   }
+  /* Kompass oben LINKS, Walfluke unten links, Boote und Moewen rechts im
+     freien Wasser — die Verteilung der Vorlage. Frei ist, was nach der
+     radialen Anordnung uebrig bleibt: die vier Ecken und der Streifen
+     rechts zwischen HIDDENSEE und POEL. */
   .deko-kompass {
-    right: 2.4cqw;
-    top: 2.8cqw;
-    width: 10.5cqw;
+    left: 2.6cqw;
+    top: 2.6cqw;
+    width: 9.5cqw;
     aspect-ratio: 300 / 296;
     background-image: url("/media/campus/karte/kompass.webp");
     opacity: .92;
@@ -960,17 +1100,17 @@ main { flex: 1 0 auto; }
     aspect-ratio: 319 / 420;
     background-image: url("/media/campus/karte/segelboot.webp");
   }
-  /* Die Deko steht dort, wo nach Inseln und Infokarten Platz bleibt —
-     nachgemessen mit einem Belegungsraster, nicht geschaetzt. Vorher lagen
-     das Segelboot und beide Moewenschwaerme unter den Infokarten von SAMSO
-     und VEJRO: Das Boot war zu 13 % verdeckt und sah aus, als schiebe es
-     sich hinter der Insel hervor. Deko gehoert ins freie Wasser, sonst
-     wirkt sie wie ein Fehler. */
-  .deko-boot-a { left: 71%; top: 6%; }
-  .deko-boot-b { left: 46%; top: 64%; }
+  /* Ein Boot je Seite, nicht beide rechts: links segelt eines im offenen
+     Wasser suedwestlich von VEJRO — auf der gepunkteten Route, was fuer
+     ein Boot der eine Platz ist, an dem eine Linie darunter richtig
+     aussieht. Rechts bleibt eines oben. Nachgemessen gegen Karten,
+     Wellen und Inseln, auch im Abgeschlossen-Zustand mit hoeheren
+     Infokarten. */
+  .deko-boot-a { left: 82%; top: 12%; }
+  .deko-boot-b { left: 30%; top: 50%; }
   .deko-wal {
-    left: 36%;
-    top: 27%;
+    left: 7%;
+    top: 84%;
     width: 7.5cqw;
     aspect-ratio: 420 / 336;
     background-image: url("/media/campus/karte/wal.webp");
@@ -980,17 +1120,17 @@ main { flex: 1 0 auto; }
     aspect-ratio: 420 / 207;
     background-image: url("/media/campus/karte/moewen.webp");
   }
-  .deko-moewen-a { left: 40%; top: 40%; }
-  .deko-moewen-b { left: 88%; top: 44%; }
+  .deko-moewen-a { left: 73%; top: 7%; }
+  .deko-moewen-b { left: 28%; top: 84%; }
   .deko-wellen {
     width: 7cqw;
     aspect-ratio: 520 / 294;
     background-image: url("/media/campus/karte/wellen.webp");
     opacity: .85;
   }
-  .deko-wellen-a { left: 1%; top: 56%; }
-  .deko-wellen-b { left: 89%; top: 84%; }
-  .deko-wellen-c { left: 41%; top: 93%; }
+  .deko-wellen-a { left: 2%; top: 55%; }
+  .deko-wellen-b { left: 67%; top: 86%; }
+  .deko-wellen-c { left: 30%; top: 92%; }
 
   /* --------------------------------------------------------- Stationen --- */
 
@@ -1142,6 +1282,25 @@ main { flex: 1 0 auto; }
   [data-karte="links"] .i-content { right: calc(100% + var(--karte-x)); }
   [data-karte="links"] .i-content::after { left: 100%; }
 
+  /* `unten` haengt die Infokarte mittig unter das Motiv: im Hochformat
+     ueberall, auf der Querkarte bei VEJRO. `--karte-y-szene` zaehlt hier
+     von der UNTERKANTE des Motivs; negativ ueberlappt die Karte das Motiv
+     leicht, wie in der Vorlage. transform ist EINE Eigenschaft — die
+     waagerechte Zentrierung steht deshalb in jedem Zustand mit (Hover und
+     reduzierte Bewegung weiter unten bei den Zeigerregeln). */
+  [data-karte="unten"] .i-content {
+    left: 50%;
+    right: auto;
+    top: calc(100% + var(--karte-y-szene, 0cqw));
+    transform: translateX(-50%);
+  }
+
+  /* Ohne Abstand kein Anschluss: Ueberlappende und unten angehaengte
+     Karten bekommen weder Strich noch Punkt — gesetzt aus KARTE in
+     applyKartenLayout. */
+  [data-anschluss="aus"] .i-content::before,
+  [data-anschluss="aus"] .i-content::after { display: none; }
+
 
   /* ------------------------------------------ Anordnung im Querformat ---
 
@@ -1242,6 +1401,10 @@ main { flex: 1 0 auto; }
   position: relative;
   overflow: hidden;
   touch-action: pan-y;
+  /* Welche Anordnung aus KARTE gilt, liest die Engine HIER ab
+     (kartenAnordnung in engine.js) — die Grenze steht damit nur einmal,
+     naemlich in der Medienabfrage weiter unten. */
+  --anordnung: quer;
 }
 
 .campus-szene {
@@ -1308,65 +1471,553 @@ main { flex: 1 0 auto; }
   .island-card .i-content { box-shadow: 0 .5cqw 1.2cqw rgba(10, 39, 71, .14); }
 }
 
-/* Hochformat auf dem Tablet und alles unter 768 px: Die Szene bleibt 16:9
-   und behält ihre Mindestbreite. Sie ragt dann über den Ausschnitt hinaus,
-   und man schiebt sie.
-
-   Warum nicht einfach die ganze Szene auf 390 px stauchen: VEJRØ wäre dort
-   80 px breit, HIDDENSEE keine 25. Motive in dieser Größe sind kein Bild
-   mehr, und die Trefferfläche fiele weit unter das Mindestmaß. */
-@media (max-width: 767px), (orientation: portrait) and (max-width: 1024px) {
+/* Tablet hochkant: KEIN Ausschnitt auf die Querkarte mehr, sondern die
+   eigene senkrechte Anordnung `hoch` aus KARTE — 900 x 1200 Einheiten,
+   3:4. Alle sieben Inseln bleiben gleichzeitig sichtbar, VEJRO zentral,
+   die Infokarten haengen unter ihren Motiven, nichts wird geschoben.
+   (Das Schieben bleibt als Mechanik liegen und schaltet sich selbst ab,
+   weil die Szene in den Ausschnitt passt.) */
+@media (orientation: portrait) and (min-width: 768px) and (max-width: 1199px) {
   .campus-map {
-    /* Die Szene ist mindestens so hoch wie der Ausschnitt, sonst bleiben
-       ueber und unter dem Archipel leere Baender: Eine 16:9-Szene in einem
-       hochkanten Fenster ist immer breiter als hoch. Aus der Hoehe des
-       Ausschnitts mal 16/9 folgt die Breite, bei der sie ihn genau fuellt;
-       die 940 px sind die Untergrenze fuer die Lesbarkeit der Motive. */
-    --aussch-hoehe: min(78dvh, 620px);
-    /* Zwei Untergrenzen in einer Zahl: Die Szene ist nie schmaler als
-       `--szene-min` (sonst werden die Motive unlesbar) und nie niedriger
-       als der Ausschnitt (sonst bleibt darunter ein leeres Band). Wer die
-       Mindestbreite je Geraet aendert, fasst nur `--szene-min` an. */
-    --szene-min: 1040px;
-    --szene-breite: max(var(--szene-min), calc(var(--aussch-hoehe) * 16 / 9));
-    width: 100%;
-    /* Feste Höhe statt aspect-ratio: Der Ausschnitt ist ein Fenster auf die
-       Szene, nicht die Szene selbst. 62dvh lässt Kopfzeile und
-       Tagesabschluss sichtbar — 125dvh-Rechnung wie in .shell, weil
-       `body { zoom: .8 }` dazwischenliegt. */
-    height: var(--aussch-hoehe);
-    aspect-ratio: auto;
-    border-radius: 14px;
-    cursor: grab;
+    --anordnung: hoch;
+    --karte-ar: 3 / 4;
+    /* Breite und Hoehe zugleich begrenzt, wie am Querformat: 125dvh wegen
+       body { zoom: .8 }, abgezogen sind Kopfzeile und Aktionsleiste. */
+    width: min(100%, (125dvh - 260px) * 3 / 4);
+    aspect-ratio: var(--karte-ar);
+    margin-inline: auto;
   }
-  .campus-map.is-schiebend { cursor: grabbing; }
+  .campus-szene { aspect-ratio: 3 / 4; }
+
+  /* Kompakter als am Desktop, aber vollstaendig lesbar. Die cqw beziehen
+     sich jetzt auf eine schmalere Buehne, deshalb eigene Werte. */
+  .island-card .i-content { gap: .4cqw; padding: 1cqw 1.3cqw; }
+  .island-card .i-code { font-size: max(.6rem, 1.2cqw); }
+  .island-card .i-title { font-size: max(.78rem, 1.75cqw); }
+  .island-card .i-state { font-size: max(.64rem, 1.3cqw); }
+
+  /* Deko fuer die senkrechte Szene: Kompass oben links, Boote und Moewen
+     ins freie Wasser, der Wal behaelt seine Ecke unten links. (Wer hier
+     etwas ausblenden will: `.map-deko span` schlaegt `.deko-…` — die
+     Regel braucht dann `.map-deko .deko-…`, siehe AGENTS.md.) */
+  .deko-kompass { width: 12cqw; }
+  .deko-boot { width: 7.5cqw; }
+  .deko-boot-a { left: 80%; top: 7%; }
+  .deko-boot-b { left: 7%; top: 88%; }
+  .deko-wal { left: 25%; top: 87%; }
+  .deko-moewen { width: 8cqw; }
+  .deko-moewen-a { left: 20%; top: 21%; }
+  .deko-moewen-b { left: 68%; top: 52%; }
+  .deko-wellen { width: 8.5cqw; }
+  .deko-wellen-a { left: 3%; top: 47%; }
+  .deko-wellen-b { left: 88%; top: 80%; }
+  .deko-wellen-c { left: 30%; top: 96%; }
+
+  /* Der Hinweis unten rechts gehoert zur Desktopkarte; hier uebernimmt
+     die Aktionsleiste den unteren Rand. */
+  .campus-map .karten-hinweis { display: none; }
 }
 
-/* Tablet hochkant hat Hoehe im Ueberfluss — 620 px liessen darunter ein
-   leeres Drittel stehen. Der Deckel steigt hier, die Rechnung bleibt
-   dieselbe: Die Szene folgt der Hoehe des Ausschnitts. */
-@media (orientation: portrait) and (min-width: 768px) and (max-width: 1024px) {
-  .campus-map { --aussch-hoehe: min(74dvh, 980px); }
-}
-
-/* Telefon: Die Infokarten verschwinden von der Szene. Sieben weiße Kästen
-   auf 390 px verdecken genau das, was man ansehen will — die Inseln. Die
-   Auskunft kommt beim Antippen im Bogen von unten. */
+/* Telefon: Die Szene verschwindet KOMPLETT — samt Seegrund und Deko, denn
+   Hintergruende in einem display:none-Teilbaum holt der Browser gar nicht
+   erst. An ihre Stelle tritt der Orbit: die aktive Insel gross im
+   Rampenlicht, die uebrigen sechs als runde Stationen auf dem Ring. */
 @media (max-width: 767px) {
-  .campus-map { --szene-min: 940px; }
-  .island-card .i-content { display: none; }
-  /* Die Trefferfläche folgt nicht mehr der Kontur des Motivs: HIDDENSEE ist
-     schmal, und eine 30 px breite Insel trifft niemand mit dem Daumen. */
-  .island-card {
-    min-width: var(--tap);
-    min-height: var(--tap);
-  }
-  .island-card .i-visual { pointer-events: none; }
-  /* Die Deko bleibt dem Telefon erspart: 141 KB Kompass, Boote, Wal und
-     Möwen, die auf dem geschobenen Ausschnitt kaum je im Bild sind.
-     Hintergründe einer nicht passenden Abfrage holt der Browser nicht. */
-  .map-deko { display: none; }
+  .campus-map { display: none; }
 }
+
+/* ------------------------------------------ Tablet hochkant: Kopf und Leiste ---
+
+   Der Kopf wird kompakt: links Marke, rechts nur noch „0 von 7 / 0 %" mit
+   duenner Leiste und dem Hamburger. Die drei Werkzeuge ziehen in die
+   schwebende Leiste am unteren Kartenrand. Beides gilt nur auf der
+   Uebersicht (body.ist-karte) — im Quiz bleibt der Kopf, wie er war. */
+
+.karten-aktionen { display: none; }
+
+@media (orientation: portrait) and (min-width: 768px) and (max-width: 1199px) {
+  body.ist-karte .masthead {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    gap: 14px;
+  }
+  body.ist-karte .masthead-tools { display: none; }
+  body.ist-karte .masthead-progress {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+    width: auto;
+    min-width: 200px;
+  }
+  body.ist-karte .campus-progress-head,
+  body.ist-karte .campus-progress-copy { display: none; }
+  body.ist-karte .campus-progress-kompakt { display: flex; }
+  body.ist-karte .menue-knopf {
+    display: grid;
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  /* Die Leiste klebt ueber dem unteren Kartenrand — deshalb tragen die
+     Bildschirme `overflow: clip` statt `hidden`, sonst waere sticky tot. */
+  body.ist-karte .karten-aktionen {
+    position: sticky;
+    z-index: var(--ebene-karte);
+    bottom: 14px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    width: fit-content;
+    margin: -78px auto 16px;
+    padding: 8px;
+    border: 1px solid rgba(183, 194, 207, .7);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .94);
+    box-shadow: 0 14px 38px rgba(20, 55, 90, .14);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+}
+
+.karten-aktion {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: var(--tap);
+  padding: 6px 18px 6px 8px;
+  border: 1px solid var(--th-line-strong);
+  border-radius: 999px;
+  background: var(--th-white);
+  color: var(--th-navy);
+  font-weight: 800;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: border-color var(--duration-fast) var(--ease-out),
+              background-color var(--duration-fast) var(--ease-out),
+              transform var(--duration-press) var(--ease-out);
+}
+.karten-aktion:hover { border-color: var(--th-blue); background: var(--info-bg); }
+.karten-aktion:active { transform: scale(.98); }
+
+/* ------------------------------------------------- Telefon: Kopf und Orbit ---
+
+   Der Kopf traegt nur noch Hamburger, Wortmarke und Avatar; Titelzeile,
+   Fortschritt und Werkzeuge stecken in Orbit, Fortschrittskarte und
+   unterer Navigation. Auch das gilt nur auf der Uebersicht. */
+
+.orbit, .mobil-nav { display: none; }
+
+@media (max-width: 767px) {
+  body.ist-karte .masthead {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-rows: auto;
+    gap: 10px;
+    align-items: center;
+  }
+  /* Solides Weiss statt Glas: Die Wortmarke ist ein PNG auf Weiss und
+     zeichnet sich auf der halbtransparenten Flaeche als hellerer Kasten ab. */
+  body.ist-karte .masthead { background: var(--th-white); }
+  body.ist-karte .menue-knopf { display: grid; grid-column: 1; grid-row: 1; }
+  body.ist-karte .brand {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: center;
+  }
+  body.ist-karte .brand-logo { width: 148px; }
+  body.ist-karte .brand-copy { display: none; }
+  body.ist-karte .kopf-avatar { display: grid; grid-column: 3; grid-row: 1; }
+  body.ist-karte .masthead-progress,
+  body.ist-karte .masthead-tools { display: none; }
+
+  /* Platz fuer die feste Navigation am unteren Rand. */
+  body.ist-karte .shell { padding-bottom: 96px; }
+
+  #screen-islands { background: #DCEEF9; }
+
+  .orbit {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 14px 14px 18px;
+    /* Wasserflaeche wie auf der grossen Karte, aber als Verlauf: Die
+       166 KB Seegrund-Textur bleiben dem Telefon weiter erspart. */
+    background: linear-gradient(180deg, #E2F1FA 0%, #CFE6F4 55%, #D8ECF8 100%);
+  }
+
+  .orbit-pille {
+    display: inline-flex;
+    align-items: center;
+    align-self: center;
+    min-height: 34px;
+    margin: 0;
+    padding: 5px 20px;
+    border: 1px solid rgba(255, 255, 255, .8);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .95);
+    box-shadow: 0 6px 16px rgba(20, 55, 90, .1);
+    color: var(--th-blue-text);
+    font-size: .78rem;
+    font-weight: 800;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+  }
+
+  .orbit-buehne {
+    position: relative;
+    width: min(100%, 470px);
+    aspect-ratio: 100 / 113;
+    margin: 0 auto;
+    touch-action: pan-y;
+  }
+
+  .orbit-ring {
+    position: absolute;
+    inset: 3% 5%;
+    border: 2px dashed rgba(29, 54, 97, .25);
+    border-radius: 50%;
+  }
+
+  .orbit-thumbs {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .orbit-station {
+    position: absolute;
+    left: var(--px, 50%);
+    top: var(--py, 50%);
+    transform: translate(-50%, -50%);
+    transition: left 380ms var(--ease-out), top 380ms var(--ease-out), opacity 380ms ease;
+  }
+  /* „mitte" steht im Rampenlicht, „versteckt" ist der Ringplatz hinter dem
+     Rampenlicht — beide unsichtbar, damit die Rotation als Kreis wirkt. */
+  .orbit-station[data-platz="mitte"],
+  .orbit-station[data-platz="versteckt"] {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .orbit-thumb {
+    display: grid;
+    place-items: center;
+    width: 76px;
+    height: 76px;
+    padding: 0;
+    overflow: hidden;
+    border: 3px solid #fff;
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 40%, #EAF6FD 0 58%, #C2E2F4);
+    box-shadow: 0 8px 20px rgba(20, 55, 90, .18);
+  }
+  .orbit-thumb img {
+    width: 86%;
+    height: 86%;
+    object-fit: contain;
+  }
+
+  .orbit-hero {
+    position: absolute;
+    left: 50%;
+    top: 52%;
+    z-index: 1;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 68%;
+    padding: 9% 5% 7%;
+    border-radius: 48% 48% 46% 46% / 34% 34% 30% 30%;
+    background: #fff;
+    box-shadow: 0 18px 44px rgba(20, 55, 90, .16);
+    text-align: center;
+  }
+  .orbit-hero-bild {
+    width: 72%;
+    height: auto;
+    margin-bottom: 6px;
+    filter: drop-shadow(0 8px 10px rgba(10, 39, 71, .18));
+  }
+  .orbit-hero-code {
+    margin: 0 0 2px;
+    color: var(--th-blue-text);
+    font-size: .72rem;
+    font-weight: 800;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+  }
+  .orbit-hero-titel {
+    margin: 0 0 3px;
+    color: var(--th-navy);
+    font-size: 1.22rem;
+    font-weight: 800;
+    line-height: 1.12;
+    letter-spacing: -.01em;
+    text-wrap: balance;
+  }
+  .orbit-hero-stand {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    margin: 0 0 10px;
+    color: var(--th-muted);
+    font-size: .74rem;
+    font-weight: 600;
+  }
+  .orbit-hero-stand::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #C3CBD4;
+  }
+  .orbit-start {
+    min-height: var(--tap);
+    padding: 10px 36px;
+    border-radius: 999px;
+  }
+
+  .orbit-pfeil {
+    position: absolute;
+    top: 50%;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: calc(var(--tap) + 2px);
+    height: calc(var(--tap) + 2px);
+    padding: 0;
+    border: 1px solid rgba(183, 194, 207, .6);
+    border-radius: 50%;
+    background: #fff;
+    color: var(--th-navy);
+    box-shadow: 0 10px 24px rgba(20, 55, 90, .16);
+    transform: translateY(-50%);
+  }
+  .orbit-pfeil svg {
+    width: 26px;
+    height: 26px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .orbit-pfeil-links { left: -4px; }
+  .orbit-pfeil-rechts { right: -4px; }
+
+  .orbit-punkte {
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+  }
+  /* Der sichtbare Punkt ist klein, die Trefferflaeche nicht: 34 x 55 px
+     je Knopf, das Mindestmass gilt auch hier. */
+  .orbit-punkt {
+    position: relative;
+    width: 34px;
+    height: var(--tap);
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
+  .orbit-punkt::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: #A9CFE6;
+    transform: translate(-50%, -50%);
+    transition: background-color var(--duration-fast) ease, transform var(--duration-fast) ease;
+  }
+  .orbit-punkt.ist-aktiv::before {
+    background: var(--th-blue-text);
+    transform: translate(-50%, -50%) scale(1.3);
+  }
+
+  .orbit-hinweis {
+    margin: 0;
+    color: var(--th-navy);
+    font-size: .95rem;
+    font-weight: 600;
+    text-align: center;
+  }
+  .orbit-hand { display: grid; place-items: center; }
+  .orbit-hand svg {
+    width: 72px;
+    height: auto;
+    fill: none;
+    stroke: var(--th-navy);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: .85;
+  }
+
+  .orbit-fortschritt {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8px;
+    padding: 16px 18px;
+    border: 1px solid rgba(183, 194, 207, .6);
+    border-radius: var(--radius-lg);
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(20, 55, 90, .08);
+  }
+  .orbit-fortschritt-text strong {
+    display: block;
+    margin-bottom: 2px;
+    color: var(--th-navy);
+    font-size: 1.14rem;
+  }
+  .orbit-fortschritt-text span {
+    color: var(--th-muted);
+    font-size: .9rem;
+    font-variant-numeric: tabular-nums;
+  }
+  /* Derselbe conic-Ring wie auf der Ergebniskarte, nur hell und klein. */
+  .orbit-fortschritt-ring {
+    --pct: 0;
+    position: relative;
+    display: grid;
+    flex: 0 0 auto;
+    place-items: center;
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    background: conic-gradient(var(--th-blue-text) calc(var(--pct, 0) * 1%), #E2ECF3 0);
+  }
+  .orbit-fortschritt-ring::before {
+    content: "";
+    position: absolute;
+    inset: 8px;
+    border-radius: 50%;
+    background: #fff;
+  }
+  .orbit-fortschritt-ring b {
+    position: relative;
+    color: var(--th-navy);
+    font-size: 1.02rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Feste Navigation am unteren Rand. Kanten statt Breite (100vw ist mit
+     body { zoom: .8 } nicht verlaesslich); auto-Spalten statt fester
+     vier, weil Einzelpakete ohne Arbeitskarte und Feedback auskommen. */
+  .mobil-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: var(--ebene-kopf);
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--th-line);
+    background: rgba(255, 255, 255, .96);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+  .mobil-nav-punkt {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(var(--tap) + 8px);
+    padding: 6px 2px;
+    border: 0;
+    border-radius: 12px;
+    background: transparent;
+    color: #6E7E93;
+    font-size: .72rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .mobil-nav-punkt svg {
+    width: 26px;
+    height: 26px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .mobil-nav-punkt.ist-aktiv { color: var(--th-blue-text); }
+}
+
+/* ------------------------------------------------------------ Campus-Menue ---
+
+   Ein <dialog> in der Top-Layer — er entkommt dem zoom der Seite (siehe
+   Inselbogen), deshalb stehen die Masse hier in echten Pixeln. */
+
+.menue-dialog {
+  width: min(92vw, 400px);
+  margin: auto;
+  padding: 16px 16px 18px;
+  border: 0;
+  border-radius: 18px;
+  background: var(--th-white);
+  box-shadow: 0 24px 64px rgba(10, 39, 71, .3);
+  color: var(--th-navy);
+}
+.menue-dialog::backdrop { background: rgba(10, 39, 71, .45); }
+
+.menue-kopf {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.menue-kopf h2 { margin: 0; font-size: 1.08rem; }
+
+.menue-zu {
+  position: relative;
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--th-line-strong);
+  border-radius: 50%;
+  background: var(--th-white);
+}
+.menue-zu::before,
+.menue-zu::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 18px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--th-navy);
+}
+.menue-zu::before { transform: translate(-50%, -50%) rotate(45deg); }
+.menue-zu::after { transform: translate(-50%, -50%) rotate(-45deg); }
+
+.menue-liste { display: grid; gap: 8px; }
+.menue-punkt {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  min-height: 52px;
+  padding: 8px 12px;
+  border: 1px solid var(--th-line-strong);
+  border-radius: 14px;
+  background: var(--th-white);
+  color: var(--th-navy);
+  font-size: 1rem;
+  font-weight: 800;
+  text-align: left;
+  text-decoration: none;
+}
+.menue-punkt:hover { border-color: var(--th-blue); background: var(--info-bg); }
 
 /* ------------------------------------------------------------- Startbild --- */
 
@@ -3724,6 +4375,16 @@ main { flex: 1 0 auto; }
   }
   .island-card:active { transform: none; }
   .island-card:active .i-content { transform: translateY(-50%) scale(.985); }
+
+  /* `unten`-Karten sind mit translateX zentriert — dieselbe Falle wie
+     oben, nur waagerecht: Der Zustand schreibt die Grundlage mit, sonst
+     springt die Karte beim Hover um ihre halbe Breite zur Seite. */
+  .island-map-item[data-karte="unten"] .island-card:hover .i-content {
+    transform: translateX(-50%) translateY(-2px);
+  }
+  .island-map-item[data-karte="unten"] .island-card:active .i-content {
+    transform: translateX(-50%) scale(.985);
+  }
 }
 
 /* --------------------------------------------------------------- Mobile --- */
@@ -4048,6 +4709,8 @@ main { flex: 1 0 auto; }
 @media (prefers-reduced-motion: reduce) {
   .island-card:hover .i-content,
   .island-card:active .i-content { transform: translateY(-50%); }
+  .island-map-item[data-karte="unten"] .island-card:hover .i-content,
+  .island-map-item[data-karte="unten"] .island-card:active .i-content { transform: translateX(-50%); }
 }
 
 @media (prefers-reduced-transparency: reduce) {
