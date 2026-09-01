@@ -382,11 +382,15 @@
 
 .thi-vorschlaege { display: grid; gap: 8px; margin-top: 4px; }
 
+/* min-height in var(--tap), nicht in festen 44px: Die Seite laeuft unter
+   `body { zoom: .8 }`. Feste 44px messen auf dem Schirm 35 px und reissen
+   damit genau das Mindestmass, das die Zahl 44 sichern sollte. --tap steht
+   auf 55px, also 44 echte Pixel. Nachgemessen bei 390 px Breite. */
 .thi-vorschlag {
   display: flex;
   align-items: center;
   gap: 10px;
-  min-height: 44px;
+  min-height: var(--tap);
   padding: 10px 12px;
   border: 1px solid var(--th-line);
   border-radius: var(--radius-md);

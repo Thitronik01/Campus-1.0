@@ -32,14 +32,21 @@
   const MAX_ZEICHEN = 4000;
   const SUPPORT = "+49 (0)4351 76744-112";
 
-  /* Vorschläge für den leeren Zustand. Bewusst gemischt: eine Produktfrage,
-     eine Einbaufrage, eine Diagnosefrage, eine Campusfrage — damit auf einen
-     Blick klar ist, wofür THI zuständig ist. */
+  /* Vorschläge für den leeren Zustand. Breit gestreut statt vier Varianten
+     derselben Sorte: eine Produktfrage, eine zur Orientierung am Tag, eine
+     zum Abschluss, eine zu THI selbst und eine zur Verpflegung. Wer den
+     leeren Chat sieht, soll daran ablesen können, wie weit er fragen darf —
+     nicht nur "Technik", sondern auch "wie läuft mein Tag".
+
+     Jeder Vorschlag braucht eine Fundstelle im Bestand, sonst endet der
+     erste Klick im Verweis auf die Support-Hotline. Die vier organisa-
+     torischen Themen stehen deshalb in thi-lib/campus-wissen.mjs. */
   const VORSCHLAEGE = [
-    "Wie lerne ich einen Funk-Magnetkontakt an?",
-    "Wo darf die WiPro-III-Zentrale eingebaut werden?",
-    "Was bedeutet ein Fehlalarm am Erschütterungssensor?",
-    "Wie läuft der Wissenscheck ab?"
+    "Was kann der Pro-Finder?",
+    "Wo und wann finde ich die Insel FEHMARN?",
+    "Wann bekomme ich mein Zertifikat?",
+    "Wer bist du, und wobei kannst du helfen?",
+    "Was gibt es heute zu essen?"
   ];
 
   // --------------------------------------------------------------- Zustand --

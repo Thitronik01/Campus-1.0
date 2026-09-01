@@ -271,6 +271,17 @@ spezifischer ist als `.deko-kompass`, löschte sie jedes Motiv wieder. Die
 Kompassrose fehlte, ohne dass eine Datei fehlte. Bei geteilten Grundlagen
 plus einzelnen Motiven gehören Langschreibweisen hin.
 
+**Ebenso `transform`: eine Eigenschaft, kein Stapel.** Die Infokarte ist mit
+`translateY(-50%)` zentriert. Die Hover-Regel schrieb `translateY(-2px)` —
+gemeint war „2 px anheben", geschrieben stand „Zentrierung weg". Die Karte
+fiel um ihre halbe Höhe (gemessen 43 px), rutschte unter dem Zeiger weg, der
+Hover erlosch, sie sprang zurück, der Zeiger war wieder drin: ein Flackern,
+das nach kaputter Animation aussieht und ein Kaskadenfehler ist. Wer einen
+Zustand ergänzt, schreibt die Grundlage mit: `translateY(calc(-50% - 2px))`,
+`translateY(-50%) scale(.985)`. Dasselbe galt für `transform: none` unter
+`prefers-reduced-motion` — dort ist die Regel jetzt auf die Bühne begrenzt,
+weil `none` in der Kachelliste richtig bleibt.
+
 ### Vor dem Löschen eines Bildes nachsehen, wer darauf zeigt
 
 `lan-start-schluesseluebergabe.webp` sah nach dem Umbau der Langeland-Bühne

@@ -1205,13 +1205,19 @@ main { flex: 1 0 auto; }
   }
   .i-crew-name { font-size: max(.64rem, .88cqw); }
 
-  .island-samsoe    { --x: 39%; --y: 16%; --w: 12%; }
-  .island-fehmarn   { --x: 28%; --y: 41%; --w: 16%; }
-  .island-vejro     { --x: 56%; --y: 42%; --w: 19%; --karte-w: 15cqw; --karte-y: -12%; }
-  .island-hiddensee { --x: 80%; --y: 62%; --w: 8%;  --karte-w: 13cqw; --karte-x: 2.2cqw; }
-  .island-usedom    { --x: 36%; --y: 68%; --w: 9%;  --karte-y: -24%; }
-  .island-poel      { --x: 62%; --y: 79%; --w: 16%; --karte-y: 18%; }
-  .island-langeland { --x: 26%; --y: 82%; --w: 9%;  }
+  /* Die Anordnung ist nachgemessen, nicht geschaetzt: Ein Belegungsraster
+     ueber die Buehne zeigte 64 % genutzte Flaeche und ein totes Rechteck
+     oben rechts (64-86 % Breite auf 4-28 % Hoehe), waehrend links unten
+     alles gedraengt stand. Zwei Ecken sind gesetzt und muessen frei
+     bleiben: die Intro-Karte oben links (3-27 % x 5-33 %) und die
+     Kompassrose oben rechts (87-98 % x 5-23 %). */
+  .island-samsoe    { --x: 50%; --y: 12%; --w: 13%; }
+  .island-fehmarn   { --x: 28%; --y: 42%; --w: 16%; }
+  .island-vejro     { --x: 62%; --y: 41%; --w: 20%; --karte-w: 15cqw; --karte-y: -12%; }
+  .island-hiddensee { --x: 80%; --y: 62%; --w: 9%;  --karte-w: 13cqw; --karte-x: 2.2cqw; }
+  .island-usedom    { --x: 35%; --y: 74%; --w: 10%; --karte-y: -33%; }
+  .island-poel      { --x: 61%; --y: 80%; --w: 17%; --karte-y: 18%; }
+  .island-langeland { --x: 24%; --y: 85%; --w: 10%; }
 }
 
 /* ------------------------------------------- Anordnung im Hochformat ---
@@ -3607,16 +3613,23 @@ main { flex: 1 0 auto; }
     box-shadow: none;
     transform: none;
   }
+  /* Die Infokarte ist mit `translateY(-50%)` zentriert. `transform` ist EINE
+     Eigenschaft: Wer hier nur `translateY(-2px)` schreibt, ersetzt die
+     Zentrierung, statt sie zu ergaenzen — die Karte faellt um ihre halbe
+     Hoehe nach unten (gemessen 43 px), rutscht unter dem Zeiger weg, der
+     Hover erlischt, die Karte springt zurueck, der Zeiger ist wieder drin.
+     Das ergibt ein Flackern, das aussieht wie ein Fehler in der Animation
+     und keiner ist. Die Zentrierung gehoert deshalb in jeden Zustand. */
   .island-card:hover .i-content {
     box-shadow: 0 13px 28px rgba(10, 39, 71, .17), inset 0 1px 0 rgba(255, 255, 255, .9);
-    transform: translateY(-2px);
+    transform: translateY(calc(-50% - 2px));
   }
   .island-card:hover .i-visual img {
     filter: drop-shadow(0 10px 10px rgba(10, 39, 71, .26));
     transform: scale(1.015);
   }
   .island-card:active { transform: none; }
-  .island-card:active .i-content { transform: scale(.985); }
+  .island-card:active .i-content { transform: translateY(-50%) scale(.985); }
 }
 
 /* --------------------------------------------------------------- Mobile --- */
@@ -3916,6 +3929,15 @@ main { flex: 1 0 auto; }
   .answer:active:not(:disabled),
   .island-card:active,
   .island-card:active .i-content { transform: none; }
+}
+
+/* `transform: none` oben ist fuer die Kachelliste richtig — dort steht die
+   Infokarte im Fluss. Auf der Buehne ist sie mit `translateY(-50%)`
+   zentriert, und `none` verschoebe sie um ihre halbe Hoehe. Reduzierte
+   Bewegung heisst: kein Heben, kein Druck — nicht: keine Zentrierung. */
+@media (prefers-reduced-motion: reduce) and (min-width: 700px) and (min-height: 560px) {
+  .island-card:hover .i-content,
+  .island-card:active .i-content { transform: translateY(-50%); }
 }
 
 @media (prefers-reduced-transparency: reduce) {

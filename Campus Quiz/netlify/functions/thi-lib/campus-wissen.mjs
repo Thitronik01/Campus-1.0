@@ -132,6 +132,70 @@ const CAMPUS_SEITEN = [
       "THI kennt die Antworten des laufenden Wissenschecks nicht und gibt sie " +
       "auch nicht heraus. Für fachliche Fragen während der Vorbereitung ist " +
       "er gedacht, nicht als Lösungshilfe während der Bewertung."
+  },
+
+  /* Die folgenden drei Einträge beantworten organisatorische Fragen. Sie
+     stehen hier, weil ohne sie die Regel "SUPPORT STATT RATEN" greift und
+     THI jemanden, der nach dem Mittagessen fragt, an die technische
+     Hotline verweist. Das ist die falsche Auskunft.
+
+     ACHTUNG: Die konkreten Angaben — Uhrzeiten, Standorte, Bestehensgrenze,
+     Speiseplan — liegen im Campus NICHT vor und sind hier bewusst nicht
+     erfunden. Sobald sie feststehen, gehören sie in diese Texte; bis dahin
+     leiten sie an die Betreuung weiter, was besser ist als eine erfundene
+     Uhrzeit, nach der sich jemand richtet. */
+  {
+    route: "/campus/orientierung",
+    title: "Inseln finden — Reihenfolge und Orientierung",
+    slug: "orientierung",
+    boostKeywords:
+      "wo finde ich insel station reihenfolge orientierung karte plan wann " +
+      "dran standort raum halle aufbau fehmarn usedom poel samsoe vejro " +
+      "hiddensee langeland",
+    body:
+      "Die sieben Inseln sind Stationen vor Ort. Auf der Campus-Karte im " +
+      "Wissenscheck stehen alle sieben mit Namen, Thema und dem eigenen " +
+      "Fortschritt.\n\n" +
+      "Die Reihenfolge ist nicht vorgegeben — jede Insel kann angesteuert " +
+      "werden, sobald sie frei ist. Wo eine Station aufgebaut ist und wann " +
+      "sie besetzt ist, sagt die Betreuung vor Ort: Der Aufbau richtet sich " +
+      "nach dem Veranstaltungsort und ist im Campus nicht hinterlegt.\n\n" +
+      "Welches Thema hinter einer Insel steckt, lässt sich hier erfragen — " +
+      "nach dem Inselnamen fragen, dann kommen Thema und Lernziel."
+  },
+  {
+    route: "/campus/zertifikat",
+    title: "Zertifikat und Nachweis der Teilnahme",
+    slug: "zertifikat",
+    boostKeywords:
+      "zertifikat urkunde nachweis teilnahmebescheinigung bescheinigung badge " +
+      "bestanden bestehensgrenze abschluss bekomme erhalte wann",
+    body:
+      "Der Campus wertet jeden Wissenscheck sofort aus: Nach dem Absenden " +
+      "stehen Punktzahl und Auflösung da, und die Karte zeigt, welche der " +
+      "sieben Inseln abgeschlossen sind. Der eigene Stand ist damit " +
+      "jederzeit ablesbar.\n\n" +
+      "Zur Ausgabe eines Zertifikats liegt im Campus nichts Verbindliches " +
+      "vor — weder eine Bestehensgrenze noch ein Termin. Danach fragt man " +
+      "die Betreuung oder den Trainer vor Ort; die Ausstellung läuft nicht " +
+      "über den Wissenscheck."
+  },
+  {
+    route: "/campus/verpflegung",
+    title: "Verpflegung und Pausen",
+    slug: "verpflegung",
+    boostKeywords:
+      "essen mittagessen verpflegung pause kaffee getraenke mittag imbiss " +
+      "speiseplan hunger trinken was gibt es heute",
+    body:
+      "Verpflegung und Pausenzeiten gehören zur Organisation vor Ort und " +
+      "sind im Campus nicht hinterlegt: Der Wissenscheck kennt die " +
+      "Stationen und ihre Themen, nicht den Speiseplan des Tages. Auskunft " +
+      "gibt die Betreuung am Veranstaltungsort.\n\n" +
+      "Für den Ablauf ist eine Pause unkritisch. Die Reihenfolge der Inseln " +
+      "ist frei, und ein begonnener Wissenscheck lässt sich später " +
+      "fortsetzen oder wiederholen — für die Auswertung des Tages zählt der " +
+      "zuletzt abgesendete Stand."
   }
 ];
 
