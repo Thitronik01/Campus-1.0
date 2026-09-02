@@ -40,15 +40,15 @@ function build({ embed, outFile, kopf }) {
   });
 
   out = out.replace(
-    new RegExp(`  <link rel="stylesheet" href="styles-${V}\\.css">`),
+    new RegExp(`  <link rel="stylesheet" href="styles-${V}\\.css(?:\\?v=[^"]+)?">`),
     `  <style>\n${cssOut.trim()}\n  </style>`
   );
   out = out.replace(
-    new RegExp(`  <script src="app-${V}\\.js" defer></script>`),
+    new RegExp(`  <script src="app-${V}\\.js(?:\\?v=[^"]+)?" defer></script>`),
     `  <script>\n${js.trim()}\n  </script>`
   );
   out = out.replace(
-    new RegExp(`  <script src="rays-${V}\\.js" defer></script>`),
+    new RegExp(`  <script src="rays-${V}\\.js(?:\\?v=[^"]+)?" defer></script>`),
     `  <script>\n${rays.trim()}\n  </script>`
   );
 

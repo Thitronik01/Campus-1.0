@@ -121,6 +121,12 @@ _headers          Caching und Sicherheitsheader fuer Netlify
 Der Ordner assets/v12 heisst absichtlich so. Die Bilder wurden fuer v12
 optimiert und werden unveraendert mitgenutzt. Ein Umbenennen wuerde die
 Pfade in HTML und CSS auseinanderlaufen lassen.
+
+Die Abschlussansicht verwendet das Wohnmobilmotiv unter assets/v15/. Der
+Platz fuer das digitale Zertifikat ist bereits gestaltet, bleibt aber bis
+zur Bereitstellung der persoenlichen PDF eindeutig als nicht verfuegbar
+gekennzeichnet. Dann wird die Schaltflaeche in index.html durch einen
+Download-Link mit derselben Klasse ersetzt.
 ${skalaAbschnitt}
 Pilot-Speicherung
 -----------------
@@ -138,6 +144,9 @@ Test ohne Speichern
 -------------------
 index.html?demo=1 prueft alles durch und zeigt die Danke-Ansicht,
 speichert aber absichtlich nichts.
+
+index.html?demo=1&abschluss=1 oeffnet die Abschlussansicht direkt. Dieser
+Vorschauweg ist nur zusammen mit demo=1 aktiv und ersetzt keine Einsendung.
 `;
 fs.writeFileSync(path.join(OUT, 'README.txt'), readme, 'utf8');
 

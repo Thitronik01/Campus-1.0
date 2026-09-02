@@ -145,7 +145,7 @@ const html = `<!doctype html>
   <link rel="preload" as="image" href="assets/v12/hero-1024.webp"
     imagesrcset="assets/v12/hero-640.webp 640w, assets/v12/hero-1024.webp 1024w, assets/v12/hero-1600.webp 1600w"
     imagesizes="(max-width: 1228px) calc(100vw - 28px), 1200px" fetchpriority="high">
-  <link rel="stylesheet" href="styles-v14.css?v=14.3">
+  <link rel="stylesheet" href="styles-v14.css?v=15">
 </head>
 <body data-build="v14">
   <a class="skip" href="#panel-1">Direkt zum Feedbackbogen</a>
@@ -421,26 +421,92 @@ ${cateringMarkup}
     </div>
   </footer>
 
-  <div class="done" id="thankYouScreen" role="dialog" aria-modal="true" aria-labelledby="thankYouTitle" tabindex="-1" hidden>
-    <div class="done__inner">
-      <img class="done__logo" src="assets/thitronik-logo.png" alt="THITRONIK" width="485" height="118">
-      <p class="done__check" aria-hidden="true">&#10003;</p>
-      <h2 id="thankYouTitle">Vielen Dank, <span id="thankYouName">Teilnehmer</span></h2>
-      <p class="done__lead">Dein Feedback ist bei uns angekommen.</p>
-      <div class="done__card">
-        <strong>Deine Teilnahmeurkunde wartet auf dich.</strong>
-        <p>Zeig diese Best&auml;tigung vorne an der Garderobe, als Screenshot oder direkt auf deinem
-          Smartphone. Dort erh&auml;ltst du deine pers&ouml;nliche Urkunde.</p>
-      </div>
-      <a class="done__back" href="/quiz">Zur&uuml;ck zur Campus-Karte</a>
+  <div class="done" id="thankYouScreen" role="dialog" aria-modal="true" aria-labelledby="thankYouTitle"
+    aria-describedby="doneLead" tabindex="-1" hidden>
+    <div class="done__shell">
+      <section class="done__hero" aria-label="THITRONIK Campus Abschluss">
+        <picture class="done__picture">
+          <source type="image/webp"
+            srcset="assets/v15/abschluss-640.webp 640w, assets/v15/abschluss-1024.webp 1024w, assets/v15/abschluss-1600.webp 1600w"
+            sizes="(max-width: 1099px) calc(100vw - 32px), 50vw">
+          <img src="assets/v15/abschluss-1600.jpg"
+            alt="Wohnmobil am Strand bei Sonnenuntergang."
+            width="1600" height="900" loading="lazy" decoding="async">
+        </picture>
+
+        <div class="done__hero-content">
+          <div class="done__brand">
+            <img class="done__logo" src="assets/thitronik-logo.png" alt="THITRONIK" width="485" height="118">
+            <span class="done__campus">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 5.5c2.5 0 5.2.8 8 2.4v12c-2.8-1.6-5.5-2.4-8-2.4v-12Zm16 0c-2.5 0-5.2.8-8 2.4v12c2.8-1.6 5.5-2.4 8-2.4v-12Z"/>
+              </svg>
+              Campus 1.0
+            </span>
+          </div>
+          <div class="done__hero-copy">
+            <p class="done__hero-title">Bereit f&uuml;r die Praxis.</p>
+            <p>Deine Schulung ist erfolgreich abgeschlossen.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="done__panel">
+        <div class="done__progress-head" aria-label="Campus zu 100 Prozent abgeschlossen">
+          <span>100&nbsp;% abgeschlossen</span>
+          <span class="done__progress-marks" aria-hidden="true"><i></i><i></i></span>
+        </div>
+
+        <header class="done__heading">
+          <h2 id="thankYouTitle">Herzlichen Gl&uuml;ckwunsch!</h2>
+          <p class="done__lead" id="doneLead">Danke, <strong id="thankYouName">Teilnehmer</strong>. Dein Feedback ist bei uns angekommen.</p>
+        </header>
+
+        <div class="done__achievement">
+          <div class="done__check" aria-hidden="true">
+            <svg viewBox="0 0 64 64">
+              <circle cx="32" cy="32" r="24"></circle>
+              <path d="m20 32 8 8 17-18"></path>
+            </svg>
+          </div>
+          <div class="done__achievement-copy">
+            <strong>Schulung erfolgreich abgeschlossen</strong>
+            <p>Alle Lerninhalte bearbeitet</p>
+            <span>100&nbsp;%</span>
+            <div class="done__progress" role="progressbar" aria-label="Lernfortschritt" aria-valuemin="0"
+              aria-valuemax="100" aria-valuenow="100"><i></i></div>
+          </div>
+        </div>
+
+        <div class="done__actions">
+          <!-- Sobald das Zertifikat vorliegt, wird diese Schaltflaeche durch
+               einen Download-Link mit derselben Klasse ersetzt. -->
+          <button class="done__certificate" type="button" disabled aria-describedby="certificateNote">
+            <svg class="done__download-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3v11m0 0 4-4m-4 4-4-4M5 15v5h14v-5"></path>
+            </svg>
+            <span><strong>Digitales Zertifikat</strong><small>Wird hier erg&auml;nzt</small></span>
+            <svg class="done__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"></path></svg>
+          </button>
+          <p class="done__certificate-note" id="certificateNote">Dein gedrucktes Zertifikat erh&auml;ltst du vor Ort.</p>
+
+          <a class="done__back" href="/quiz">Zur&uuml;ck zum Campus</a>
+        </div>
+
+        <nav class="done__footer" aria-label="Rechtliches und Kontakt">
+          <a href="https://www.thitronik.de/kontakt/" target="_blank" rel="noopener noreferrer">Support &amp; Kontakt</a>
+          <a href="https://www.thitronik.de/datenschutz/" target="_blank" rel="noopener noreferrer">Datenschutz</a>
+          <a href="https://www.thitronik.de/impressum/" target="_blank" rel="noopener noreferrer">Impressum</a>
+        </nav>
+      </section>
     </div>
   </div>
 
   <script type="application/json" id="insel-daten">${inselDaten}</script>
-  <script src="app-v14.js" defer></script>
+  <script src="app-v14.js?v=15" defer></script>
   <!-- Dekoration, bewusst nach dem Formular: der Bogen soll bedienbar sein,
        bevor der Hintergrund kommt. Faellt er aus, aendert sich sonst nichts. -->
-  <script src="rays-v14.js" defer></script>
+  <script src="rays-v14.js?v=15" defer></script>
 </body>
 </html>
 `;

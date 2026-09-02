@@ -82,7 +82,11 @@ const GEMEINSAME_MEDIEN = [
   path.join("media", "campus", "campus-hex-fragen.webp"),
   path.join("media", "campus", "campus-hex-fragetypen.webp"),
   path.join("media", "campus", "campus-hex-aufloesung.webp"),
-  path.join("media", "campus", "campus-hex-zeitlimit.webp")
+  path.join("media", "campus", "campus-hex-zeitlimit.webp"),
+  path.join("media", "campus", "firmensitz-640.webp"),
+  path.join("media", "campus", "firmensitz-1024.webp"),
+  path.join("media", "campus", "firmensitz-1600.webp"),
+  path.join("media", "campus", "firmensitz-1600.jpg")
 ];
 
 /* Ein Schutz gegen versehentliches Überschreiben ist unten eingebaut: ein

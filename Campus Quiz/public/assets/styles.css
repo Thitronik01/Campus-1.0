@@ -495,6 +495,317 @@ main { flex: 1 0 auto; }
 }
 .screen-narrow { padding: clamp(24px, 5vw, 48px); }
 
+/* --------------------------------------------------------- Onboarding --- */
+
+/* Die Profileinrichtung ist eine eigene Eingangstür. Kopf und reguläre
+   Fußzeile bleiben hier aus, damit Logo und Rechtslinks genau einmal und an
+   der Stelle stehen, an der sie vor dem ersten Campus-Zugriff gebraucht
+   werden. */
+body.ist-onboarding .shell {
+  width: min(calc(100% - 96px), 1440px);
+  padding-top: 48px;
+  padding-bottom: 48px;
+}
+body.ist-onboarding .masthead,
+body.ist-onboarding > .shell > .colophon { display: none; }
+body.ist-onboarding main { display: flex; }
+
+.onboarding {
+  width: 100%;
+  min-height: calc(100dvh - 96px);
+  border-radius: 16px;
+}
+.onboarding-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  min-height: inherit;
+}
+.onboarding-hero {
+  position: relative;
+  isolation: isolate;
+  min-height: 650px;
+  overflow: hidden;
+  background: var(--th-navy-deep);
+}
+.onboarding-picture,
+.onboarding-picture img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.onboarding-picture img {
+  object-fit: cover;
+  object-position: 52% 50%;
+}
+.onboarding-hero::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(5, 25, 55, .7) 0%, rgba(7, 29, 70, .16) 44%, rgba(4, 22, 49, .86) 100%),
+    linear-gradient(90deg, rgba(10, 39, 71, .2), transparent 66%);
+  pointer-events: none;
+}
+.onboarding-hero-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100%;
+  padding: clamp(28px, 4vw, 48px);
+}
+.onboarding-brand {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.onboarding-logo-wrap {
+  display: flex;
+  width: min(230px, 50%);
+  padding: 9px 12px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, .94);
+  box-shadow: 0 8px 24px rgba(4, 22, 49, .18);
+}
+.onboarding-logo-wrap img { width: 100%; height: auto; }
+.onboarding-campus {
+  padding-left: 18px;
+  border-left: 1px solid rgba(255, 255, 255, .5);
+  color: #fff;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+}
+.onboarding-welcome { max-width: 36rem; }
+.onboarding-welcome h1 {
+  margin-bottom: 16px;
+  color: #fff;
+  font-size: clamp(2.4rem, 4.2vw, 4.35rem);
+  line-height: 1.02;
+  letter-spacing: -.045em;
+  text-shadow: 0 2px 18px rgba(4, 22, 49, .38);
+}
+.onboarding-welcome p {
+  max-width: 34ch;
+  margin: 0;
+  color: rgba(255, 255, 255, .94);
+  font-size: clamp(1rem, 1.3vw, 1.2rem);
+  line-height: 1.45;
+  text-shadow: 0 1px 10px rgba(4, 22, 49, .42);
+}
+
+.onboarding-panel {
+  display: grid;
+  place-items: center;
+  padding: 36px 48px;
+  background: #fff;
+}
+.profile-form {
+  display: grid;
+  gap: 16px;
+  width: min(100%, 680px);
+}
+.profile-head h2 { margin-bottom: 7px; font-size: clamp(1.85rem, 2.2vw, 2.35rem); }
+.profile-head h2:focus { outline: 0; }
+.profile-head > p:last-child { margin: 0; color: var(--th-muted); font-size: 1rem; line-height: 1.5; }
+.profile-kicker {
+  margin-bottom: 8px;
+  color: var(--th-red);
+  font-size: .76rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+}
+
+.profile-photo-fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.profile-photo-fieldset legend,
+.profile-field label {
+  margin-bottom: 6px;
+  color: var(--th-navy);
+  font-size: .92rem;
+  font-weight: 800;
+}
+.profile-photo-fieldset legend span { color: var(--th-muted); font-weight: 500; }
+.profile-photo-row {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr);
+  gap: 16px;
+  align-items: center;
+}
+.profile-photo-preview {
+  display: grid;
+  place-items: center;
+  width: 88px;
+  height: 88px;
+  overflow: hidden;
+  border: 2px dashed #71849C;
+  border-radius: 50%;
+  background: #F5F8FB;
+  color: var(--th-navy);
+  font-size: .8rem;
+  font-weight: 800;
+}
+.profile-photo-preview.has-photo { border-style: solid; }
+.profile-photo-preview img { width: 100%; height: 100%; object-fit: cover; }
+.profile-photo-controls { min-width: 0; }
+.profile-photo-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.profile-photo-button,
+.profile-photo-remove {
+  min-height: 44px;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--th-navy);
+  font-size: .84rem;
+  font-weight: 800;
+  transition: background-color var(--duration-fast) ease, border-color var(--duration-fast) ease, transform var(--duration-press) var(--ease-out);
+}
+.profile-photo-button { padding: 9px 12px; border: 1px solid var(--th-navy); }
+.profile-photo-remove {
+  margin-top: 4px;
+  padding: 7px 0;
+  border: 0;
+  color: #A81024;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.profile-photo-controls > p {
+  margin: 5px 0 0;
+  color: var(--th-muted);
+  font-size: .8rem;
+  line-height: 1.4;
+}
+
+.profile-name-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.profile-field { display: grid; align-content: start; }
+.profile-field input {
+  width: 100%;
+  min-height: 52px;
+  padding: 12px 14px;
+  border: 1px solid #7B8EA6;
+  border-radius: 8px;
+  background: #fff;
+  transition: border-color var(--duration-fast) ease, box-shadow var(--duration-fast) ease, background-color var(--duration-fast) ease;
+}
+.profile-field input:focus-visible {
+  border-color: var(--th-navy);
+  box-shadow: 0 0 0 2px rgba(29, 54, 97, .18);
+}
+.profile-field.has-error input { border-color: var(--th-red); background: #FFF7F8; }
+.profile-number-wrap { position: relative; }
+.profile-number-wrap input { padding-right: 76px; }
+.profile-number-wrap > span {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  padding: 4px 6px;
+  border: 1px solid var(--th-line-strong);
+  border-radius: 6px;
+  color: var(--th-muted);
+  background: #F7F9FB;
+  font-size: .7rem;
+  font-weight: 700;
+  pointer-events: none;
+}
+.profile-help,
+.profile-error {
+  margin: 5px 0 0;
+  font-size: .78rem;
+  line-height: 1.35;
+}
+.profile-help { color: var(--th-muted); }
+.profile-error { color: #A81024 !important; font-weight: 700; }
+
+.profile-consent {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  column-gap: 10px;
+  align-items: start;
+}
+.profile-consent input {
+  width: 24px;
+  height: 24px;
+  margin: 1px 0 0;
+  accent-color: var(--th-navy);
+}
+.profile-consent.has-error input { outline: 2px solid var(--th-red); outline-offset: 2px; }
+.profile-consent label { color: #293241; font-size: .82rem; line-height: 1.5; }
+.profile-consent a,
+.profile-footer a { color: var(--th-navy); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.profile-consent .profile-error { grid-column: 2; }
+
+.profile-save-error {
+  margin: -4px 0 0;
+  padding: 10px 12px;
+  border-left: 3px solid var(--th-red);
+  background: var(--error-bg);
+  color: #7E0C1D;
+  font-size: .84rem;
+  font-weight: 700;
+}
+.profile-submit {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  min-height: 56px;
+  padding: 0 18px;
+  border: 1px solid var(--th-red);
+  border-radius: 8px;
+  background: var(--th-red);
+  color: #fff;
+  font-weight: 800;
+  box-shadow: 0 12px 24px rgba(206, 19, 45, .2);
+  transition: background-color var(--duration-fast) ease, border-color var(--duration-fast) ease, transform var(--duration-press) var(--ease-out), box-shadow var(--duration-fast) ease;
+}
+.profile-submit:disabled {
+  border-color: #D2DAE4;
+  background: #E7ECF2;
+  color: #4A596C;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+.profile-submit-arrow {
+  min-width: 34px;
+  padding-left: 14px;
+  border-left: 1px solid rgba(255, 255, 255, .42);
+  font-size: 1.35rem;
+  font-weight: 400;
+  text-align: right;
+}
+.profile-submit:disabled .profile-submit-arrow { border-left-color: #BCC7D3; }
+.profile-photo-button:active:not(:disabled),
+.profile-submit:active:not(:disabled) { transform: scale(.98); box-shadow: none; }
+.profile-photo-button:disabled { cursor: wait; opacity: .58; }
+.profile-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 28px;
+  padding-top: 2px;
+  font-size: .8rem;
+}
+.profile-footer a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+
 @keyframes enter {
   from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: none; }
@@ -4324,6 +4635,11 @@ main { flex: 1 0 auto; }
 /* Hover gehört nur auf Geräte, die tatsächlich hovern können. Auf Touch-
    Displays bliebe der Zustand sonst nach dem Tippen hängen. */
 @media (hover: hover) and (pointer: fine) {
+  .profile-photo-button:hover { background: #F0F4F8; }
+  .profile-submit:hover:not(:disabled) { background: #B90F27; border-color: #B90F27; }
+  .profile-footer a:hover,
+  .profile-consent a:hover,
+  .profile-photo-remove:hover { color: var(--th-red); }
   .island-card:hover {
     border-color: var(--th-blue);
     box-shadow: 0 16px 34px rgba(10, 39, 71, .13);
@@ -4426,6 +4742,22 @@ main { flex: 1 0 auto; }
   .fehmarn-szene-raum { object-position: 70% 60%; }
 }
 
+@media (max-width: 1199px) {
+  body.ist-onboarding .shell {
+    width: min(calc(100% - 64px), 1120px);
+    padding-top: 32px;
+    padding-bottom: 32px;
+  }
+  .onboarding { min-height: calc(100dvh - 64px); }
+  .onboarding-layout { grid-template-columns: 1fr; }
+  .onboarding-hero { min-height: 300px; }
+  .onboarding-picture img { object-position: 50% 58%; }
+  .onboarding-hero-content { min-height: 300px; padding: 28px 32px; }
+  .onboarding-logo-wrap { width: 178px; padding: 7px 10px; }
+  .onboarding-welcome h1 { margin-bottom: 8px; font-size: clamp(2rem, 5vw, 3.15rem); }
+  .onboarding-panel { padding: 38px 32px; }
+}
+
 @media (max-width: 900px) {
   .masthead { grid-template-columns: minmax(0, 1fr) minmax(260px, .72fr); }
   .masthead-tools {
@@ -4437,6 +4769,7 @@ main { flex: 1 0 auto; }
     grid-column: 2;
     grid-row: 1;
   }
+  .profile-name-row { grid-template-columns: 1fr; }
   .start-layout { grid-template-columns: 1fr; }
   #screen-start[data-island="samsoe"] .start-layout { grid-template-columns: 1fr; }
   #screen-start[data-island="samsoe"] .start-intro { min-height: 690px; }
@@ -4514,6 +4847,26 @@ main { flex: 1 0 auto; }
     margin-left: 0;
   }
   .masthead-tool { justify-content: center; min-width: 0; }
+  body.ist-onboarding .shell {
+    width: calc(100% - 40px);
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+  .onboarding { min-height: calc(100dvh - 40px); }
+  .onboarding-hero { min-height: 238px; }
+  .onboarding-hero-content { min-height: 238px; padding: 20px; }
+  .onboarding-brand { gap: 12px; }
+  .onboarding-logo-wrap { width: 142px; padding: 6px 8px; }
+  .onboarding-campus { padding-left: 12px; font-size: .7rem; }
+  .onboarding-welcome h1 { font-size: clamp(1.65rem, 8vw, 2.2rem); }
+  .onboarding-welcome p { max-width: 31ch; font-size: .88rem; }
+  .onboarding-panel { padding: 24px 20px 20px; }
+  .profile-form { gap: 16px; }
+  .profile-head h2 { font-size: 1.7rem; }
+  .profile-photo-row { grid-template-columns: 88px minmax(0, 1fr); gap: 12px; }
+  .profile-photo-preview { width: 88px; height: 88px; }
+  .profile-photo-button { padding-right: 8px; padding-left: 8px; font-size: .76rem; }
+  .profile-submit { width: 100%; padding-right: 14px; padding-left: 14px; font-size: .88rem; }
   .campus-progress-head { margin-bottom: 5px; }
   .masthead-progress small { text-align: left; }
 }
@@ -4683,6 +5036,10 @@ main { flex: 1 0 auto; }
     max-width: none;
     height: auto;
   }
+}
+
+@media (max-width: 420px) {
+  .profile-photo-actions { grid-template-columns: 1fr; }
 }
 
 /* ------------------------------------------------------- Reduced Motion --- */

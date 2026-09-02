@@ -970,4 +970,12 @@
   window.history.replaceState({ panel: initial }, '', window.location.hash || '#start');
   goTo(initial, false);
   aufgebaut = true;
+
+  /* Nur fuer die lokale Vorschau: Der Endbildschirm laesst sich pruefen,
+     ohne den gesamten Bogen erneut auszufuellen. Ohne demo=1 bleibt dieser
+     Parameter wirkungslos und kann niemals eine echte Einsendung ersetzen. */
+  if (demoMode && new URLSearchParams(window.location.search).get('abschluss') === '1') {
+    const name = form.elements.name ? form.elements.name.value : '';
+    showDone(name);
+  }
 })();
