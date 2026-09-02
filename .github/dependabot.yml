@@ -1,0 +1,18 @@
+# Hält die Commit-SHAs der Actions in .github/workflows/ und das Lockfile
+# der Netlify-CLI unter .github/netlify-cli/ aktuell. Monatlich reicht:
+# Beides ändert sich selten, und jeder Vorschlag ist ein Pull Request, den
+# jemand liest.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "ci"
+  - package-ecosystem: npm
+    directory: /.github/netlify-cli
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "ci"

@@ -1,0 +1,7 @@
+{
+  "name": "campus-deploy",
+  "private": true,
+  "devDependencies": {
+    "netlify-cli": "27.3.0"
+  }
+}

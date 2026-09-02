@@ -178,8 +178,27 @@ schritt("Syntax", syntax,
   (syntax.ausgabe.match(/^Syntax: .*$/m) || [""])[0].replace(/^Syntax: /, ""));
 
 const fragen = lauf(path.join("tools", "check-fragen.js"), []);
+/* Hinweise und redaktionelle Notizen aus check-fragen.js sind zum Lesen
+   gedacht — bis September 2026 verschluckte dieser Schritt sie im
+   Erfolgsfall vollständig (Rückstand R-47). Gezählt stehen sie jetzt in der
+   Kurzfassung; den Wortlaut zeigt check-fragen.js selbst. */
+const fragenZahl = (fragen.ausgabe.match(/^\d+ Fragen geprüft\.$/m) || [""])[0];
+const hinweisZahl = Number((fragen.ausgabe.match(/, (\d+) Hinweise\.$/m) || [0, "0"])[1]);
+const notizBlock = fragen.ausgabe.split("Offene redaktionelle Punkte")[1] || "";
+const notizZahl = (notizBlock.match(/^ {2}\S/gm) || []).length;
 schritt("Fragensätze", fragen,
-  (fragen.ausgabe.match(/^\d+ Fragen geprüft\.$/m) || [""])[0]);
+  fragenZahl
+  + (hinweisZahl ? `, ${hinweisZahl} Hinweise` : "")
+  + (notizZahl ? `, ${notizZahl} redaktionelle Notizen` : "")
+  + (hinweisZahl || notizZahl ? " — Wortlaut: node tools/check-fragen.js" : ""));
+
+// Alles unter public/, nicht nur die Bilder aus den Fragensätzen: Grenze je
+// Datei, Grenze insgesamt, Verweise ins Leere.
+const medien = lauf(path.join("tools", "check-medien.js"), []);
+const medienHinweise = Number((medien.ausgabe.match(/, (\d+) Hinweise\.$/m) || [0, "0"])[1]);
+schritt("Medienbudget", medien,
+  (medien.ausgabe.match(/^Medien: (.*)$/m) || ["", ""])[1]
+  + (medienHinweise ? ` — ${medienHinweise} Hinweise: node tools/check-medien.js` : ""));
 
 const audio = lauf(path.join("tools", "test-audio.mjs"), []);
 schritt("Audio-Fragen", audio);
@@ -249,6 +268,11 @@ function paketPruefen(bezeichnung, ordnerFuer) {
 titel("Pakete prüfen");
 paketPruefen("Gesamtpaket", () => "Campus Gesamtpaket");
 paketPruefen("Einzelpakete", (slug) => PAKETE[slug]);
+
+// Wurzel-netlify.toml gegen die erzeugte, Node-Version, Action-Pins.
+const deploy = lauf(path.join("tools", "check-deploy.js"), []);
+schritt("Deploy-Konfiguration", deploy,
+  (deploy.ausgabe.match(/^Deploy: (.*)$/m) || ["", ""])[1]);
 
 // ----------------------------------------------------------------- Bilanz ---
 

@@ -2,10 +2,10 @@ export const STORAGE_KEY = "thitronik-arbeitskarte-data-demo";
 export const HISTORY_PREFIX = "thitronik-arbeitskarte-card-v1:demo:";
 
 export const vehicleSketchViews = [
-  { key: "fahrerseite", label: "Fahrerseite", backgroundSrc: "/assets/arbeitskarte/wohnmobil-fahrerseite.png" },
-  { key: "beifahrerseite", label: "Beifahrerseite", backgroundSrc: "/assets/arbeitskarte/wohnmobil-beifahrerseite.png" },
-  { key: "front", legacyKey: "dach", label: "Front", backgroundSrc: "/assets/arbeitskarte/wohnmobil-front.png" },
-  { key: "heck", label: "Heck", backgroundSrc: "/assets/arbeitskarte/wohnmobil-heck.png" }
+  { key: "fahrerseite", label: "Fahrerseite", backgroundSrc: "/assets/arbeitskarte/wohnmobil-fahrerseite.webp" },
+  { key: "beifahrerseite", label: "Beifahrerseite", backgroundSrc: "/assets/arbeitskarte/wohnmobil-beifahrerseite.webp" },
+  { key: "front", legacyKey: "dach", label: "Front", backgroundSrc: "/assets/arbeitskarte/wohnmobil-front.webp" },
+  { key: "heck", label: "Heck", backgroundSrc: "/assets/arbeitskarte/wohnmobil-heck.webp" }
 ];
 
 export const groupOrder = ["Alarmsystem", "Zubehör", "Gaswarnsystem", "Rauchmelder", "Fahrzeugortung", "Fahrzeugortung Zubehör", "Sonstiges"];

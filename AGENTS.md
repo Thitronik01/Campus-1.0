@@ -102,7 +102,16 @@ node tools/test-function.js                       # Bewertungslogik
 node tools/test-thi.js                            # THI, ohne API-Schlüssel
 node tools/build-insel.js gesamt && node tools/build-insel.js alle
 node tools/test-paket.js "../Campus Gesamtpaket" vejro   # je Insel-Slug
+node tools/check-medien.js                        # Medienbudget und Verweise unter public/
+node tools/check-deploy.js                        # netlify.toml doppelt, Node-Version, Action-Pins
 ```
+
+**Medienbudget:** `check-medien.js` zählt alles unter `public/`, nicht nur
+die Bilder aus den Fragensätzen — 500 KB je Datei, 12 MB insgesamt, dazu
+Verweise ins Leere. Bis September 2026 gingen die vier Fahrzeugansichten der
+Arbeitskarte mit zusammen 5 MB PNG an jeder Prüfung vorbei; als WebP sind
+es 150 KB. Verwaiste Dateien meldet das Werkzeug nur als Hinweis: Es liest
+Text, und ein zur Laufzeit zusammengesetzter Pfad sähe verwaist aus.
 
 ---
 
@@ -121,7 +130,12 @@ Lokal starten:
 cd "Campus Quiz"
 node tools/dev-server.js                          # Quelle, Port 8788
 node tools/dev-server.js "../Campus Gesamtpaket/public"   # gebautes Paket
+node tools/dev-server.js --lan                    # auch für das Telefon im selben WLAN
 ```
+
+Ohne `--lan` lauscht der Server nur auf `127.0.0.1`. Er bedient
+`/.netlify/functions/thi` mit dem Anymize-Schlüssel aus der Umgebung — auf
+allen Schnittstellen stünde der damit jedem im Messe-WLAN offen.
 
 > Zwei Server nebeneinander sind normal — einer auf der Quelle, einer auf dem
 > gebauten Paket. Wer im falschen misst, sucht Änderungen, die er gerade
@@ -179,6 +193,22 @@ Entwicklungsserver alte Dateien aus.
 Geprüft wird das derzeit **nicht** — die Paketprüfung vergleicht nur, ob die
 Marken zur Fassung passen, und das tun sie immer, weil der Bau sie von dort
 nimmt. Siehe Rückstand in [`BACKLOG.md`](BACKLOG.md).
+
+### Die Wurzel-netlify.toml ist die, die zählt
+
+Netlify liest beim Produktionsdeploy die `netlify.toml` in der Wurzel des
+Repositorys, nicht die, die `build-insel.js` ins Paket schreibt. Beide
+tragen dieselben Header- und Redirect-Blöcke. Wer eine Regel — CSP,
+Permissions-Policy, eine Cache-Dauer — nur in `netlifyToml()` ändert,
+ändert die Produktion nicht. `tools/check-deploy.js` vergleicht beide
+Fassungen und fällt bei Abweichung durch; die Wurzel wird von Hand
+nachgezogen.
+
+Dasselbe Werkzeug prüft, dass `.nvmrc` und `NODE_VERSION` in der
+`netlify.toml` dieselbe Node-Hauptversion nennen und dass jede Action in
+`.github/workflows/` auf einen vollständigen Commit-SHA gepinnt ist. Ein
+Tag ist verschiebbar; im Deploy-Job liegt der Netlify-Token in der Umgebung.
+Dependabot hält die SHAs aktuell.
 
 ### Ein Bild unter gleichem Namen auszutauschen erreicht niemanden
 

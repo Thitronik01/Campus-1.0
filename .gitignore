@@ -3,6 +3,9 @@
 # ---------------------------------------------------------------------------
 node_modules/
 package-lock.json
+# Ausnahme: Das Lockfile der Netlify-CLI für den Deploy-Job ist Absicht —
+# es pinnt den Abhängigkeitsbaum samt Integritätshashes (.github/netlify-cli/README.md).
+!.github/netlify-cli/package-lock.json
 npm-debug.log*
 
 # ---------------------------------------------------------------------------

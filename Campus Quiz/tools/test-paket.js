@@ -280,9 +280,39 @@ async function ruf(payload) {
       fs.existsSync(path.join(akRoot, "assets", "app-v1.js")) &&
       fs.existsSync(path.join(akRoot, "assets", "print-v1.js")));
     const akBilder = ["fahrerseite", "beifahrerseite", "front", "heck"]
-      .map((ansicht) => path.join(paket, "public", "assets", "arbeitskarte", `wohnmobil-${ansicht}.png`));
+      .map((ansicht) => path.join(paket, "public", "assets", "arbeitskarte", `wohnmobil-${ansicht}.webp`));
     pruefe("Alle vier Fahrzeugansichten sind enthalten", akBilder.every(fs.existsSync));
     pruefe("Campus-Übersicht verlinkt die Arbeitskarte", /id="arbeitskarte-link"/.test(seite));
+  }
+
+  // THI wird mit jedem Paket ausgeliefert: Function, Bibliothek, Wissen.
+  // Bis September 2026 prüfte hier nichts, ob das zusammenpasst (Rückstand
+  // R-45) — ein Paket mit leerem Wissensbestand oder einem Import ins Leere
+  // wäre durch alle Prüfungen gekommen.
+  const thiFn = path.join(paket, "netlify", "functions", "thi.mjs");
+  pruefe("THI-Function ist im Paket", fs.existsSync(thiFn));
+  if (fs.existsSync(thiFn)) {
+    const thiQuelle = fs.readFileSync(thiFn, "utf8");
+    const importe = [...thiQuelle.matchAll(/^import[^"']*["'](\.[^"']+)["']/gm)].map((m) => m[1]);
+    const fehlend = importe.filter((i) => !fs.existsSync(path.resolve(path.dirname(thiFn), i)));
+    pruefe("Alle relativen Importe von thi.mjs zeigen auf Dateien im Paket",
+      importe.length > 0 && fehlend.length === 0, fehlend.join(", ") || `${importe.length} Importe`);
+    pruefe("thi.mjs bindet sein Wissen statisch ein (nft folgt nur import)",
+      /^import \w+ from "\.\/thi-wissen\/artikel\.de\.json" with \{ type: "json" \};/m.test(thiQuelle));
+    for (const wissen of ["artikel.de.json", "abschnitte.de.json"]) {
+      const datei = path.join(paket, "netlify", "functions", "thi-wissen", wissen);
+      let eintraege = 0;
+      try {
+        const inhalt = JSON.parse(fs.readFileSync(datei, "utf8"));
+        eintraege = Array.isArray(inhalt) ? inhalt.length : Object.keys(inhalt).length;
+      } catch { eintraege = 0; }
+      pruefe(`THI-Wissen ${wissen} ist gültiges JSON mit Einträgen`, eintraege > 0, String(eintraege));
+    }
+    pruefe("thi.js und thi.css liegen im Paket",
+      fs.existsSync(path.join(paket, "public", "assets", "thi.js"))
+      && fs.existsSync(path.join(paket, "public", "assets", "thi.css")));
+    pruefe("index.html bindet thi.js mit der Engine-Fassung ein",
+      new RegExp(`/assets/thi\\.js\\?v=${String(fassung).replace(/\./g, "\\.")}"`).test(seite));
   }
 
   r = await handler({ httpMethod: "GET" });
