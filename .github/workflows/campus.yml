@@ -98,7 +98,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-          sparse-checkout: .github/netlify-cli
+          sparse-checkout: deploy/netlify-cli
 
       - name: Node.js einrichten
         if: steps.deploy_config.outputs.enabled == 'true'
@@ -106,14 +106,14 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
-          cache-dependency-path: .github/netlify-cli/package-lock.json
+          cache-dependency-path: deploy/netlify-cli/package-lock.json
 
       # npm ci statt npx: Das Lockfile schreibt jeden Baustein samt
       # Integritätshash fest. Mit npx würde der Abhängigkeitsbaum bei jedem
       # Deploy neu aufgelöst — in dem Job, der den Produktions-Token kennt.
       - name: Netlify-CLI aus dem Lockfile installieren
         if: steps.deploy_config.outputs.enabled == 'true'
-        working-directory: .github/netlify-cli
+        working-directory: deploy/netlify-cli
         run: npm ci --no-audit --no-fund
 
       - name: Geprüftes Gesamtpaket laden
@@ -136,7 +136,7 @@ jobs:
 
           # Token und Site-ID kommen aus der Umgebung; die CLI liest beide
           # selbst. Als Argument stünde der Token in der Prozessliste.
-          NETLIFY="$GITHUB_WORKSPACE/.github/netlify-cli/node_modules/.bin/netlify"
+          NETLIFY="$GITHUB_WORKSPACE/deploy/netlify-cli/node_modules/.bin/netlify"
 
           DEPLOY_JSON="$("$NETLIFY" deploy \
             --prod \

@@ -11,3 +11,6 @@ Neue CLI-Fassung: Version in `package.json` setzen, dann hier
 Dateien committen. Dependabot schlägt das monatlich von selbst vor.
 
 Der Ordner gehört nicht zur Anwendung; nichts unter `Campus Quiz/` liest ihn.
+Er liegt bewusst nicht unter `.github/`: Dort hat Dependabot beim ersten
+Lauf am 2. September 2026 die Aktualisierung mit „invalid or unauthorized
+changes" verweigert.
