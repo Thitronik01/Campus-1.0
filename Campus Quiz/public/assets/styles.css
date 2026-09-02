@@ -3831,9 +3831,89 @@ body.ist-onboarding main { display: flex; }
 
 /* ----------------------------------------------------------------- Quiz --- */
 
-.quiz-head { padding: 16px clamp(18px, 4vw, 42px) 0; }
-.quiz-head-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
-.quiz-counter { margin: 0; color: var(--th-muted); font-size: .88rem; font-weight: 800; letter-spacing: .04em; }
+/* Die Fragenansicht besteht aus zwei Teilen: der weißen Arbeitskarte mit
+   Frage, Antworten und Auflösung, und ab Desktopbreite einer Seitenleiste mit
+   Fragenübersicht, THI und Inselkarte. Der Schirm selbst wird dafür
+   durchsichtig — die Karten stehen einzeln auf dem Seitengrund, wie die
+   Kacheln der Expeditionskarte. Unterhalb der Desktopbreite bleibt nur die
+   Arbeitskarte; die Übersicht schrumpft auf eine Punktreihe im Kopf. */
+.screen.screen-quiz {
+  overflow: visible;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.quiz-card {
+  min-width: 0;
+  overflow: hidden;
+  overflow: clip;
+  border: 1px solid var(--th-line);
+  border-radius: var(--radius-xl);
+  background: #fff;
+  box-shadow: var(--shadow-md);
+}
+
+/* 350 px, damit fünf Übersichtsknöpfe nebeneinander die 55 Layout-Pixel
+   (44 echte) halten: 350 − 2·20 Innenabstand − 4·8 Lücke = 278, geteilt
+   durch fünf sind 55,6. Bei 320 px wären es 49 — unter der Trefferfläche. */
+@media (min-width: 1100px) {
+  .screen.screen-quiz {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 350px;
+    gap: 20px;
+    align-items: start;
+  }
+  .quiz-aside { position: sticky; top: 16px; }
+}
+
+/* --- Kopf der Arbeitskarte --- */
+
+.quiz-head { padding: 18px clamp(18px, 4vw, 36px) 0; }
+.quiz-head-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.quiz-crumb {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  margin: 0;
+  font-size: .95rem;
+  font-weight: 700;
+}
+.quiz-crumb-symbol {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--info-bg);
+  color: var(--th-navy);
+}
+.quiz-crumb-symbol svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linejoin: round; }
+.quiz-crumb-code { flex: 0 0 auto; color: var(--th-blue-text); letter-spacing: .06em; }
+.quiz-crumb-sep { color: var(--th-line-strong); }
+.quiz-crumb-title {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--th-muted);
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.quiz-progress-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+}
+.quiz-counter { margin: 0; color: var(--th-navy); font-size: .95rem; font-weight: 800; letter-spacing: .01em; }
 
 .progress-track { height: 8px; border-radius: 999px; background: var(--th-soft); overflow: hidden; }
 .progress-fill {
@@ -3844,15 +3924,38 @@ body.ist-onboarding main { display: flex; }
   transition: width 280ms var(--ease-out);
 }
 
+/* Die Punktreihe: Stand je Frage, wo die Seitenleiste keinen Platz hat. */
+.quiz-dots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.quiz-dots li {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--th-soft);
+  box-shadow: inset 0 0 0 1px var(--th-line-strong);
+}
+.quiz-dots .is-correct { background: var(--th-lime); box-shadow: none; }
+.quiz-dots .is-wrong { background: var(--th-red); box-shadow: none; }
+.quiz-dots .is-current { background: var(--th-navy); box-shadow: 0 0 0 2px #fff, 0 0 0 3px var(--th-navy); }
+@media (min-width: 1100px) { .quiz-dots { display: none; } }
+
+/* --- Rumpf der Arbeitskarte --- */
+
 .quiz-body {
   width: min(100%, 1440px);
   margin: 0 auto;
-  padding: 22px clamp(18px, 4vw, 42px) clamp(24px, 4vw, 42px);
+  padding: 20px clamp(18px, 4vw, 36px) clamp(22px, 4vw, 36px);
 }
 
 /* Medienfragen verwenden die Breite als Arbeitsfläche: Aufgabenstellung und
    Antworten bleiben in einer gut lesbaren Spalte, das Anschauungsobjekt steht
-   daneben. Unter 1100 px fällt alles wieder in die bewährte lineare Folge. */
+   daneben. Unter 760 px fällt alles wieder in die bewährte lineare Folge. */
 #screen-quiz[data-has-media="true"] .quiz-body {
   width: min(100%, 1680px);
 }
@@ -3947,7 +4050,7 @@ body.ist-onboarding main { display: flex; }
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
-  margin: 0 0 10px;
+  margin: 0 0 12px;
 }
 .q-category {
   display: inline-flex;
@@ -3979,8 +4082,8 @@ body.ist-onboarding main { display: flex; }
 }
 .q-title {
   max-width: 68ch;
-  margin-bottom: 8px;
-  font-size: clamp(1.2rem, 1.05rem + .8vw, 1.75rem);
+  margin-bottom: 16px;
+  font-size: clamp(1.25rem, 1.05rem + .9vw, 1.9rem);
   overflow-wrap: anywhere;
 }
 .q-title:focus { outline: none; }
@@ -4058,18 +4161,30 @@ body.ist-onboarding main { display: flex; }
 
 /* --- Antwortkacheln (single / multi / truefalse) --- */
 
+/* Zwei Spalten sind die Regel. Ab sechs Antworten und genügend Breite drei —
+   die Mehrfachauswahlen tragen kurze Begriffe („Netzteil", „Sirene"), bei
+   denen zwei Spalten zu vier Zeilen Luft werden. Bildkacheln und
+   Richtig/Falsch haben eigene Raster und bleiben unberührt. */
 .answers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 .answers.answers-narrow { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+@media (min-width: 1400px) {
+  #screen-quiz:not([data-has-media="true"]) .answers:not(.answers-bild):not(.answers-narrow)[data-count="6"],
+  #screen-quiz:not([data-has-media="true"]) .answers:not(.answers-bild):not(.answers-narrow)[data-count="7"],
+  #screen-quiz:not([data-has-media="true"]) .answers:not(.answers-bild):not(.answers-narrow)[data-count="8"],
+  #screen-quiz:not([data-has-media="true"]) .answers:not(.answers-bild):not(.answers-narrow)[data-count="9"] {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
 
 .answer {
   position: relative;
   display: grid;
   grid-template-columns: 44px 1fr;
   align-items: center;
-  gap: 13px;
-  min-height: 92px;
-  padding: 15px;
-  border: 1px solid var(--th-line);
+  gap: 14px;
+  min-height: 84px;
+  padding: 16px 52px 16px 16px;
+  border: 1.5px solid var(--th-line);
   overflow: hidden;
   border-radius: var(--radius-md);
   background: var(--th-white);
@@ -4106,21 +4221,45 @@ body.ist-onboarding main { display: flex; }
 .answer:active:not(:disabled) { transform: scale(.985); }
 .answer:disabled { cursor: default; }
 
-/* Auswahl ist ein eigener, markenneutraler Zustand: Navy/Cyan statt der
-   späteren Bedeutungsfarben Grün und Rot. Ring, Glow, Anhebung und Häkchen
-   wirken zusammen, damit die Auswahl nie nur an einer Farbe hängt. */
+/* Auswahl ist ein eigener, markenneutraler Zustand: Cyan-Rand, hellblaue
+   Fläche und ein Häkchen am rechten Rand — nicht Grün, nicht Rot. Das
+   Häkchen sitzt rechts, wo der Innenabstand dafür freigehalten ist, statt
+   in der Ecke des Buchstabens, wo es bei langen Texten unterging. */
+.answer::before {
+  content: "✓";
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--th-blue);
+  color: var(--th-white);
+  font-size: .95rem;
+  font-weight: 900;
+  line-height: 1;
+  opacity: 0;
+  transform: translateY(-50%) scale(.6);
+  transition: opacity var(--duration-fast) ease, transform var(--duration-fast) var(--ease-out);
+}
 .answer.is-selected {
   z-index: 1;
-  border-color: var(--th-navy-deep);
+  border-color: var(--th-blue);
   background: var(--info-bg);
   box-shadow:
-    0 0 0 3px var(--th-white),
-    0 0 0 7px rgba(59, 169, 211, .72),
-    0 0 26px rgba(59, 169, 211, .46),
-    0 12px 26px rgba(10, 39, 71, .2);
-  transform: translateY(-2px) scale(1.012);
+    0 0 0 2px rgba(59, 169, 211, .35),
+    0 12px 26px rgba(10, 39, 71, .14);
 }
-.answer.is-selected::after { width: 6px; background: var(--th-blue); opacity: 1; }
+.answer.is-selected::before { opacity: 1; transform: translateY(-50%) scale(1); }
+.answer.is-selected::after { width: 5px; opacity: 1; }
+.answer.is-correct,
+.answer.is-wrong,
+.answer.is-missed { padding-right: 16px; }
+.answer.is-correct::before,
+.answer.is-wrong::before,
+.answer.is-missed::before { display: none; }
 .answer.is-correct {
   border-color: #8FA600;
   background: var(--success-bg);
@@ -4148,23 +4287,6 @@ body.ist-onboarding main { display: flex; }
   font-weight: 800;
   box-shadow: 0 5px 12px rgba(10, 39, 71, .2);
 }
-.answer.is-selected .answer-letter::after {
-  content: "✓";
-  position: absolute;
-  right: -6px;
-  bottom: -6px;
-  display: grid;
-  place-items: center;
-  width: 20px;
-  height: 20px;
-  border: 2px solid var(--th-white);
-  border-radius: 50%;
-  background: var(--th-navy-deep);
-  color: var(--th-white);
-  font-size: .7rem;
-  line-height: 1;
-  box-shadow: 0 2px 5px rgba(10, 39, 71, .28);
-}
 .answer.is-correct .answer-letter { background: var(--th-lime); color: var(--th-ink); }
 .answer.is-wrong .answer-letter { background: var(--th-red); color: #fff; }
 
@@ -4188,6 +4310,14 @@ body.ist-onboarding main { display: flex; }
 /* --- Bildkacheln (Fehmarn-Muster: vier Fotos als Antwort) ---------------- */
 
 .answers-bild { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+/* Vier Fotos nebeneinander, sobald die Breite reicht: Zweispaltig waren die
+   Hochkant-Kacheln auf einem Arbeitsplatzmonitor 540 x 720 px groß — die
+   unteren beiden lagen unter der Falz, und Vergleichen ist die Aufgabe. Für
+   Details gibt es die Lupe. */
+@media (min-width: 900px) {
+  .answers-bild[data-count="3"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .answers-bild[data-count="4"] { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
 
 /* Kachel und Lupe sind Geschwister, kein Button im Button — verschachtelte
    Buttons sind ungültiges HTML und für Screenreader nicht bedienbar. */
@@ -4203,6 +4333,9 @@ body.ist-onboarding main { display: flex; }
   overflow: hidden;
   box-shadow: 0 7px 18px rgba(10, 39, 71, .1);
 }
+/* Auf dem Foto sitzt das Häkchen oben rechts; die Lupe bleibt unten rechts. */
+.answer-bild::before { top: 10px; right: 10px; transform: scale(.6); box-shadow: 0 2px 8px rgba(0, 0, 0, .3); }
+.answer-bild.is-selected::before { transform: scale(1); }
 .answer-media {
   width: 100%;
   aspect-ratio: 3 / 4;              /* portrait, der Normalfall in der Werkstatt */
@@ -4245,16 +4378,21 @@ body.ist-onboarding main { display: flex; }
   margin-top: auto;
   text-align: center;
 }
+/* Rechts Platz für die Lupe lassen, die in derselben Ecke liegt — sonst
+   steht „Deine Auswahl: richtig" halb unter dem Knopf. */
 .answer-bild .answer-verdict {
   grid-column: auto;
-  margin: 0 10px 10px;
-  text-align: center;
+  margin: 0 calc(var(--tap) + 14px) 10px 10px;
+  text-align: left;
 }
 .answers-bild[data-layout="product"] .answer-zoom {
   top: 10px;
   right: 10px;
   bottom: auto;
 }
+/* Bei Produktkacheln liegt die Lupe oben rechts — das Häkchen weicht nach
+   oben links neben den Buchstaben aus. */
+.answers-bild[data-layout="product"] .answer-bild::before { top: 10px; right: auto; left: 60px; }
 
 /* Buchstabe und Lupe liegen auf dem Bild — beide mit eigener Fläche, damit
    sie auch auf einem hellen Foto lesbar bleiben. */
@@ -4292,8 +4430,10 @@ body.ist-onboarding main { display: flex; }
 
 .q-media img[data-layout="portrait"] { max-height: 60vh; width: auto; margin: 0 auto; }
 
-.feedback-media { margin: 12px 0 0; }
-.feedback-media img { width: 100%; max-width: 420px; border: 1px solid var(--th-line); border-radius: 14px; }
+.feedback-media { margin: 14px 0 0; }
+/* Gedeckelt auf 320 px: Das Erklärbild ist ein Hinweis („GPS inside" nach
+   oben), kein Anschauungsobjekt — am Telefon füllte es sonst den Schirm. */
+.feedback-media img { width: 100%; max-width: 320px; border: 1px solid var(--th-line); border-radius: 14px; }
 .feedback-media figcaption { margin-top: 6px; color: var(--th-muted); font-size: .84rem; }
 
 /* --- Großansicht -------------------------------------------------------- */
@@ -4403,55 +4543,94 @@ body.ist-onboarding main { display: flex; }
 .match-solution { grid-column: 1 / -1; margin: 4px 0 0; color: var(--th-navy); font-size: .86rem; font-weight: 700; }
 .match-row .answer-verdict { grid-column: 1 / -1; margin: 2px 0 0; }
 
-/* --- Feedback --- */
+/* --- Auflösung --- */
 
+/* Eine Kopfzeile mit Urteil, darunter bis zu drei Zellen nebeneinander:
+   „Kurz erklärt", die Irrtümer, „Mitnehmen". Ab 900 px stehen sie in
+   Spalten — die Auflösung wird damit ein Blick statt ein Scrollweg. Fehlt
+   ein Feld im Fragensatz, füllt das Raster die Breite mit dem Rest. */
 .feedback {
-  margin-top: 18px;
-  padding: 16px 18px;
+  margin-top: 20px;
+  padding: 18px 20px 20px;
   border: 1px solid var(--th-line);
-  border-left-width: 4px;
   border-radius: 18px;
   background: var(--th-white);
   animation: enter var(--duration-normal) var(--ease-out) both;
 }
-.feedback.is-correct {
-  border-color: var(--success-line);
-  border-left-color: var(--th-lime);
-  background: linear-gradient(180deg, var(--success-bg) 0, var(--th-white) 180px);
-}
-.feedback.is-wrong {
-  border-color: var(--error-line);
-  border-left-color: var(--th-red);
-  background: linear-gradient(180deg, var(--error-bg) 0, var(--th-white) 180px);
-}
-.feedback-title { margin: 0 0 6px; color: var(--th-navy); font-size: 1.06rem; font-weight: 800; }
-.feedback-copy { margin: 0; line-height: 1.55; }
-.feedback-solution { margin: 8px 0 0; color: var(--th-navy); font-weight: 700; }
+.feedback.is-correct { border-color: var(--success-line); background: var(--success-bg); }
+.feedback.is-wrong { border-color: var(--error-line); background: var(--error-bg); }
 
-/* --- „Falsch gewählt?" und „Mitnehmen" ---
-   Beide Blöcke liegen INNERHALB der Auflösung und damit mal auf grünem, mal
-   auf rotem Grund. Deshalb keine eigene Flächenfarbe für den Fließtext,
-   sondern die geerbte Textfarbe (--th-ink): sie trägt auf beiden Gründen.
-   Nur der Mitnehmen-Kasten setzt sich bewusst weiß ab — er ist der Satz, den
-   der Händler mitnehmen soll, und darf nicht wie eine Fußnote aussehen. */
-
-.irrtum {
-  margin: 16px 0 0;
-  padding: 14px;
-  border: 1px solid var(--th-line);
-  border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, .72);
+.feedback-head {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
 }
-.irrtum-label,
-.mitnehmen-label {
+.feedback-icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: var(--th-white);
+  font-size: 1.15rem;
+  font-weight: 900;
+  line-height: 1;
+  box-shadow: 0 6px 14px rgba(10, 39, 71, .16);
+}
+.feedback.is-correct .feedback-icon { background: var(--th-lime); color: var(--th-ink); }
+.feedback.is-correct .feedback-icon::before { content: "✓"; }
+.feedback.is-wrong .feedback-icon { background: var(--th-red); }
+.feedback.is-wrong .feedback-icon::before { content: "×"; font-size: 1.5rem; }
+.feedback-head-text { min-width: 0; padding-top: 6px; }
+.feedback-title { margin: 0; color: var(--th-navy); font-size: 1.15rem; font-weight: 800; line-height: 1.25; }
+.feedback.is-correct .feedback-title { color: var(--th-lime-text); }
+.feedback.is-wrong .feedback-title { color: var(--th-red); }
+.feedback-solution { margin: 6px 0 0; color: var(--th-navy); font-weight: 700; line-height: 1.45; }
+
+.feedback-grid {
+  display: grid;
+  gap: 14px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(10, 39, 71, .12);
+}
+@media (min-width: 900px) {
+  .feedback-grid { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0; }
+  .feedback-cell { padding: 0 22px; border-left: 1px solid rgba(10, 39, 71, .12); }
+  .feedback-cell:first-child,
+  .feedback-cell[hidden] + .feedback-cell:not([hidden]):nth-child(2) { border-left: 0; padding-left: 0; }
+  .feedback-cell:last-child { padding-right: 0; }
+}
+.feedback-cell { min-width: 0; }
+.feedback-cell-label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
   margin: 0 0 8px;
-  font-size: .78rem;
+  color: var(--th-navy);
+  font-size: .8rem;
   font-weight: 800;
   letter-spacing: .06em;
   text-transform: uppercase;
 }
-.irrtum-label { color: var(--th-navy); }
+.feedback-cell-icon {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .85);
+  color: var(--th-blue-text);
+  box-shadow: inset 0 0 0 1px rgba(10, 39, 71, .1);
+}
+.feedback-cell-icon svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.feedback-copy { margin: 0; line-height: 1.55; }
 
+/* „Falsch gewählt?" und „Mitnehmen" liegen mal auf grünem, mal auf rotem
+   Grund. Deshalb keine eigene Flächenfarbe für den Fließtext, sondern die
+   geerbte Textfarbe (--th-ink): sie trägt auf beiden Gründen. */
 .irrtum-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
 .irrtum-item { padding-left: 12px; border-left: 3px solid var(--th-line-strong); font-size: .93rem; line-height: 1.5; }
 .irrtum-item b { color: var(--th-navy); font-weight: 700; }
@@ -4462,16 +4641,7 @@ body.ist-onboarding main { display: flex; }
 .irrtum-item.is-mine { border-left-color: var(--th-red); }
 .irrtum-item.is-mine b { color: var(--th-red); }
 
-.mitnehmen {
-  margin: 16px 0 0;
-  padding: 14px 16px;
-  border: 1px solid var(--th-line);
-  border-left: 4px solid var(--th-blue);
-  border-radius: var(--radius-md);
-  background: var(--th-white);
-  box-shadow: 0 7px 18px rgba(10, 39, 71, .06);
-}
-.mitnehmen-label { color: var(--th-blue-text); }
+.mitnehmen-label .feedback-cell-icon { color: var(--th-lime-text); }
 .mitnehmen-text { margin: 0; line-height: 1.55; font-weight: 500; }
 .mitnehmen-text b { color: var(--th-navy); font-weight: 800; }
 
@@ -4487,7 +4657,7 @@ body.ist-onboarding main { display: flex; }
 
 /* Die Aktionsleiste bleibt im Dokumentfluss. Sticky überdeckte auf kleinen
    Viewports Antworten und nach der Auswertung den Mitnehmen-Block. Direkt
-   nach Antworten beziehungsweise Feedback ist der Knopf weiterhin eindeutig
+   nach Antworten beziehungsweise Auflösung ist der Knopf weiterhin eindeutig
    erreichbar, ohne Inhalte unter einer schwebenden Fläche zu verstecken. */
 .quiz-actions {
   display: flex;
@@ -4496,10 +4666,138 @@ body.ist-onboarding main { display: flex; }
   justify-content: space-between;
   gap: 12px;
   margin-top: 22px;
-  padding: 14px 0 max(14px, env(safe-area-inset-bottom));
+  padding: 16px 0 max(4px, env(safe-area-inset-bottom));
   border-top: 1px solid var(--th-line);
 }
+.quiz-actions-buttons { display: flex; flex-wrap: wrap; gap: 10px; margin-left: auto; }
 .selection-status { margin: 0; color: var(--th-muted); font-size: .86rem; }
+.selection-status:empty { display: none; }
+.btn-pfeil { width: 18px; height: 18px; flex: 0 0 auto; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* --- Die Seitenleiste --- */
+
+.quiz-aside { display: none; }
+@media (min-width: 1100px) { .quiz-aside { display: grid; gap: 16px; } }
+
+.aside-card {
+  padding: 20px;
+  border: 1px solid var(--th-line);
+  border-radius: var(--radius-lg);
+  background: #fff;
+  box-shadow: var(--shadow-sm);
+}
+.aside-title {
+  margin: 0 0 14px;
+  color: var(--th-blue-text);
+  font-size: .78rem;
+  font-weight: 800;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+
+.quiz-overview {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.quiz-overview button {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: var(--tap);
+  aspect-ratio: 1 / 1;
+  padding: 0;
+  border: 2px solid var(--th-line);
+  border-radius: 50%;
+  background: #fff;
+  color: var(--th-navy);
+  font-size: 1rem;
+  font-weight: 800;
+  transition: transform var(--duration-press) var(--ease-out), box-shadow var(--duration-fast) ease;
+}
+.quiz-overview button:disabled { color: var(--th-muted); cursor: default; }
+.quiz-overview button:not(:disabled):active { transform: scale(.94); }
+.quiz-overview .is-correct button { border-color: var(--th-lime); background: var(--th-lime); color: var(--th-ink); }
+.quiz-overview .is-wrong button { border-color: var(--th-red); background: var(--th-red); color: #fff; }
+.quiz-overview .is-current button {
+  border-color: var(--th-navy);
+  background: var(--th-navy);
+  color: #fff;
+  box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--th-navy);
+}
+
+.quiz-legend {
+  display: grid;
+  gap: 8px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--th-muted);
+  font-size: .86rem;
+}
+.quiz-legend li { display: flex; align-items: center; gap: 10px; }
+.quiz-legend li::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--th-soft);
+  box-shadow: inset 0 0 0 1px var(--th-line-strong);
+}
+.quiz-legend .legend-correct::before { background: var(--th-lime); box-shadow: none; }
+.quiz-legend .legend-wrong::before { background: var(--th-red); box-shadow: none; }
+.quiz-legend .legend-current::before { background: var(--th-navy); box-shadow: none; }
+
+.aside-thi-button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: var(--tap);
+  padding: 8px 10px 8px 8px;
+  border: 1px solid var(--th-line);
+  border-radius: var(--radius-md);
+  background: #fff;
+  color: var(--th-ink);
+  font-weight: 600;
+  text-align: left;
+  transition: border-color var(--duration-fast) ease, box-shadow var(--duration-fast) ease;
+}
+.aside-thi-button:hover { border-color: var(--th-blue); box-shadow: 0 0 0 3px rgba(59, 169, 211, .18); }
+.aside-thi-icon {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--info-bg);
+  color: var(--th-navy);
+}
+.aside-thi-icon svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.aside-thi-text { flex: 1 1 auto; min-width: 0; }
+.aside-thi-chevron { width: 20px; height: 20px; flex: 0 0 auto; fill: none; stroke: var(--th-navy); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+.aside-insel-code {
+  margin: 0 0 4px;
+  color: var(--th-blue-text);
+  font-size: .78rem;
+  font-weight: 800;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+.aside-insel-title { margin: 0 0 12px; font-size: 1rem; font-weight: 800; letter-spacing: 0; }
+.aside-insel-bild {
+  width: 100%;
+  max-height: 210px;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 12px 18px rgba(10, 39, 71, .18));
+}
 
 /* -------------------------------------------------------------- Ergebnis --- */
 
@@ -4910,7 +5208,8 @@ body.ist-onboarding main { display: flex; }
   .screen { border-radius: var(--radius-lg); }
 
   .answers { grid-template-columns: 1fr; gap: 10px; }
-  .answer { min-height: var(--tap); padding: 13px; grid-template-columns: 40px 1fr; gap: 11px; }
+  .answer { min-height: var(--tap); padding: 13px 46px 13px 13px; grid-template-columns: 40px 1fr; gap: 11px; }
+  .answer::before { right: 10px; width: 26px; height: 26px; }
   .answer-letter { width: 40px; height: 40px; border-radius: 11px; }
 
   /* Bildkacheln bleiben auch auf dem Telefon zweispaltig — vier Fotos
@@ -4929,7 +5228,8 @@ body.ist-onboarding main { display: flex; }
   .topic-row { grid-template-columns: minmax(0, 1fr) 56px; }
   .topic-bar { display: none; }
 
-  .quiz-actions { flex-direction: column-reverse; align-items: stretch; }
+  .quiz-actions { align-items: stretch; }
+  .quiz-actions-buttons { flex-direction: column-reverse; width: 100%; margin-left: 0; }
   .quiz-actions .btn { width: 100%; }
   .start-actions .btn, .result-actions .btn { flex: 1 1 auto; }
   .confirm-dialog-actions { grid-template-columns: 1fr; }

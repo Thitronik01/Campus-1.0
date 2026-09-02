@@ -13,7 +13,7 @@
 
 (function () {
   const EVENT_SLUG = "campus-2026";
-  const ENGINE_VERSION = "1.34.2";
+  const ENGINE_VERSION = "1.35.0";
   const SUBMIT_ENDPOINT = "/.netlify/functions/submit-quiz";
 
   const LS_PARTICIPANT = "thitronik.campus.2026.participant";
@@ -212,7 +212,7 @@
     qFeedbackMediaImg: $("q-feedback-media-img"),
     qFeedbackMediaCaption: $("q-feedback-media-caption"),
     qFeedbackIrrtum: $("q-feedback-irrtum"),
-    qFeedbackIrrtumLabel: $("q-feedback-irrtum-label"),
+    qFeedbackIrrtumText: $("q-feedback-irrtum-text"),
     qFeedbackIrrtumList: $("q-feedback-irrtum-list"),
     qFeedbackMitnehmen: $("q-feedback-mitnehmen"),
     qFeedbackMitnehmenText: $("q-feedback-mitnehmen-text"),
@@ -225,6 +225,17 @@
     qStatus: $("q-status"),
     btnCheck: $("btn-check"),
     btnAbort: $("btn-abort"),
+    btnPrev: $("btn-prev"),
+    btnAsideThi: $("btn-aside-thi"),
+    qCrumbCode: $("q-crumb-code"),
+    qCrumbTitle: $("q-crumb-title"),
+    qDots: $("q-dots"),
+    qOverview: $("q-overview"),
+    qAsideInsel: $("q-aside-insel"),
+    qAsideCode: $("q-aside-code"),
+    qAsideTitle: $("q-aside-title"),
+    qAsideBild: $("q-aside-bild"),
+    qFeedbackErklaert: $("q-feedback-erklaert"),
 
     rPercent: $("r-percent"),
     rFraction: $("r-fraction"),
@@ -260,6 +271,8 @@
     slug: null,
     questions: [],      // laufende Runde (ggf. gemischt / gefiltert)
     index: 0,
+    viewIndex: 0,       // angezeigte Frage; beim Rückblick kleiner als index
+    activeDraft: null,  // begonnene Auswahl der aktiven Frage während eines Rückblicks
     responses: [],      // { id, answer, response_seconds }
     results: [],        // clientseitige Bewertung für die Sofortanzeige
     startedAt: null,
@@ -1988,7 +2001,10 @@
     state.startedAt = new Date();
     state.isRepeatRound = repeat;
     state.roundActive = true;
+    state.viewIndex = 0;
+    state.activeDraft = null;
     history.pushState({ quiz: state.slug }, "", location.href);
+    renderInselkarte();
     show("quiz");
     renderQuestion();
   }
@@ -1997,28 +2013,96 @@
     return state.questions[state.index];
   }
 
-  function renderQuestion() {
-    const q = currentQuestion();
-    state.revealed = false;
-    state.questionStartedAt = Date.now();
+  function displayedQuestion() {
+    return state.questions[state.viewIndex];
+  }
 
+  /** Knopfbeschriftung ohne innerHTML: Das Pfeilsymbol im Knopf bleibt
+   *  stehen, nur der Text wechselt. */
+  function beschrifte(knopf, text) {
+    const label = knopf.querySelector(".btn-label");
+    if (label) label.textContent = text;
+    else knopf.textContent = text;
+  }
+
+  /** Die aktive Frage — die, die gerade beantwortet wird. `preset` bringt
+   *  eine begonnene Auswahl zurück, wenn der Teilnehmer zwischendurch eine
+   *  frühere Frage angesehen hat; die Zeitmessung läuft dann weiter, statt
+   *  von vorn zu beginnen. */
+  function renderQuestion(preset) {
+    const q = currentQuestion();
+    state.viewIndex = state.index;
+    state.revealed = false;
+    state.questionStartedAt = Date.now() - (preset ? preset.elapsed : 0);
+
+    paintQuestion(q, preset ? preset.draft : null);
+
+    el.qFeedback.hidden = true;
+    el.qFeedback.className = "feedback";
+    el.qFeedbackMedia.hidden = true;
+    el.qFeedbackErklaert.hidden = true;
+    el.qFeedbackIrrtum.hidden = true;
+    el.qFeedbackMitnehmen.hidden = true;
+
+    paintButtons();
+    fokusAufFrage();
+    preloadNext();
+  }
+
+  /** Eine bereits beantwortete Frage noch einmal ansehen — in der damaligen
+   *  Reihenfolge, mit der eigenen Antwort und der Auflösung. Geändert werden
+   *  kann dort nichts mehr: Die Bewertung ist gefallen und steht im Ergebnis.
+   *  Der Rückblick ist zum Nachlesen da, nicht zum Nachbessern. */
+  function reviewQuestion(i) {
+    const r = state.results[i];
+    if (!r) return;
+    // Wer die aktive Frage halb beantwortet verlässt, bekommt sie so zurück.
+    if (state.viewIndex === state.index && !state.revealed) {
+      state.activeDraft = { draft, elapsed: Date.now() - state.questionStartedAt };
+    }
+    state.viewIndex = i;
+    paintQuestion(r.question, r.draft);
+    paintReveal(r.question, r.answer);
+    paintFeedback(r.question, r.answer, r.isCorrect);
+    paintButtons();
+    fokusAufFrage();
+  }
+
+  /** Sprung in der Fragenübersicht oder über „Vorherige Frage". Erreichbar
+   *  sind beantwortete Fragen und die aktive; was noch offen ist, nicht —
+   *  die Reihenfolge ist Teil des Checks. */
+  function gotoQuestion(i) {
+    if (i < 0 || i > state.index) return;
+    if (i < state.index || state.revealed) { reviewQuestion(i); return; }
+    if (i === state.viewIndex) return;
+    const preset = state.activeDraft;
+    state.activeDraft = null;
+    renderQuestion(preset);
+  }
+
+  function fokusAufFrage() {
+    // preventScroll, weil der Browser sonst nur so weit scrollt, bis die
+    // Überschrift eben im Bild ist - bei einer langen Frage steht man dann
+    // mitten im Text. Der Blick gehört an den Anfang der Frage.
+    el.qTitle.focus({ preventScroll: true });
+    el.screens.quiz.scrollIntoView({ block: "start", behavior: scrollArt() });
+  }
+
+  /** Frage, Medien und Eingabe zeichnen — für die aktive Frage wie für den
+   *  Rückblick. `vorgabe` ist die gespeicherte Reihenfolge samt Auswahl. */
+  function paintQuestion(q, vorgabe) {
     const hatMedienbild = Boolean(q.media && q.media.src);
     const hatBildantworten = Array.isArray(q.options)
       && q.options.some((option) => option.image);
     el.screens.quiz.dataset.hasMedia = String(hatMedienbild);
-    el.screens.quiz.dataset.mediaLayout = hatMedienbild
-      ? (q.media.layout || q.layout || "landscape")
-      : "none";
     el.screens.quiz.dataset.questionType = q.type || "unknown";
     el.screens.quiz.dataset.answerMedia = String(hatBildantworten);
-    el.screens.quiz.dataset.answerLayout = hatBildantworten
-      ? (q.layout || "portrait")
-      : "none";
     el.screens.quiz.dataset.revealed = "false";
 
     const total = state.questions.length;
-    el.qCounter.textContent = `Frage ${state.index + 1} von ${total}`;
-    const pct = Math.round((state.index / total) * 100);
+    el.qCounter.textContent = `Frage ${state.viewIndex + 1} von ${total}`;
+    // Der Balken zählt beantwortete Fragen, nicht aufgerufene.
+    const pct = Math.round((state.results.length / total) * 100);
     el.qProgressFill.style.width = `${pct}%`;
     el.qProgress.setAttribute("aria-valuenow", String(pct));
 
@@ -2074,24 +2158,87 @@
     }
 
     renderAudio(q);
+    renderInput(q, vorgabe);
+    renderOverview();
+  }
 
-    el.qFeedback.hidden = true;
-    el.qFeedback.className = "feedback";
-    el.qFeedbackMedia.hidden = true;
-    el.qFeedbackIrrtum.hidden = true;
-    el.qFeedbackMitnehmen.hidden = true;
-    el.btnCheck.textContent = "Antwort prüfen";
-    el.btnCheck.disabled = true;
+  /** Beschriftung und Sichtbarkeit der beiden Knöpfe unter der Frage. Vor der
+   *  Antwort heißt der Hauptknopf „Antwort prüfen", danach nennt er die
+   *  nächste Frage beim Namen — so ist klar, wohin es geht. */
+  function paintButtons() {
+    const i = state.viewIndex;
+    const last = state.questions.length - 1;
+    const beantwortet = Boolean(state.results[i]);
+    el.btnPrev.hidden = i === 0;
+    if (!beantwortet) {
+      beschrifte(el.btnCheck, "Antwort prüfen");
+      updateCheckState();
+      return;
+    }
+    beschrifte(el.btnCheck, i === last ? "Auswertung ansehen" : `Weiter mit Frage ${i + 2}`);
+    el.btnCheck.disabled = false;
+    el.qStatus.textContent = "";
+  }
 
-    renderInput(q);
+  /** Die Fragenübersicht: Seitenleiste mit Knöpfen ab Desktopbreite, darunter
+   *  eine reine Punktreihe im Kopf. Beide aus derselben Schleife, damit sie
+   *  nie verschiedene Stände zeigen. */
+  function renderOverview() {
+    const total = state.questions.length;
+    el.qOverview.innerHTML = "";
+    el.qDots.innerHTML = "";
+    for (let i = 0; i < total; i++) {
+      const r = state.results[i];
+      const zustand = r ? (r.isCorrect ? "is-correct" : "is-wrong") : "is-open";
+      const aktuell = i === state.viewIndex;
+      const erreichbar = Boolean(r) || i === state.index;
+      const text = r
+        ? (r.isCorrect ? "richtig beantwortet" : "noch nicht richtig")
+        : (i === state.index ? "aktuelle Frage" : "offen");
 
-    // preventScroll, weil der Browser sonst nur so weit scrollt, bis die
-    // Überschrift eben im Bild ist - bei einer langen Frage steht man dann
-    // mitten im Text. Der Blick gehört an den Anfang der Frage.
-    el.qTitle.focus({ preventScroll: true });
-    el.screens.quiz.scrollIntoView({ block: "start", behavior: scrollArt() });
+      const li = document.createElement("li");
+      li.className = zustand + (aktuell ? " is-current" : "");
+      const knopf = document.createElement("button");
+      knopf.type = "button";
+      knopf.textContent = String(i + 1);
+      knopf.disabled = !erreichbar;
+      knopf.setAttribute("aria-label", `Frage ${i + 1}: ${text}`);
+      if (aktuell) knopf.setAttribute("aria-current", "step");
+      knopf.addEventListener("click", () => gotoQuestion(i));
+      li.appendChild(knopf);
+      el.qOverview.appendChild(li);
 
-    preloadNext();
+      const punkt = document.createElement("li");
+      punkt.className = li.className;
+      el.qDots.appendChild(punkt);
+    }
+  }
+
+  /** Brotkrume im Kopf und Inselkarte in der Seitenleiste. Code und Bild
+   *  kommen aus dem Katalog, der Titel aus dem Fragensatz — dort steht die
+   *  ausführliche Form („Einbauorte im Fahrzeug"). Ohne Bild im Katalog
+   *  bleibt die Karte weg; ein leerer Kasten wäre ein Versprechen ohne Inhalt. */
+  function renderInselkarte() {
+    const insel = state.island || {};
+    const katalog = (state.catalog && state.catalog.inseln) || [];
+    const eintrag = katalog.find((i) => i.slug === state.slug) || {};
+    const code = insel.code || eintrag.code || "";
+    const titel = insel.title || eintrag.title || "";
+    el.qCrumbCode.textContent = code;
+    el.qCrumbTitle.textContent = titel;
+    el.qAsideCode.textContent = code;
+    el.qAsideTitle.textContent = titel;
+    if (eintrag.image) {
+      if (eintrag.imageBreite && eintrag.imageHoehe) {
+        el.qAsideBild.width = eintrag.imageBreite;
+        el.qAsideBild.height = eintrag.imageHoehe;
+      }
+      el.qAsideBild.src = medienUrl(eintrag.image);
+      el.qAsideInsel.hidden = false;
+    } else {
+      el.qAsideBild.removeAttribute("src");
+      el.qAsideInsel.hidden = true;
+    }
   }
 
   function formatAudioTime(seconds) {
@@ -2132,7 +2279,9 @@
   let draft = null;
 
   function updateCheckState() {
-    const q = currentQuestion();
+    // Im Rückblick gibt es nichts zu prüfen; die Knöpfe setzt paintButtons.
+    if (state.results[state.viewIndex]) return;
+    const q = displayedQuestion();
     let ready = false;
     let status = "";
 
@@ -2162,15 +2311,15 @@
     el.qStatus.textContent = status;
   }
 
-  function renderInput(q) {
+  function renderInput(q, vorgabe) {
     el.qInput.innerHTML = "";
 
     if (q.type === "single" || q.type === "multi" || q.type === "truefalse") {
-      renderChoices(q);
+      renderChoices(q, vorgabe);
     } else if (q.type === "order") {
-      renderOrder(q);
+      renderOrder(q, vorgabe);
     } else if (q.type === "match") {
-      renderMatch(q);
+      renderMatch(q, vorgabe);
     }
 
     updateCheckState();
@@ -2188,8 +2337,10 @@
     return q.shuffleOptions === false ? q.options.slice() : shuffled(q.options);
   }
 
-  function renderChoices(q) {
-    draft = { selected: [], options: optionsFor(q) };
+  function renderChoices(q, vorgabe) {
+    draft = vorgabe
+      ? { selected: (vorgabe.selected || []).slice(), options: vorgabe.options }
+      : { selected: [], options: optionsFor(q) };
 
     // Bildmodus wird an den Daten erkannt, nicht an einem Extra-Feld: sobald
     // eine Option ein Bild trägt, ist es eine Bildfrage.
@@ -2200,6 +2351,8 @@
       + (bildmodus ? " answers-bild" : "")
       + (!bildmodus && q.type === "truefalse" ? " answers-narrow" : "");
     if (bildmodus) wrap.dataset.layout = q.layout || "portrait";
+    // Das Stylesheet wählt die Spaltenzahl nach der Anzahl der Antworten.
+    wrap.dataset.count = String(draft.options.length);
     wrap.setAttribute("role", "group");
     wrap.setAttribute("aria-labelledby", "q-title");
 
@@ -2210,7 +2363,9 @@
       button.type = "button";
       button.className = "answer opt-" + ((i % 7) + 1) + (bildmodus ? " answer-bild" : "");
       button.dataset.id = option.id;
-      button.setAttribute("aria-pressed", "false");
+      const gewaehlt = draft.selected.includes(option.id);
+      button.classList.toggle("is-selected", gewaehlt);
+      button.setAttribute("aria-pressed", String(gewaehlt));
 
       if (bildmodus) {
         const alt = option.imageAlt || option.text || `Bild ${letter}`;
@@ -2277,8 +2432,10 @@
 
   // --- Reihenfolge ---------------------------------------------------------
 
-  function renderOrder(q) {
-    draft = { order: [], items: shuffled(q.items) };
+  function renderOrder(q, vorgabe) {
+    draft = vorgabe
+      ? { order: (vorgabe.order || []).slice(), items: vorgabe.items }
+      : { order: [], items: shuffled(q.items) };
 
     const list = document.createElement("div");
     list.className = "order-list";
@@ -2331,9 +2488,15 @@
 
   // --- Zuordnung -----------------------------------------------------------
 
-  function renderMatch(q) {
-    draft = { pairs: {} };
-    q.left.forEach((item) => { draft.pairs[item.id] = ""; });
+  function renderMatch(q, vorgabe) {
+    draft = {
+      pairs: {},
+      left: vorgabe ? vorgabe.left : shuffled(q.left),
+      right: vorgabe ? vorgabe.right : shuffled(q.right)
+    };
+    q.left.forEach((item) => {
+      draft.pairs[item.id] = (vorgabe && vorgabe.pairs && vorgabe.pairs[item.id]) || "";
+    });
 
     // Die Auswahlliste wird einmal je Frage gemischt, nicht je Zeile: alle
     // Zeilen zeigen dieselbe Reihenfolge, sonst müsste man in jeder Zeile
@@ -2341,12 +2504,12 @@
     // Quelldatei - und dort steht die Lösung meist der Reihe nach (erster
     // linker Eintrag zum ersten rechten). Wer die Frage ein zweites Mal
     // sah, konnte sich das Muster merken, ohne die Sache zu kennen.
-    const auswahl = shuffled(q.right);
+    const auswahl = draft.right;
 
     const list = document.createElement("div");
     list.className = "match-list";
 
-    shuffled(q.left).forEach((item) => {
+    draft.left.forEach((item) => {
       const row = document.createElement("div");
       row.className = "match-row";
       row.dataset.id = item.id;
@@ -2360,6 +2523,7 @@
       select.id = `m-${item.id}`;
       select.innerHTML = `<option value="">Bitte wählen</option>` +
         auswahl.map((r) => `<option value="${escapeHtml(r.id)}">${escapeHtml(r.text)}</option>`).join("");
+      select.value = draft.pairs[item.id];
       select.addEventListener("change", () => {
         if (state.revealed) return;
         draft.pairs[item.id] = select.value;
@@ -2470,7 +2634,8 @@
       return;
     }
 
-    el.qFeedbackIrrtumLabel.textContent = isCorrect ? "Typische Fehler" : "Falsch gewählt?";
+    // Nur der Text wechselt; das Symbol davor bleibt stehen.
+    el.qFeedbackIrrtumText.textContent = isCorrect ? "Typische Fehler" : "Falsch gewählt?";
     el.qFeedbackIrrtumList.innerHTML = "";
     eintraege.forEach((eintrag) => {
       const marke = irrtumMarke(eintrag, q, answer);
@@ -2493,16 +2658,56 @@
     const isCorrect = evaluate(q, answer);
 
     state.responses.push({ id: q.id, answer, response_seconds: seconds });
-    state.results.push({ question: q, answer, isCorrect });
+    state.results.push({ question: q, answer, isCorrect, draft: draftSnapshot() });
     state.revealed = true;
-    el.screens.quiz.dataset.revealed = "true";
 
     paintReveal(q, answer);
+    paintFeedback(q, answer, isCorrect);
+    announce([
+      el.qFeedbackTitle.textContent,
+      el.qFeedbackCopy.textContent,
+      el.qFeedbackSolution.hidden ? "" : el.qFeedbackSolution.textContent
+    ].filter(Boolean).join(". "));
 
+    // Der Balken zählt beantwortete Fragen, nicht aufgerufene. Vorher rührte
+    // er sich nach der ersten Antwort nicht: er stand auf null, obwohl gerade
+    // eine Frage fertig war.
+    const beantwortet = Math.round((state.results.length / state.questions.length) * 100);
+    el.qProgressFill.style.width = `${beantwortet}%`;
+    el.qProgress.setAttribute("aria-valuenow", String(beantwortet));
+
+    paintButtons();
+    renderOverview();
+
+    // Auflösung in den Blick holen, Nachtippen kurz verschlucken. Der Knopf
+    // wechselt an derselben Stelle von "Antwort prüfen" auf "Weiter" -
+    // ein zweiter Tipp aus Gewohnheit übersprang bisher genau das, wofür der
+    // Check gemacht ist.
+    state.weiterFrei = Date.now() + 450;
+    el.qFeedback.scrollIntoView({ block: "nearest", behavior: scrollArt() });
+  }
+
+  /** Reihenfolge und Auswahl der laufenden Frage festhalten, damit der
+   *  Rückblick sie genau so zeigt, wie sie beantwortet wurde. */
+  function draftSnapshot() {
+    return {
+      options: draft.options,
+      items: draft.items,
+      left: draft.left,
+      right: draft.right,
+      selected: (draft.selected || []).slice(),
+      order: (draft.order || []).slice(),
+      pairs: { ...(draft.pairs || {}) }
+    };
+  }
+
+  /** Die Auflösung zeichnen — nach der Antwort wie im Rückblick. */
+  function paintFeedback(q, answer, isCorrect) {
+    el.screens.quiz.dataset.revealed = "true";
     el.qFeedback.className = "feedback " + (isCorrect ? "is-correct" : "is-wrong");
     el.qFeedbackTitle.textContent = isCorrect ? "Richtig" : "Noch nicht richtig";
     el.qFeedbackCopy.innerHTML = q.feedback ? richText(q.feedback) : "";
-    el.qFeedbackCopy.hidden = !q.feedback;
+    el.qFeedbackErklaert.hidden = !q.feedback;
 
     if (isCorrect) {
       el.qFeedbackSolution.hidden = true;
@@ -2537,30 +2742,6 @@
     }
 
     el.qFeedback.hidden = false;
-    announce([
-      el.qFeedbackTitle.textContent,
-      el.qFeedbackCopy.textContent,
-      el.qFeedbackSolution.hidden ? "" : el.qFeedbackSolution.textContent
-    ].filter(Boolean).join(". "));
-
-    // Der Balken zählt beantwortete Fragen, nicht aufgerufene. Vorher rührte
-    // er sich nach der ersten Antwort nicht: er stand auf null, obwohl gerade
-    // eine Frage fertig war.
-    const beantwortet = Math.round(((state.index + 1) / state.questions.length) * 100);
-    el.qProgressFill.style.width = `${beantwortet}%`;
-    el.qProgress.setAttribute("aria-valuenow", String(beantwortet));
-
-    const last = state.index === state.questions.length - 1;
-    el.btnCheck.textContent = last ? "Auswertung ansehen" : "Nächste Frage";
-    el.btnCheck.disabled = false;
-    el.qStatus.textContent = "";
-
-    // Auflösung in den Blick holen, Nachtippen kurz verschlucken. Der Knopf
-    // wechselt an derselben Stelle von "Antwort prüfen" auf "Nächste Frage" -
-    // ein zweiter Tipp aus Gewohnheit übersprang bisher genau das, wofür der
-    // Check gemacht ist.
-    state.weiterFrei = Date.now() + 450;
-    el.qFeedback.scrollIntoView({ block: "nearest", behavior: scrollArt() });
   }
 
   function paintReveal(q, answer) {
@@ -3174,13 +3355,17 @@
   });
 
   el.btnCheck.addEventListener("click", () => {
-    if (!state.revealed) { reveal(); return; }
+    // Unbeantwortet ist nur die aktive Frage — alles davor liegt im Ergebnis.
+    if (!state.results[state.viewIndex]) { reveal(); return; }
     // Der Knopf bleibt bedienbar und behält den Fokus, nur der zu frühe
     // zweite Tipp zählt nicht. Ein disabled hätte Tastaturnutzern den Fokus
     // aus der Hand genommen.
     if (Date.now() < state.weiterFrei) return;
+    if (state.viewIndex < state.index) { gotoQuestion(state.viewIndex + 1); return; }
     advance();
   });
+  el.btnPrev.addEventListener("click", () => gotoQuestion(state.viewIndex - 1));
+  el.btnAsideThi.addEventListener("click", thiOeffnen);
 
   el.qAudioButton.addEventListener("click", async () => {
     const player = el.qAudioPlayer;

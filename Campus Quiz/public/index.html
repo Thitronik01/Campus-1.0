@@ -8,8 +8,8 @@
   <meta name="description" content="THITRONIK Campus: Wissenscheck nach jeder Schulungsinsel.">
   <meta name="robots" content="noindex, nofollow">
   <title>THITRONIK Campus: Wissenscheck</title>
-  <link rel="stylesheet" href="/assets/styles.css?v=1.34.0">
-  <link rel="stylesheet" href="/assets/thi.css?v=1.34.0">
+  <link rel="stylesheet" href="/assets/styles.css?v=1.35.0">
+  <link rel="stylesheet" href="/assets/thi.css?v=1.35.0">
 </head>
 <body>
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
@@ -93,11 +93,11 @@
           <div class="onboarding-hero">
             <picture class="onboarding-picture">
               <source type="image/webp"
-                      srcset="/media/campus/firmensitz-640.webp?v=1.34.0 640w,
-                              /media/campus/firmensitz-1024.webp?v=1.34.0 1024w,
-                              /media/campus/firmensitz-1600.webp?v=1.34.0 1600w"
+                      srcset="/media/campus/firmensitz-640.webp?v=1.35.0 640w,
+                              /media/campus/firmensitz-1024.webp?v=1.35.0 1024w,
+                              /media/campus/firmensitz-1600.webp?v=1.35.0 1600w"
                       sizes="(min-width: 1200px) 50vw, 100vw">
-              <img src="/media/campus/firmensitz-1600.jpg?v=1.34.0"
+              <img src="/media/campus/firmensitz-1600.jpg?v=1.35.0"
                    alt="Luftaufnahme des THITRONIK-Firmensitzes in Eckernförde"
                    width="1600" height="1198" fetchpriority="high">
             </picture>
@@ -518,75 +518,156 @@
       </section>
 
       <!-- ==================== Quiz ==================== -->
-      <section class="screen" id="screen-quiz" aria-labelledby="q-title" hidden>
-        <div class="quiz-head">
-          <div class="quiz-head-row">
-            <p class="quiz-counter" id="q-counter">Frage 1 von 10</p>
-            <button class="btn btn-small btn-ghost" id="btn-abort" type="button"><span class="btn-zeichen" aria-hidden="true">×</span>Abbrechen</button>
-          </div>
-          <div class="progress-track" role="progressbar" aria-label="Quiz-Fortschritt" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="q-progress">
-            <div class="progress-fill" id="q-progress-fill"></div>
-          </div>
-        </div>
-
-        <div class="quiz-body">
-          <div class="quiz-main">
-            <div class="question-work">
-              <div class="q-meta">
-                <p class="q-category" id="q-category"></p>
-                <p class="q-mode" id="q-mode"></p>
+      <!-- Die Fragenansicht: links die Arbeitskarte mit Frage, Antworten und
+           Auflösung, rechts ab Desktopbreite die Seitenleiste mit Fragen-
+           übersicht, THI und Inselkarte. Unterhalb der Desktopbreite fällt die
+           Seitenleiste weg; die Fragenübersicht steht dann als Punktreihe im
+           Kopf der Karte (renderOverview in engine.js füllt beide). -->
+      <section class="screen screen-quiz" id="screen-quiz" aria-labelledby="q-title" hidden>
+        <div class="quiz-card">
+          <div class="quiz-head">
+            <div class="quiz-head-row">
+              <p class="quiz-crumb" id="q-crumb">
+                <span class="quiz-crumb-symbol" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="9"></circle><path d="M15.5 8.5 13.6 13.6 8.5 15.5l1.9-5.1z"></path></svg>
+                </span>
+                <span class="quiz-crumb-code" id="q-crumb-code"></span>
+                <span class="quiz-crumb-sep" aria-hidden="true">/</span>
+                <span class="quiz-crumb-title" id="q-crumb-title"></span>
+              </p>
+              <button class="btn btn-small btn-ghost" id="btn-abort" type="button"><span class="btn-zeichen" aria-hidden="true">×</span>Abbrechen</button>
+            </div>
+            <div class="quiz-progress-row">
+              <p class="quiz-counter" id="q-counter">Frage 1 von 10</p>
+              <div class="progress-track" role="progressbar" aria-label="Quiz-Fortschritt" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="q-progress">
+                <div class="progress-fill" id="q-progress-fill"></div>
               </div>
-              <h1 class="q-title" id="q-title" tabindex="-1"></h1>
-              <p class="q-hint" id="q-hint" hidden></p>
+            </div>
+            <!-- Kompakte Punktreihe unterhalb der Desktopbreite. Nur Anzeige:
+                 Zähler und Fortschrittsbalken tragen dieselbe Information für
+                 die Vorlesehilfe, deshalb aria-hidden. -->
+            <ol class="quiz-dots" id="q-dots" aria-hidden="true"></ol>
+          </div>
 
-              <section class="q-audio" id="q-audio" aria-label="Ton zur Frage" hidden>
-                <div class="q-audio-row">
-                  <button class="q-audio-button" id="q-audio-button" type="button" aria-pressed="false">Ton abspielen</button>
-                  <div class="q-audio-progress-wrap">
-                    <progress id="q-audio-progress" max="100" value="0" aria-label="Abspielfortschritt"></progress>
-                    <output id="q-audio-time">0:00 / 0:00</output>
-                  </div>
+          <div class="quiz-body">
+            <div class="quiz-main">
+              <div class="question-work">
+                <div class="q-meta">
+                  <p class="q-category" id="q-category"></p>
+                  <p class="q-mode" id="q-mode"></p>
                 </div>
-                <p class="q-audio-status" id="q-audio-status" role="status" aria-live="polite"></p>
-                <details class="q-audio-fallback">
-                  <summary>Textbeschreibung des Tons</summary>
-                  <p id="q-audio-fallback-text"></p>
-                </details>
-                <audio id="q-audio-player" preload="metadata"></audio>
-              </section>
+                <h1 class="q-title" id="q-title" tabindex="-1"></h1>
+                <p class="q-hint" id="q-hint" hidden></p>
 
-              <div id="q-input"></div>
+                <section class="q-audio" id="q-audio" aria-label="Ton zur Frage" hidden>
+                  <div class="q-audio-row">
+                    <button class="q-audio-button" id="q-audio-button" type="button" aria-pressed="false">Ton abspielen</button>
+                    <div class="q-audio-progress-wrap">
+                      <progress id="q-audio-progress" max="100" value="0" aria-label="Abspielfortschritt"></progress>
+                      <output id="q-audio-time">0:00 / 0:00</output>
+                    </div>
+                  </div>
+                  <p class="q-audio-status" id="q-audio-status" role="status" aria-live="polite"></p>
+                  <details class="q-audio-fallback">
+                    <summary>Textbeschreibung des Tons</summary>
+                    <p id="q-audio-fallback-text"></p>
+                  </details>
+                  <audio id="q-audio-player" preload="metadata"></audio>
+                </section>
+
+                <div id="q-input"></div>
+              </div>
+
+              <figure class="q-media" id="q-media" hidden>
+                <img id="q-media-img" alt="" decoding="async" fetchpriority="high">
+                <figcaption id="q-media-caption"></figcaption>
+              </figure>
             </div>
 
-            <figure class="q-media" id="q-media" hidden>
-              <img id="q-media-img" alt="" decoding="async" fetchpriority="high">
-              <figcaption id="q-media-caption"></figcaption>
-            </figure>
-          </div>
-
-          <div class="feedback" id="q-feedback" hidden>
-            <p class="feedback-title" id="q-feedback-title"></p>
-            <p class="feedback-copy" id="q-feedback-copy"></p>
-            <p class="feedback-solution" id="q-feedback-solution" hidden></p>
-            <figure class="feedback-media" id="q-feedback-media" hidden>
-              <img id="q-feedback-media-img" alt="">
-              <figcaption id="q-feedback-media-caption"></figcaption>
-            </figure>
-            <div class="irrtum" id="q-feedback-irrtum" hidden>
-              <p class="irrtum-label" id="q-feedback-irrtum-label">Falsch gewählt?</p>
-              <ul class="irrtum-list" id="q-feedback-irrtum-list"></ul>
+            <!-- Die Auflösung: Kopfzeile mit Urteil, darunter bis zu drei
+                 Zellen nebeneinander — „Kurz erklärt" (feedback), die Irrtümer
+                 und „Mitnehmen". Zellen ohne Inhalt bleiben ausgeblendet; das
+                 Raster füllt die Breite mit dem, was da ist. -->
+            <div class="feedback" id="q-feedback" hidden>
+              <div class="feedback-head">
+                <span class="feedback-icon" aria-hidden="true"></span>
+                <div class="feedback-head-text">
+                  <p class="feedback-title" id="q-feedback-title"></p>
+                  <p class="feedback-solution" id="q-feedback-solution" hidden></p>
+                </div>
+              </div>
+              <figure class="feedback-media" id="q-feedback-media" hidden>
+                <img id="q-feedback-media-img" alt="">
+                <figcaption id="q-feedback-media-caption"></figcaption>
+              </figure>
+              <div class="feedback-grid">
+                <section class="feedback-cell feedback-erklaert" id="q-feedback-erklaert" aria-labelledby="q-feedback-erklaert-label" hidden>
+                  <p class="feedback-cell-label" id="q-feedback-erklaert-label">
+                    <span class="feedback-cell-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M9.5 18h5M10 21h4M8.2 14.2A5.5 5.5 0 1 1 15.8 14.2c-.6.6-.8 1.2-.8 1.8h-6c0-.6-.2-1.2-.8-1.8Z"></path></svg></span>
+                    Kurz erklärt
+                  </p>
+                  <p class="feedback-copy" id="q-feedback-copy"></p>
+                </section>
+                <section class="feedback-cell irrtum" id="q-feedback-irrtum" aria-labelledby="q-feedback-irrtum-label" hidden>
+                  <p class="feedback-cell-label irrtum-label" id="q-feedback-irrtum-label">
+                    <span class="feedback-cell-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 4 3 20h18L12 4Z"></path><path d="M12 10v5M12 17.5v.5"></path></svg></span>
+                    <span id="q-feedback-irrtum-text">Falsch gewählt?</span>
+                  </p>
+                  <ul class="irrtum-list" id="q-feedback-irrtum-list"></ul>
+                </section>
+                <section class="feedback-cell mitnehmen" id="q-feedback-mitnehmen" aria-labelledby="q-feedback-mitnehmen-label" hidden>
+                  <p class="feedback-cell-label mitnehmen-label" id="q-feedback-mitnehmen-label">
+                    <span class="feedback-cell-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 3 5 6v6c0 4.2 3 7.6 7 9 4-1.4 7-4.8 7-9V6l-7-3Z"></path><path d="m9 12 2 2 4-4"></path></svg></span>
+                    Mitnehmen
+                  </p>
+                  <p class="mitnehmen-text" id="q-feedback-mitnehmen-text"></p>
+                </section>
+              </div>
             </div>
-            <div class="mitnehmen" id="q-feedback-mitnehmen" hidden>
-              <p class="mitnehmen-label">Mitnehmen</p>
-              <p class="mitnehmen-text" id="q-feedback-mitnehmen-text"></p>
-            </div>
-          </div>
 
-          <div class="quiz-actions">
-            <p class="selection-status" id="q-status" role="status" aria-live="polite"></p>
-            <button class="btn btn-primary" id="btn-check" type="button" disabled>Antwort prüfen</button>
+            <div class="quiz-actions">
+              <p class="selection-status" id="q-status" role="status" aria-live="polite"></p>
+              <div class="quiz-actions-buttons">
+                <button class="btn btn-secondary" id="btn-prev" type="button" hidden>
+                  <svg class="btn-pfeil" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
+                  <span class="btn-label">Vorherige Frage</span>
+                </button>
+                <button class="btn btn-primary" id="btn-check" type="button" disabled>
+                  <span class="btn-label">Antwort prüfen</span>
+                  <svg class="btn-pfeil" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
+
+        <aside class="quiz-aside" aria-label="Fragenübersicht und Hilfe">
+          <section class="aside-card" aria-labelledby="q-overview-title">
+            <h2 class="aside-title" id="q-overview-title">Fragenübersicht</h2>
+            <ol class="quiz-overview" id="q-overview"></ol>
+            <ul class="quiz-legend">
+              <li class="legend-correct">Richtig beantwortet</li>
+              <li class="legend-wrong">Noch nicht richtig</li>
+              <li class="legend-current">Aktuelle Frage</li>
+              <li class="legend-open">Offen</li>
+            </ul>
+          </section>
+          <section class="aside-card aside-thi" id="q-aside-thi" aria-labelledby="q-aside-thi-title">
+            <h2 class="aside-title" id="q-aside-thi-title">THI fragen</h2>
+            <button class="aside-thi-button" id="btn-aside-thi" type="button">
+              <span class="aside-thi-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false"><rect x="4" y="7" width="16" height="12" rx="4"></rect><path d="M12 3v4M9 13h.01M15 13h.01M9.5 16.5c1.5 1 3.5 1 5 0"></path></svg>
+              </span>
+              <span class="aside-thi-text">Wir helfen gerne weiter.</span>
+              <svg class="aside-thi-chevron" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m9 6 6 6-6 6"></path></svg>
+            </button>
+          </section>
+          <section class="aside-card aside-insel" id="q-aside-insel" aria-labelledby="q-aside-title">
+            <p class="aside-insel-code" id="q-aside-code"></p>
+            <h2 class="aside-insel-title" id="q-aside-title"></h2>
+            <img class="aside-insel-bild" id="q-aside-bild" alt="" decoding="async" loading="lazy">
+          </section>
+        </aside>
       </section>
 
       <!-- ==================== Ergebnis ==================== -->
@@ -719,6 +800,6 @@
   <!-- THI haengt seinen Schalter selbst in .masthead-tools ein und baut sein
        Panel an den Seitenkoerper. Faellt das Skript aus, fehlt nur THI —
        Kopfzeile und Quiz bleiben unberuehrt. -->
-  <script src="/assets/thi.js?v=1.34.0" defer></script>
+  <script src="/assets/thi.js?v=1.35.0" defer></script>
 </body>
 </html>

@@ -44,6 +44,13 @@ pruefe("Jeder neue Campus-Einstieg beginnt mit der Profileinrichtung", /if \(!st
 pruefe("Profilabschluss führt im Gesamtcampus zur Inselkarte", /function enterCampusAfterProfile\(\)[\s\S]*?params\.delete\("insel"\);[\s\S]*?history\.replaceState\([^;]+\/quiz[\s\S]*?renderIslands\(\);/.test(engine));
 pruefe("Profilformular gibt den Campus-Einstieg frei", /profileForm\.addEventListener\("submit"[\s\S]*?state\.campusEntered = true;\s*await enterCampusAfterProfile\(\);/.test(engine));
 
+pruefe("Rückblick liefert die gespeicherte Reihenfolge", /state\.results\.push\(\{ question: q, answer, isCorrect, draft: draftSnapshot\(\) \}\)/.test(engine));
+pruefe("Rückblick prüft nie eine schon bewertete Frage", /if \(!state\.results\[state\.viewIndex\]\) \{ reveal\(\); return; \}/.test(engine));
+pruefe("Fragenübersicht und Punktreihe aus einer Schleife", /el\.qOverview\.appendChild\(li\);[\s\S]*?el\.qDots\.appendChild\(punkt\);/.test(engine));
+pruefe("Übersichtsknöpfe erfüllen die Trefferfläche", /\.quiz-overview button \{[^}]*min-height: var\(--tap\);/.test(css));
+pruefe("Seitenleiste nur ab Desktopbreite", /\.quiz-aside \{ display: none; \}\s*@media \(min-width: 1100px\) \{ \.quiz-aside \{ display: grid;/.test(css));
+pruefe("Auflösung in Zellen", /id="q-feedback-erklaert"[\s\S]*?id="q-feedback-irrtum"[\s\S]*?id="q-feedback-mitnehmen"/.test(html));
+
 if (fehler.length) {
   console.error(`UI-Verträge: ${bestanden} bestanden, ${fehler.length} fehlgeschlagen.`);
   fehler.forEach((name) => console.error(`  FEHLER  ${name}`));

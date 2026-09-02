@@ -290,6 +290,40 @@ auf iOS und Android den systemeigenen Auswähler mit.
 > Das gilt für `prompt`, `feedback`, `mitnehmen` und die Irrtumstexte
 > gleichermaßen — kein Werkzeug kann es prüfen.
 
+### Die Fragenansicht
+
+Seit Engine 1.35 besteht die Fragenansicht aus zwei Teilen: der weißen
+Arbeitskarte mit Brotkrume (Inselcode und Titel), Zähler, Fortschrittsbalken,
+Frage, Antworten und Auflösung — und ab 1100 px Fensterbreite einer
+Seitenleiste mit **Fragenübersicht**, THI-Zugang und Inselkarte. Darunter
+fällt die Seitenleiste weg; die Übersicht steht dann als Punktreihe unter dem
+Fortschrittsbalken.
+
+Das Antwortraster richtet sich nach den Daten, nicht nach einem Extra-Feld:
+
+| Fall | Raster |
+|---|---|
+| bis 5 Textantworten | zwei Spalten, ab 640 px; darunter eine |
+| 6 bis 9 Textantworten | drei Spalten ab 1400 px, sonst zwei (`data-count` am Raster) |
+| Bild neben der Frage (`media`) | Frage und Antworten links in einer Spalte, Bild rechts, ab 760 px |
+| Bildantworten | vier nebeneinander ab 900 px, sonst zwei — auch am Telefon |
+| Richtig/Falsch | zwei schmale Kacheln |
+| `order`, `match` | eine Spalte |
+
+Die **Auflösung** hat eine Kopfzeile mit dem Urteil und darunter bis zu drei
+Zellen: „Kurz erklärt" (`feedback`), die Irrtümer und „Mitnehmen". Ab 900 px
+stehen sie nebeneinander; fehlt ein Feld im Fragensatz, füllen die übrigen
+die Breite.
+
+**Rückblick statt Nachbessern.** „Vorherige Frage" und die Knöpfe der
+Fragenübersicht führen zu bereits beantworteten Fragen zurück — in der
+damaligen Reihenfolge, mit der eigenen Antwort und der Auflösung, aber ohne
+Möglichkeit, etwas zu ändern: Die Bewertung ist gefallen und liegt im
+Ergebnis. Offene Fragen sind nicht erreichbar. Wer die aktive Frage halb
+beantwortet verlässt, bekommt Auswahl und Zeitmessung beim Zurückkommen
+wieder. Der Hauptknopf nennt das Ziel („Weiter mit Frage 5"), damit klar
+ist, ob es zur nächsten oder zur aktiven Frage geht.
+
 ### Die Auflösung: drei Felder statt einem
 
 Seit Fragenkatalog v3 besteht die Auflösung aus drei Teilen. `feedback` sagt,
