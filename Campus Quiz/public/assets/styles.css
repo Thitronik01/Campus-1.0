@@ -97,6 +97,18 @@
 
 * { box-sizing: border-box; }
 
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
 html {
   min-height: 100%;
   -webkit-text-size-adjust: 100%;
@@ -170,7 +182,7 @@ h2 { font-size: clamp(1.15rem, 1.05rem + .4vw, 1.5rem); letter-spacing: -.015em;
 .shell {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: 125vh;
   min-height: 125dvh;
   width: min(calc(100% - clamp(20px, 3vw, 56px)), var(--content));
   margin: 0 auto;
@@ -2439,7 +2451,7 @@ body.ist-onboarding main { display: flex; }
 
 .betreuung-rolle {
   color: var(--th-blue-text);
-  font-size: .67rem;
+  font-size: .84rem;
   font-weight: 800;
   letter-spacing: .08em;
   text-transform: uppercase;
@@ -3182,12 +3194,12 @@ body.ist-onboarding main { display: flex; }
    Startpanel rechts. Die Inhalte und Motive bleiben inselspezifisch, ihre
    Hierarchie und Bedienung folgen jedoch demselben System. */
 
-#screen-start[data-island] .start-layout {
+#screen-start:where([data-island]) .start-layout {
   grid-template-columns: minmax(0, 1fr) clamp(340px, 26vw, 430px);
   min-height: clamp(620px, 72vh, 790px);
 }
 
-#screen-start[data-island] .start-intro {
+#screen-start:where([data-island]) .start-intro {
   position: relative;
   isolation: isolate;
   min-height: 620px;
@@ -3897,7 +3909,7 @@ body.ist-onboarding main { display: flex; }
     background: linear-gradient(145deg, #FFFFFF, #F4F7FA);
   }
 
-  #screen-quiz[data-has-media="true"] .answers {
+  #screen-quiz[data-has-media="true"] .answers:not(.answers-bild) {
     grid-template-columns: 1fr;
   }
 
@@ -4297,6 +4309,8 @@ body.ist-onboarding main { display: flex; }
   background: var(--th-white);
   box-shadow: var(--shadow-md);
 }
+.lightbox:not([open]),
+.confirm-dialog:not([open]) { display: none; }
 .lightbox::backdrop { background: rgba(10, 39, 71, .74); }
 .lightbox-image {
   width: 100%;
@@ -4792,6 +4806,7 @@ body.ist-onboarding main { display: flex; }
      daneben — sonst stehen drei Motive in einer Reihe. */
   .usedom-szene-kundin { right: 9%; height: 52%; }
   .usedom-szene-podest { left: 18%; width: 66%; bottom: 16%; }
+  .usedom-start-visual::before { top: 4%; left: 24%; width: 50%; height: 52%; }
   /* Schmalere Bühne: Der Ausschnitt rückt Richtung Bildmitte, damit die
      beiden Personen zusammen im Bild bleiben. */
   #screen-start[data-island="langeland"] .start-intro { min-height: 560px; }
@@ -4881,7 +4896,7 @@ body.ist-onboarding main { display: flex; }
   .brand { gap: 10px; }
   .brand-logo { width: 112px; }
   .brand-copy { padding-left: 10px; }
-  .brand-copy small { font-size: .63rem; letter-spacing: .08em; }
+  .brand-copy small { font-size: .79rem; letter-spacing: .08em; }
   .brand-copy strong {
     overflow: visible;
     font-size: .9rem;
@@ -4979,6 +4994,7 @@ body.ist-onboarding main { display: flex; }
   .usedom-szene-verkaeufer { left: 5%; height: 44%; }
   .usedom-szene-kundin { right: 7%; height: 40%; }
   .usedom-szene-podest { left: 14%; width: 72%; bottom: 17%; }
+  .usedom-start-visual::before { top: 4%; left: 21%; width: 56%; height: 52%; }
   .usedom-szene-raum { object-position: center 70%; }
   /* Der Lichtstab säße auf dieser Breite im Text. */
   .usedom-start-visual::after { display: none; }

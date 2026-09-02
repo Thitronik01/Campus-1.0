@@ -320,15 +320,14 @@ Das Panel fährt von rechts ein; ab 640 px Fensterbreite abwärts füllt es den
 Bildschirm. Farben, Radien und Schatten kommen aus den Tokens des Campus.
 
 **Eine Eigenheit, die man kennen muss:** `body` trägt `zoom: .8`. Fixierte
-Elemente erben diesen Zoom, und die Viewport-Einheiten verhalten sich darin
-nicht einheitlich — gemessen entsprach `100dvh` der vollen Fensterhöhe,
-`100vw` dagegen nur 80 % der Fensterbreite. Panel und Schleier werden deshalb
+Elemente erben diesen Zoom. Viewport-Masse werden visuell auf 80 % verkleinert;
+die Seitenhülle gleicht das mit `125vh`/`125dvh` aus. Panel und Schleier werden deshalb
 über gegenüberliegende Kanten aufgespannt (`top`/`right`/`bottom`) statt über
 `width` und `height`. Eine Kante bei 0 bleibt bei 0, unabhängig vom Zoom.
 
-Feste Pixelwerte werden dagegen **nicht** kompensiert: Sie sollen mitskalieren,
-damit THI dieselbe scheinbare Größe hat wie der Rest der Seite. Die 460 px
-Panelbreite erscheinen also als 368 px.
+Reine Darstellungsmasse skalieren weiterhin mit. Interaktive Trefferflächen
+verwenden dagegen `--tap` (55 CSS-px = 44 echte Pixel), damit sie die
+projektweite Mindestgröße auch unter `zoom: .8` einhalten.
 
 ---
 

@@ -217,6 +217,7 @@
     knopf.id = "thi-schalter";
     knopf.setAttribute("aria-expanded", "false");
     knopf.setAttribute("aria-controls", "thi-panel");
+    knopf.setAttribute("aria-label", "THI fragen");
 
     const symbol = document.createElement("span");
     symbol.className = "ta-icon";
