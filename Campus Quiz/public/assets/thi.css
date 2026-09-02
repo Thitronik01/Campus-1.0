@@ -8,17 +8,15 @@
    ZWEI DINGE, DIE HIER ANDERS SIND ALS ERWARTET:
 
    1. `body` trägt `zoom: .8` (styles.css). Fixierte Elemente erben diesen
-      Zoom, und die Viewport-Einheiten verhalten sich darin nicht einheitlich:
-      gemessen entsprach 100dvh der vollen Fensterhöhe, 100vw dagegen nur
-      80 % der Fensterbreite. Deshalb werden Panel und Schleier über
+      Zoom. Viewport-Masse werden dadurch visuell auf 80 % verkleinert; die
+      Seitenhülle kompensiert das mit 125vh/125dvh. Panel und Schleier werden über
       gegenüberliegende Kanten aufgespannt (top/right/bottom/left) statt über
       width und height. Eine Kante bei 0 bleibt bei 0, unabhängig vom Zoom —
       damit hängt das Layout an keiner Umrechnung.
 
-   2. Feste Pixelwerte werden NICHT kompensiert. Sie sollen mitskalieren, denn
-      dann hat THI dieselbe scheinbare Größe wie der Rest der Seite. Die
-      460 px Panelbreite erscheinen also als 368 px — passend zu einer
-      Oberfläche, die insgesamt auf 80 % läuft.
+   2. Reine Darstellungsmasse skalieren mit. Interaktive Trefferflächen nutzen
+      dagegen `--tap` (55 CSS-px = 44 echte Pixel), damit sie auch mit Zoom die
+      projektweite Mindestgroesse einhalten.
    ========================================================================== */
 
 :root {
@@ -152,8 +150,8 @@
 .thi-kopf-knopf {
   display: grid;
   flex: 0 0 auto;
-  width: 40px;
-  height: 40px;
+  width: var(--tap);
+  height: var(--tap);
   place-items: center;
   border: 1px solid rgba(255, 255, 255, .18);
   border-radius: 10px;
@@ -517,7 +515,7 @@
   display: flex;
   align-items: center;
   gap: 7px;
-  min-height: 38px;
+  min-height: var(--tap);
   padding: 8px 11px;
   border: 1px solid var(--th-line);
   border-radius: var(--radius-sm);
@@ -605,9 +603,9 @@
 
 .thi-senden {
   display: grid;
-  flex: 0 0 42px;
-  width: 42px;
-  height: 42px;
+  flex: 0 0 var(--tap);
+  width: var(--tap);
+  height: var(--tap);
   place-items: center;
   border: 0;
   border-radius: 12px;

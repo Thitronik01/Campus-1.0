@@ -13,7 +13,7 @@
 
 (function () {
   const EVENT_SLUG = "campus-2026";
-  const ENGINE_VERSION = "1.33.0";
+  const ENGINE_VERSION = "1.34.0";
   const SUBMIT_ENDPOINT = "/.netlify/functions/submit-quiz";
 
   const LS_PARTICIPANT = "thitronik.campus.2026.participant";
@@ -50,6 +50,7 @@
     chipIsland: $("chip-island"),
     chipParticipant: $("chip-participant"),
     colophon: $("colophon-version"),
+    liveAnnouncer: $("live-announcer"),
 
     screens: {
       onboarding: $("screen-onboarding"),
@@ -267,6 +268,8 @@
     lastSession: null,   // session_id der zuletzt beendeten Runde
     sendetGerade: false,
     isRepeatRound: false,
+    roundActive: false,
+    pendingAbortAction: null,
     weiterFrei: 0       // Zeitpunkt, ab dem "Nächste Frage" wieder zählt
   };
 
@@ -294,10 +297,24 @@
     window.scrollTo({ top: 0, behavior: "auto" });
   }
 
+  /** Ein einziger, dauerhaft im Accessibility-Baum vorhandener Live-Bereich
+   *  übernimmt Meldungen aus Dialogen und Bildschirmen, die sonst beim
+   *  Befüllen noch `hidden` sind. */
+  function announce(message) {
+    if (!el.liveAnnouncer || !message) return;
+    const token = (announce.token || 0) + 1;
+    announce.token = token;
+    el.liveAnnouncer.textContent = "";
+    requestAnimationFrame(() => {
+      if (announce.token === token) el.liveAnnouncer.textContent = String(message).trim();
+    });
+  }
+
   function toast(message, ms = 2600) {
     el.toast.textContent = message;
     delete el.toast.dataset.closing;
     el.toast.hidden = false;
+    announce(message);
     clearTimeout(toast._t);
     clearTimeout(toast._hide);
     toast._t = setTimeout(() => {
@@ -372,6 +389,11 @@
     el.lightboxCaption.hidden = !el.lightboxCaption.textContent;
     if (typeof el.lightbox.showModal === "function") el.lightbox.showModal();
     else el.lightbox.setAttribute("open", "");   // sehr alte Browser
+  }
+
+  function closeLightbox() {
+    if (typeof el.lightbox.close === "function") el.lightbox.close();
+    else el.lightbox.removeAttribute("open");
   }
 
   /** Bilder der nächsten Frage still im Hintergrund holen. Im Schulungsnetz
@@ -1947,8 +1969,10 @@
     state.results = [];
     state.startedAt = new Date();
     state.isRepeatRound = repeat;
-    renderQuestion();
+    state.roundActive = true;
+    history.pushState({ quiz: state.slug }, "", location.href);
     show("quiz");
+    renderQuestion();
   }
 
   function currentQuestion() {
@@ -2071,6 +2095,7 @@
     player.removeAttribute("src");
     player.load();
     el.qAudioButton.textContent = "Ton abspielen";
+    el.qAudioButton.disabled = false;
     el.qAudioButton.setAttribute("aria-pressed", "false");
     el.qAudioStatus.textContent = "";
     el.qAudioProgress.value = 0;
@@ -2494,6 +2519,11 @@
     }
 
     el.qFeedback.hidden = false;
+    announce([
+      el.qFeedbackTitle.textContent,
+      el.qFeedbackCopy.textContent,
+      el.qFeedbackSolution.hidden ? "" : el.qFeedbackSolution.textContent
+    ].filter(Boolean).join(". "));
 
     // Der Balken zählt beantwortete Fragen, nicht aufgerufene. Vorher rührte
     // er sich nach der ersten Antwort nicht: er stand auf null, obwohl gerade
@@ -2600,6 +2630,7 @@
   // ------------------------------------------------------------ Ergebnis ---
 
   function finish() {
+    state.roundActive = false;
     const finishedAt = new Date();
     const total = state.results.length;
     const score = state.results.filter((r) => r.isCorrect).length;
@@ -2631,7 +2662,7 @@
       markDone(state.slug, percent, payload.session_id);
       submit(payload);
     } else {
-      el.rSave.textContent = "Wiederholungsrunde - sie wird nicht zusätzlich gespeichert.";
+      setSaveState("Wiederholungsrunde - sie wird nicht zusätzlich gespeichert.");
       el.btnRetrySave.hidden = true;
     }
 
@@ -2640,6 +2671,7 @@
     paintRest();
 
     show("result");
+    announce(`${el.rRating.textContent} ${el.rSave.textContent}`);
 
     // Der Ring steht erst auf 0, ein erzwungener Reflow macht diesen Stand
     // zum Ausgangswert, dann folgt der Zielwert - der Übergang läuft.
@@ -2797,14 +2829,14 @@
    *  Erfolg gespeichert würde, wäre bei jedem Funkloch verloren. */
   function submit(payload) {
     if (DEMO) {
-      el.rSave.textContent = "Vorschaumodus (?demo=1) - es wurde absichtlich nichts gespeichert.";
+      setSaveState("Vorschaumodus (?demo=1) - es wurde absichtlich nichts gespeichert.");
       el.btnRetrySave.hidden = true;
       return;
     }
 
     state.lastSession = payload.session_id;
     outboxAdd(payload);
-    el.rSave.textContent = "Ergebnis wird gesendet …";
+    setSaveState("Ergebnis wird gesendet …");
     el.btnRetrySave.hidden = true;
     flushOutbox();
   }
@@ -2936,9 +2968,12 @@
     } else {
       el.ausgang.hidden = false;
       el.ausgang.classList.toggle("is-fehler", offen.every((e) => e.blockiert));
-      el.ausgangText.textContent = ausgangSatz(offen);
+      const meldung = ausgangSatz(offen);
+      const geaendert = el.ausgangText.textContent !== meldung;
+      el.ausgangText.textContent = meldung;
       el.btnAusgangSenden.disabled = state.sendetGerade;
       el.btnAusgangSenden.textContent = state.sendetGerade ? "Sendet …" : "Jetzt senden";
+      if (geaendert) announce(meldung);
     }
 
     paintSpeicherstand(offen);
@@ -2968,6 +3003,12 @@
       + `${n === 1 ? "geht es" : "gehen sie"} automatisch raus - spätestens beim nächsten Aufruf dieser Seite.`;
   }
 
+  function setSaveState(message) {
+    const geaendert = el.rSave.textContent !== message;
+    el.rSave.textContent = message;
+    if (geaendert && !el.screens.result.hidden) announce(message);
+  }
+
   /** Die Zeile unter dem Ergebnisring. Sie spricht nur über die Runde, die
    *  gerade gelaufen ist, nicht über den ganzen Ausgang. */
   function paintSpeicherstand(offen) {
@@ -2976,26 +3017,26 @@
     const eigen = offen.find((e) => e.payload.session_id === state.lastSession);
 
     if (!eigen) {
-      el.rSave.textContent = "Ergebnis gespeichert. Danke!";
+      setSaveState("Ergebnis gespeichert. Danke!");
       el.btnRetrySave.hidden = true;
       return;
     }
 
     if (state.sendetGerade) {
-      el.rSave.textContent = "Ergebnis wird gesendet …";
+      setSaveState("Ergebnis wird gesendet …");
       el.btnRetrySave.hidden = true;
       return;
     }
 
     if (eigen.blockiert) {
-      el.rSave.textContent = `Nicht gespeichert: ${eigen.fehler}. Das Ergebnis bleibt auf dem Gerät - bitte der Schulungsleitung Bescheid geben.`;
+      setSaveState(`Nicht gespeichert: ${eigen.fehler}. Das Ergebnis bleibt auf dem Gerät - bitte der Schulungsleitung Bescheid geben.`);
     } else if (eigen.fehler && eigen.fehler !== KEIN_NETZ) {
       // Der Server war erreichbar und hat trotzdem nicht gespeichert. Der
       // Grund gehört hierhin: solange die Migration fehlt, steht hier genau
       // das, und niemand sucht den Fehler beim Funknetz.
-      el.rSave.textContent = `Der Server konnte gerade nicht speichern (${eigen.fehler}). Das Ergebnis liegt auf dem Gerät und wird automatisch nachgesendet.`;
+      setSaveState(`Der Server konnte gerade nicht speichern (${eigen.fehler}). Das Ergebnis liegt auf dem Gerät und wird automatisch nachgesendet.`);
     } else {
-      el.rSave.textContent = "Noch keine Verbindung. Das Ergebnis liegt auf dem Gerät und wird automatisch nachgesendet.";
+      setSaveState("Noch keine Verbindung. Das Ergebnis liegt auf dem Gerät und wird automatisch nachgesendet.");
     }
     el.btnRetrySave.hidden = false;
   }
@@ -3154,21 +3195,40 @@
     el.qAudioButton.disabled = true;
     el.qAudioStatus.textContent = "Audiodatei nicht verfügbar. Nutze die Textbeschreibung darunter.";
   });
-  el.qAudioPlayer.addEventListener("canplay", () => { el.qAudioButton.disabled = false; });
+  el.qAudioPlayer.addEventListener("canplay", () => {
+    el.qAudioButton.disabled = false;
+    el.qAudioStatus.textContent = "";
+  });
 
-  el.btnAbort.addEventListener("click", () => {
+  function requestRoundAbort(onAbort) {
+    state.pendingAbortAction = onAbort;
     if (typeof el.abortDialog.showModal === "function") {
-      // Ein vorheriger Formularwert bleibt am Dialog haften. Vor jedem Öffnen
-      // leeren, damit Escape niemals versehentlich einen alten Abbruch ausführt.
+      if (el.abortDialog.open) return;
       el.abortDialog.returnValue = "";
       el.abortDialog.showModal();
       return;
     }
-    if (confirm("Quiz abbrechen? Die bisherigen Antworten gehen verloren.")) show("start");
+    if (confirm("Quiz abbrechen? Die bisherigen Antworten gehen verloren.")) {
+      state.roundActive = false;
+      const action = state.pendingAbortAction;
+      state.pendingAbortAction = null;
+      if (action) action();
+    } else {
+      state.pendingAbortAction = null;
+    }
+  }
+
+  el.btnAbort.addEventListener("click", () => {
+    requestRoundAbort(() => show("start"));
   });
 
   el.abortDialog.addEventListener("close", () => {
-    if (el.abortDialog.returnValue === "abort") show("start");
+    const action = state.pendingAbortAction;
+    state.pendingAbortAction = null;
+    if (el.abortDialog.returnValue === "abort") {
+      state.roundActive = false;
+      if (action) action();
+    }
   });
 
   el.btnToIslands.addEventListener("click", () => {
@@ -3206,11 +3266,11 @@
     if (q && q.feedbackMedia) openLightbox(q.feedbackMedia.src, q.feedbackMedia.alt, q.feedbackMedia.caption);
   });
 
-  el.lightboxClose.addEventListener("click", () => el.lightbox.close());
+  el.lightboxClose.addEventListener("click", closeLightbox);
   // Klick auf den abgedunkelten Rand schließt ebenfalls. Das Ereignis trifft
   // den Dialog selbst nur außerhalb seines Inhalts.
   el.lightbox.addEventListener("click", (event) => {
-    if (event.target === el.lightbox) el.lightbox.close();
+    if (event.target === el.lightbox) closeLightbox();
   });
   // Die Bildquelle wird beim Schließen bewusst NICHT geleert: das nächste
   // Öffnen setzt sie ohnehin vor showModal(), es gäbe also kein Nachblitzen -
@@ -3228,7 +3288,22 @@
     route();
   });
 
-  window.addEventListener("popstate", route);
+  window.addEventListener("popstate", () => {
+    if (!state.roundActive) {
+      route();
+      return;
+    }
+    /* Der Browser ist bereits einen Eintrag zurückgegangen. Ein neuer
+       Wächter stellt die Quiz-URL wieder her; erst nach Bestätigung geht es
+       wirklich zurück und route() zeigt den Startbildschirm. */
+    history.pushState({ quiz: state.slug }, "", location.href);
+    requestRoundAbort(() => history.back());
+  });
+  window.addEventListener("beforeunload", (event) => {
+    if (!state.roundActive) return;
+    event.preventDefault();
+    event.returnValue = "";
+  });
   /* Bei jeder Groessenaenderung neu klemmen: Wird das Fenster breiter, passt
      die Szene womoeglich vollstaendig hinein — ein alter Versatz liesse sie
      dann schief im Ausschnitt stehen. Die Routen selbst brauchen das nicht

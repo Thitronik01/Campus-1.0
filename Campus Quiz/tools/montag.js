@@ -187,6 +187,10 @@ schritt("Audio-Fragen", audio);
 const arbeitskarte = lauf(path.join("tools", "test-arbeitskarte.mjs"), []);
 schritt("Digitale Arbeitskarte", arbeitskarte);
 
+const ui = lauf(path.join("tools", "test-ui-contract.js"), []);
+schritt("Responsive Bedienung", ui,
+  (ui.ausgabe.match(/^UI-Verträge: .*$/m) || [""])[0].replace(/^UI-Verträge: /, ""));
+
 const funktion = lauf(path.join("tools", "test-function.js"), []);
 schritt("Bewertungslogik", funktion,
   (funktion.ausgabe.match(/^\d+ bestanden.*$/m) || [""])[0]);
