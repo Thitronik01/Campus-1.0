@@ -91,7 +91,18 @@ async function thiBedienen(req, res, url) {
 
 http.createServer((req, res) => {
   const url = new URL(req.url, `http://localhost:${PORT}`);
-  let pathname = decodeURIComponent(url.pathname);
+  // Ein einzelnes ungültiges Prozentzeichen in der Adresse (/%ZZ) warf hier
+  // einen URIError, und der beendete den ganzen Server — bei einem falsch
+  // kopierten Link oder einem alten Lesezeichen (Rückstand R-26). Eine
+  // Anfrage darf 400 bekommen, der Server nicht sterben.
+  let pathname;
+  try {
+    pathname = decodeURIComponent(url.pathname);
+  } catch {
+    res.writeHead(400, { "Content-Type": "text/plain; charset=utf-8" });
+    res.end("Ungültige Adresse: " + url.pathname);
+    return;
+  }
 
   // THI laeuft lokal mit (siehe Kopf der Datei).
   if (pathname === "/.netlify/functions/thi") {
