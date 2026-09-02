@@ -34,6 +34,11 @@ const ROOT = process.argv[2]
   ? path.resolve(process.argv[2])
   : path.join(__dirname, "..", "public");
 const PORT = Number(process.env.PORT) || 8788;
+/* Loopback als Vorgabe. Der Server bedient /.netlify/functions/thi mit dem
+   Anymize-Schlüssel aus der Umgebung — auf 0.0.0.0 stünde der damit jedem
+   im selben WLAN offen (Rückstand R-42). Wer auf dem Telefon testen will,
+   startet mit --lan und beendet danach. */
+const HOST = process.argv.includes("--lan") ? "0.0.0.0" : "127.0.0.1";
 
 const MIME = {
   ".html": "text/html; charset=utf-8",
@@ -199,7 +204,8 @@ http.createServer((req, res) => {
     });
     res.end(data);
   });
-}).listen(PORT, () => {
+}).listen(PORT, HOST, () => {
   console.log(`Wurzel: ${ROOT}`);
   console.log(`Läuft auf http://localhost:${PORT}/`);
+  if (HOST !== "127.0.0.1") console.log(`Erreichbar im Netz (${HOST}) — nur mit --lan, und nur so lange wie nötig.`);
 });
