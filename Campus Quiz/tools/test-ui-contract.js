@@ -40,9 +40,9 @@ pruefe("THI-Senden erfüllt die Trefferfläche", /\.thi-senden\s*\{[^}]*width:\s
 pruefe("erste Frage wird vor dem Fokus eingeblendet", /state\.roundActive = true;[\s\S]*?show\("quiz"\);\s*renderQuestion\(\);/.test(engine));
 pruefe("aktive Runde schützt Zurück und Neuladen", /addEventListener\("popstate"[\s\S]*?state\.roundActive[\s\S]*?addEventListener\("beforeunload"/.test(engine));
 pruefe("Audioknopf wird für neue Fragen zurückgesetzt", /qAudioButton\.disabled = false;[\s\S]*?qAudioStatus\.textContent = "";/.test(engine));
-pruefe("Erstbesuch beginnt mit der Profileinrichtung", /if \(!participantComplete\(participant\)\) \{\s*renderOnboarding\(participant\);/.test(engine));
+pruefe("Jeder neue Campus-Einstieg beginnt mit der Profileinrichtung", /if \(!state\.campusEntered \|\| !participantComplete\(participant\)\) \{\s*renderOnboarding\(participant\);/.test(engine));
 pruefe("Profilabschluss führt im Gesamtcampus zur Inselkarte", /function enterCampusAfterProfile\(\)[\s\S]*?params\.delete\("insel"\);[\s\S]*?history\.replaceState\([^;]+\/quiz[\s\S]*?renderIslands\(\);/.test(engine));
-pruefe("Profilformular nutzt den Campus-Einstieg", /profileForm\.addEventListener\("submit"[\s\S]*?await enterCampusAfterProfile\(\);/.test(engine));
+pruefe("Profilformular gibt den Campus-Einstieg frei", /profileForm\.addEventListener\("submit"[\s\S]*?state\.campusEntered = true;\s*await enterCampusAfterProfile\(\);/.test(engine));
 
 if (fehler.length) {
   console.error(`UI-Verträge: ${bestanden} bestanden, ${fehler.length} fehlgeschlagen.`);

@@ -13,7 +13,7 @@
 
 (function () {
   const EVENT_SLUG = "campus-2026";
-  const ENGINE_VERSION = "1.34.1";
+  const ENGINE_VERSION = "1.34.2";
   const SUBMIT_ENDPOINT = "/.netlify/functions/submit-quiz";
 
   const LS_PARTICIPANT = "thitronik.campus.2026.participant";
@@ -268,6 +268,7 @@
     lastSession: null,   // session_id der zuletzt beendeten Runde
     sendetGerade: false,
     isRepeatRound: false,
+    campusEntered: false,
     roundActive: false,
     pendingAbortAction: null,
     weiterFrei: 0       // Zeitpunkt, ab dem "Nächste Frage" wieder zählt
@@ -3142,6 +3143,7 @@
 
     el.chipParticipant.textContent = saved.name;
     el.chipParticipant.hidden = false;
+    state.campusEntered = true;
     await enterCampusAfterProfile();
     setProfileBusy(false);
   });
@@ -3351,7 +3353,11 @@
 
   async function route() {
     const participant = loadParticipant();
-    if (!participantComplete(participant)) {
+    // Ein gespeichertes Profil erspart das erneute Tippen, ersetzt aber nicht
+    // den bewussten Einstieg: Bei jedem neuen Seitenaufruf ist die Landingpage
+    // der erste Bildschirm. Erst ihr CTA gibt die Navigation dieser Sitzung
+    // zur Inselkarte beziehungsweise zum Einzel-Insel-Start frei.
+    if (!state.campusEntered || !participantComplete(participant)) {
       renderOnboarding(participant);
       return;
     }
