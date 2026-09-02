@@ -13,7 +13,7 @@
 
 (function () {
   const EVENT_SLUG = "campus-2026";
-  const ENGINE_VERSION = "1.34.0";
+  const ENGINE_VERSION = "1.34.1";
   const SUBMIT_ENDPOINT = "/.netlify/functions/submit-quiz";
 
   const LS_PARTICIPANT = "thitronik.campus.2026.participant";
@@ -734,6 +734,23 @@
     if (match) return match[1].toLowerCase();
     const param = new URLSearchParams(location.search).get("insel");
     return param ? param.toLowerCase() : null;
+  }
+
+  /** Nach der verbindlichen Profileinrichtung beginnt die Lernreise immer
+   *  auf der Inselkarte. Das gilt auch dann, wenn der erste Aufruf über einen
+   *  alten Insel-Link oder einen QR-Code kam. Nur echte Einzel-Insel-Pakete
+   *  besitzen keine Übersicht und gehen deshalb direkt zu ihrem Startbild. */
+  async function enterCampusAfterProfile() {
+    if (state.catalog.inseln.length === 1) {
+      await route();
+      return;
+    }
+
+    const params = new URLSearchParams(location.search);
+    params.delete("insel");
+    const query = params.toString();
+    history.replaceState({}, "", `/quiz${query ? `?${query}` : ""}`);
+    renderIslands();
   }
 
   async function fetchJson(url) {
@@ -3125,7 +3142,7 @@
 
     el.chipParticipant.textContent = saved.name;
     el.chipParticipant.hidden = false;
-    await route();
+    await enterCampusAfterProfile();
     setProfileBusy(false);
   });
 
