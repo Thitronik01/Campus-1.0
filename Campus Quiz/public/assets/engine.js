@@ -13,7 +13,7 @@
 
 (function () {
   const EVENT_SLUG = "campus-2026";
-  const ENGINE_VERSION = "1.35.0";
+  const ENGINE_VERSION = "1.35.1";
   const SUBMIT_ENDPOINT = "/.netlify/functions/submit-quiz";
 
   const LS_PARTICIPANT = "thitronik.campus.2026.participant";
@@ -2858,7 +2858,11 @@
 
     if (!state.isRepeatRound) {
       const payload = buildPayload(finishedAt);
-      markDone(state.slug, percent, payload.session_id);
+      // ?demo=1 speichert nichts — auch nicht den Inselstand. Vorher stand
+      // die Insel nach einem Testlauf als abgeschlossen auf der Karte, und
+      // nach sieben Demoläufen meldete die Seite den Tagesabschluss
+      // (Rückstand R-18). Die Sperre in submit() greift eine Ebene tiefer.
+      if (!DEMO) markDone(state.slug, percent, payload.session_id);
       submit(payload);
     } else {
       setSaveState("Wiederholungsrunde - sie wird nicht zusätzlich gespeichert.");
@@ -3537,6 +3541,12 @@
   // ---------------------------------------------------------------- Start ---
 
   async function route() {
+    // Ohne Katalog gibt es nichts zu routen: boot() ist am Laden gescheitert
+    // und zeigt den Fehlerbildschirm. Ein Klick auf „Zur Campus-Karte" oder
+    // die Zurück-Geste liefen dann in state.catalog.inseln und warfen —
+    // der Knopf tat sichtbar nichts (Rückstand R-15). Neu laden ist hier
+    // die einzige Handlung, die etwas ändern kann.
+    if (!state.catalog) { location.reload(); return; }
     const participant = loadParticipant();
     // Ein gespeichertes Profil erspart das erneute Tippen, ersetzt aber nicht
     // den bewussten Einstieg: Bei jedem neuen Seitenaufruf ist die Landingpage
