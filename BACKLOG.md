@@ -10,35 +10,29 @@ Betreuer-Leiste, die offenen Supabase-Views, das undefinierte Farb-Token am
 Ton-Knopf, die vierfach kopierten CSS-Blöcke, das 1,7-MB-Icon und zwei
 kleinere Stellen.
 
-Die verbleibenden **64** stehen hier, nach Schwere geordnet. Jeder Eintrag ist so
+Zwölf weitere sind am 2. September 2026 mit den Pull Requests #81, #82 und
+#85 erledigt und ebenfalls entfernt: Node im Deploy-Job (R-01), Medienbudget
+und das 5-MB-Bildpaket der Arbeitskarte (R-12, R-46), Netlify-CLI aus dem
+Lockfile (R-13), die doppelte netlify.toml (R-14), der werfende
+Fehlerbildschirm (R-15), markDone im Vorschaumodus (R-18), der sterbende
+Entwicklungsserver (R-26), die Action-Pins (R-39), der offene Dev-Server im
+WLAN (R-42), THI in der Paketprüfung (R-45) und die verschluckten Hinweise
+in montag.js (R-47).
+
+Die verbleibenden **52** stehen hier, nach Schwere geordnet. Jeder Eintrag ist so
 geschrieben, dass er ohne Rückfrage zum Issue werden kann;
 `.github/issues-anlegen.sh` legt sie mit der GitHub-CLI an.
 
 | Schwere | Zahl |
 |---|---|
-| hoch | 10 |
-| mittel | 36 |
-| niedrig | 18 |
+| hoch | 9 |
+| mittel | 26 |
+| niedrig | 17 |
 
 > **Vor dem Scharfschalten von Supabase** gehören die Punkte zu
 > Ratenbegrenzung, Datenschutzhinweis und Löschweg entschieden — sie
 > betreffen personenbezogene Daten. Siehe
 > [`INBETRIEBNAHME.md`](INBETRIEBNAHME.md).
-
----
-
-## R-01 · Der Deploy-Job richtet kein Node ein, obwohl netlify-cli 27.3.0 Node >= 22.13.0 verlangt
-<!-- labels: ci, hoch -->
-
-**Schwere:** hoch · **Bereich:** ci · **Ort:** `.github/workflows/campus.yml:59-98`
-
-**Befund.** Der validate-Job pinnt Node 24 ueber setup-node, der deploy-Job hat keinen einzigen Node-Einrichtungsschritt. Er verwendet, was das Runner-Image gerade mitbringt — sowohl fuer npx netlify-cli als auch fuer das Auswerten der Deploy-Antwort.
-
-**Beleg.** campus.yml:29-32 setzt Node 24 nur im validate-Job. Der deploy-Job (campus.yml:59-121) enthaelt kein actions/setup-node; campus.yml:91 ruft direkt `npx --yes netlify-cli@27.3.0` auf, campus.yml:102-109 `node -e '...'`. Die Registry-Metadaten von netlify-cli@27.3.0 nennen `"engines": {"node": ">=22.13.0"}`. netlify.toml:6-7 legt fuer den Netlify-Build ausdruecklich NODE_VERSION = "24" fest.
-
-**Folge.** Das Bundling der Functions und die Ausfuehrung des Deploys haengen von einem Runner-Standard ab, den das Repository nirgends festlegt und der sich mit jedem Image-Update von ubuntu-latest aendern kann. Unterschreitet er 22.13, bricht der Deploy — und zwar erst nach bestandener validate-Stufe, auf main. Faellt er anders aus als Node 24, werden thi.mjs samt `import ... with { type: "json" }` mit einer anderen Node-Version verpackt als die, gegen die geprueft wurde.
-
-**Vorschlag.** Im deploy-Job denselben setup-node@v7-Schritt mit node-version: "24" aufnehmen wie im validate-Job. Die Node-Version an genau einer Stelle definieren (.nvmrc oder eine Workflow-env-Variable) und von netlify.toml, validate und deploy gemeinsam nutzen.
 
 ---
 
@@ -192,66 +186,6 @@ geschrieben, dass er ohne Rückfrage zum Issue werden kann;
 
 ---
 
-## R-12 · Keine Groessenpruefung fuer die ausgelieferten Bilder — ein Icon wiegt 1,77 MB
-<!-- labels: ci, mittel -->
-
-**Schwere:** mittel · **Bereich:** ci · **Ort:** `.github/workflows/campus.yml:34-36`
-
-**Befund.** Nichts in der Pipeline begrenzt die Groesse einzelner Dateien oder des Pakets. Im geprueften und deployten Paket liegen mehrere PNG-Dateien im Megabyte-Bereich, waehrend die uebrigen Medien als WebP im Kilobyte-Bereich liegen.
-
-**Beleg.** `find "Campus Gesamtpaket/public" -type f -printf "%s %p\n" | sort -rn | head`: 1.769.124 Byte media/fehmarn/feh-icon-ton.png, 1.511.020 assets/arbeitskarte/wohnmobil-heck.png, 1.405.028 wohnmobil-beifahrerseite.png, 1.335.445 wohnmobil-fahrerseite.png, 749.993 wohnmobil-front.png. Zum Vergleich: das groesste WebP hat 456.056 Byte. Alle fuenf sind versioniert (`git ls-files | grep feh-icon-ton` trifft Campus Quiz/public/media/fehmarn/feh-icon-ton.png). Der Pruefschritt in campus.yml:34-36 ruft nur montag.js auf; in tools/ gibt es keine Groessenpruefung.
-
-**Folge.** Die Arbeitskarte laedt allein rund 5 MB PNG, ein einzelnes Icon 1,77 MB. netlify.toml:46-54 setzt fuer /media/* und /assets/* max-age=31536000, immutable — beim ersten Aufruf wird also die volle Menge uebertragen, und genau das ist die Situation, die der Kommentar in thi.mjs:14-16 als Problem benennt ("im Hallen-WLAN, auf Telefonen"). Auf Schulungsgeraeten im Mobilfunknetz kostet das mehrere Sekunden pro Ansicht.
-
-**Vorschlag.** Einen Budget-Schritt in den validate-Job aufnehmen, der nach dem Bau ueber Campus Gesamtpaket/public laeuft und scheitert, sobald eine Einzeldatei ein festgelegtes Limit reisst (etwa 300 KB fuer Medien) oder das Paket insgesamt zu gross wird. Die genannten fuenf PNG nach WebP oder AVIF umwandeln — tools/bilder-aufbereiten.js und Feedbackbogen/tools/optimize-images.js koennen das bereits.
-
----
-
-## R-13 · Produktionsdeploy zieht netlify-cli ohne Lockfile, waehrend der Deploy-Token im Environment steht
-<!-- labels: ci, mittel -->
-
-**Schwere:** mittel · **Bereich:** ci · **Ort:** `.github/workflows/campus.yml:55-57, 91`
-
-**Befund.** Der Deploy-Schritt laedt die Netlify-CLI samt ihrem gesamten, nicht festgeschriebenen Abhaengigkeitsbaum zur Laufzeit aus der npm-Registry — in einem Job, dessen Umgebung den Netlify-Auth-Token traegt.
-
-**Beleg.** Z. 55-57: "env: NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }} / NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}" auf Job-Ebene, gilt also fuer jeden Schritt. Z. 91: "npx --yes netlify-cli@27.3.0 deploy". Es gibt im gesamten Repository keine package.json (git ls-files: kein Treffer), und .gitignore Z. 5 schliesst package-lock.json aus.
-
-**Folge.** Die CLI-Version ist zwar exakt gepinnt, ihre transitiven Abhaengigkeiten sind es nicht — sie werden bei jedem Deploy frisch aufgeloest. Ein kompromittiertes Paket irgendwo in diesem Baum laeuft mit dem Produktions-Deploy-Token im Environment und kann damit beliebige Inhalte auf die Live-Site schieben. Fuer die Anwendung selbst ist das fehlende Lockfile dagegen unkritisch: Functions und Werkzeuge kommen ohne externe Pakete aus, einzig tools/bilder-aufbereiten.js laedt optional sharp.
-
-**Vorschlag.** Die Netlify-CLI ueber eine kleine package.json mit zugehoerigem, versioniertem package-lock.json und "npm ci" installieren (dann greift auch die Integritaetspruefung), oder die Netlify-API direkt mit curl ansprechen. Zusaetzlich NETLIFY_AUTH_TOKEN nicht auf Job-, sondern nur auf Schritt-Ebene setzen und einen auf diese eine Site beschraenkten Token verwenden.
-
----
-
-## R-14 · Header und CSP stehen doppelt — die erzeugte netlify.toml wird beim Produktionsdeploy gar nicht gelesen
-<!-- labels: ci, mittel -->
-
-**Schwere:** mittel · **Bereich:** ci · **Ort:** `Campus Quiz/tools/build-insel.js:245-302`
-
-**Befund.** netlifyToml() schreibt einen vollständigen Satz Sicherheits- und Cache-Regeln ins Paket, während der tatsächliche Deploy die netlify.toml der Repository-Wurzel benutzt. Nichts prüft, ob beide gleich sind.
-
-**Beleg.** build-insel.js erzeugt die Regeln in netlifyToml (Z. 245-302, CSP in Z. 276) und legt sie unter `<Paket>/netlify.toml` ab (Z. 454, 558). Die Wurzel-netlify.toml setzt dagegen `publish = "Campus Gesamtpaket/public"` und `functions = "Campus Gesamtpaket/netlify/functions"` und trägt dieselben Header-Blöcke ein zweites Mal — Netlify liest bei diesem Aufbau die Datei im Basisverzeichnis, nicht die im Publish-Ordner. test-paket.js liest netlify.toml an keiner Stelle.
-
-**Folge.** Wer eine Header-Regel ändert — CSP, Permissions-Policy, eine Cache-Dauer — ändert sie erfahrungsgemäss dort, wo der Bau sie erzeugt, und die Änderung erreicht die Produktion nicht. Umgekehrt driften die Einzelpakete ab, wenn nur die Wurzeldatei gepflegt wird. Beide Fassungen stimmen heute überein; nichts hält sie zusammen.
-
-**Vorschlag.** Die Wurzel-netlify.toml beim Bau aus derselben netlifyToml()-Funktion erzeugen lassen, oder eine Prüfung in test-paket.js ergänzen, die die Header-Blöcke beider Dateien vergleicht und bei Abweichung durchfällt.
-
----
-
-## R-15 · Fehlerbildschirm: „Zur Campus-Karte" wirft, wenn der Katalog fehlt
-<!-- labels: code, mittel -->
-
-**Schwere:** mittel · **Bereich:** code · **Ort:** `Campus Quiz/public/assets/engine.js:2171-2174, 2184`
-
-**Befund.** route() greift ungeprueft auf state.catalog zu, wird aber genau in dem Zustand aufgerufen, in dem der Katalog nicht geladen werden konnte.
-
-**Beleg.** boot() Zeile 2216-2221: `state.catalog = await fetchJson("/data/inseln.json")` schlaegt fehl -> `fail("Die Inselübersicht konnte nicht geladen werden…")`, state.catalog bleibt null. Der einzige Knopf auf dem Fehlerbildschirm, Zeile 2171-2174: `el.btnErrBack.addEventListener("click", () => { history.pushState({}, "", "/quiz"); route(); })`. route() Zeile 2184: `const einzelinsel = state.catalog.inseln.length === 1;`. Dasselbe gilt fuer `window.addEventListener("popstate", route)` (Zeile 2176), das schon vor dem Ende von boot() haengt.
-
-**Folge.** TypeError „Cannot read properties of null". Der Knopf tut sichtbar nichts: die Adresse wechselt auf /quiz, der Fehlerbildschirm bleibt stehen. Der Teilnehmer haelt die Seite fuer eingefroren. Zusaetzlich stuerzt route() ab, wenn jemand waehrend des Katalogladens die Zurueck-Geste benutzt.
-
-**Vorschlag.** In route() und renderIslands() zuerst `if (!state.catalog) { location.reload(); return; }` (oder den Knopf im Fehlerfall generell auf Neuladen umstellen — fail() kennt diesen Fall bereits, prueft aber nur auf Einzelinsel, Zeile 244-246).
-
----
-
 ## R-16 · Fluechtiger Ausgang wird dem Teilnehmer als dauerhaft gespeichert gemeldet
 <!-- labels: code, mittel -->
 
@@ -279,21 +213,6 @@ geschrieben, dass er ohne Rückfrage zum Issue werden kann;
 **Folge.** Solange die Migration nicht eingespielt ist — laut NETLIFY-DEPLOY.md der aktuelle Zustand — entstehen in Netlify Forms Doppel-Einträge derselben Runde. Die Auswertung zählt dieselbe Person mehrfach.
 
 **Vorschlag.** Entweder den Kommentar Zeile 444-446 auf den Supabase-Weg einschränken und die Doppelung beim Auswerten über session_id entfernen, oder sendeNetlifyPilot() nur beim ersten Versuch eines Eintrags nutzen (`eintrag.versuche === 0`) und danach ausschließlich den Function-Weg erneut versuchen.
-
----
-
-## R-18 · markDone() läuft auch im Vorschaumodus
-<!-- labels: code, mittel -->
-
-**Schwere:** mittel · **Bereich:** code · **Ort:** `Campus Quiz/public/assets/engine.js:1662-1665`
-
-**Befund.** Ein Lauf mit ?demo=1 schreibt die Insel als abgeschlossen in den localStorage, obwohl demo=1 laut Projektregel nichts speichern soll.
-
-**Beleg.** Zeile 1662-1665: `if (!state.isRepeatRound) { const payload = buildPayload(finishedAt); markDone(state.slug, percent, payload.session_id); submit(payload); }`. Die Demo-Sperre sitzt erst eine Ebene tiefer in submit(), Zeile 1830-1834 (`if (DEMO) { … return; }`). markDone() schreibt unbedingt nach LS_DONE (Zeile 428-434).
-
-**Folge.** Nach einem Testlauf zeigt die Campus-Karte die Insel als „Abgeschlossen · X %" — und zwar als versendet, weil kein Ausgangseintrag existiert (renderIslands, Zeile 648). Auf einem Schulungsgerät, das mehrere Teilnehmer nutzen, ist der Fortschritt danach falsch; bei sieben Demoläufen meldet die Seite „Alle Inseln geschafft". Die Regel aus CLAUDE.md („speichert absichtlich nichts") ist verletzt.
-
-**Vorschlag.** markDone() in Zeile 1664 mit `if (!DEMO)` klammern — oder die Demo-Prüfung aus submit() nach finish() hochziehen, damit sie für beide Schreibwege gilt.
 
 ---
 
@@ -399,21 +318,6 @@ geschrieben, dass er ohne Rückfrage zum Issue werden kann;
 **Folge.** 400 KB tote Last in jedem Paket, und der Bau meldet sie als „Bilder“ mit, sodass die Zahl im Bauprotokoll den tatsaechlichen Bedarf ueberzeichnet. Weil nichts sie nennt, faellt beim naechsten Bildwechsel wieder niemandem auf, dass die Vorgaenger liegenbleiben. Bei den gemeinsamen Campus-Medien tritt der Fehler nicht auf, weil dort eine Positivliste steht (build-insel.js:66-73).
 
 **Vorschlag.** Die drei Dateien loeschen. Zusaetzlich in test-paket.js pruefen, dass jede Datei unter media/<slug>/ mindestens einmal in <slug>.json, index.html oder styles.css vorkommt — dann faellt der naechste Fall beim Bau auf, statt still mitzureisen.
-
----
-
-## R-26 · dev-server stirbt an jeder fehlerhaften Prozentkodierung in der Adresse
-<!-- labels: code, mittel -->
-
-**Schwere:** mittel · **Bereich:** code · **Ort:** `Campus Quiz/tools/dev-server.js:94`
-
-**Befund.** decodeURIComponent steht ungeschützt im Anfrage-Rückruf; ein einzelnes ungültiges Prozentzeichen in der URL beendet den gesamten Entwicklungsserver.
-
-**Beleg.** `let pathname = decodeURIComponent(url.pathname);` (Z. 94) ohne try/catch innerhalb von `http.createServer((req, res) => { ... })` (Z. 92). Nachgestellt auf Port 8899: `curl http://localhost:8899/%ZZ` liefert nichts, der Prozess endet mit `URIError: URI malformed at Server.<anonymous> (tools/dev-server.js:94:18)` und jeder weitere Aufruf schlägt fehl.
-
-**Folge.** Der Server, den montag.js als letzten Schritt startet, verschwindet ohne Vorwarnung — bei einem falsch kopierten Link, einem alten Lesezeichen oder einer Adresse mit einem einzelnen % darin. Der Entwickler sieht danach nur "Seite nicht erreichbar" und sucht den Fehler in der Engine.
-
-**Vorschlag.** Den Aufruf in try/catch fassen und bei URIError mit 400 antworten, statt die Ausnahme in den Server laufen zu lassen. Zusätzlich einen `process.on("uncaughtException")`-Schutz oder ein try/catch um den gesamten Rückruf legen — ein Entwicklungsserver darf an einer einzelnen Anfrage nicht sterben.
 
 ---
 
@@ -597,21 +501,6 @@ geschrieben, dass er ohne Rückfrage zum Issue werden kann;
 
 ---
 
-## R-39 · Actions nur per beweglichem Major-Tag gebunden — im selben Job wie das Produktions-Token
-<!-- labels: sicherheit, mittel -->
-
-**Schwere:** mittel · **Bereich:** sicherheit · **Ort:** `.github/workflows/campus.yml:27, 30, 39, 78`
-
-**Befund.** Alle vier Actions sind per Major-Tag referenziert. Tags sind in Git verschiebbar; wer das Action-Repository uebernimmt, kann v7 auf beliebigen Code umbiegen, ohne dass sich hier eine Zeile aendert.
-
-**Beleg.** campus.yml:27 `actions/checkout@v7`, :30 `actions/setup-node@v7`, :39 `actions/upload-artifact@v7`, :78 `actions/download-artifact@v8`. Die Major-Versionen selbst existieren — der Release-Stand von August 2026 fuehrt checkout v7.0.1, setup-node v7.0.0, upload-artifact v7.0.1 und download-artifact v8.0.1; das Problem ist nicht die Nummer, sondern der bewegliche Tag. download-artifact@v8 laeuft in campus.yml:76-81 im deploy-Job, dessen env laut :55-57 NETLIFY_AUTH_TOKEN enthaelt.
-
-**Folge.** Ein kompromittiertes Action-Tag laeuft im deploy-Job mit dem Netlify-Produktionstoken in der Umgebung — genau das Muster der bekannten Angriffe auf verbreitete Actions. Zusaetzlich sind Laeufe nicht reproduzierbar: derselbe Commit kann heute und in vier Wochen unterschiedlichen Action-Code ausfuehren.
-
-**Vorschlag.** Auf vollstaendige Commit-SHAs pinnen und den Klartext-Tag als Kommentar dahinter schreiben (`uses: actions/checkout@<sha> # v7.0.1`). Dependabot oder Renovate fuer das Ecosystem github-actions einschalten, damit die SHAs gepflegt werden.
-
----
-
 ## R-40 · Der Netlify-Forms-Rueckfallweg hebt die serverseitige Bewertung wieder auf
 <!-- labels: sicherheit, mittel -->
 
@@ -642,21 +531,6 @@ geschrieben, dass er ohne Rückfrage zum Issue werden kann;
 
 ---
 
-## R-42 · dev-server lauscht auf allen Netzwerkschnittstellen und gibt den Anymize-Schlüssel ins ganze WLAN frei
-<!-- labels: sicherheit, mittel -->
-
-**Schwere:** mittel · **Bereich:** sicherheit · **Ort:** `Campus Quiz/tools/dev-server.js:191`
-
-**Befund.** listen() wird ohne Host aufgerufen, bindet also an 0.0.0.0 — samt der lokal mitlaufenden THI-Function, die mit dem echten API-Schlüssel aus der Umgebung arbeitet.
-
-**Beleg.** `}).listen(PORT, () => { ... })` (Z. 191) ohne Host-Argument. Die THI-Function wird unter `/.netlify/functions/thi` durchgereicht (Z. 97-100, thiBedienen Z. 58-90) und lädt netlify/functions/thi.mjs, das ANYMIZE_API_KEY aus process.env zieht. Die Bremse pro IP in thi.mjs (`clientIp`, Z. 470-473) liest `x-nf-client-connection-ip` bzw. `x-real-ip` — Kopfzeilen, die hier niemand setzt oder entfernt, also vom Aufrufer frei wählbar.
-
-**Folge.** Wer im selben Netz ist — Schulungshalle, Hotel-WLAN, Coworking — kann den kostenpflichtigen Modellzugang des Entwicklers benutzen. Die Grenze von 30 Anfragen je IP und 5 Minuten lässt sich durch einen gefälschten x-real-ip beliebig oft neu vergeben; wirksam bleibt nur das Tageslimit von 1000 Aufrufen.
-
-**Vorschlag.** `listen(PORT, "127.0.0.1")` als Vorgabe, mit einer ausdrücklichen Umgebungsvariable (etwa HOST=0.0.0.0), wenn wirklich vom Telefon aus getestet werden soll. Im Kopfkommentar der Datei vermerken, warum.
-
----
-
 ## R-43 · Kein einziger Test schickt einen Origin-Kopf — der Gutfall der Herkunftspruefung ist ungeprueft
 <!-- labels: test, mittel -->
 
@@ -684,51 +558,6 @@ geschrieben, dass er ohne Rückfrage zum Issue werden kann;
 **Folge.** Die drei Fehler dieser Liste (401 auf dem Werkzeugweg wird als Antwort ausgeliefert, Tageslimit von Muellanfragen aufgebraucht, kein fetch-Timeout) sitzen alle in ungetestetem Gelaende. Die Suite meldet 69 gruene Pruefungen und deckt den haeufigsten Betriebsfall — der Anbieter antwortet nicht wie erwartet — auf dem voreingestellten Weg gar nicht ab.
 
 **Vorschlag.** Vier Faelle ergaenzen: Anbieter antwortet 401 und 429 auf dem Werkzeugweg (erwartet: HTTP-Fehlerstatus, kein Fehlertext im Strom), `THI_DAILY_LIMIT=2` mit einer dritten gueltigen Anfrage, ein Dienst, der die Verbindung mitten im SSE-Strom schliesst, und `THI_ZEITBUDGET_MS=1` mit der Erwartung, dass keine zweite Werkzeugrunde mehr angeboten wird.
-
----
-
-## R-45 · Die 159 Paketpruefungen decken THI mit keiner einzigen Pruefung ab
-<!-- labels: test, mittel -->
-
-**Schwere:** mittel · **Bereich:** test · **Ort:** `Campus Quiz/tools/test-paket.js`
-
-**Befund.** test-paket.js prueft Feedbackbogen, Arbeitskarte, Audiodateien, Cache-Buster und Formularerkennung, aber keine einzige THI-Datei — obwohl der Paketbau THI seit dem aktuellen Stand mit ausliefert.
-
-**Beleg.** `grep -n "thi" tools/test-paket.js` liefert null Treffer; die Datei prueft explizit nur `netlify/functions/submit-feedback.js` (Zeile 264), den Feedbackbogen (266) und die Arbeitskarte (277-285). Gebaut wird THI dagegen in build-insel.js:152-160 (thi.js, thi.css, thi.mjs, thi-lib/, thi-wissen/), und die erzeugte index.html verweist in Zeile 12 und 443 auf /assets/thi.css und /assets/thi.js.
-
-**Folge.** Ein Paket, in dem thi.mjs seine Importe nicht aufloest (thi.mjs:56 importiert ueber die Paketgrenze hinweg `../../public/data/inseln.json`), in dem der Wissensbestand leer oder abgeschnitten ist oder in dem index.html thi.js nicht mehr einbindet, faellt bei keiner der Paketpruefungen durch. Die einzige Absicherung ist der harte Abbruch beim Kopieren, wenn eine Quelldatei fehlt — inhaltlich wird nichts geprueft.
-
-**Vorschlag.** test-paket.js um Pruefungen erweitern: thi.mjs, thi-lib/*.mjs und thi-wissen/*.json liegen im Paket, artikel.de.json und abschnitte.de.json sind gueltiges JSON mit mehr als null Eintraegen, die relativen Importe von thi.mjs zeigen innerhalb des Pakets auf existierende Dateien, und index.html bindet thi.js mit passendem ?v= ein.
-
----
-
-## R-46 · 1,77-MB-PNG als CSS-Icon — keine Prüfung erfasst Medien ausserhalb der Fragensätze
-<!-- labels: test, mittel -->
-
-**Schwere:** mittel · **Bereich:** test · **Ort:** `Campus Quiz/public/assets/styles.css:2801`
-
-**Befund.** Das Tonsymbol der Audio-Zeile ist eine 1,77 MB grosse PNG-Datei; die Grössenprüfung in check-fragen.js greift nur für Bilder, die in einem Fragensatz stehen.
-
-**Beleg.** `background-image: url("/media/fehmarn/feh-icon-ton.png?v=1.0.0") !important;` (Z. 2801) — `ls -la public/media/fehmarn/` zeigt für feh-icon-ton.png 1.769.124 Bytes. check-fragen.js sammelt in `bilder` ausschliesslich q.media, q.feedbackMedia und o.image (Z. 161-168) und warnt erst dort ab 150 KB (Z. 182). Kein Werkzeug liest styles.css oder index.html auf Medienverweise; test-paket.js prüft nur Audiodateien (Z. 132-137) und die Arbeitskarten-Bilder (Z. 282-284).
-
-**Folge.** Auf der Fehmarn-Insel lädt jedes Telefon 1,77 MB für ein Symbol von wenigen Millimetern Kantenlänge — im WLAN einer Messehalle genau der Fall, den die 150-KB-Regel verhindern soll. Die README (Z. 378) sagt zudem zu, check-fragen.js warne bei zu grossen Bildern; für dieses Bild stimmt das nicht.
-
-**Vorschlag.** feh-icon-ton.png als WebP unter 150 KB neu erzeugen (tools/bilder-aufbereiten.js kann das) und check-fragen.js um einen Durchgang über die url(...)-Verweise in styles.css und die src/data-src-Verweise in index.html erweitern: Datei vorhanden, Grösse unter der Schwelle.
-
----
-
-## R-47 · montag.js verschluckt die Hinweise und die redaktionellen Notizen von check-fragen.js
-<!-- labels: ci, niedrig -->
-
-**Schwere:** niedrig · **Bereich:** ci · **Ort:** `Campus Quiz/tools/montag.js:98-101, 171-173`
-
-**Befund.** schritt() zeigt die aufgefangene Ausgabe eines Werkzeugs nur im Fehlerfall; alles, was check-fragen.js als Hinweis oder als offenen redaktionellen Punkt ausgibt, ist damit im Normalbetrieb unsichtbar.
-
-**Beleg.** `lauf()` fängt stdout und stderr ab (Z. 52-57), `schritt()` gibt bei `ergebnis.ok` nur die Kurzfassung aus (Z. 98-101); aus check-fragen.js wird per Regex ausschliesslich die Zeile "<n> Fragen geprüft." übernommen (Z. 173). check-fragen.js schreibt aber ausdrücklich einen Block "Offene redaktionelle Punkte (erscheinen nicht im Quiz)" (Z. 329-336) sowie sämtliche warn()-Zeilen (Z. 22) — beides endet mit Rückgabewert 0 und wird deshalb nie angezeigt.
-
-**Folge.** Genau die Meldungen, die zum Lesen gedacht sind — "Einbauabstände vor jeder Schulung gegen den aktuellen Anleitungsstand prüfen", ein Bild über 150 KB, ein fehlender Merksatz, eine ungerade Anzahl ** — sieht niemand mehr, sobald man wie in CLAUDE.md empfohlen nur noch montag.js aufruft.
-
-**Vorschlag.** In montag.js die Zeilen mit "Hinweis" sowie den Notizblock auch im Erfolgsfall durchreichen, notfalls gezählt und eingerückt ("3 Hinweise — vollständig: node tools/check-fragen.js").
 
 ---
 
