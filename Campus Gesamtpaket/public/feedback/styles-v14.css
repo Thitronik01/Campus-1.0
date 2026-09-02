@@ -974,40 +974,276 @@ input[type="text"]::placeholder, textarea::placeholder { color: #8B95A1; }
 
 .done {
   position: fixed; inset: 0; z-index: 2000;
-  display: grid; place-items: center;
-  padding: 26px 20px; overflow: auto;
-  background: var(--th-navy);
-  color: var(--th-white);
+  display: grid; place-items: start center;
+  padding: 48px; overflow: auto;
+  background: var(--th-navy-deep);
+  color: var(--th-navy);
+  overscroll-behavior: contain;
 }
 .done[hidden] { display: none; }
 .done::before {
   content: "";
   position: absolute; inset: 0;
   background: url("assets/v12/background-800.webp") center / cover no-repeat;
-  opacity: .28;
+  opacity: .22;
   pointer-events: none;
 }
-.done__inner { position: relative; z-index: 3; width: min(660px, 100%); text-align: center; }
-.done__logo { width: min(260px, 58vw); height: auto; margin: 0 auto 30px; }
+.done__shell {
+  position: relative; z-index: 3;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  width: min(1600px, 100%);
+  min-height: min(860px, calc(100dvh - 96px));
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--th-white);
+  box-shadow: 0 30px 70px rgba(2, 18, 35, .28);
+}
+
+.done__hero {
+  position: relative;
+  isolation: isolate;
+  min-height: 700px;
+  overflow: hidden;
+  background: var(--th-navy-deep);
+}
+.done__picture,
+.done__picture img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.done__picture img { object-fit: cover; object-position: 42% 50%; }
+.done__hero::after {
+  content: "";
+  position: absolute; z-index: 1; inset: 0;
+  background:
+    linear-gradient(180deg, rgba(4, 26, 54, .84) 0%, rgba(5, 31, 62, .36) 44%, rgba(3, 21, 44, .62) 100%),
+    linear-gradient(90deg, rgba(4, 27, 55, .3), transparent 72%);
+  pointer-events: none;
+}
+.done__hero-content {
+  position: relative; z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100%;
+  padding: 48px;
+  color: var(--th-white);
+}
+.done__brand { display: flex; align-items: center; gap: 24px; }
+.done__logo { width: min(300px, 51%); height: auto; }
+.done__campus {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 58px;
+  padding-left: 24px;
+  border-left: 1px solid rgba(255, 255, 255, .7);
+  color: var(--th-white);
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: .02em;
+  white-space: nowrap;
+}
+.done__campus svg { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 1.7; }
+.done__hero-copy { max-width: 640px; padding-bottom: 9%; }
+.done__hero-title {
+  margin: 0 0 16px;
+  color: var(--th-white);
+  font-size: clamp(2.8rem, 4.2vw, 4.35rem);
+  font-weight: 800;
+  line-height: 1.04;
+  letter-spacing: -.04em;
+  text-wrap: balance;
+  text-shadow: 0 2px 18px rgba(3, 20, 42, .38);
+}
+.done__hero-copy > p:last-child {
+  margin: 0;
+  color: rgba(255, 255, 255, .92);
+  font-size: clamp(1rem, 1.6vw, 1.35rem);
+  text-shadow: 0 1px 10px rgba(3, 20, 42, .44);
+}
+
+.done__panel {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  min-width: 0;
+  padding: 36px 64px 28px;
+  background: var(--th-white);
+}
+.done__progress-head {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 20px;
+  min-height: 28px;
+  color: var(--th-navy);
+  font-size: .98rem;
+}
+.done__progress-marks { display: inline-flex; gap: 12px; }
+.done__progress-marks i { display: block; width: 54px; height: 8px; border-radius: var(--radius-pill); background: var(--th-navy); }
+.done__progress-marks i:last-child { background: var(--th-red); }
+.done__heading h2 {
+  color: var(--th-navy);
+  font-size: clamp(2rem, 3.2vw, 3.1rem);
+  line-height: 1.08;
+  text-wrap: balance;
+}
+.done__lead {
+  margin: 14px 0 0;
+  color: #62749B;
+  font-size: clamp(1rem, 1.5vw, 1.22rem);
+  line-height: 1.5;
+}
+.done__lead strong { color: var(--th-navy); }
+
+.done__achievement {
+  display: grid;
+  grid-template-columns: 190px minmax(0, 1fr);
+  gap: 38px;
+  align-items: center;
+}
 .done__check {
   display: grid; place-items: center;
-  width: 62px; height: 62px; margin: 0 auto 22px;
+  width: 190px; height: 190px;
+  border: 2px dashed #2260CE;
   border-radius: 50%;
-  background: var(--th-lime); color: var(--th-ink);
-  font-size: 1.9rem; font-weight: 900; line-height: 1;
+  color: var(--th-navy);
 }
-.done h2 { color: var(--th-white); font-size: clamp(1.85rem, 6.6vw, 3.2rem); line-height: 1.08; }
-.done__lead { margin: 14px 0 0; color: rgba(255, 255, 255, .86); font-size: clamp(1rem, 2.6vw, 1.18rem); }
-.done__card {
-  margin: 30px 0 0; padding: 24px;
-  border: 1px solid rgba(255, 255, 255, .28);
-  border-radius: var(--radius-lg);
-  background: rgba(255, 255, 255, .1);
-  backdrop-filter: blur(10px);
+.done__check svg { width: 112px; height: 112px; overflow: visible; fill: none; stroke: currentColor; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+.done__achievement-copy > strong {
+  display: block;
+  color: var(--th-navy-deep);
+  font-size: clamp(1.05rem, 1.7vw, 1.35rem);
+}
+.done__achievement-copy > p { margin: 8px 0 22px; color: var(--th-navy); }
+.done__achievement-copy > span { display: block; margin-bottom: 7px; color: var(--th-navy); font-size: 1.08rem; }
+.done__progress {
+  height: 12px;
+  overflow: hidden;
+  border-radius: var(--radius-pill);
+  background: #E7EBF0;
+}
+.done__progress i { display: block; width: 100%; height: 100%; border-radius: inherit; background: var(--th-red); }
+
+.done__actions { display: grid; gap: 14px; margin-top: auto; }
+.done__certificate,
+.done__back {
+  min-height: 64px;
+  border-radius: var(--radius-md);
+  font-weight: 800;
+  text-decoration: none;
+  transition: background-color var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out), transform var(--duration-press) var(--ease-out);
+}
+.done__certificate {
+  display: grid;
+  grid-template-columns: 34px 1fr 28px;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  padding: 8px 18px;
+  border: 1px solid var(--th-red);
+  background: var(--th-red);
+  color: var(--th-white);
   text-align: left;
 }
-.done__card strong { display: block; font-size: clamp(1.08rem, 3vw, 1.35rem); }
-.done__card p { margin: 10px 0 0; color: rgba(255, 255, 255, .88); font-size: .96rem; }
+.done__certificate span { display: grid; }
+.done__certificate strong { font-size: 1.03rem; }
+.done__certificate small { font-size: .76rem; font-weight: 600; opacity: .85; }
+.done__certificate svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.done__download-icon { width: 28px; height: 28px; }
+.done__arrow { width: 26px; height: 26px; justify-self: end; }
+.done__certificate:disabled {
+  border-color: #D5DDE7;
+  background: #E9EDF2;
+  color: #59677A;
+  cursor: not-allowed;
+}
+.done__certificate-note { margin: -4px 0 2px; color: var(--th-muted); font-size: .82rem; text-align: center; }
+.done__back {
+  display: grid;
+  place-items: center;
+  padding: 10px 18px;
+  border: 1px solid var(--th-navy);
+  color: var(--th-navy);
+  background: var(--th-white);
+  font-size: 1.05rem;
+}
+.done__back:active { transform: scale(.985); }
+
+.done__footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 28px;
+}
+.done__footer a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--th-navy);
+  font-size: .78rem;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .done__back:hover { background: #F2F5F8; }
+  .done__footer a:hover { color: var(--th-red-text); }
+}
+
+@media (max-width: 1099px) {
+  .done { place-items: start center; padding: 32px; }
+  .done__shell { grid-template-columns: 1fr; min-height: 0; }
+  .done__hero { min-height: 330px; }
+  .done__picture img { object-position: 44% 53%; }
+  .done__hero-content { min-height: 330px; padding: 28px 32px; }
+  .done__logo { width: min(250px, 48%); }
+  .done__campus { min-height: 48px; font-size: .94rem; }
+  .done__hero-copy { padding-bottom: 0; }
+  .done__hero-title { margin-bottom: 10px; font-size: clamp(2.4rem, 6.2vw, 3.7rem); }
+  .done__panel { padding: 34px 48px 24px; }
+  .done__achievement { grid-template-columns: 160px minmax(0, 1fr); gap: 30px; }
+  .done__check { width: 160px; height: 160px; }
+  .done__check svg { width: 96px; height: 96px; }
+}
+
+@media (max-width: 639px) {
+  .done { display: block; padding: 0; }
+  .done__shell { min-height: 100dvh; border-radius: 0; }
+  .done__hero { min-height: 270px; }
+  .done__picture img { object-position: 37% 52%; }
+  .done__hero-content { min-height: 270px; padding: 20px; }
+  .done__brand { gap: 12px; }
+  .done__logo { width: min(178px, 52%); }
+  .done__campus { min-height: 38px; gap: 7px; padding-left: 12px; font-size: .72rem; }
+  .done__campus svg { width: 20px; height: 20px; }
+  .done__hero-title { margin-bottom: 7px; font-size: clamp(2rem, 10vw, 2.75rem); }
+  .done__hero-copy > p:last-child { font-size: .92rem; }
+  .done__panel { gap: 22px; padding: 24px 20px 20px; }
+  .done__progress-head { justify-content: space-between; gap: 10px; font-size: .82rem; }
+  .done__progress-marks { gap: 7px; }
+  .done__progress-marks i { width: 32px; height: 6px; }
+  .done__heading h2 { font-size: clamp(1.85rem, 9vw, 2.4rem); }
+  .done__lead { margin-top: 10px; font-size: .94rem; }
+  .done__achievement { grid-template-columns: 96px minmax(0, 1fr); gap: 18px; }
+  .done__check { width: 96px; height: 96px; }
+  .done__check svg { width: 60px; height: 60px; stroke-width: 5.5; }
+  .done__achievement-copy > strong { font-size: 1rem; line-height: 1.35; }
+  .done__achievement-copy > p { margin: 5px 0 13px; font-size: .86rem; }
+  .done__achievement-copy > span { margin-bottom: 5px; font-size: .92rem; }
+  .done__progress { height: 9px; }
+  .done__certificate, .done__back { min-height: 56px; }
+  .done__certificate { grid-template-columns: 28px 1fr 22px; gap: 10px; padding-inline: 14px; }
+  .done__certificate strong { font-size: .93rem; }
+  .done__certificate small { font-size: .7rem; }
+  .done__certificate-note { font-size: .76rem; }
+  .done__footer { gap: 2px 18px; }
+  .done__footer a { font-size: .74rem; }
+}
 
 body.is-done { overflow: hidden; }
 

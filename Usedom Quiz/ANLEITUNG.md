@@ -7,7 +7,7 @@ Fertiges Netlify-Paket für die Schulungsinsel USEDOM.
 |---|---|
 | Fragen | 10 |
 | Fragensatz-Version | 4 |
-| Bilder | 8 |
+| Bilder | 12 |
 
 ---
 

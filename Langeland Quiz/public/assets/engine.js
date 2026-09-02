@@ -13,7 +13,7 @@
 
 (function () {
   const EVENT_SLUG = "campus-2026";
-  const ENGINE_VERSION = "1.3.1";
+  const ENGINE_VERSION = "1.3.3";
   const SUBMIT_ENDPOINT = "/.netlify/functions/submit-quiz";
 
   const LS_PARTICIPANT = "thitronik.campus.2026.participant";
@@ -47,6 +47,7 @@
     colophon: $("colophon-version"),
 
     screens: {
+      onboarding: $("screen-onboarding"),
       islands: $("screen-islands"),
       start: $("screen-start"),
       quiz: $("screen-quiz"),
@@ -61,6 +62,25 @@
     taKicker: $("ta-kicker"),
     taTitle: $("ta-title"),
     taDesc: $("ta-desc"),
+
+    profileForm: $("profile-form"),
+    profileTitle: $("profile-title"),
+    profileFirstName: $("profile-first-name"),
+    profileLastName: $("profile-last-name"),
+    profileCompany: $("profile-company"),
+    profileNumber: $("profile-number"),
+    profilePrivacy: $("profile-privacy"),
+    profileCamera: $("profile-camera"),
+    profileUpload: $("profile-upload"),
+    profileCameraButton: $("profile-camera-button"),
+    profileUploadButton: $("profile-upload-button"),
+    profilePhotoPreview: $("profile-photo-preview"),
+    profilePhotoImage: $("profile-photo-image"),
+    profilePhotoPlaceholder: $("profile-photo-placeholder"),
+    profilePhotoRemove: $("profile-photo-remove"),
+    profilePhotoError: $("profile-photo-error"),
+    profileSaveError: $("profile-save-error"),
+    profileSubmit: $("profile-submit"),
 
     startCode: $("start-code"),
     startTitle: $("start-title"),
@@ -167,12 +187,16 @@
     weiterFrei: 0       // Zeitpunkt, ab dem "Nächste Frage" wieder zählt
   };
 
+  let profilePhoto = "";
+  const profileTouched = new Set();
+
   // ------------------------------------------------------------- Helfer ----
 
   function show(name) {
     Object.entries(el.screens).forEach(([key, node]) => {
       node.hidden = key !== name;
     });
+    document.body.classList.toggle("ist-onboarding", name === "onboarding");
     el.mastheadProgress.hidden = name !== "islands";
     window.scrollTo({ top: 0, behavior: "auto" });
   }
@@ -275,12 +299,36 @@
   function loadParticipant() {
     try {
       const raw = localStorage.getItem(LS_PARTICIPANT);
-      return raw ? JSON.parse(raw) : null;
+      return raw ? normalizeParticipant(JSON.parse(raw)) : null;
     } catch { return null; }
   }
 
+  function normalizeParticipant(data) {
+    if (!data || typeof data !== "object") return null;
+    const name = String(data.name || "").trim();
+    const teile = name.split(/\s+/).filter(Boolean);
+    const firstName = String(data.firstName || teile[0] || "").trim();
+    const lastName = String(data.lastName || teile.slice(1).join(" ") || "").trim();
+    return {
+      ...data,
+      firstName,
+      lastName,
+      name: [firstName, lastName].filter(Boolean).join(" ") || name,
+      dealer: String(data.dealer || "").trim(),
+      dealerNumber: String(data.dealerNumber || "").trim(),
+      privacyAccepted: data.privacyAccepted === true,
+      profilePhoto: typeof data.profilePhoto === "string" ? data.profilePhoto : ""
+    };
+  }
+
   function saveParticipant(data) {
-    try { localStorage.setItem(LS_PARTICIPANT, JSON.stringify(data)); } catch { /* privater Modus */ }
+    const participant = normalizeParticipant({ ...(loadParticipant() || {}), ...data });
+    try {
+      localStorage.setItem(LS_PARTICIPANT, JSON.stringify(participant));
+      return participant;
+    } catch {
+      return null;
+    }
   }
 
   const AREA_LABELS = {
@@ -291,14 +339,136 @@
     sonstiges: "Sonstiges"
   };
 
-  /** Dieselben drei Pflichtfelder, die validateForm() prüft — nur ohne
-   *  Fehlermeldung und Fokussprung. Der Tätigkeitsbereich bleibt freiwillig
-   *  und darf die Zusammenfassung deshalb nicht verhindern. */
+  /** Das Profil ist die verbindliche Eintrittskarte zum Campus. Alte lokale
+   *  Teilnehmerdaten bleiben als Vorbelegung erhalten, gelten ohne getrennten
+   *  Vor- und Nachnamen sowie Datenschutzbestätigung aber nicht als fertig. */
   function participantComplete(data) {
     if (!data) return false;
-    return String(data.name || "").trim().length >= 2
+    return String(data.firstName || "").trim().length >= 2
+      && String(data.lastName || "").trim().length >= 2
       && String(data.dealer || "").trim().length >= 2
-      && /^\d{5}$/.test(String(data.dealerNumber || "").trim());
+      && /^\d{5}$/.test(String(data.dealerNumber || "").trim())
+      && data.privacyAccepted === true;
+  }
+
+  const PROFILE_FIELDS = [
+    ["profile-first-name", "profile-first-name-error"],
+    ["profile-last-name", "profile-last-name-error"],
+    ["profile-company", "profile-company-error"],
+    ["profile-number", "profile-number-error"],
+    ["profile-privacy", "profile-privacy-error"]
+  ];
+
+  function profileFieldValid(input) {
+    const value = input.type === "checkbox" ? input.checked : input.value.trim();
+    if (input === el.profileNumber) return /^\d{5}$/.test(value);
+    if (input === el.profilePrivacy) return value === true;
+    return String(value).length >= 2;
+  }
+
+  function paintProfileField(input, errorNode, force = false) {
+    const valid = profileFieldValid(input);
+    const field = input.closest(".profile-field, .profile-consent");
+    const showError = !valid && (force || profileTouched.has(input.id));
+    field.classList.toggle("has-error", showError);
+    errorNode.hidden = !showError;
+    if (showError) input.setAttribute("aria-invalid", "true");
+    else input.removeAttribute("aria-invalid");
+    return valid;
+  }
+
+  function profileIsValid({ showErrors = false } = {}) {
+    let firstBad = null;
+    for (const [inputId, errorId] of PROFILE_FIELDS) {
+      const input = $(inputId);
+      const valid = paintProfileField(input, $(errorId), showErrors);
+      if (!valid && !firstBad) firstBad = input;
+    }
+    el.profileSubmit.disabled = Boolean(firstBad);
+    return firstBad;
+  }
+
+  function paintProfilePhoto() {
+    const hatFoto = Boolean(profilePhoto);
+    el.profilePhotoImage.hidden = !hatFoto;
+    el.profilePhotoPlaceholder.hidden = hatFoto;
+    el.profilePhotoRemove.hidden = !hatFoto;
+    el.profilePhotoPreview.classList.toggle("has-photo", hatFoto);
+    if (hatFoto) el.profilePhotoImage.src = profilePhoto;
+    else el.profilePhotoImage.removeAttribute("src");
+  }
+
+  function renderOnboarding(data = loadParticipant()) {
+    const saved = data || {};
+    el.profileFirstName.value = saved.firstName || "";
+    el.profileLastName.value = saved.lastName || "";
+    el.profileCompany.value = saved.dealer || "";
+    el.profileNumber.value = saved.dealerNumber || "";
+    el.profilePrivacy.checked = saved.privacyAccepted === true;
+    profilePhoto = saved.profilePhoto || "";
+    profileTouched.clear();
+    PROFILE_FIELDS.forEach(([inputId, errorId]) => paintProfileField($(inputId), $(errorId), false));
+    el.profilePhotoError.hidden = true;
+    el.profileSaveError.hidden = true;
+    el.profileForm.removeAttribute("aria-busy");
+    el.profileSubmit.querySelector("span").textContent = "Profil speichern & Campus starten";
+    profileIsValid();
+    paintProfilePhoto();
+    show("onboarding");
+    requestAnimationFrame(() => el.profileTitle.focus({ preventScroll: true }));
+  }
+
+  function readFileAsDataUrl(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => reject(new Error("Datei konnte nicht gelesen werden"));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  /** Das Foto wird vor dem lokalen Speichern auf einen kleinen quadratischen
+   *  Ausschnitt verkleinert. So sprengt ein aktuelles Handyfoto nicht den
+   *  lokalen Speicher, und die Vorschau bleibt auch im Hallen-WLAN leicht. */
+  async function prepareProfilePhoto(file) {
+    const allowed = new Set(["image/jpeg", "image/png", "image/webp"]);
+    if (!allowed.has(file.type)) throw new Error("Bitte ein JPEG-, PNG- oder WebP-Bild auswählen.");
+    if (file.size > 5 * 1024 * 1024) throw new Error("Das Bild ist größer als 5 MB.");
+
+    const dataUrl = await readFileAsDataUrl(file);
+    const image = await new Promise((resolve, reject) => {
+      const node = new Image();
+      node.onload = () => resolve(node);
+      node.onerror = () => reject(new Error("Das Bild konnte nicht verarbeitet werden."));
+      node.src = dataUrl;
+    });
+    const canvas = document.createElement("canvas");
+    const kantenlaenge = 512;
+    const ausschnitt = Math.min(image.naturalWidth, image.naturalHeight);
+    canvas.width = kantenlaenge;
+    canvas.height = kantenlaenge;
+    const context = canvas.getContext("2d");
+    context.drawImage(
+      image,
+      (image.naturalWidth - ausschnitt) / 2,
+      (image.naturalHeight - ausschnitt) / 2,
+      ausschnitt,
+      ausschnitt,
+      0,
+      0,
+      kantenlaenge,
+      kantenlaenge
+    );
+    const webp = canvas.toDataURL("image/webp", .82);
+    return webp.startsWith("data:image/webp") ? webp : canvas.toDataURL("image/jpeg", .84);
+  }
+
+  function setProfileBusy(busy) {
+    el.profileForm.toggleAttribute("aria-busy", busy);
+    el.profileSubmit.disabled = busy || Boolean(profileIsValid());
+    el.profileSubmit.querySelector("span").textContent = busy
+      ? "Profil wird gespeichert"
+      : "Profil speichern & Campus starten";
   }
 
   /** Vollständige Angaben werden zur Zeile zusammengefaltet: Sie sind
@@ -1507,6 +1677,92 @@
 
   // ------------------------------------------------------------- Ereignisse --
 
+  [el.profileFirstName, el.profileLastName, el.profileCompany, el.profileNumber].forEach((input) => {
+    input.addEventListener("input", () => {
+      if (input === el.profileNumber) {
+        const cleaned = input.value.replace(/\D/g, "").slice(0, 5);
+        if (cleaned !== input.value) input.value = cleaned;
+      }
+      profileTouched.add(input.id);
+      profileIsValid();
+    });
+    input.addEventListener("blur", () => {
+      profileTouched.add(input.id);
+      profileIsValid();
+    });
+  });
+
+  el.profilePrivacy.addEventListener("change", () => {
+    profileTouched.add(el.profilePrivacy.id);
+    profileIsValid();
+  });
+
+  el.profileCameraButton.addEventListener("click", () => el.profileCamera.click());
+  el.profileUploadButton.addEventListener("click", () => el.profileUpload.click());
+
+  async function handleProfilePhoto(input) {
+    const file = input.files && input.files[0];
+    if (!file) return;
+    el.profilePhotoError.hidden = true;
+    el.profileCameraButton.disabled = true;
+    el.profileUploadButton.disabled = true;
+    try {
+      profilePhoto = await prepareProfilePhoto(file);
+      paintProfilePhoto();
+    } catch (error) {
+      el.profilePhotoError.textContent = error.message || "Das Bild konnte nicht verarbeitet werden.";
+      el.profilePhotoError.hidden = false;
+    } finally {
+      input.value = "";
+      el.profileCameraButton.disabled = false;
+      el.profileUploadButton.disabled = false;
+    }
+  }
+
+  el.profileCamera.addEventListener("change", () => handleProfilePhoto(el.profileCamera));
+  el.profileUpload.addEventListener("change", () => handleProfilePhoto(el.profileUpload));
+  el.profilePhotoRemove.addEventListener("click", () => {
+    profilePhoto = "";
+    el.profilePhotoError.hidden = true;
+    paintProfilePhoto();
+    el.profileCameraButton.focus();
+  });
+
+  el.profileForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const firstBad = profileIsValid({ showErrors: true });
+    if (firstBad) {
+      firstBad.focus();
+      return;
+    }
+
+    setProfileBusy(true);
+    el.profileSaveError.hidden = true;
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+
+    const saved = saveParticipant({
+      firstName: el.profileFirstName.value.trim(),
+      lastName: el.profileLastName.value.trim(),
+      name: `${el.profileFirstName.value.trim()} ${el.profileLastName.value.trim()}`,
+      dealer: el.profileCompany.value.trim(),
+      dealerNumber: el.profileNumber.value.trim(),
+      privacyAccepted: true,
+      profilePhoto
+    });
+
+    if (!saved) {
+      el.profileSaveError.textContent = "Das Profil konnte auf diesem Gerät nicht gespeichert werden. Bitte prüfe, ob der private Modus oder eine Speichersperre aktiv ist.";
+      el.profileSaveError.hidden = false;
+      setProfileBusy(false);
+      return;
+    }
+
+    el.chipParticipant.textContent = saved.name;
+    el.chipParticipant.hidden = false;
+    await route();
+    setProfileBusy(false);
+  });
+
   el.startForm.addEventListener("submit", (event) => {
     event.preventDefault();
 
@@ -1552,7 +1808,7 @@
   });
 
   el.btnEditParticipant.addEventListener("click", () => {
-    showParticipantForm(true);
+    renderOnboarding(loadParticipant());
   });
 
   el.btnNextIsland.addEventListener("click", () => {
@@ -1603,6 +1859,12 @@
   // ---------------------------------------------------------------- Start ---
 
   async function route() {
+    const participant = loadParticipant();
+    if (!participantComplete(participant)) {
+      renderOnboarding(participant);
+      return;
+    }
+
     // Einzel-Insel-Paket: enthält der Katalog nur eine Insel, gibt es nichts
     // auszuwählen — dann direkt dorthin, ohne Übersicht.
     const einzelinsel = state.catalog.inseln.length === 1;

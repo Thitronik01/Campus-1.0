@@ -7,8 +7,8 @@ Fertiges Netlify-Paket mit **allen 7 Schulungsinseln auf einer Site**.
 |---|---|
 | Inseln | 7 |
 | Fragen | 73 |
-| Bilder | 38 |
-| Feedbackbogen | 18 Dateien unter `/feedback` |
+| Bilder | 42 |
+| Feedbackbogen | 22 Dateien unter `/feedback` |
 
 > Nicht zu verwechseln mit `Campus Quiz/`. Das ist die **Quelle** und gehört
 > nicht hochgeladen: Dort liegen neben `public/` auch `FRAGENKATALOG.md` mit

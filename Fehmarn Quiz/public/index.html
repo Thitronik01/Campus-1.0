@@ -8,7 +8,7 @@
   <meta name="description" content="THITRONIK Campus — Wissenscheck FEHMARN: Fehlersuche & Support.">
   <meta name="robots" content="noindex, nofollow">
   <title>FEHMARN — Fehlersuche & Support · THITRONIK Campus</title>
-  <link rel="stylesheet" href="/assets/styles.css?v=1.3.1">
+  <link rel="stylesheet" href="/assets/styles.css?v=1.3.3">
 </head>
 <body>
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
@@ -42,6 +42,116 @@
     </header>
 
     <main id="main">
+
+      <!-- ==================== Verbindliche Profileinrichtung ==================== -->
+      <section class="screen onboarding" id="screen-onboarding" aria-labelledby="profile-title" hidden>
+        <div class="onboarding-layout">
+          <div class="onboarding-hero">
+            <picture class="onboarding-picture">
+              <source type="image/webp"
+                      srcset="/media/campus/firmensitz-640.webp?v=1.3.3 640w,
+                              /media/campus/firmensitz-1024.webp?v=1.3.3 1024w,
+                              /media/campus/firmensitz-1600.webp?v=1.3.3 1600w"
+                      sizes="(min-width: 1200px) 50vw, 100vw">
+              <img src="/media/campus/firmensitz-1600.jpg?v=1.3.3"
+                   alt="Luftaufnahme des THITRONIK-Firmensitzes in Eckernförde"
+                   width="1600" height="1198" fetchpriority="high">
+            </picture>
+            <div class="onboarding-hero-content">
+              <div class="onboarding-brand">
+                <span class="onboarding-logo-wrap">
+                  <img src="/assets/thitronik-logo.png"
+                       alt="THITRONIK, Alarmtechnik made in Germany"
+                       width="769" height="214">
+                </span>
+                <span class="onboarding-campus">CAMPUS 1.0</span>
+              </div>
+              <div class="onboarding-welcome">
+                <h1>Willkommen im<br>THITRONIK Campus</h1>
+                <p>Dein persönlicher Einstieg in Wissen, Produkte und Praxis.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="onboarding-panel">
+            <form class="profile-form" id="profile-form" novalidate>
+              <header class="profile-head">
+                <p class="profile-kicker">CAMPUS 1.0</p>
+                <h2 id="profile-title" tabindex="-1">Profil einrichten</h2>
+                <p>Damit wir deine Lernreise personalisieren können.</p>
+              </header>
+
+              <fieldset class="profile-photo-fieldset" aria-describedby="profile-photo-help profile-photo-error">
+                <legend>Profilfoto <span>optional</span></legend>
+                <div class="profile-photo-row">
+                  <div class="profile-photo-preview" id="profile-photo-preview">
+                    <img id="profile-photo-image" alt="Vorschau deines Profilfotos" hidden>
+                    <span id="profile-photo-placeholder">Foto</span>
+                  </div>
+                  <div class="profile-photo-controls">
+                    <div class="profile-photo-actions">
+                      <button class="profile-photo-button" id="profile-camera-button" type="button">Foto aufnehmen</button>
+                      <button class="profile-photo-button" id="profile-upload-button" type="button">Foto hochladen</button>
+                    </div>
+                    <button class="profile-photo-remove" id="profile-photo-remove" type="button" hidden>Foto entfernen</button>
+                    <p id="profile-photo-help">JPEG, PNG oder WebP, maximal 5 MB. Du kannst das Bild später ändern.</p>
+                    <p class="profile-error" id="profile-photo-error" role="alert" hidden></p>
+                  </div>
+                </div>
+                <input id="profile-camera" type="file" accept="image/jpeg,image/png,image/webp" capture="user" hidden>
+                <input id="profile-upload" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+              </fieldset>
+
+              <div class="profile-name-row">
+                <div class="profile-field">
+                  <label for="profile-first-name">Vorname <span aria-hidden="true">*</span></label>
+                  <input id="profile-first-name" name="firstName" type="text" autocomplete="given-name" minlength="2" enterkeyhint="next" required aria-describedby="profile-first-name-error">
+                  <p class="profile-error" id="profile-first-name-error" hidden>Bitte deinen Vornamen eingeben.</p>
+                </div>
+                <div class="profile-field">
+                  <label for="profile-last-name">Nachname <span aria-hidden="true">*</span></label>
+                  <input id="profile-last-name" name="lastName" type="text" autocomplete="family-name" minlength="2" enterkeyhint="next" required aria-describedby="profile-last-name-error">
+                  <p class="profile-error" id="profile-last-name-error" hidden>Bitte deinen Nachnamen eingeben.</p>
+                </div>
+              </div>
+
+              <div class="profile-field">
+                <label for="profile-company">Firma / Händlername <span aria-hidden="true">*</span></label>
+                <input id="profile-company" name="dealer" type="text" autocomplete="organization" minlength="2" enterkeyhint="next" required aria-describedby="profile-company-error">
+                <p class="profile-error" id="profile-company-error" hidden>Bitte deine Firma oder deinen Händlernamen eingeben.</p>
+              </div>
+
+              <div class="profile-field">
+                <label for="profile-number">Händlernummer <span aria-hidden="true">*</span></label>
+                <div class="profile-number-wrap">
+                  <input id="profile-number" name="dealerNumber" type="text" inputmode="numeric" autocomplete="off" maxlength="5" pattern="[0-9]{5}" enterkeyhint="done" required aria-describedby="profile-number-help profile-number-error">
+                  <span aria-hidden="true">5-stellig</span>
+                </div>
+                <p class="profile-help" id="profile-number-help">5-stellige Händlernummer</p>
+                <p class="profile-error" id="profile-number-error" hidden>Bitte 5 Ziffern eingeben.</p>
+              </div>
+
+              <div class="profile-consent">
+                <input id="profile-privacy" name="privacy" type="checkbox" required aria-describedby="profile-privacy-error">
+                <label for="profile-privacy">Ich habe die <a href="https://www.thitronik.de/datenschutz/" target="_blank" rel="noopener noreferrer">Datenschutzerklärung</a> gelesen und bestätige die Verarbeitung meiner Profildaten.</label>
+                <p class="profile-error" id="profile-privacy-error" hidden>Bitte bestätige die Datenschutzerklärung.</p>
+              </div>
+
+              <p class="profile-save-error" id="profile-save-error" role="alert" aria-live="assertive" hidden></p>
+              <button class="profile-submit" id="profile-submit" type="submit" disabled>
+                <span>Profil speichern &amp; Campus starten</span>
+                <span class="profile-submit-arrow" aria-hidden="true">→</span>
+              </button>
+
+              <nav class="profile-footer" aria-label="Rechtliches und Kontakt">
+                <a href="https://www.thitronik.de/kontakt/" target="_blank" rel="noopener noreferrer">Support &amp; Kontakt</a>
+                <a href="https://www.thitronik.de/datenschutz/" target="_blank" rel="noopener noreferrer">Datenschutz</a>
+                <a href="https://www.thitronik.de/impressum/" target="_blank" rel="noopener noreferrer">Impressum</a>
+              </nav>
+            </form>
+          </div>
+        </div>
+      </section>
 
       <!-- ==================== Inselübersicht ==================== -->
       <section class="screen" id="screen-islands" aria-labelledby="islands-title" hidden>
@@ -319,6 +429,6 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
-  <script src="/assets/engine.js?v=1.3.1" defer></script>
+  <script src="/assets/engine.js?v=1.3.3" defer></script>
 </body>
 </html>
