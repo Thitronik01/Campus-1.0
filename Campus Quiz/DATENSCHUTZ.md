@@ -15,9 +15,11 @@ was noch fehlt und wie ein Widerruf abgearbeitet wird.
 |---|---|
 | Rechtsgrundlage | **Einwilligung**, Art. 6 Abs. 1 lit. a DSGVO |
 | Erteilt | beim Anlegen des Profils, Ankreuzfeld `profile-privacy` |
+| Speicherdauer | **zwölf Monate**, danach Anonymisierung — entschieden am 3. September 2026 |
 | Verantwortlich | THITRONIK GmbH, Finkenweg 9–15, 24340 Eckernförde |
 | Kontakt | `datenschutz@thitronik.de` |
 | Aufsichtsbehörde | ULD Schleswig-Holstein, Kiel |
+| Wirkbetrieb | frühestens November 2026; der Campus soll in rund zwei Monaten spielbar sein |
 
 Die Einwilligung deckt Wissenscheck **und** Feedbackbogen ab; der Wortlaut des
 Ankreuzfeldes nennt beides. Vorher stand dort „Ich habe die
@@ -51,23 +53,52 @@ erreicht — Teilnehmer tippen dort Fahrzeug- und Kundenangaben ein.
 
 ---
 
+## Die Frist und wie sie durchgesetzt wird
+
+**Zwölf Monate**, entschieden am 3. September 2026. Ein Jahr nach der
+Einsendung fallen Name, Betrieb, Händlernummer und sämtliche Freitexte. Was
+bleibt, sind Kennzahlen ohne Personenbezug — Punktzahl, Bewertungen, Dauer,
+Insel, Tätigkeitsbereich.
+
+Die Zeile wird also nicht gelöscht, sondern geleert. Der Zweck der Erhebung ist
+die Schulungsplanung, und die lebt von Jahresvergleichen; eine gelöschte Zeile
+nimmt der Auswertung eine Insel, ohne dem Datenschutz mehr zu geben. Sobald
+Name, Betrieb, Händlernummer und Freitexte fort sind, ist niemand mehr
+erkennbar.
+
+**Die Freitexte gehen vollständig mit.** „Der Vortrag von Herrn X war zu
+schnell" ist ein Personenbezug, den kein Spaltenname verrät — selektiv säubern
+lässt sich das nicht.
+
+Durchgesetzt wird die Frist von
+[`supabase_campus_aufbewahrung_migration.sql`](supabase_campus_aufbewahrung_migration.sql):
+eine Spalte `anonymized_at` je Rohdatentabelle, die Funktion
+`public.campus_daten_anonymisieren()` und ein pg_cron-Job, der sie täglich um
+03:30 UTC aufruft. Die Funktion ist `security definer` mit festem `search_path`
+und für `anon` und `authenticated` gesperrt.
+
+`pg_cron` ist im Projekt verfügbar (1.6.4), aber noch **nicht aktiviert**. Die
+Migration legt die Erweiterung an; fehlt das Recht dazu, bricht sie nicht ab,
+sondern verlangt den Weg über **Database → Extensions** im Dashboard und einen
+zweiten Lauf. Nach dem Einspielen prüfen:
+
+```sql
+select jobid, jobname, schedule, active from cron.job
+ where jobname = 'campus-aufbewahrung';
+```
+
+Erwartet wird genau eine aktive Zeile. Kommt keine zurück, läuft die Frist
+nicht — dann ist der Hinweistext unter `/datenschutz/`, Abschnitt 6, ein
+Versprechen ohne Deckung.
+
+`tools/test-supabase-migration.js` prüft die Frist gegen den Text mit: Wer die
+zwölf Monate im SQL ändert, fällt durch, bis die Seite nachgezogen ist.
+
+---
+
 ## Offene Punkte
 
-### 1. Speicherdauer — blockiert den Wirkbetrieb
-
-Die Frist ist nicht festgelegt. Solange sie fehlt, steht im Hinweis unter
-Abschnitt 6 ein auffälliger Kasten (`.ds-offen`), und der Campus darf keine
-Daten im Wirkbetrieb erheben.
-
-Vorschlag zur Entscheidung: personenbezogene Felder nach **sechs Monaten**
-entfernen (`participant`, `dealer`, `dealer_number` sowie die Freitexte prüfen),
-Kennzahlen anonymisiert behalten. Das deckt die Nachbereitung des Schulungstags
-ab, ohne Namen ein Jahr lang mitzuführen.
-
-Ist die Frist entschieden: Kasten aus `index.html` entfernen, Frist eintragen,
-Fassung und Datum im Kopf der Seite hochzählen, hier nachtragen.
-
-### 2. Auftragsverarbeiter belegen
+### 1. Auftragsverarbeiter belegen
 
 Der Hinweis nennt Netlify, Supabase und Anymize. Was noch fehlt und nicht aus
 dem Code kommen kann:
@@ -81,7 +112,7 @@ dem Code kommen kann:
 Die Datenbank selbst liegt in der Region Frankfurt am Main — das ist im
 Supabase-Projekt festgelegt und in `SUPABASE-NEUAUFBAU.md` protokolliert.
 
-### 3. Die Einwilligung wird nicht nachweisbar gespeichert
+### 2. Die Einwilligung wird nicht nachweisbar gespeichert
 
 `privacyAccepted` steht im Profil im `localStorage` und geht **nicht** an den
 Server. Art. 7 Abs. 1 DSGVO verlangt aber, dass der Verantwortliche die
@@ -93,7 +124,7 @@ Hinweistextes, den der Teilnehmer gesehen hat. Beides liegt im Browser bereits
 vor; es müsste nur in den Payload und durch die annehmenden Functions
 durchgereicht werden. Eine eigene Migration, kein Nebenbei-Schritt.
 
-### 4. Der Feedbackbogen hat kein eigenes Ankreuzfeld
+### 3. Der Feedbackbogen hat kein eigenes Ankreuzfeld
 
 Im Gesamtpaket ist das gedeckt: Wer den Bogen unter `/feedback/` öffnet, hat
 das Profil samt Einwilligung bereits angelegt. Läuft der Bogen aber als eigene
@@ -113,15 +144,21 @@ nennt Name, Händlernummer und Schulungstag.
 1. Betroffene Zeilen suchen — im SQL-Editor des Supabase-Projekts:
 
 ```sql
+-- '12345' und '%Nachname%' durch die Angaben aus der Nachricht ersetzen.
+-- anonymized_at is null schliesst Zeilen aus, die nach zwoelf Monaten bereits
+-- geleert wurden — sie tragen die Platzhalter 'anonymisiert' und '00000' und
+-- saehen sonst wie ein Treffer aus.
 select id, created_at, participant, dealer, dealer_number
   from public.campus_quiz_submissions
- where dealer_number = '00000'
-   and participant ilike '%Nachname%';
+ where dealer_number = '12345'
+   and participant ilike '%Nachname%'
+   and anonymized_at is null;
 
 select id, created_at, participant_name, dealer_name, dealer_number
   from public.campus_feedback
- where dealer_number = '00000'
-   and participant_name ilike '%Nachname%';
+ where dealer_number = '12345'
+   and participant_name ilike '%Nachname%'
+   and anonymized_at is null;
 ```
 
 2. Ergebnis mit der widerrufenden Person abgleichen, bevor gelöscht wird. Eine
@@ -153,6 +190,8 @@ auf der Profilseite und im Campus-Menü.
 | Campus-Menü | `public/index.html`, `#menue-datenschutz` |
 | Seite selbst | `public/datenschutz/index.html` |
 | In jedes Paket kopiert | `tools/build-insel.js`, `kopiereDatenschutz()` |
+| Frist in der Datenbank | `supabase_campus_aufbewahrung_migration.sql` |
+| Frist wird mitgeprüft | `tools/test-supabase-migration.js` |
 | Cache-Regeln und Redirect | `tools/build-insel.js`, `datenschutzHeaders()` — **und die Wurzel-`netlify.toml`** |
 
 Die Seite wird mit `no-cache` ausgeliefert. Eine geänderte Frist oder ein

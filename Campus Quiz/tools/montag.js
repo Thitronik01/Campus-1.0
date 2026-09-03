@@ -296,13 +296,18 @@ console.log(`  ${gruen("Alles grün.")}`);
 // Die Datenbank ist bewusst der spätere Ausbauschritt. Bis dahin ist der
 // Netlify-Forms-Pilot ein Sicherheitsnetz; danach laufen Quiz und Feedback
 // automatisch über die geschützten Functions nach Supabase.
-const basisMigration = path.join(QUELLE, "supabase_campus_basis_migration.sql");
-const quizMigration = path.join(QUELLE, "supabase_campus_quiz_migration.sql");
-if (fs.existsSync(basisMigration) && fs.existsSync(quizMigration)) {
+const migrationen = [
+  "supabase_campus_basis_migration.sql",
+  "supabase_campus_quiz_migration.sql",
+  // Setzt die Aufbewahrungsfrist durch, die der Datenschutzhinweis zusagt.
+  // Ohne sie bleibt die Frist eine Behauptung — deshalb steht sie hier mit
+  // in der Reihenfolge und nicht in einer Fußnote.
+  "supabase_campus_aufbewahrung_migration.sql"
+].map((datei) => path.join(QUELLE, datei));
+if (migrationen.every((datei) => fs.existsSync(datei))) {
   console.log(`\n  ${gruen("Pilotbereit:")} Quiz und Feedback nutzen bis Supabase das Forms-Sicherheitsnetz.`);
   console.log(grau("         Neuaufbau für das leere Campus-Projekt, in dieser Reihenfolge:"));
-  console.log(grau(`         → ${path.relative(PROJEKT, basisMigration)}`));
-  console.log(grau(`         → ${path.relative(PROJEKT, quizMigration)}`));
+  migrationen.forEach((datei) => console.log(grau(`         → ${path.relative(PROJEKT, datei)}`)));
   console.log(grau("         → Campus Quiz\\SUPABASE-NEUAUFBAU.md"));
 }
 

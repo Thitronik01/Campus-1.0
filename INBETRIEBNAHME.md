@@ -19,13 +19,15 @@ Punkte dazu sind offen und stehen ausführlich in [`BACKLOG.md`](BACKLOG.md):
 
 | | Stand 3. September 2026 |
 |---|---|
-| **Datenschutzhinweis** | Umgesetzt bis auf einen Punkt. Der Hinweis steht unter `/datenschutz/`, die Einwilligung nach Art. 6 Abs. 1 lit. a wird beim Anlegen des Profils eingeholt. **Die Speicherdauer fehlt noch** und muss von der Datenschutzverantwortlichen kommen — bis dahin darf der Campus keine Daten im Wirkbetrieb erheben. Siehe [`Campus Quiz/DATENSCHUTZ.md`](Campus%20Quiz/DATENSCHUTZ.md). |
+| **Datenschutzhinweis** | Umgesetzt. Der Hinweis steht unter `/datenschutz/`, die Einwilligung nach Art. 6 Abs. 1 lit. a wird beim Anlegen des Profils eingeholt, die Speicherdauer beträgt zwölf Monate. **Vor dem Scharfschalten fehlt noch ein Schritt:** `Campus Quiz/supabase_campus_aufbewahrung_migration.sql` einspielen und prüfen, dass der pg_cron-Job `campus-aufbewahrung` aktiv ist — sonst läuft die Frist nicht. Siehe [`Campus Quiz/DATENSCHUTZ.md`](Campus%20Quiz/DATENSCHUTZ.md). |
 | **Löschweg** | Umgesetzt mit Pull Request #92. Der Knopf „Lokale Campusdaten löschen" räumt Profil, Inselstand und Ausgang von diesem Gerät. Der serverseitige Weg nach einem Widerruf ist in `DATENSCHUTZ.md` beschrieben, aber Handarbeit im SQL-Editor. |
 | **Bremse an den Annahme-Functions** | Umgesetzt mit Pull Request #91: Herkunftsprüfung und Ratenbegrenzung in `netlify/functions/campus-schutz.js`. |
 
-Von den drei Punkten hindert nur noch die fehlende Speicherdauer am
-Scharfschalten — und zwar nicht technisch, sondern weil ohne sie kein
-vollständiger Hinweis nach Art. 13 DSGVO möglich ist.
+Alle drei Punkte sind entschieden. Offen ist nur noch die Handarbeit im
+Supabase-Dashboard: die Aufbewahrungs-Migration einspielen. Der Campus soll
+frühestens im November 2026 spielbar sein — bis dahin bleibt Zeit für die
+Belege zu den Auftragsverarbeitern und den Nachweis der Einwilligung, beide in
+`DATENSCHUTZ.md` beschrieben.
 
 ---
 

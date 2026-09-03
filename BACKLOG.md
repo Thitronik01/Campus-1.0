@@ -168,14 +168,16 @@ geschrieben, dass er ohne Rückfrage zum Issue werden kann;
 > **Stand 3. September 2026 — grösstenteils erledigt.** Der Hinweis steht unter
 > `/datenschutz/` und ist aus Ankreuzfeld, Fusszeile und Campus-Menü verlinkt;
 > das Ankreuzfeld ist von einer Kenntnisnahme zu einer widerruflichen
-> Einwilligung nach Art. 6 Abs. 1 lit. a umformuliert. **Offen bleiben vier
-> Punkte**, alle in
+> Einwilligung nach Art. 6 Abs. 1 lit. a umformuliert. Die Speicherdauer ist
+> auf **zwölf Monate** entschieden und wird nicht nur genannt, sondern
+> durchgesetzt: `supabase_campus_aufbewahrung_migration.sql` legt die
+> Aufräumroutine und den täglichen pg_cron-Job an — sie muss noch von Hand
+> eingespielt werden. **Offen bleiben drei Punkte**, alle in
 > [`Campus Quiz/DATENSCHUTZ.md`](Campus%20Quiz/DATENSCHUTZ.md) beschrieben:
-> die Speicherdauer samt Durchsetzung in der Datenbank, die Belege zu den
-> Auftragsverarbeitern, der fehlende Nachweis der Einwilligung
-> (`privacyAccepted` bleibt im Browser) und das fehlende Ankreuzfeld im
-> einzeln betriebenen Feedbackbogen. Der Befund unten beschreibt den
-> Ausgangszustand.
+> die Belege zu den Auftragsverarbeitern, der fehlende Nachweis der
+> Einwilligung (`privacyAccepted` bleibt im Browser) und das fehlende
+> Ankreuzfeld im einzeln betriebenen Feedbackbogen. Der Befund unten
+> beschreibt den Ausgangszustand.
 
 **Schwere:** hoch · **Bereich:** sicherheit · **Ort:** `Campus Quiz/public/index.html:245, 396-399`
 
