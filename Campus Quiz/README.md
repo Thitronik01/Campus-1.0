@@ -25,8 +25,8 @@ gebaut wurde.
 | `tools/bilder-aufbereiten.js` | Rechnet Bilder auf WebP unter 150 KB um |
 | `tools/karten-assets.js` | Macht aus dem Asset-Pack die Motive der Expeditionskarte |
 | `netlify/functions/submit-quiz.js` | Bewertet serverseitig; schreibt nach Supabase oder gibt den geprüften Netlify-Forms-Ausweichweg frei |
-| `supabase_campus_basis_migration.sql` | Vollständige Feedbackbasis für das neue, leere Campus-Projekt. **Noch nicht eingespielt.** |
-| `supabase_campus_quiz_migration.sql` | Quiztabelle und gemeinsame Auswertungs-Views. Läuft nach der Basismigration. **Noch nicht eingespielt.** |
+| `supabase_campus_basis_migration.sql` | Vollständige Feedbackbasis für das neue, leere Campus-Projekt. Am 03.09.2026 eingespielt und geprüft. |
+| `supabase_campus_quiz_migration.sql` | Quiztabelle und gemeinsame Auswertungs-Views. Am 03.09.2026 nach der Basismigration eingespielt und geprüft. |
 | `SUPABASE-NEUAUFBAU.md` | Verbindlicher Klick-, Prüf- und Betriebsablauf für das neue Supabase-Projekt |
 | `tools/build-insel.js` | **Baut je Insel einen fertigen Netlify-Ordner.** Siehe unten. |
 | `tools/check-fragen.js` | Prüft die Fragensätze. Vor jedem Deploy laufen lassen. |

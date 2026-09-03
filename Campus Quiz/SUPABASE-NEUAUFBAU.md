@@ -250,8 +250,10 @@ Freigabe mit „ja“.
 | 03.09.2026 | Neuaufbau statt historischer v11-/v14-Kette beschlossen | Basismigration im Repository vorbereitet |
 | 03.09.2026 | Basismigration im SQL-Editor | erfolgreich; zwei Tabellen mit RLS, keine öffentlichen Rechte, Feedback-View mit `security_invoker=on` |
 | 03.09.2026 | Erster Lauf der Quizmigration | PostgreSQL `42809` an Zeile 205; `FILTER` war außerhalb von `avg(...)` geklammert; im Repository korrigiert |
-| offen | Quizmigration im SQL-Editor | noch nicht ausgeführt |
-| offen | Rechte und Views geprüft | noch nicht ausgeführt |
+| 03.09.2026 | Korrigierte Quizmigration im SQL-Editor | erfolgreich; Quiztabelle und vier Quiz-Views angelegt |
+| 03.09.2026 | RLS und Rollenrechte geprüft | RLS auf allen drei Rohdatentabellen aktiv; keine Tabellenrechte für `anon` oder `authenticated` |
+| 03.09.2026 | Eigenschaften der Auswertungs-Views geprüft | alle fünf Views mit `security_invoker=on` |
+| 03.09.2026 | Leere Startbestände geprüft | Feedback `0`, Bewertungen `0`, Quiz `0` |
 | offen | Codehärtung und Deploy Preview | noch nicht ausgeführt |
 | offen | bewusster Produktivtest | noch nicht ausgeführt |
 | offen | Langdock-Endpunkte und neue Verbindungen | noch nicht ausgeführt |
