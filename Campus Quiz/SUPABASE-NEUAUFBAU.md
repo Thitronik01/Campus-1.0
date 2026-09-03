@@ -255,6 +255,7 @@ Freigabe mit „ja“.
 | 03.09.2026 | Eigenschaften der Auswertungs-Views geprüft | alle fünf Views mit `security_invoker=on` |
 | 03.09.2026 | Leere Startbestände geprüft | Feedback `0`, Bewertungen `0`, Quiz `0` |
 | 03.09.2026 | Herkunftsprüfung und Ratenbegrenzung | für Quiz und Feedback lokal geprüft; fehlender oder fremder `Origin` ergibt 403, überschrittenes Zeitfenster 429 |
+| 03.09.2026 | Lokaler Löschweg | entfernt nach Bestätigung Profil, Inselfortschritt und Sende-Ausgang; Serverdaten, Arbeitskarten und THI-Verlauf bleiben getrennt |
 | offen | Deploy Preview der gehärteten Schreibfunktionen | noch nicht geprüft |
 | offen | bewusster Produktivtest | noch nicht ausgeführt |
 | offen | Langdock-Endpunkte und neue Verbindungen | noch nicht ausgeführt |

@@ -8,8 +8,8 @@
   <meta name="description" content="THITRONIK Campus: Wissenscheck nach jeder Schulungsinsel.">
   <meta name="robots" content="noindex, nofollow">
   <title>THITRONIK Campus: Wissenscheck</title>
-  <link rel="stylesheet" href="/assets/styles.css?v=1.36.0">
-  <link rel="stylesheet" href="/assets/thi.css?v=1.36.0">
+  <link rel="stylesheet" href="/assets/styles.css?v=1.37.0">
+  <link rel="stylesheet" href="/assets/thi.css?v=1.37.0">
 </head>
 <body>
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
@@ -93,11 +93,11 @@
           <div class="onboarding-hero">
             <picture class="onboarding-picture">
               <source type="image/webp"
-                      srcset="/media/campus/firmensitz-640.webp?v=1.36.0 640w,
-                              /media/campus/firmensitz-1024.webp?v=1.36.0 1024w,
-                              /media/campus/firmensitz-1600.webp?v=1.36.0 1600w"
+                      srcset="/media/campus/firmensitz-640.webp?v=1.37.0 640w,
+                              /media/campus/firmensitz-1024.webp?v=1.37.0 1024w,
+                              /media/campus/firmensitz-1600.webp?v=1.37.0 1600w"
                       sizes="(min-width: 1200px) 50vw, 100vw">
-              <img src="/media/campus/firmensitz-1600.jpg?v=1.36.0"
+              <img src="/media/campus/firmensitz-1600.jpg?v=1.37.0"
                    alt="Luftaufnahme des THITRONIK-Firmensitzes in Eckernförde"
                    width="1600" height="1198" fetchpriority="high">
             </picture>
@@ -192,6 +192,8 @@
                 <a href="https://www.thitronik.de/datenschutz/" target="_blank" rel="noopener noreferrer">Datenschutz</a>
                 <a href="https://www.thitronik.de/impressum/" target="_blank" rel="noopener noreferrer">Impressum</a>
               </nav>
+              <button class="profile-data-delete" type="button"
+                      data-campusdaten-loeschen hidden>Lokale Campusdaten löschen</button>
             </form>
           </div>
         </div>
@@ -731,6 +733,8 @@
 
     <footer class="colophon">
       <span>THITRONIK Campus 2026</span>
+      <button class="colophon-loeschen" type="button"
+              data-campusdaten-loeschen hidden>Lokale Daten löschen</button>
       <span id="colophon-version"></span>
     </footer>
   </div>
@@ -756,8 +760,8 @@
     <button class="btn btn-secondary lightbox-close" id="lightbox-close" type="button" autofocus>Schließen</button>
   </dialog>
 
-  <!-- Campus-Menue fuer Telefon und Tablet hochkant: dieselben drei
-       Werkzeuge, die ab Desktopbreite als Knoepfe im Kopf stehen. Ein
+  <!-- Campus-Menue fuer Telefon und Tablet hochkant: die drei Werkzeuge aus
+       dem Kopf sowie der lokale Loeschweg. Ein
        <dialog> wie der Inselbogen — Fokusfalle, Escape und der Verschluss
        beim Klick daneben kommen vom Browser. -->
   <dialog class="menue-dialog" id="menue-dialog" aria-labelledby="menue-titel">
@@ -778,7 +782,26 @@
         <span class="ka-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="3" r="1.2"></circle><path d="M12 4.4V6.6"></path><rect x="3.8" y="6.6" width="16.4" height="12.6" rx="4.2"></rect><path d="M2 11.6v3M22 11.6v3"></path><path d="M9.2 11.3v1.7M14.8 11.3v1.7"></path><path d="M9.6 16q2.4 1.5 4.8 0"></path></svg></span>
         <span>THI fragen</span>
       </button>
+      <button class="menue-punkt menue-punkt-gefahr" type="button"
+              data-campusdaten-loeschen hidden>
+        <span class="ka-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"></path></svg></span>
+        <span>Lokale Daten löschen</span>
+      </button>
     </nav>
+  </dialog>
+
+  <dialog class="confirm-dialog" id="daten-loeschen-dialog"
+          aria-labelledby="daten-loeschen-titel">
+    <form method="dialog" class="confirm-dialog-card">
+      <h2 id="daten-loeschen-titel">Lokale Campusdaten löschen?</h2>
+      <p>Profil, Inselfortschritt und noch nicht übertragene Quizergebnisse
+        werden von diesem Gerät entfernt. Bereits an den Server übermittelte
+        Einsendungen sowie Arbeitskarten und THI-Gespräche bleiben erhalten.</p>
+      <div class="confirm-dialog-actions">
+        <button class="btn btn-secondary" type="submit" value="cancel" autofocus>Abbrechen</button>
+        <button class="btn btn-danger" type="submit" value="delete">Daten löschen</button>
+      </div>
+    </form>
   </dialog>
 
   <div class="toast" id="toast" hidden></div>
@@ -797,10 +820,10 @@
     <input name="score"><input name="total"><input name="percent"><input name="answers_json">
   </form>
 
-  <script src="/assets/engine.js?v=1.36.0" defer></script>
+  <script src="/assets/engine.js?v=1.37.0" defer></script>
   <!-- THI haengt seinen Schalter selbst in .masthead-tools ein und baut sein
        Panel an den Seitenkoerper. Faellt das Skript aus, fehlt nur THI —
        Kopfzeile und Quiz bleiben unberuehrt. -->
-  <script src="/assets/thi.js?v=1.36.0" defer></script>
+  <script src="/assets/thi.js?v=1.37.0" defer></script>
 </body>
 </html>
