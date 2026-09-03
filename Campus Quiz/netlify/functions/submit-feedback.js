@@ -17,6 +17,7 @@ const MAX_BODY_BYTES = 120_000;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const OVERALL = new Set(["Sehr zufrieden", "Zufrieden", "Teils/teils", "Eher unzufrieden", "Unzufrieden"]);
 const RECOMMENDATIONS = new Set(["Ja, auf jeden Fall", "Eher ja", "Eher nein", "Nein"]);
+const { schreibschutz } = require("./campus-schutz.js");
 
 function jsonResponse(statusCode, body) {
   return {
@@ -151,6 +152,10 @@ exports.handler = async function handler(event) {
   if (event.httpMethod !== "POST") {
     return jsonResponse(405, { error: "Nur POST ist erlaubt." });
   }
+
+  const abgewiesen = schreibschutz(event, jsonResponse);
+  if (abgewiesen) return abgewiesen;
+
   if (!event.body || Buffer.byteLength(event.body, "utf8") > MAX_BODY_BYTES) {
     return jsonResponse(413, { error: "Anfrage ist leer oder zu groß." });
   }
@@ -217,4 +222,3 @@ exports.handler = async function handler(event) {
     });
   }
 };
-

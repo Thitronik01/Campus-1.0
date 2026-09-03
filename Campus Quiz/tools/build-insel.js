@@ -496,6 +496,8 @@ function baue(slug) {
     `const ISLANDS = {\n  ${slug}: require("../../public/data/inseln/${slug}.json")\n};`
   );
   schreib(path.join(ziel, "netlify", "functions", "submit-quiz.js"), fn);
+  kopiere(path.join(WURZEL, "netlify", "functions", "campus-schutz.js"),
+    path.join(ziel, "netlify", "functions", "campus-schutz.js"));
 
   // --- THI ----------------------------------------------------------------
   const thiDateien = kopiereThi(oeff, ziel);
@@ -601,6 +603,8 @@ function baueGesamt() {
     path.join(ziel, "netlify", "functions", "submit-quiz.js"));
   kopiere(path.join(WURZEL, "netlify", "functions", "submit-feedback.js"),
     path.join(ziel, "netlify", "functions", "submit-feedback.js"));
+  kopiere(path.join(WURZEL, "netlify", "functions", "campus-schutz.js"),
+    path.join(ziel, "netlify", "functions", "campus-schutz.js"));
 
   // --- THI ----------------------------------------------------------------
   const thiDateien = kopiereThi(oeff, ziel);

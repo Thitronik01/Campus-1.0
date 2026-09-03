@@ -1009,6 +1009,22 @@ das selbst.
 Die Variablen werden erst nach der vereinbarten Codehärtung gesetzt. Bis dahin
 bleibt das neue Projekt leer und Netlify nutzt sein Forms-Sicherheitsnetz.
 
+### Schutz der Schreibfunktionen
+
+`submit-quiz` und `submit-feedback` akzeptieren nur `POST`-Anfragen, deren
+`Origin` zur aufgerufenen Campus-Domain passt. Ein fehlender oder fremder
+`Origin` endet mit HTTP 403, bevor der Inhalt verarbeitet wird. Damit bleiben
+auch Deploy-Previews und der lokale Server nutzbar, weil nicht eine einzelne
+Domain fest verdrahtet ist, sondern immer die jeweilige eigene Domain zählt.
+
+Zusätzlich sind je Function-Instanz standardmäßig 30 Anfragen pro IP-Adresse
+in fünf Minuten und 1000 Anfragen pro Tag erlaubt. Bei Überschreitung folgt
+HTTP 429. Die optionalen Netlify-Variablen `CAMPUS_WRITE_RATE_LIMIT`,
+`CAMPUS_WRITE_DAILY_LIMIT` und `CAMPUS_TRUSTED_PROXIES` ändern diese Werte.
+Die Speicherzähler sind eine Missbrauchsbremse, keine exakte globale Grenze:
+Netlify kann mehrere Function-Instanzen parallel betreiben. Auch `Origin` ist
+keine Anmeldung und lässt sich außerhalb eines Browsers nachbilden.
+
 ### Auswertungs-Views
 
 | View | Beantwortet |

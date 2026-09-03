@@ -120,7 +120,15 @@ function bauen(modus, aenderungen = {}) {
 
 async function ruf(payload) {
   cap = null;
-  const r = await handler({ httpMethod: "POST", body: JSON.stringify(payload) });
+  const r = await handler({
+    httpMethod: "POST",
+    body: JSON.stringify(payload),
+    headers: {
+      host: "beispiel.invalid",
+      origin: "https://beispiel.invalid",
+      "x-forwarded-for": "203.0.113.80"
+    }
+  });
   return { status: r.statusCode, body: JSON.parse(r.body), gespeichert: cap };
 }
 
@@ -262,6 +270,8 @@ async function ruf(payload) {
   if (katalog.feedback) {
     pruefe("Feedback-Function ist im Gesamtpaket enthalten",
       fs.existsSync(path.join(paket, "netlify", "functions", "submit-feedback.js")));
+    pruefe("Gemeinsamer Function-Schutz ist im Gesamtpaket enthalten",
+      fs.existsSync(path.join(paket, "netlify", "functions", "campus-schutz.js")));
     const feedbackDatei = path.join(paket, "public", "feedback", "index.html");
     pruefe("Feedbackbogen ist im Gesamtpaket enthalten", fs.existsSync(feedbackDatei));
     if (fs.existsSync(feedbackDatei)) {
