@@ -9,6 +9,8 @@
 
 process.env.SUPABASE_URL = "https://beispiel.invalid";
 process.env.SUPABASE_SECRET_KEY = "sb_secret_test";
+process.env.CAMPUS_WRITE_RATE_LIMIT = "3";
+process.env.CAMPUS_WRITE_DAILY_LIMIT = "10000";
 
 const fs = require("fs");
 const path = require("path");
@@ -54,9 +56,23 @@ function check(name, condition, detail) {
   else { console.error(`  FEHLT ${name}${detail ? " — " + detail : ""}`); failed++; }
 }
 
-async function call(payload) {
+let testIp = 1;
+
+function browserHeaders(ip = `203.0.113.${testIp++}`) {
+  return {
+    host: "beispiel.invalid",
+    origin: "https://beispiel.invalid",
+    "x-forwarded-for": ip
+  };
+}
+
+async function call(payload, eventOverrides = {}) {
   captured = null;
-  const response = await handler({ httpMethod: "POST", body: JSON.stringify(payload) });
+  const response = await handler(Object.assign({
+    httpMethod: "POST",
+    body: JSON.stringify(payload),
+    headers: browserHeaders()
+  }, eventOverrides));
   return { status: response.statusCode, body: JSON.parse(response.body), gespeichert: captured };
 }
 
@@ -190,11 +206,30 @@ function buildPayload(mode, overrides = {}) {
   r = await handler({ httpMethod: "GET" });
   check("GET → 405", r.statusCode === 405);
 
-  r = await handler({ httpMethod: "POST", body: "" });
+  r = await handler({ httpMethod: "POST", body: "", headers: browserHeaders() });
   check("Leerer Body → 413", r.statusCode === 413);
 
-  r = await handler({ httpMethod: "POST", body: "kein json" });
+  r = await handler({ httpMethod: "POST", body: "kein json", headers: browserHeaders() });
   check("Kaputtes JSON → 400", r.statusCode === 400);
+
+  console.log("\nHerkunft und Ratenbegrenzung\n");
+
+  r = await call(buildPayload("richtig"), { headers: { host: "beispiel.invalid" } });
+  check("Fehlender Origin → 403", r.status === 403 && r.body.code === "INVALID_ORIGIN");
+
+  r = await call(buildPayload("richtig"), {
+    headers: { host: "beispiel.invalid", origin: "https://fremd.invalid" }
+  });
+  check("Fremder Origin → 403", r.status === 403 && r.body.code === "INVALID_ORIGIN");
+
+  const rateIp = "198.51.100.40";
+  for (let index = 0; index < 3; index++) {
+    r = await call(buildPayload("richtig"), { headers: browserHeaders(rateIp) });
+  }
+  check("Drei Einsendungen im Zeitfenster erlaubt", r.status === 201, `Status ${r.status}`);
+  r = await call(buildPayload("richtig"), { headers: browserHeaders(rateIp) });
+  check("Vierte Einsendung im Zeitfenster → 429",
+    r.status === 429 && r.body.code === "RATE_LIMIT", JSON.stringify(r.body));
 
   console.log("\nPilotbetrieb ohne Datenbank\n");
   const urlVorher = process.env.SUPABASE_URL;

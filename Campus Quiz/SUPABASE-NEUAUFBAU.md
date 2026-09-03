@@ -254,6 +254,7 @@ Freigabe mit „ja“.
 | 03.09.2026 | RLS und Rollenrechte geprüft | RLS auf allen drei Rohdatentabellen aktiv; keine Tabellenrechte für `anon` oder `authenticated` |
 | 03.09.2026 | Eigenschaften der Auswertungs-Views geprüft | alle fünf Views mit `security_invoker=on` |
 | 03.09.2026 | Leere Startbestände geprüft | Feedback `0`, Bewertungen `0`, Quiz `0` |
-| offen | Codehärtung und Deploy Preview | noch nicht ausgeführt |
+| 03.09.2026 | Herkunftsprüfung und Ratenbegrenzung | für Quiz und Feedback lokal geprüft; fehlender oder fremder `Origin` ergibt 403, überschrittenes Zeitfenster 429 |
+| offen | Deploy Preview der gehärteten Schreibfunktionen | noch nicht geprüft |
 | offen | bewusster Produktivtest | noch nicht ausgeführt |
 | offen | Langdock-Endpunkte und neue Verbindungen | noch nicht ausgeführt |

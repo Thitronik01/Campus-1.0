@@ -26,6 +26,7 @@ const EVENT_SLUG = "campus-2026";
 const TABLE = "campus_quiz_submissions";
 const MAX_BODY_BYTES = 120_000;
 const AREAS = ["", "verkauf", "werkstatt", "verkauf-werkstatt", "leitung", "sonstiges"];
+const { schreibschutz } = require("./campus-schutz.js");
 
 // ------------------------------------------------------------------ Helfer --
 
@@ -244,6 +245,9 @@ exports.handler = async function handler(event) {
   if (event.httpMethod !== "POST") {
     return jsonResponse(405, { error: "Nur POST ist erlaubt." });
   }
+
+  const abgewiesen = schreibschutz(event, jsonResponse);
+  if (abgewiesen) return abgewiesen;
 
   if (!event.body || Buffer.byteLength(event.body, "utf8") > MAX_BODY_BYTES) {
     return jsonResponse(413, { error: "Anfrage ist leer oder zu groß." });

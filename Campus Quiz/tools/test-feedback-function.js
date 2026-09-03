@@ -6,6 +6,8 @@ const path = require("path");
 
 process.env.SUPABASE_URL = "https://beispiel.supabase.co";
 process.env.SUPABASE_SECRET_KEY = "sb_secret_test";
+process.env.CAMPUS_WRITE_RATE_LIMIT = "3";
+process.env.CAMPUS_WRITE_DAILY_LIMIT = "10000";
 
 let captured = null;
 let nextResponse = { ok: true, status: 200, text: '"f8bd9888-3a5a-4df6-8d93-10aefb6131ac"' };
@@ -62,9 +64,23 @@ function payload(changes = {}) {
   }, changes);
 }
 
-async function call(body, method = "POST") {
+let testIp = 1;
+
+function browserHeaders(ip = `203.0.114.${testIp++}`) {
+  return {
+    host: "beispiel.supabase.co",
+    origin: "https://beispiel.supabase.co",
+    "x-forwarded-for": ip
+  };
+}
+
+async function call(body, method = "POST", eventOverrides = {}) {
   captured = null;
-  const response = await handler({ httpMethod: method, body: body === undefined ? undefined : JSON.stringify(body) });
+  const response = await handler(Object.assign({
+    httpMethod: method,
+    body: body === undefined ? undefined : JSON.stringify(body),
+    headers: browserHeaders()
+  }, eventOverrides));
   return { status: response.statusCode, body: JSON.parse(response.body), captured };
 }
 
@@ -111,7 +127,27 @@ async function call(body, method = "POST") {
   result = await call(undefined, "GET");
   pruefe("GET → 405", result.status === 405, `${result.status}`);
 
+  console.log("\nHerkunft und Ratenbegrenzung\n");
+
+  result = await call(payload(), "POST", { headers: { host: "beispiel.supabase.co" } });
+  pruefe("Fehlender Origin → 403",
+    result.status === 403 && result.body.code === "INVALID_ORIGIN", JSON.stringify(result.body));
+
+  result = await call(payload(), "POST", {
+    headers: { host: "beispiel.supabase.co", origin: "https://fremd.invalid" }
+  });
+  pruefe("Fremder Origin → 403",
+    result.status === 403 && result.body.code === "INVALID_ORIGIN", JSON.stringify(result.body));
+
+  const rateIp = "198.51.100.41";
+  for (let index = 0; index < 3; index++) {
+    result = await call(payload(), "POST", { headers: browserHeaders(rateIp) });
+  }
+  pruefe("Drei Einsendungen im Zeitfenster erlaubt", result.status === 201, `${result.status}`);
+  result = await call(payload(), "POST", { headers: browserHeaders(rateIp) });
+  pruefe("Vierte Einsendung im Zeitfenster → 429",
+    result.status === 429 && result.body.code === "RATE_LIMIT", JSON.stringify(result.body));
+
   console.log(`\n${bestanden} bestanden, ${durchgefallen} fehlgeschlagen.`);
   process.exit(durchgefallen ? 1 : 0);
 })();
-

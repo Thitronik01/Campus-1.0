@@ -32,8 +32,10 @@ neu aufgebaut; ihre alten Schlüssel werden nicht übernommen.
 
 Beide Datenbankmigrationen sind am 3. September 2026 im neuen Projekt
 eingespielt und anhand von RLS, Rollenrechten, View-Eigenschaften und leeren
-Startbeständen geprüft worden. Noch nicht durchgeführt sind die Codehärtung,
-Langdock-Endpunkte oder produktive Schlüsseländerungen.
+Startbeständen geprüft worden. Herkunftsprüfung und Ratenbegrenzung der beiden
+Schreibfunktionen sind umgesetzt und lokal geprüft. Noch nicht durchgeführt
+sind Datenschutzhinweis, lokaler Löschweg, Langdock-Endpunkte oder produktive
+Schlüsseländerungen.
 
 ## Empfohlene Architektur
 
