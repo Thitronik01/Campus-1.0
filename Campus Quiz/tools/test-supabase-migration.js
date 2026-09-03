@@ -19,7 +19,17 @@ const FRIST = fs.readFileSync(
   path.join(__dirname, "..", "supabase_campus_aufbewahrung_migration.sql"),
   "utf8"
 );
-const BEIDE = `${BASIS}\n${QUIZ}\n${FRIST}`;
+const AUSWERTUNG = fs.readFileSync(
+  path.join(__dirname, "..", "supabase_campus_auswertung_migration.sql"),
+  "utf8"
+);
+/* Die Edge Function ist kein SQL, gehört aber zur selben Kette: Sie ist das
+   einzige Tor, durch das Langdock an die Auswertung kommt. */
+const ENDPUNKT = fs.readFileSync(
+  path.join(__dirname, "..", "supabase", "functions", "campus-auswertung", "index.ts"),
+  "utf8"
+);
+const BEIDE = `${BASIS}\n${QUIZ}\n${FRIST}\n${AUSWERTUNG}`;
 
 let bestanden = 0;
 let durchgefallen = 0;
@@ -101,6 +111,36 @@ pruefe("Anonymisierung raeumt auch raw_payload und die Freitexte",
   && ["recommendation_reason", "topic_wishes", "team_mood",
       "improvement_suggestions", "positive_aspects", "additional_notes"]
        .every((feld) => new RegExp(`${feld}\\s*=\\s*null`, "i").test(FRIST)));
+
+/* Auswertung für Langdock. Der Endpunkt ist die einzige Stelle, an der Daten
+   das Projekt in Richtung eines Sprachmodells verlassen — hier zaehlt jede
+   Zusage aus dem Integrationsplan doppelt. */
+pruefe("Auswertung laeuft als Security Definer mit festem search_path",
+  hat(/create\s+or\s+replace\s+function\s+public\.campus_auswertung\([\s\S]*?security\s+definer[\s\S]*?set\s+search_path\s*=\s*public,\s*pg_temp/i, AUSWERTUNG));
+pruefe("Auswertung ist nur fuer service_role ausfuehrbar",
+  hat(/revoke\s+execute\s+on\s+function\s+public\.campus_auswertung\(date,\s*date,\s*text\)[\s\S]*?from\s+public,\s*anon,\s*authenticated/i, AUSWERTUNG)
+  && hat(/grant\s+execute\s+on\s+function\s+public\.campus_auswertung\(date,\s*date,\s*text\)[\s\S]*?to\s+service_role/i, AUSWERTUNG));
+/* Als Parameter liesse sich die Mindestmenge von aussen auf 1 setzen und der
+   Schutz kleiner Gruppen damit abschalten. */
+pruefe("Mindestmenge steht als Konstante, nicht als Parameter",
+  hat(/mindestmenge\s+constant\s+integer\s*:=\s*[1-9]/i, AUSWERTUNG)
+  && !/mindestmenge\s+integer\s+default/i.test(AUSWERTUNG));
+pruefe("Tagesgrenzen liegen in Europe/Berlin, nicht in UTC",
+  (AUSWERTUNG.match(/at time zone 'Europe\/Berlin'/gi) || []).length >= 3);
+pruefe("Auswertung gibt keine Personenfelder heraus",
+  !/'participant'|'dealer'|'dealer_number'|'session_id'|'page_url'/i.test(AUSWERTUNG));
+
+pruefe("Langdock-Endpunkt verlangt ein eigenes Bearer-Token",
+  /CAMPUS_AUSWERTUNG_TOKEN/.test(ENDPUNKT)
+  && /Bearer /.test(ENDPUNKT)
+  && /401/.test(ENDPUNKT));
+/* Der Endpunkt darf ausschliesslich die aggregierende Funktion aufrufen. Ein
+   Pfad auf /rest/v1/campus_... waere ein Fenster zu den Rohdaten. */
+pruefe("Langdock-Endpunkt spricht nur die Auswertungsfunktion an",
+  /\/rest\/v1\/rpc\/campus_auswertung/.test(ENDPUNKT)
+  && !/\/rest\/v1\/campus_/.test(ENDPUNKT));
+pruefe("Langdock-Endpunkt prueft das Token in konstanter Zeit",
+  /function\s+gleich\s*\(/.test(ENDPUNKT) && /\^/.test(ENDPUNKT));
 
 // Beim Neuaufbau gibt es nichts zu entfernen. Destruktive Migrationen brauchen
 // laut AGENTS.md eine eigene, ausdrückliche Freigabe und gehören nicht hierher.

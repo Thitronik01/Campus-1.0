@@ -74,8 +74,11 @@ zwischen den internen Views und Langdock.
 3. `supabase_campus_aufbewahrung_migration.sql`
    setzt die Aufbewahrungsfrist von zwölf Monaten durch: Spalte
    `anonymized_at`, die Aufräumroutine und der tägliche pg_cron-Job.
+4. `supabase_campus_auswertung_migration.sql`
+   legt die Auswertungsfunktion mit Zeitraum an. Erst für Schritt 5 nötig,
+   nicht für den Schreibbetrieb.
 
-Alle drei Dateien sind idempotent: Nach einem vollständig erfolgreichen Lauf
+Alle vier Dateien sind idempotent: Nach einem vollständig erfolgreichen Lauf
 dürfen sie erneut ausgeführt werden. Sie enthalten keinen `drop`, kein `delete`
 und kein `truncate`. Bei einem Fehler wird nicht mit der nächsten Datei
 weitergemacht; zuerst wird der vollständige Text aus dem SQL-Editor gesichert.
@@ -289,8 +292,84 @@ widerrufen werden kann. Diese Werte liegen nur in den Supabase Function Secrets
 und in den Passwortfeldern der jeweiligen Langdock-Verbindung.
 
 Die Endpunkte liefern keine Namen, Händlernummern, Session-IDs oder vollständige
-Payloads. Kleine Gruppen und Freitextthemen werden erst nach einer noch
-festzulegenden Mindestmenge ausgegeben. Bis Endpunkte, Mindestmenge und
+Payloads. **Die Mindestmenge ist auf fünf Einsendungen festgelegt:** Darunter
+nennt die Auswertung nur, wie viele es waren, und keine Kennzahlen. Ein
+Durchschnitt aus zwei Einsendungen ist keine Kennzahl, sondern eine Aussage
+über zwei Personen.
+
+### 5a — Quiz-Auswertung einspielen
+
+1. `supabase_campus_auswertung_migration.sql` im SQL-Editor ausführen. Sie legt
+   `public.campus_auswertung(von, bis, insel)` an — aggregierte Quizkennzahlen
+   für einen Zeitraum, Tagesgrenzen in Europe/Berlin.
+2. Rechte prüfen:
+
+```sql
+select grantee, privilege_type
+  from information_schema.routine_privileges
+ where routine_schema = 'public'
+   and routine_name = 'campus_auswertung'
+ order by grantee;
+```
+
+Erwartet werden `postgres` und `service_role`. Eine Zeile für `PUBLIC`, `anon`
+oder `authenticated` bedeutet: stoppen.
+
+3. Probeabruf in einer neuen Query — im leeren Projekt kommt eine Antwort mit
+   `einsendungen: 0` und leerer Inselliste zurück:
+
+```sql
+select public.campus_auswertung();
+```
+
+### 5b — Endpunkt ausrollen
+
+Die Funktion liegt im Repository unter
+`Campus Quiz/supabase/functions/campus-auswertung/index.ts`. Sie wird mit
+**abgeschaltetem JWT-Zwang** ausgerollt, weil sie ihr eigenes Token prüft:
+
+```bash
+supabase functions deploy campus-auswertung --no-verify-jwt --project-ref pstohdeknhgsywmogmiu
+```
+
+Dann einen Zugangswert erzeugen und hinterlegen. Er wird einmal angezeigt und
+gehört danach nur in die Function Secrets und in das Passwortfeld der
+Langdock-Verbindung — nicht in dieses Repository, nicht in einen Chat:
+
+```bash
+openssl rand -base64 32
+supabase secrets set CAMPUS_AUSWERTUNG_TOKEN=<der erzeugte Wert> --project-ref pstohdeknhgsywmogmiu
+```
+
+Probe von einem Rechner aus:
+
+```bash
+curl -s -H "Authorization: Bearer <der erzeugte Wert>" \
+  "https://pstohdeknhgsywmogmiu.supabase.co/functions/v1/campus-auswertung?insel=vejro"
+```
+
+Erwartet wird eine JSON-Antwort mit `zeitraum`, `gesamt` und `inseln`. Ohne den
+Kopf `Authorization` muss `401` kommen — diese Probe gehört dazu, denn ein
+offener Endpunkt fällt sonst erst auf, wenn Daten drin sind.
+
+### 5c — Langdock verbinden
+
+In Langdock einen HTTP Request auf
+`https://pstohdeknhgsywmogmiu.supabase.co/functions/v1/campus-auswertung`
+anlegen, mit dem Kopf `Authorization: Bearer <Wert>` und den optionalen
+Parametern `von`, `bis` und `insel` (`JJJJ-MM-TT`, Inselkürzel wie `vejro`).
+Ohne Zeitraum antwortet der Endpunkt für **heute**.
+
+„Wie viele Händler haben heute VEJRØ gespielt?" beantwortet damit das Feld
+`inseln[].haendler`; die Zahl ist `count(distinct dealer_number)` und zählt
+Betriebe, nicht Personen. Wollte man Personen zählen, ginge das nur über
+Namen — und die verlassen die Datenbank nicht.
+
+Die Antwort nennt Zeitraum, Zeitzone, Datenstand und Mindestmenge mit, damit
+eine Auswertung in Langdock ihre Grundlage angeben kann.
+
+Der Feedback-Endpunkt folgt nach demselben Muster mit einem **eigenen** Token,
+sobald der erste im Betrieb steht. Bis Endpunkte, Mindestmenge und
 Antwortschema geprüft sind, werden die alten Langdock-Verbindungen nicht auf
 das neue Projekt umgestellt.
 
