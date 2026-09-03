@@ -165,6 +165,18 @@ geschrieben, dass er ohne Rückfrage zum Issue werden kann;
 ## R-10 · Kein Datenschutzhinweis nach Art. 13 und kein Impressum — nur ein Zwecksatz
 <!-- labels: sicherheit, hoch -->
 
+> **Stand 3. September 2026 — grösstenteils erledigt.** Der Hinweis steht unter
+> `/datenschutz/` und ist aus Ankreuzfeld, Fusszeile und Campus-Menü verlinkt;
+> das Ankreuzfeld ist von einer Kenntnisnahme zu einer widerruflichen
+> Einwilligung nach Art. 6 Abs. 1 lit. a umformuliert. **Offen bleiben vier
+> Punkte**, alle in
+> [`Campus Quiz/DATENSCHUTZ.md`](Campus%20Quiz/DATENSCHUTZ.md) beschrieben:
+> die Speicherdauer samt Durchsetzung in der Datenbank, die Belege zu den
+> Auftragsverarbeitern, der fehlende Nachweis der Einwilligung
+> (`privacyAccepted` bleibt im Browser) und das fehlende Ankreuzfeld im
+> einzeln betriebenen Feedbackbogen. Der Befund unten beschreibt den
+> Ausgangszustand.
+
 **Schwere:** hoch · **Bereich:** sicherheit · **Ort:** `Campus Quiz/public/index.html:245, 396-399`
 
 **Befund.** Erhoben werden Name, Betrieb, Haendlernummer, Taetigkeitsbereich, alle Antworten, Zeitstempel und die Seiten-URL. Dazu steht ein einzelner Satz zum Zweck; Verantwortlicher, Rechtsgrundlage, Empfaenger, Speicherdauer und Betroffenenrechte fehlen ueberall.

@@ -57,6 +57,14 @@ const ARBEITSKARTE_QUELLE = path.join(WURZEL, "public", "arbeitskarte");
 const ARBEITSKARTE_ASSETS = path.join(WURZEL, "public", "assets", "arbeitskarte");
 const ARBEITSKARTE_ZIEL = "arbeitskarte";
 
+/** Der Datenschutzhinweis geht in jedes Paket, auch in ein einzelnes
+ *  Inselpaket: Wo ein Profil angelegt wird, muss der Hinweis erreichbar
+ *  sein, auf den die Einwilligung verweist. Ein Verweis auf die
+ *  Gesamtpaket-Domain scheidet aus — die Einzelinseln laufen unter eigenen
+ *  Adressen. */
+const DATENSCHUTZ_QUELLE = path.join(WURZEL, "public", "datenschutz");
+const DATENSCHUTZ_ZIEL = "datenschutz";
+
 /** _headers gilt nicht mit: seine Pfade sind auf die Wurzel geschrieben
  *  ("/assets/*") und zeigten unter /feedback ins Leere. Die Regeln stehen
  *  stattdessen in der netlify.toml des Pakets. README.txt richtet sich an
@@ -201,6 +209,13 @@ function kopiereArbeitskarte(oeff) {
     kopiereVerzeichnis(ARBEITSKARTE_ASSETS, path.join(oeff, "assets", "arbeitskarte"));
 }
 
+function kopiereDatenschutz(oeff) {
+  if (!fs.existsSync(DATENSCHUTZ_QUELLE)) {
+    throw new Error(`Der Datenschutzhinweis fehlt: ${DATENSCHUTZ_QUELLE}`);
+  }
+  return kopiereVerzeichnis(DATENSCHUTZ_QUELLE, path.join(oeff, DATENSCHUTZ_ZIEL));
+}
+
 function kopiereGemeinsameMedien(oeff) {
   for (const relativ of GEMEINSAME_MEDIEN) {
     kopiere(path.join(WURZEL, "public", relativ), path.join(oeff, relativ));
@@ -284,6 +299,11 @@ ${kommentar}
   to = "/index.html"
   status = 200
 
+[[redirects]]
+  from = "/datenschutz"
+  to = "/datenschutz/"
+  status = 301
+
 ${mitArbeitskarte ? `[[redirects]]
   from = "/arbeitskarte"
   to = "/arbeitskarte/"
@@ -322,7 +342,30 @@ ${mitArbeitskarte ? `[[redirects]]
   for = "/.netlify/functions/*"
   [headers.values]
     Cache-Control = "no-store"
-${mitBogen ? bogenHeaders() : ""}${mitArbeitskarte ? arbeitskarteHeaders() : ""}`;
+${datenschutzHeaders()}${mitBogen ? bogenHeaders() : ""}${mitArbeitskarte ? arbeitskarteHeaders() : ""}`;
+}
+
+/** Der Datenschutzhinweis darf nicht im Cache festhaengen: Wird eine Frist
+ *  oder ein Auftragsverarbeiter geaendert, muss die neue Fassung sofort bei
+ *  allen ankommen. Sein Stylesheet traegt die Version im Namen und darf
+ *  deshalb liegen bleiben. */
+function datenschutzHeaders() {
+  return `
+[[headers]]
+  for = "/datenschutz/"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/datenschutz/index.html"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/datenschutz/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+`;
 }
 
 function arbeitskarteHeaders() {
@@ -467,6 +510,9 @@ function baue(slug) {
   kopiere(path.join(WURZEL, "public", "assets", "styles.css"), path.join(oeff, "assets", "styles.css"));
   kopiere(path.join(WURZEL, "public", "assets", "thitronik-logo.png"), path.join(oeff, "assets", "thitronik-logo.png"));
 
+  // --- Datenschutzhinweis unter /datenschutz ------------------------------
+  kopiereDatenschutz(oeff);
+
   // --- Daten: Katalog auf genau diese eine Insel eindampfen ---------------
   // Die Engine erkennt daran den Einzelbetrieb und überspringt die Übersicht.
   schreib(path.join(oeff, "data", "inseln.json"),
@@ -551,6 +597,9 @@ function baueGesamt() {
   kopiere(path.join(WURZEL, "public", "assets", "engine.js"), path.join(oeff, "assets", "engine.js"));
   kopiere(path.join(WURZEL, "public", "assets", "styles.css"), path.join(oeff, "assets", "styles.css"));
   kopiere(path.join(WURZEL, "public", "assets", "thitronik-logo.png"), path.join(oeff, "assets", "thitronik-logo.png"));
+
+  // --- Datenschutzhinweis unter /datenschutz ------------------------------
+  kopiereDatenschutz(oeff);
 
   // --- Daten: vollständiger Katalog, alle Fragensätze --------------------
   // Der Gesamtstand liefert den Feedbackbogen tatsächlich mit aus. Das Feld

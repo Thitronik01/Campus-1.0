@@ -1039,7 +1039,8 @@ Danach beginnt der Campus wieder bei der Profileinrichtung. Bereits an den
 Server übermittelte Einsendungen, Arbeitskarten und der nur für die Tabsitzung
 gehaltene THI-Verlauf werden nicht gelöscht. Der serverseitige Löschweg gehört
 in den gesonderten Datenschutzhinweis und darf nicht mit dieser Gerätefunktion
-verwechselt werden.
+verwechselt werden — er steht unter `/datenschutz/`, Abschnitt 5, und als
+Arbeitsanleitung in [`DATENSCHUTZ.md`](DATENSCHUTZ.md).
 
 ### Auswertungs-Views
 

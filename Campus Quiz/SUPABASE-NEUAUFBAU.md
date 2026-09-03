@@ -193,7 +193,14 @@ Im neuen Projekt werden dreimal `0` erwartet.
 Die Datenbank allein nimmt noch keine produktiven Campusdaten an. Vor dem Setzen
 der Netlify-Variablen werden Herkunftsprüfung, Ratenbegrenzung,
 Datenschutzhinweis und der lokale Löschweg umgesetzt und über einen Pull Request
-geprüft. Danach werden in Netlify gesetzt:
+geprüft.
+
+> Herkunftsprüfung und Ratenbegrenzung stehen (#91), der lokale Löschweg
+> ebenfalls (#92). Der Datenschutzhinweis liegt unter `/datenschutz/`; ihm
+> fehlt noch die Speicherdauer. Solange sie fehlt, bleiben die Variablen
+> ungesetzt — siehe [`DATENSCHUTZ.md`](DATENSCHUTZ.md).
+
+Danach werden in Netlify gesetzt:
 
 | Variable | Wert |
 |---|---|

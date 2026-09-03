@@ -20,6 +20,11 @@
   status = 200
 
 [[redirects]]
+  from = "/datenschutz"
+  to = "/datenschutz/"
+  status = 301
+
+[[redirects]]
   from = "/arbeitskarte"
   to = "/arbeitskarte/"
   status = 301
@@ -92,3 +97,18 @@
   for = "/.netlify/functions/*"
   [headers.values]
     Cache-Control = "no-store"
+
+[[headers]]
+  for = "/datenschutz/"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/datenschutz/index.html"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/datenschutz/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
