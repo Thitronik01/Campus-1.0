@@ -78,7 +78,7 @@ pruefe("gemeinsame View liest die geprüfte Händlernummernspalte",
   hat(/f\.dealer_number\s+as\s+dealer_number/i, QUIZ)
   && !hat(/raw_payload\s*->>\s*'dealerNumber'/i, QUIZ));
 pruefe("Feedbackschnitt ist skalenbereinigt",
-  hat(/avg\(public\.campus_note_einheitlich\(f\.form_version,\s*r\.rating\)\)/i, QUIZ));
+  hat(/round\(avg\(public\.campus_note_einheitlich\(f\.form_version,\s*r\.rating\)\)\s*filter\s*\(where\s+r\.section_key\s*<>\s*'schulungsinseln'\)\)/i, QUIZ));
 
 // Beim Neuaufbau gibt es nichts zu entfernen. Destruktive Migrationen brauchen
 // laut AGENTS.md eine eigene, ausdrückliche Freigabe und gehören nicht hierher.
