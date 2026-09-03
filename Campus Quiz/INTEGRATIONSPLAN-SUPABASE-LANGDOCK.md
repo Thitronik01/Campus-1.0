@@ -76,7 +76,24 @@ neue Feedbackskalen ergeben vergleichbare Kennzahlen und Rohdaten sind nicht
 
 ## Phase 2: Datenschutzarme Auswertungsschnittstelle
 
-Eine neue View liefert nur die Daten, die Langdock wirklich benötigt:
+**Stand 3. September 2026: gebaut, noch nicht ausgerollt.** Für das Quiz liegen
+`supabase_campus_auswertung_migration.sql` (Funktion `campus_auswertung` mit
+Zeitraum und Insel) und `supabase/functions/campus-auswertung/index.ts` (Endpunkt
+mit eigenem Bearer-Token) im Repository. Die Mindestmenge ist auf **fünf**
+Einsendungen festgelegt und steht als Konstante im Funktionsrumpf, damit sie
+nicht von außen abgeschaltet werden kann. Der Feedback-Endpunkt folgt nach
+demselben Muster mit eigenem Token. Der Ablauf zum Ausrollen steht in
+`SUPABASE-NEUAUFBAU.md`, Schritt 5.
+
+Eine Funktion statt einer weiteren View, weil eine View keinen Zeitraum
+entgegennehmen kann: Langdock müsste sonst selbst filtern und bräuchte dafür
+Lesezugriff auf Tageszeilen — also faktisch auf die Rohdaten.
+
+Tagesgrenzen liegen in `Europe/Berlin`. In UTC gerechnet fiele im Sommer alles
+zwischen 00:00 und 02:00 Ortszeit auf den Vortag, und genau dann werden abends
+noch Bögen ausgefüllt.
+
+Die Schnittstelle liefert nur die Daten, die Langdock wirklich benötigt:
 
 - Zeitraum und Insel
 - Anzahl Einsendungen
