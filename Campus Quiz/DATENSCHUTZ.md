@@ -46,6 +46,18 @@ diese Tabelle **und** den Hinweistext.
 **Das Profilfoto verlässt das Gerät nicht.** Es liegt verkleinert als Data-URL
 im Profil im `localStorage`; `buildPayload()` in `engine.js` nimmt es nicht auf.
 
+**Der Pilotweg über Netlify Forms speichert dieselben Klarnamen.** Fehlen
+`SUPABASE_URL` und `SUPABASE_SECRET_KEY` in Netlify, antwortet `submit-quiz`
+mit `503` und `fallback: "netlify_forms"`; die Engine legt Name, Betrieb,
+Händlernummer, Bereich und alle Antworten dann im Formular
+`campus-quiz-result` ab (`sendeNetlifyPilot()` in `engine.js`). Derselbe Weg
+bleibt nach dem Anschließen als Notfallnetz bestehen, wenn die Datenbank
+einmal nicht erreichbar ist. Deshalb nennt Abschnitt 8 des Hinweises ihn
+ausdrücklich — und deshalb gehören Netlify-Forms-Einträge in dieselbe
+Aufräumroutine wie die Datenbank: **die Frist von zwölf Monaten greift dort
+nicht automatisch.** Wer den Pilotweg produktiv nutzt, muss die Einträge im
+Netlify-Dashboard von Hand räumen.
+
 **THI bekommt keine Teilnehmerdaten.** Mitgeschickt werden die laufende Frage
 und der bisherige Verlauf. Der voreingestellte Anymize-Endpunkt
 `llm-anonymous` entfernt zusätzlich Personendaten, bevor die Anfrage das Modell
