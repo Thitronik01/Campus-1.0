@@ -43,10 +43,21 @@
      torischen Themen stehen deshalb in thi-lib/campus-wissen.mjs. */
   const VORSCHLAEGE = [
     "Was kann der Pro-Finder?",
-    "Wo und wann finde ich die Insel FEHMARN?",
-    "Wann bekomme ich mein Zertifikat?",
+    "Wie läuft der Schulungstag ab?",
+    "Was gibt es heute zu essen?",
     "Wer bist du, und wobei kannst du helfen?",
-    "Was gibt es heute zu essen?"
+    "Wann bekomme ich mein Zertifikat?"
+  ];
+
+  /* Steht gerade eine Wissenscheck-Frage auf dem Schirm, sind die
+     Vorschläge andere: Wer THI aus der Frage heraus öffnet, will zu dieser
+     Frage etwas wissen, nicht zum Mittagessen. Die Function kennt die Frage
+     aus dem mitgeschickten Kontext (siehe kontextSetzen). */
+  const VORSCHLAEGE_FRAGE = [
+    "Worauf kommt es bei dieser Frage an?",
+    "Erkläre mir die Grundlagen dazu.",
+    "Was unterscheidet die Antwortmöglichkeiten?",
+    "Wo steht das im Wissensbestand?"
   ];
 
   // --------------------------------------------------------------- Zustand --
@@ -56,9 +67,11 @@
   let abbruch = null;     // AbortController der laufenden Anfrage
   let offen = false;
   let zuletztFokussiert = null;
+  let kontext = null;     // die laufende Wissenscheck-Frage, von engine.js gemeldet
 
   let panel, schleier, schalter, verlaufEl, eingabeEl, sendenEl, leerenEl, fussEl;
   let vorlagenSchalter, vorlagenFormular, vorlagenProfil, vorlagenFehler;
+  let kontextEl, kontextTitelEl, kontextTextEl;
 
   // ----------------------------------------------------------------- Symbole -
 
@@ -116,6 +129,11 @@
   const symbolStop = () => svg("0 0 24 24", [["rect", { x: 6, y: 6, width: 12, height: 12, rx: 2 }]]);
   const symbolFrage = () => svg("0 0 24 24", [["path", { d: "M4 12h14M12 6l6 6-6 6" }]]);
   const symbolPfeil = () => svg("0 0 24 24", [["path", { d: "M5 8v6a3 3 0 0 0 3 3h11M15 13l4 4-4 4" }]]);
+  const symbolKontext = () => svg("0 0 24 24", [
+    ["path", { d: "M6 4h9l4 4v12H6z" }],
+    ["path", { d: "M9 12h6M9 16h4" }],
+    ["path", { d: "M15 4v4h4" }]
+  ]);
   const symbolVorlage = () => svg("0 0 24 24", [
     ["path", { d: "M8 4h8M9 3h6a1 1 0 0 1 1 1v2H8V4a1 1 0 0 1 1-1Z" }],
     ["path", { d: "M7 5H5.5A1.5 1.5 0 0 0 4 6.5v13A1.5 1.5 0 0 0 5.5 21h13a1.5 1.5 0 0 0 1.5-1.5v-13A1.5 1.5 0 0 0 18.5 5H17" }],
@@ -289,6 +307,57 @@
       vorlagenProfil.textContent = info.haendler ? "Für " + info.haendler : "";
       vorlagenProfil.hidden = !info.haendler;
     }
+  }
+
+  /* Die Kontextzeile: zeigt, welche Frage THI gerade kennt. Sie steht
+     sichtbar im Panel, weil das Mitschicken der Frage sonst unbemerkt
+     passierte — dieselbe Regel wie bei der Fallaufnahme: Was an THI geht,
+     ist auf dem Schirm zu sehen. */
+  function baueKontextLeiste() {
+    kontextEl = document.createElement("div");
+    kontextEl.className = "thi-kontext";
+    kontextEl.hidden = true;
+    kontextEl.appendChild(symbolKontext());
+    const text = document.createElement("span");
+    kontextTitelEl = document.createElement("strong");
+    kontextTextEl = document.createElement("small");
+    text.append(kontextTitelEl, kontextTextEl);
+    kontextEl.appendChild(text);
+    return kontextEl;
+  }
+
+  function kontextLeisteZeichnen() {
+    if (!kontextEl) return;
+    if (!kontext) { kontextEl.hidden = true; return; }
+    kontextTitelEl.textContent = [kontext.nummer, kontext.insel].filter(Boolean).join(" · ")
+      || "Laufende Frage";
+    kontextTextEl.textContent = kontext.beantwortet
+      ? "THI kennt diese Frage und ihre Auflösung."
+      : "THI kennt diese Frage und hilft beim Verstehen — die Lösung sagt er nicht vor.";
+    kontextEl.hidden = false;
+  }
+
+  /** Von engine.js gerufen: die angezeigte Frage oder null beim Verlassen.
+   *  Die Felder werden hier noch einmal auf Text und Länge gebracht — was
+   *  an die Function geht, soll aus dieser Datei nachvollziehbar sein. */
+  function kontextSetzen(neu) {
+    const kurz = (wert, max) => String(wert || "").replace(/\s+/g, " ").trim().slice(0, max);
+    const prompt = neu && typeof neu === "object" ? kurz(neu.prompt, 600) : "";
+    const vorher = kontext ? kontext.prompt + (kontext.beantwortet ? "1" : "0") : "";
+    kontext = prompt ? {
+      insel: kurz(neu.insel, 40),
+      nummer: kurz(neu.nummer, 40),
+      kategorie: kurz(neu.kategorie, 80),
+      art: kurz(neu.art, 80),
+      prompt,
+      optionen: (Array.isArray(neu.optionen) ? neu.optionen : [])
+        .map((o) => kurz(o, 220)).filter(Boolean).slice(0, 12),
+      beantwortet: neu.beantwortet === true
+    } : null;
+    const nachher = kontext ? kontext.prompt + (kontext.beantwortet ? "1" : "0") : "";
+    kontextLeisteZeichnen();
+    // Der leere Zustand richtet Begrüßung und Vorschläge nach der Frage aus.
+    if (vorher !== nachher && verlaufEl && !nachrichten.length) neuZeichnen();
   }
 
   function baueVorlagenLeiste() {
@@ -475,7 +544,7 @@
     // während des Stroms — deshalb polite und kein aria-atomic.
     verlaufEl.setAttribute("aria-live", "polite");
 
-    panel.append(baueKopf(), baueVorlagenLeiste(), baueVorlage(), verlaufEl, baueFuss());
+    panel.append(baueKopf(), baueVorlagenLeiste(), baueKontextLeiste(), baueVorlage(), verlaufEl, baueFuss());
     document.body.append(schleier, panel);
   }
 
@@ -499,14 +568,18 @@
     titel.textContent = begruessung() + (info.name ? " " + info.name : "") + "! Ich bin THI.";
     const text = document.createElement("p");
     text.className = "thi-start-text";
-    text.textContent =
-      "Frag mich zu THITRONIK-Produkten — WiPro III, G.A.S.-Reihe, Pro-Finder, "
-      + "Einbau und Fehlersuche — oder zum Ablauf des Campus.";
+    text.textContent = kontext
+      ? "Du bist gerade bei " + (kontext.nummer || "einer Frage")
+        + (kontext.insel ? " auf " + kontext.insel : "")
+        + ". Ich kenne die Frage und die Antwortmöglichkeiten und helfe dir, "
+        + "das Thema zu verstehen — entscheiden musst du selbst."
+      : "Frag mich zu THITRONIK-Produkten — WiPro III, G.A.S.-Reihe, Pro-Finder, "
+        + "Einbau und Fehlersuche — oder zum Ablauf des Schulungstags.";
     kopf.append(titel, text);
 
     const liste = document.createElement("div");
     liste.className = "thi-vorschlaege";
-    for (const frage of VORSCHLAEGE) {
+    for (const frage of (kontext ? VORSCHLAEGE_FRAGE : VORSCHLAEGE)) {
       const knopf = document.createElement("button");
       knopf.type = "button";
       knopf.className = "thi-vorschlag";
@@ -752,10 +825,16 @@
     let antwort = "";
 
     try {
+      // Die laufende Frage geht als eigenes Feld mit, nicht im Nachrichtentext:
+      // Die Function kennzeichnet sie selbst und kappt sie; im Verlauf des
+      // Teilnehmers taucht sie nicht auf.
       const res = await fetch(ENDPUNKT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nachrichten: nachrichten.slice(-MAX_NACHRICHTEN) }),
+        body: JSON.stringify({
+          nachrichten: nachrichten.slice(-MAX_NACHRICHTEN),
+          ...(kontext ? { quizfrage: kontext } : {})
+        }),
         signal: abbruch.signal
       });
 
@@ -868,10 +947,13 @@
   }
 
   function oeffnen() {
+    if (offen) return;
     offen = true;
     zuletztFokussiert = document.activeElement;
     panel.classList.add("ist-offen");
     schleier.classList.add("ist-offen");
+    // In der Fragenansicht rückt die Seite neben das Panel (thi.css).
+    document.body.classList.add("thi-offen");
     schalter.setAttribute("aria-expanded", "true");
     schalter.classList.add("ist-gesehen");
     try { sessionStorage.setItem(SPEICHER + "Gesehen", "1"); } catch { /* egal */ }
@@ -890,9 +972,12 @@
     offen = false;
     panel.classList.remove("ist-offen");
     schleier.classList.remove("ist-offen");
+    document.body.classList.remove("thi-offen");
     schalter.setAttribute("aria-expanded", "false");
-    if (zuletztFokussiert && zuletztFokussiert.isConnected) zuletztFokussiert.focus();
-    else schalter.focus();
+    // Der Schalter in der Kopfzeile ist in der Fragenansicht ausgeblendet;
+    // dann gehört der Fokus zurück an den Knopf, der THI geöffnet hat.
+    if (zuletztFokussiert && zuletztFokussiert.isConnected && zuletztFokussiert.offsetParent) zuletztFokussiert.focus();
+    else if (schalter.offsetParent) schalter.focus();
   }
 
   // ------------------------------------------------------------------ Start --
@@ -910,12 +995,24 @@
     } catch { /* egal */ }
 
     laden();
+    kontextLeisteZeichnen();
     neuZeichnen();
 
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && offen) schliessen();
     });
   }
+
+  /* Die kleine Schnittstelle für die Engine. Alles andere bleibt in diesem
+     Abschluss — die Engine soll THI öffnen und ihm die Frage nennen können,
+     nicht in Verlauf oder Anfrage hineingreifen. `kontext` darf vor
+     starten() gerufen werden; die Leiste holt den Stand dann beim Aufbau. */
+  window.THI = Object.freeze({
+    oeffnen: () => { if (panel) oeffnen(); },
+    schliessen: () => { if (panel) schliessen(); },
+    kontext: kontextSetzen,
+    istOffen: () => offen
+  });
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", starten);

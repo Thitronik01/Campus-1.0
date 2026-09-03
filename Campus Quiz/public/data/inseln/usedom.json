@@ -58,8 +58,8 @@
         { "id": "g", "text": "Funk-Wassermelder 868", "image": "/media/usedom/use-produkt-wassermelder.webp", "imageAlt": "Funk-Wassermelder 868 mit Sendeeinheit und Sensor am Kabel" },
         { "id": "h", "text": "CampLock oder VanLock Fingerprint", "image": "/media/usedom/use-produkt-fingerprint.webp", "imageAlt": "Runder Fingerprint-Sensor mit grün leuchtendem Ring" }
       ],
-      "correct": ["a", "b", "c", "d"],
-      "feedback": "Drei Kundenwünsche, drei Bausteine - plus das Zugangsmedium. Alles Weitere ist Zusatzverkauf und gehört getrennt besprochen, nicht in diese Position.",
+      "correct": ["a", "b", "c", "d", "h"],
+      "feedback": "Drei Kundenwünsche: Die Alarmanlage ist die WiPro III, die Ortung der Pro-finder. „Bequem ohne Schlüssel öffnen“ hat zwei Wege, und beide gehören ins Gespräch - das NFC Modul mit KeyCard, KeyTag oder KeyStrap am Fahrzeug und der CampLock oder VanLock Fingerprint direkt an der Tür (setzt WiPro III safe.lock voraus). Alles Weitere ist Zusatzverkauf und gehört getrennt besprochen, nicht in diese Position.",
       "irrtum": [
         {
           "fuer": ["d"],
@@ -73,11 +73,11 @@
         },
         {
           "fuer": ["h"],
-          "titel": "Fingerprint zusätzlich mitangekreuzt",
-          "text": "Der teure Fehler, weil er richtig klingt: Der Fingerprint löst denselben Wunsch wie NFC Modul und KeyCard - nur ein zweites Mal, und er setzt zusätzlich WiPro III safe.lock voraus. Ein Wunsch, ein Weg."
+          "titel": "Fingerprint vergessen",
+          "text": "„Ohne Schlüssel öffnen“ endet nicht bei der Karte. Der Fingerprint an der Tür ist der zweite Weg zu demselben Wunsch - und der, den viele Kunden meinen, ohne das Produkt zu kennen. Wer ihn nicht anbietet, lässt den Kunden entscheiden, ohne dass er die Wahl kennt. Vorher klären: Der Fingerprint setzt WiPro III safe.lock voraus."
         }
       ],
-      "mitnehmen": "Geh die Kundenwünsche einzeln durch und hak sie am Angebot ab. Drei Wünsche, drei Häkchen - plus die Frage: „Womit macht er es auf?“ Jede Position ohne Haken gehört begründet oder gestrichen."
+      "mitnehmen": "Geh die Kundenwünsche einzeln durch und hak sie am Angebot ab. Drei Wünsche, drei Häkchen - und beim Zugang die Frage: „Womit macht er es auf - Karte am Fahrzeug oder Finger an der Tür?“ Jede Position ohne Haken gehört begründet oder gestrichen."
     },
     {
       "id": "USE-02",

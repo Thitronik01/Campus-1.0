@@ -83,4 +83,25 @@ check("JSON-Exportcode ist entfernt", !storageSource.includes("downloadCard") &&
 check("PDF-Druckansicht verwendet THITRONIK CI", printSource.includes("THITRONIK Campus") && printSource.includes("Arbeitskarte") && printSource.includes("Seite ${page} von 4"));
 check("Zurücksetzen ist bedienbar", html.includes('id="btn-reset"'));
 
+/* Jede Datei unter /arbeitskarte/assets/ wird ein Jahr lang `immutable`
+   ausgeliefert (netlify.toml). Ein Modul-Import ohne ?v=-Marke holt dann
+   auf jedem Gerät, das die Arbeitskarte schon einmal offen hatte, für ein
+   Jahr die alte Datei — auch wenn auf dem Server längst eine neue liegt.
+   Genau das ist im September 2026 passiert: data-v1.js zeigte in der
+   alten Fassung auf vier PNG, die es nach dem Umstieg auf WebP nicht mehr
+   gab, und die Fahrzeugansichten waren auf allen bekannten Geräten leer.
+   Deshalb: eine Fassung in index.html, und jeder relative Import in den
+   Modulen trägt dieselbe. Wer eine Datei der Arbeitskarte ändert, zählt
+   die Fassung hoch — an allen Stellen, sonst fällt diese Prüfung. */
+const fassung = (html.match(/app-v1\.js\?v=([0-9][0-9.]*)"/) || [])[1];
+check("Arbeitskarte trägt eine Fassung an app-v1.js", Boolean(fassung));
+check("Stylesheet der Arbeitskarte trägt dieselbe Fassung", html.includes(`arbeitskarte-v1.css?v=${fassung}"`));
+const assetDir = path.join(publicDir, "arbeitskarte/assets");
+for (const datei of fs.readdirSync(assetDir).filter((name) => name.endsWith(".js"))) {
+  const quelle = fs.readFileSync(path.join(assetDir, datei), "utf8");
+  const importe = [...quelle.matchAll(/from\s+"(\.\/[^"]+)"/g)].map((treffer) => treffer[1]);
+  check(`${datei}: alle ${importe.length} relativen Importe tragen ?v=${fassung}`,
+    importe.every((pfad) => pfad.endsWith(`?v=${fassung}`)));
+}
+
 console.log(`Arbeitskarte: ${checks.length} Prüfungen erfolgreich.`);

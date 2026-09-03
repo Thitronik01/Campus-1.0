@@ -13,7 +13,7 @@
 
 (function () {
   const EVENT_SLUG = "campus-2026";
-  const ENGINE_VERSION = "1.35.1";
+  const ENGINE_VERSION = "1.36.0";
   const SUBMIT_ENDPOINT = "/.netlify/functions/submit-quiz";
 
   const LS_PARTICIPANT = "thitronik.campus.2026.participant";
@@ -187,8 +187,6 @@
     btnToIslands: $("btn-to-islands"),
 
     qCounter: $("q-counter"),
-    qProgress: $("q-progress"),
-    qProgressFill: $("q-progress-fill"),
     qCategory: $("q-category"),
     qMode: $("q-mode"),
     qTitle: $("q-title"),
@@ -227,9 +225,9 @@
     btnAbort: $("btn-abort"),
     btnPrev: $("btn-prev"),
     btnAsideThi: $("btn-aside-thi"),
+    btnQuizThi: $("btn-quiz-thi"),
     qCrumbCode: $("q-crumb-code"),
     qCrumbTitle: $("q-crumb-title"),
-    qDots: $("q-dots"),
     qOverview: $("q-overview"),
     qAsideInsel: $("q-aside-insel"),
     qAsideCode: $("q-aside-code"),
@@ -306,6 +304,12 @@
        statt sieben einzelner hidden-Schalter: Das Stylesheet entscheidet
        je Geraet, was davon sichtbar ist. */
     document.body.classList.toggle("ist-karte", name === "islands");
+    /* In der Fragenansicht ist die Kopfzeile der Seite ausgeblendet (siehe
+       styles.css, body.ist-quiz) und THI steht neben der Frage. Beim
+       Verlassen vergisst THI die Frage — sonst spräche er auf der Karte noch
+       über Frage 7 von USEDOM. */
+    document.body.classList.toggle("ist-quiz", name === "quiz");
+    if (name !== "quiz") thiKontextMelden(null);
     // Der Ausgangshinweis hängt am Bildschirm, nicht am Sendezustand.
     if (el.ausgang) paintAusgang();
     window.scrollTo({ top: 0, behavior: "auto" });
@@ -1485,6 +1489,43 @@
     else toast("THI ist gerade nicht verfügbar.");
   }
 
+  /** Sagt THI, welche Frage gerade auf dem Schirm steht — Text, Thema und
+   *  Antwortmöglichkeiten in der angezeigten Reihenfolge, nie die Lösung.
+   *  Die geht zwar ohnehin durch den Browser, aber was THI nicht bekommt,
+   *  kann er auch nicht vorsagen; er soll erklären, nicht abschreiben
+   *  lassen. thi.js hängt dafür `window.THI` an; fehlt es, passiert nichts.
+   *  `null` räumt den Kontext beim Verlassen der Fragenansicht. */
+  function thiKontextMelden(q, beantwortet) {
+    const thi = window.THI;
+    if (!thi || typeof thi.kontext !== "function") return;
+    if (!q) { thi.kontext(null); return; }
+
+    // Die Engine mischt die Antworten; die Buchstaben auf dem Schirm folgen
+    // der gemischten Reihenfolge aus `draft.options`, nicht der JSON.
+    const angezeigt = draft && Array.isArray(draft.options) && draft.options.length
+      ? draft.options
+      : (Array.isArray(q.options) ? q.options : []);
+    const optionen = angezeigt.map((o) => {
+      if (o && typeof o === "object") return o.text || "";
+      const treffer = (q.options || []).find((x) => x.id === o);
+      return treffer ? treffer.text || "" : "";
+    }).filter(Boolean);
+    const schritte = !optionen.length && Array.isArray(q.items)
+      ? q.items.map((i) => (i && (i.text || i.label)) || "").filter(Boolean)
+      : [];
+
+    const insel = state.island || {};
+    thi.kontext({
+      insel: insel.code || state.slug || "",
+      nummer: `Frage ${state.viewIndex + 1} von ${state.questions.length}`,
+      kategorie: q.category || "",
+      art: el.qMode.textContent || "",
+      prompt: q.prompt || "",
+      optionen: optionen.length ? optionen : schritte,
+      beantwortet: Boolean(beantwortet)
+    });
+  }
+
   function kopfEinrichten() {
     el.menueKnopf.addEventListener("click", () => el.menueDialog.showModal());
     el.menueZu.addEventListener("click", () => el.menueDialog.close());
@@ -2092,19 +2133,16 @@
    *  Rückblick. `vorgabe` ist die gespeicherte Reihenfolge samt Auswahl. */
   function paintQuestion(q, vorgabe) {
     const hatMedienbild = Boolean(q.media && q.media.src);
-    const hatBildantworten = Array.isArray(q.options)
-      && q.options.some((option) => option.image);
+    /* Nur zwei Haken am Bildschirm, und beide werden gelesen: data-has-media
+       schaltet das zweispaltige Layout, data-revealed die Auflösung. Die
+       früheren Haken für Fragetyp, Bildantworten und Bildausrichtung las
+       kein Stylesheet (Rückstand R-61/R-62) und sind weg. */
     el.screens.quiz.dataset.hasMedia = String(hatMedienbild);
-    el.screens.quiz.dataset.questionType = q.type || "unknown";
-    el.screens.quiz.dataset.answerMedia = String(hatBildantworten);
     el.screens.quiz.dataset.revealed = "false";
 
-    const total = state.questions.length;
-    el.qCounter.textContent = `Frage ${state.viewIndex + 1} von ${total}`;
-    // Der Balken zählt beantwortete Fragen, nicht aufgerufene.
-    const pct = Math.round((state.results.length / total) * 100);
-    el.qProgressFill.style.width = `${pct}%`;
-    el.qProgress.setAttribute("aria-valuenow", String(pct));
+    // Der Zähler ist nur noch für die Vorlesehilfe da; sichtbar ist der
+    // Stand an den Kreisen der Fragenübersicht (renderOverview).
+    el.qCounter.textContent = `Frage ${state.viewIndex + 1} von ${state.questions.length}`;
 
     el.qCategory.textContent = q.category || "";
     el.qCategory.hidden = !q.category;
@@ -2124,42 +2162,30 @@
     } else el.qHint.hidden = true;
 
     if (hatMedienbild) {
-      const setOrientation = () => {
-        if (!el.qMediaImg.naturalWidth || !el.qMediaImg.naturalHeight) return;
-        el.screens.quiz.dataset.mediaOrientation = el.qMediaImg.naturalHeight > el.qMediaImg.naturalWidth
-          ? "portrait"
-          : "landscape";
-      };
+      // Maße aus dem Fragensatz reservieren den Platz, bevor das Bild da ist;
+      // ohne Angabe darf der Browser die Fläche nicht mit alten Werten füllen.
       const mediaWidth = Number(q.media.width);
       const mediaHeight = Number(q.media.height);
-      const hatAbmessungen = mediaWidth > 0 && mediaHeight > 0;
-      if (hatAbmessungen) {
+      if (mediaWidth > 0 && mediaHeight > 0) {
         el.qMediaImg.width = mediaWidth;
         el.qMediaImg.height = mediaHeight;
-        el.screens.quiz.dataset.mediaOrientation = mediaHeight > mediaWidth
-          ? "portrait"
-          : "landscape";
       } else {
         el.qMediaImg.removeAttribute("width");
         el.qMediaImg.removeAttribute("height");
-        el.screens.quiz.dataset.mediaOrientation = "loading";
       }
-      el.qMediaImg.onload = setOrientation;
       el.qMediaImg.alt = q.media.alt || "";
       el.qMediaImg.dataset.layout = q.media.layout || q.layout || "landscape";
       el.qMediaCaption.textContent = q.media.caption || "Zum Vergrößern antippen";
       el.qMedia.hidden = false;
       el.qMediaImg.src = q.media.src;
-      if (el.qMediaImg.complete) setOrientation();
     } else {
-      el.qMediaImg.onload = null;
-      el.screens.quiz.dataset.mediaOrientation = "none";
       el.qMedia.hidden = true;
     }
 
     renderAudio(q);
     renderInput(q, vorgabe);
     renderOverview();
+    thiKontextMelden(q, Boolean(state.results[state.viewIndex]));
   }
 
   /** Beschriftung und Sichtbarkeit der beiden Knöpfe unter der Frage. Vor der
@@ -2180,13 +2206,13 @@
     el.qStatus.textContent = "";
   }
 
-  /** Die Fragenübersicht: Seitenleiste mit Knöpfen ab Desktopbreite, darunter
-   *  eine reine Punktreihe im Kopf. Beide aus derselben Schleife, damit sie
-   *  nie verschiedene Stände zeigen. */
+  /** Die Fragenübersicht im Kopf der Karte: ein Knopf je Frage, auf allen
+   *  Breiten dieselbe Reihe. Sie ist die einzige Fortschrittsanzeige der
+   *  Fragenansicht — Zähler, Balken und Punktreihe daneben sagten dreimal
+   *  dasselbe und sind seit 1.36 weg. */
   function renderOverview() {
     const total = state.questions.length;
     el.qOverview.innerHTML = "";
-    el.qDots.innerHTML = "";
     for (let i = 0; i < total; i++) {
       const r = state.results[i];
       const zustand = r ? (r.isCorrect ? "is-correct" : "is-wrong") : "is-open";
@@ -2207,10 +2233,6 @@
       knopf.addEventListener("click", () => gotoQuestion(i));
       li.appendChild(knopf);
       el.qOverview.appendChild(li);
-
-      const punkt = document.createElement("li");
-      punkt.className = li.className;
-      el.qDots.appendChild(punkt);
     }
   }
 
@@ -2669,15 +2691,10 @@
       el.qFeedbackSolution.hidden ? "" : el.qFeedbackSolution.textContent
     ].filter(Boolean).join(". "));
 
-    // Der Balken zählt beantwortete Fragen, nicht aufgerufene. Vorher rührte
-    // er sich nach der ersten Antwort nicht: er stand auf null, obwohl gerade
-    // eine Frage fertig war.
-    const beantwortet = Math.round((state.results.length / state.questions.length) * 100);
-    el.qProgressFill.style.width = `${beantwortet}%`;
-    el.qProgress.setAttribute("aria-valuenow", String(beantwortet));
-
     paintButtons();
     renderOverview();
+    // Ab jetzt darf THI die Auflösung offen besprechen.
+    thiKontextMelden(q, true);
 
     // Auflösung in den Blick holen, Nachtippen kurz verschlucken. Der Knopf
     // wechselt an derselben Stelle von "Antwort prüfen" auf "Weiter" -
@@ -3370,6 +3387,7 @@
   });
   el.btnPrev.addEventListener("click", () => gotoQuestion(state.viewIndex - 1));
   el.btnAsideThi.addEventListener("click", thiOeffnen);
+  el.btnQuizThi.addEventListener("click", thiOeffnen);
 
   el.qAudioButton.addEventListener("click", async () => {
     const player = el.qAudioPlayer;

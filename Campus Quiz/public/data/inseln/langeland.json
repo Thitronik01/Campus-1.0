@@ -179,7 +179,8 @@
         { "id": "d", "text": "Alarmspeicher und Batteriewarnung erklären" },
         { "id": "e", "text": "Dem Kunden die SIM-PIN notieren" },
         { "id": "f", "text": "Einen Ersatzschlüssel im Fahrzeug deponieren" },
-        { "id": "g", "text": "Alle DIP-Schaltereinstellungen mit dem Kunden durchgehen" }
+        { "id": "g", "text": "Alle DIP-Schaltereinstellungen mit dem Kunden durchgehen" },
+        { "id": "h", "text": "Die App einmal vorführen und dem Kunden die Anleitung zum Nachlesen mitgeben" }
       ],
       "correct": ["a", "b", "c", "d"],
       "feedback": "Diese vier Punkte entscheiden, ob der Kunde die Anlage im Ernstfall bedienen kann. Dazu gehören Panikfunktion und deren Beenden sowie der Hinweis, dass sich die Batteriewarnung als ca. 2 s Ton aus der Zentrale plus rote Sende-LED für ca. 30 s zeigt.",
@@ -193,6 +194,11 @@
           "fuer": ["b"],
           "titel": "Testalarm weggelassen",
           "text": "Verständlich, weil laut und unangenehm. Aber ein Kunde, der den Alarm noch nie gehört hat, erkennt ihn im Ernstfall nicht als seinen."
+        },
+        {
+          "fuer": ["h"],
+          "titel": "Vorführen statt selbst machen",
+          "text": "Klingt gründlich, ist aber das Gegenteil des Prinzips: Zusehen reicht nicht. Der Kunde bedient jeden Weg - App, Handsender, NFC - einmal selbst, bevor er losfährt. Die Anleitung ist Ergänzung, kein Ersatz."
         }
       ],
       "mitnehmen": "Der Kunde muss jeden Bedienweg **einmal selbst** ausgeführt haben. Zusehen reicht nicht - was man nicht selbst gemacht hat, kann man abends auf dem Stellplatz nicht."

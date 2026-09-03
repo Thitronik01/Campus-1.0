@@ -8,8 +8,8 @@
   <meta name="description" content="THITRONIK Campus: Wissenscheck nach jeder Schulungsinsel.">
   <meta name="robots" content="noindex, nofollow">
   <title>THITRONIK Campus: Wissenscheck</title>
-  <link rel="stylesheet" href="/assets/styles.css?v=1.35.1">
-  <link rel="stylesheet" href="/assets/thi.css?v=1.35.1">
+  <link rel="stylesheet" href="/assets/styles.css?v=1.36.0">
+  <link rel="stylesheet" href="/assets/thi.css?v=1.36.0">
 </head>
 <body>
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
@@ -93,11 +93,11 @@
           <div class="onboarding-hero">
             <picture class="onboarding-picture">
               <source type="image/webp"
-                      srcset="/media/campus/firmensitz-640.webp?v=1.35.1 640w,
-                              /media/campus/firmensitz-1024.webp?v=1.35.1 1024w,
-                              /media/campus/firmensitz-1600.webp?v=1.35.1 1600w"
+                      srcset="/media/campus/firmensitz-640.webp?v=1.36.0 640w,
+                              /media/campus/firmensitz-1024.webp?v=1.36.0 1024w,
+                              /media/campus/firmensitz-1600.webp?v=1.36.0 1600w"
                       sizes="(min-width: 1200px) 50vw, 100vw">
-              <img src="/media/campus/firmensitz-1600.jpg?v=1.35.1"
+              <img src="/media/campus/firmensitz-1600.jpg?v=1.36.0"
                    alt="Luftaufnahme des THITRONIK-Firmensitzes in Eckernförde"
                    width="1600" height="1198" fetchpriority="high">
             </picture>
@@ -518,11 +518,15 @@
       </section>
 
       <!-- ==================== Quiz ==================== -->
-      <!-- Die Fragenansicht: links die Arbeitskarte mit Frage, Antworten und
-           Auflösung, rechts ab Desktopbreite die Seitenleiste mit Fragen-
-           übersicht, THI und Inselkarte. Unterhalb der Desktopbreite fällt die
-           Seitenleiste weg; die Fragenübersicht steht dann als Punktreihe im
-           Kopf der Karte (renderOverview in engine.js füllt beide). -->
+      <!-- Die Fragenansicht: die weiße Arbeitskarte mit Frage, Antworten und
+           Auflösung, rechts ab Desktopbreite eine Seitenleiste mit THI und
+           Inselkarte. Die Fragenübersicht — ein Kreis je Frage — steht im
+           Kopf der Karte und ist auf allen Breiten dieselbe: Der Fortschritt
+           hat damit genau eine Darstellung (vorher Zähler, Balken, Punktreihe
+           und Seitenleiste nebeneinander). Die Kopfzeile der Seite ist auf
+           diesem Bildschirm ausgeblendet (body.ist-quiz in engine.js); was
+           man beim Antworten braucht, steht im Kopf der Karte: Insel,
+           THI, Abbrechen. -->
       <section class="screen screen-quiz" id="screen-quiz" aria-labelledby="q-title" hidden>
         <div class="quiz-card">
           <div class="quiz-head">
@@ -535,18 +539,25 @@
                 <span class="quiz-crumb-sep" aria-hidden="true">/</span>
                 <span class="quiz-crumb-title" id="q-crumb-title"></span>
               </p>
-              <button class="btn btn-small btn-ghost" id="btn-abort" type="button"><span class="btn-zeichen" aria-hidden="true">×</span>Abbrechen</button>
-            </div>
-            <div class="quiz-progress-row">
-              <p class="quiz-counter" id="q-counter">Frage 1 von 10</p>
-              <div class="progress-track" role="progressbar" aria-label="Quiz-Fortschritt" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="q-progress">
-                <div class="progress-fill" id="q-progress-fill"></div>
+              <div class="quiz-head-actions">
+                <!-- Unterhalb der Desktopbreite der einzige Weg zu THI in der
+                     Fragenansicht; ab 1100 px übernimmt die Karte in der
+                     Seitenleiste, und der Knopf ist ausgeblendet. -->
+                <button class="btn btn-small btn-ghost quiz-thi-knopf" id="btn-quiz-thi" type="button" aria-label="THI zu dieser Frage fragen">
+                  <svg class="btn-symbol" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="3" r="1.2"></circle><path d="M12 4.4V6.6"></path><rect x="3.8" y="6.6" width="16.4" height="12.6" rx="4.2"></rect><path d="M2 11.6v3M22 11.6v3M9.2 11.3v1.7M14.8 11.3v1.7M9.6 16q2.4 1.5 4.8 0"></path></svg>
+                  <span class="btn-label">THI fragen</span>
+                </button>
+                <button class="btn btn-small btn-ghost" id="btn-abort" type="button"><span class="btn-zeichen" aria-hidden="true">×</span>Abbrechen</button>
               </div>
             </div>
-            <!-- Kompakte Punktreihe unterhalb der Desktopbreite. Nur Anzeige:
-                 Zähler und Fortschrittsbalken tragen dieselbe Information für
-                 die Vorlesehilfe, deshalb aria-hidden. -->
-            <ol class="quiz-dots" id="q-dots" aria-hidden="true"></ol>
+            <!-- Ein Knopf je Frage, in Reihe. Farbe sagt den Stand (richtig,
+                 noch nicht richtig, aktuell, offen), der zugängliche Name
+                 jedes Knopfes sagt ihn in Worten; der versteckte Zähler
+                 nennt die Position für die Vorlesehilfe. -->
+            <nav class="quiz-overview-row" aria-label="Fragenübersicht">
+              <p class="visually-hidden" id="q-counter">Frage 1 von 10</p>
+              <ol class="quiz-overview" id="q-overview"></ol>
+            </nav>
           </div>
 
           <div class="quiz-body">
@@ -641,24 +652,14 @@
           </div>
         </div>
 
-        <aside class="quiz-aside" aria-label="Fragenübersicht und Hilfe">
-          <section class="aside-card" aria-labelledby="q-overview-title">
-            <h2 class="aside-title" id="q-overview-title">Fragenübersicht</h2>
-            <ol class="quiz-overview" id="q-overview"></ol>
-            <ul class="quiz-legend">
-              <li class="legend-correct">Richtig beantwortet</li>
-              <li class="legend-wrong">Noch nicht richtig</li>
-              <li class="legend-current">Aktuelle Frage</li>
-              <li class="legend-open">Offen</li>
-            </ul>
-          </section>
+        <aside class="quiz-aside" aria-label="Hilfe und Insel">
           <section class="aside-card aside-thi" id="q-aside-thi" aria-labelledby="q-aside-thi-title">
             <h2 class="aside-title" id="q-aside-thi-title">THI fragen</h2>
             <button class="aside-thi-button" id="btn-aside-thi" type="button">
               <span class="aside-thi-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" focusable="false"><rect x="4" y="7" width="16" height="12" rx="4"></rect><path d="M12 3v4M9 13h.01M15 13h.01M9.5 16.5c1.5 1 3.5 1 5 0"></path></svg>
               </span>
-              <span class="aside-thi-text">Wir helfen gerne weiter.</span>
+              <span class="aside-thi-text">THI kennt diese Frage und hilft beim Verstehen.</span>
               <svg class="aside-thi-chevron" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m9 6 6 6-6 6"></path></svg>
             </button>
           </section>
@@ -796,10 +797,10 @@
     <input name="score"><input name="total"><input name="percent"><input name="answers_json">
   </form>
 
-  <script src="/assets/engine.js?v=1.34.2" defer></script>
+  <script src="/assets/engine.js?v=1.36.0" defer></script>
   <!-- THI haengt seinen Schalter selbst in .masthead-tools ein und baut sein
        Panel an den Seitenkoerper. Faellt das Skript aus, fehlt nur THI —
        Kopfzeile und Quiz bleiben unberuehrt. -->
-  <script src="/assets/thi.js?v=1.35.1" defer></script>
+  <script src="/assets/thi.js?v=1.36.0" defer></script>
 </body>
 </html>

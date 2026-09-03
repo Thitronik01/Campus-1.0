@@ -243,7 +243,9 @@ for (const island of lerninseln) {
           `Bildauswahl unvollständig: ${bildOptionen.length} von ${q.options.length} Optionen haben ein Bild — bei Bildantworten brauchen alle Optionen ein Bild.`
         );
       }
-      const maxOptions = q.layout === "product" ? 8 : 7;
+      // Acht Optionen A-H, für Text- wie für Produktkacheln: So viele
+      // Positionsfarben gibt es in styles.css (--answer-a bis --answer-h).
+      const maxOptions = 8;
       if (q.options.length > maxOptions) {
         fail(where(q.id), `${q.options.length} Optionen — dieses Antwortlayout unterstützt höchstens ${maxOptions}.`);
       }

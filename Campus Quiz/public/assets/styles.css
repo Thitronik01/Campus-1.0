@@ -18,11 +18,13 @@
   --th-lime-text: #5F7000;   /* 5,47:1 auf Weiß, 5,02:1 auf --success-bg */
   --th-red: #CE132D;
 
-  /* Antwortpalette A-G. A-D bleiben die vier THITRONIK-Markenfarben.
-     E-G greifen ausschließlich vorhandene Navy-, Cyan- und Grautöne auf:
+  /* Antwortpalette A-H. A-D bleiben die vier THITRONIK-Markenfarben.
+     E-H greifen ausschließlich vorhandene Navy-, Cyan- und Grautöne auf:
      zusätzliche Antworten sollen wie Teil derselben Oberfläche aussehen,
      nicht wie neue Signalzustände. Die Buchstaben bleiben die primäre,
-     farbunabhängige Kennzeichnung. */
+     farbunabhängige Kennzeichnung. Acht statt sieben seit 1.36: Vier
+     richtige und vier falsche Antworten füllen das zweispaltige Raster
+     ohne leere Zelle. */
   --answer-a: #1D3661;
   --answer-a-rgb: 29, 54, 97;
   --answer-a-text: #FFFFFF;
@@ -44,6 +46,9 @@
   --answer-g: #5E6672;
   --answer-g-rgb: 94, 102, 114;
   --answer-g-text: #FFFFFF;
+  --answer-h: #8A94A3;
+  --answer-h-rgb: 138, 148, 163;
+  --answer-h-text: #111111;
   --th-white: #FFFFFF;
   --th-soft: #F0F0F0;
   --th-page: #EAF1F7;
@@ -3853,17 +3858,27 @@ body.ist-onboarding main { display: flex; }
   box-shadow: var(--shadow-md);
 }
 
-/* 350 px, damit fünf Übersichtsknöpfe nebeneinander die 55 Layout-Pixel
-   (44 echte) halten: 350 − 2·20 Innenabstand − 4·8 Lücke = 278, geteilt
-   durch fünf sind 55,6. Bei 320 px wären es 49 — unter der Trefferfläche. */
+/* Beim Antworten braucht es die Kopfzeile der Seite nicht: Wortmarke,
+   Werkzeuge und Teilnehmerchips kosten oben rund 80 px, die der Frage
+   fehlen — auf dem Telefon eine halbe Antwortkachel. Was hier zählt, steht
+   im Kopf der Karte: Insel, THI, Abbrechen. Die Werkzeugknöpfe bleiben im
+   DOM; thiOeffnen() in engine.js klickt den THI-Schalter weiterhin. */
+body.ist-quiz .masthead { display: none; }
+
+/* Ab 1100 px: Arbeitskarte links, rechts die Seitenleiste mit THI und
+   Inselkarte. 300 px reichen, seit die Fragenübersicht im Kopf der Karte
+   steht und die Leiste keine fünf Knöpfe nebeneinander mehr tragen muss.
+   Der THI-Knopf im Kartenkopf ist hier überflüssig — die Karte in der
+   Leiste sagt dasselbe mit mehr Platz. */
 @media (min-width: 1100px) {
   .screen.screen-quiz {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 350px;
+    grid-template-columns: minmax(0, 1fr) 300px;
     gap: 20px;
     align-items: start;
   }
   .quiz-aside { position: sticky; top: 16px; }
+  .quiz-thi-knopf { display: none; }
 }
 
 /* --- Kopf der Arbeitskarte --- */
@@ -3875,6 +3890,19 @@ body.ist-onboarding main { display: flex; }
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 14px;
+}
+.quiz-head-actions { display: flex; flex: 0 0 auto; gap: 8px; }
+.quiz-thi-knopf { color: var(--th-navy); }
+.quiz-thi-knopf:focus-visible { outline-color: var(--th-navy); }
+.quiz-thi-knopf .btn-symbol { width: 20px; height: 20px; flex: 0 0 auto; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+/* Unter 520 px Viewport teilen sich Brotkrume und zwei Knöpfe gut 600
+   Layout-Pixel; der THI-Knopf wird dann zum Symbol, sein Name bleibt im
+   aria-label. */
+@media (max-width: 520px) {
+  .quiz-thi-knopf .btn-label { display: none; }
+  /* Als Symbolknopf mindestens --tap breit — gemessen waren es sonst 35
+     echte Pixel, unter der Trefferfläche. */
+  .quiz-thi-knopf { min-width: var(--tap); padding-right: 0; padding-left: 0; justify-content: center; }
 }
 .quiz-crumb {
   display: flex;
@@ -3907,43 +3935,56 @@ body.ist-onboarding main { display: flex; }
   white-space: nowrap;
 }
 
-.quiz-progress-row {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  align-items: center;
-  gap: 16px;
-}
-.quiz-counter { margin: 0; color: var(--th-navy); font-size: .95rem; font-weight: 800; letter-spacing: .01em; }
-
-.progress-track { height: 8px; border-radius: 999px; background: var(--th-soft); overflow: hidden; }
-.progress-fill {
-  width: 0%;
-  height: 100%;
-  border-radius: 999px;
-  background: linear-gradient(90deg, var(--th-blue), var(--th-lime));
-  transition: width 280ms var(--ease-out);
-}
-
-/* Die Punktreihe: Stand je Frage, wo die Seitenleiste keinen Platz hat. */
-.quiz-dots {
+/* Die Fragenübersicht: ein Kreis je Frage, in Reihe, auf allen Breiten
+   dieselbe. Sie ist die einzige Fortschrittsanzeige der Fragenansicht —
+   vorher standen Zähler, Balken, Punktreihe und Seitenleiste nebeneinander
+   und sagten viermal dasselbe. Jeder Kreis ist ein Knopf (Rückblick auf
+   beantwortete Fragen) und misst --tap, also 44 echte Pixel unter dem
+   Seitenzoom. Zehn Kreise mit Lücken sind 622 Layout-Pixel; wo das nicht
+   passt, bricht die Reihe in zwei Fünferreihen um — dieselbe Anordnung,
+   die vorher in der Seitenleiste stand. Keine Legende: Farbe plus Zahl
+   trägt, und der zugängliche Name jedes Knopfes nennt den Stand in Worten. */
+.quiz-overview-row { margin: 0; }
+.quiz-overview {
   display: flex;
   flex-wrap: wrap;
-  gap: 7px;
-  margin: 12px 0 0;
+  gap: 8px;
+  margin: 0;
   padding: 0;
   list-style: none;
 }
-.quiz-dots li {
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  background: var(--th-soft);
-  box-shadow: inset 0 0 0 1px var(--th-line-strong);
+/* Auf dem Telefon zwei Fünferreihen statt sechs plus vier: Die Breite
+   entscheidet sonst je Gerät, wo die Reihe bricht (gemessen 6 + 4 bei
+   375 px), und zwei gleich lange Reihen lesen sich als eine Übersicht. */
+@media (max-width: 640px) {
+  .quiz-overview { max-width: calc(5 * var(--tap) + 4 * 8px); }
 }
-.quiz-dots .is-correct { background: var(--th-lime); box-shadow: none; }
-.quiz-dots .is-wrong { background: var(--th-red); box-shadow: none; }
-.quiz-dots .is-current { background: var(--th-navy); box-shadow: 0 0 0 2px #fff, 0 0 0 3px var(--th-navy); }
-@media (min-width: 1100px) { .quiz-dots { display: none; } }
+.quiz-overview li { flex: 0 0 auto; }
+.quiz-overview button {
+  display: grid;
+  place-items: center;
+  width: var(--tap);
+  height: var(--tap);
+  padding: 0;
+  border: 2px solid var(--th-line);
+  border-radius: 50%;
+  background: #fff;
+  color: var(--th-navy);
+  font-size: 1rem;
+  font-weight: 800;
+  transition: transform var(--duration-press) var(--ease-out), box-shadow var(--duration-fast) ease;
+}
+.quiz-overview button:disabled { color: var(--th-muted); cursor: default; }
+.quiz-overview button:not(:disabled):hover { box-shadow: 0 0 0 3px rgba(59, 169, 211, .18); }
+.quiz-overview button:not(:disabled):active { transform: scale(.94); }
+.quiz-overview .is-correct button { border-color: var(--th-lime); background: var(--th-lime); color: var(--th-ink); }
+.quiz-overview .is-wrong button { border-color: var(--th-red); background: var(--th-red); color: #fff; }
+.quiz-overview .is-current button {
+  border-color: var(--th-navy);
+  background: var(--th-navy);
+  color: #fff;
+  box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--th-navy);
+}
 
 /* --- Rumpf der Arbeitskarte --- */
 
@@ -4208,6 +4249,7 @@ body.ist-onboarding main { display: flex; }
 .answer.opt-5 { --opt: var(--answer-e); --opt-rgb: var(--answer-e-rgb); --opt-text: var(--answer-e-text); }
 .answer.opt-6 { --opt: var(--answer-f); --opt-rgb: var(--answer-f-rgb); --opt-text: var(--answer-f-text); }
 .answer.opt-7 { --opt: var(--answer-g); --opt-rgb: var(--answer-g-rgb); --opt-text: var(--answer-g-text); }
+.answer.opt-8 { --opt: var(--answer-h); --opt-rgb: var(--answer-h-rgb); --opt-text: var(--answer-h-text); }
 
 .answer::after {
   content: "";
@@ -4694,63 +4736,6 @@ body.ist-onboarding main { display: flex; }
   letter-spacing: .09em;
   text-transform: uppercase;
 }
-
-.quiz-overview {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 8px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.quiz-overview button {
-  display: grid;
-  place-items: center;
-  width: 100%;
-  min-height: var(--tap);
-  aspect-ratio: 1 / 1;
-  padding: 0;
-  border: 2px solid var(--th-line);
-  border-radius: 50%;
-  background: #fff;
-  color: var(--th-navy);
-  font-size: 1rem;
-  font-weight: 800;
-  transition: transform var(--duration-press) var(--ease-out), box-shadow var(--duration-fast) ease;
-}
-.quiz-overview button:disabled { color: var(--th-muted); cursor: default; }
-.quiz-overview button:not(:disabled):active { transform: scale(.94); }
-.quiz-overview .is-correct button { border-color: var(--th-lime); background: var(--th-lime); color: var(--th-ink); }
-.quiz-overview .is-wrong button { border-color: var(--th-red); background: var(--th-red); color: #fff; }
-.quiz-overview .is-current button {
-  border-color: var(--th-navy);
-  background: var(--th-navy);
-  color: #fff;
-  box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--th-navy);
-}
-
-.quiz-legend {
-  display: grid;
-  gap: 8px;
-  margin: 18px 0 0;
-  padding: 0;
-  list-style: none;
-  color: var(--th-muted);
-  font-size: .86rem;
-}
-.quiz-legend li { display: flex; align-items: center; gap: 10px; }
-.quiz-legend li::before {
-  content: "";
-  flex: 0 0 auto;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: var(--th-soft);
-  box-shadow: inset 0 0 0 1px var(--th-line-strong);
-}
-.quiz-legend .legend-correct::before { background: var(--th-lime); box-shadow: none; }
-.quiz-legend .legend-wrong::before { background: var(--th-red); box-shadow: none; }
-.quiz-legend .legend-current::before { background: var(--th-navy); box-shadow: none; }
 
 .aside-thi-button {
   display: flex;

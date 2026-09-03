@@ -29,6 +29,21 @@ function jsonResponse(statusCode, body) {
   };
 }
 
+/** Kürzt eine Fehlerantwort von PostgREST auf `code` und `message`. Das
+ *  Feld `details` trägt bei einer Constraint-Verletzung die abgelehnte
+ *  Zeile — hier bis zu 4000 Zeichen Freitext samt Name — und bleibt aus dem
+ *  Log (Rückstand R-41). Kein JSON: höchstens 200 Zeichen Rohtext. */
+async function fehlerKurz(response) {
+  const roh = await response.text().catch(() => "");
+  try {
+    const daten = JSON.parse(roh);
+    if (daten && typeof daten === "object") {
+      return `${daten.code || "?"}: ${String(daten.message || "").slice(0, 200)}`;
+    }
+  } catch { /* kein JSON: gekürzten Rohtext loggen */ }
+  return roh.slice(0, 200);
+}
+
 function cleanString(value, maxLength) {
   return typeof value === "string" ? value.trim().slice(0, maxLength) : "";
 }
@@ -182,8 +197,9 @@ exports.handler = async function handler(event) {
     );
 
     if (!response.ok) {
-      const detail = await response.text();
-      console.error("Supabase hat Feedback abgelehnt:", response.status, detail);
+      // Nur Status, Code und Meldung — nie `details` mit der abgelehnten
+      // Zeile samt Freitext (Rückstand R-41, siehe submit-quiz.js).
+      console.error("Supabase hat Feedback abgelehnt:", response.status, await fehlerKurz(response));
       return jsonResponse(502, {
         error: "Die Datenbank hat die Speicherung abgelehnt.",
         fallback: "netlify_forms"
