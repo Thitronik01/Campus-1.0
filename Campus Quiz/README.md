@@ -1025,6 +1025,22 @@ Die Speicherzähler sind eine Missbrauchsbremse, keine exakte globale Grenze:
 Netlify kann mehrere Function-Instanzen parallel betreiben. Auch `Origin` ist
 keine Anmeldung und lässt sich außerhalb eines Browsers nachbilden.
 
+### Lokale Campusdaten löschen
+
+Die Schaltfläche **Lokale Campusdaten löschen** steht in der Profileinrichtung,
+im mobilen Campus-Menü und in der Fußzeile. Nach einer Bestätigung entfernt sie
+ausschließlich diese drei Schlüssel aus dem Browser:
+
+- `thitronik.campus.2026.participant` — Profil einschließlich eines optionalen Fotos
+- `thitronik.campus.2026.done` — abgeschlossene Inseln und deren Prozentwerte
+- `thitronik.campus.2026.ausgang` — noch nicht übertragene Quizergebnisse
+
+Danach beginnt der Campus wieder bei der Profileinrichtung. Bereits an den
+Server übermittelte Einsendungen, Arbeitskarten und der nur für die Tabsitzung
+gehaltene THI-Verlauf werden nicht gelöscht. Der serverseitige Löschweg gehört
+in den gesonderten Datenschutzhinweis und darf nicht mit dieser Gerätefunktion
+verwechselt werden.
+
 ### Auswertungs-Views
 
 | View | Beantwortet |

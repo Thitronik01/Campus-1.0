@@ -13,7 +13,7 @@
 
 (function () {
   const EVENT_SLUG = "campus-2026";
-  const ENGINE_VERSION = "1.36.0";
+  const ENGINE_VERSION = "1.37.0";
   const SUBMIT_ENDPOINT = "/.netlify/functions/submit-quiz";
 
   const LS_PARTICIPANT = "thitronik.campus.2026.participant";
@@ -96,6 +96,7 @@
     menueArbeitskarte: $("menue-arbeitskarte"),
     menueFeedback: $("menue-feedback"),
     menueThi: $("menue-thi"),
+    datenLoeschenDialog: $("daten-loeschen-dialog"),
     kopfAvatar: $("kopf-avatar"),
     campusProgressKurz: $("campus-progress-kurz"),
     campusProgressKurzwert: $("campus-progress-kurzwert"),
@@ -471,9 +472,40 @@
     const participant = normalizeParticipant({ ...(loadParticipant() || {}), ...data });
     try {
       localStorage.setItem(LS_PARTICIPANT, JSON.stringify(participant));
+      loeschwegeAktualisieren();
       return participant;
     } catch {
       return null;
+    }
+  }
+
+  function lokaleCampusdatenVorhanden() {
+    try {
+      return [LS_PARTICIPANT, LS_DONE, LS_OUTBOX]
+        .some((schluessel) => localStorage.getItem(schluessel) !== null);
+    } catch {
+      return false;
+    }
+  }
+
+  function loeschwegeAktualisieren() {
+    const vorhanden = lokaleCampusdatenVorhanden();
+    document.querySelectorAll("[data-campusdaten-loeschen]")
+      .forEach((knopf) => { knopf.hidden = !vorhanden; });
+  }
+
+  /** Entfernt nur die drei Campus-Schlüssel. Arbeitskarten haben einen
+   *  eigenen Verlauf, THI nutzt sessionStorage, und bereits übertragene
+   *  Daten liegen auf dem Server — diese Bereiche dürfen einander beim
+   *  lokalen Löschen nicht überraschend mitreißen. */
+  function lokaleCampusdatenLoeschen() {
+    try {
+      [LS_PARTICIPANT, LS_DONE, LS_OUTBOX]
+        .forEach((schluessel) => localStorage.removeItem(schluessel));
+      fluechtig.length = 0;
+      return true;
+    } catch {
+      return false;
     }
   }
 
@@ -1535,6 +1567,22 @@
     el.menueThi.addEventListener("click", () => {
       el.menueDialog.close();
       thiOeffnen();
+    });
+    document.querySelectorAll("[data-campusdaten-loeschen]").forEach((knopf) => {
+      knopf.addEventListener("click", () => {
+        if (el.menueDialog.open) el.menueDialog.close();
+        el.datenLoeschenDialog.showModal();
+      });
+    });
+    el.datenLoeschenDialog.addEventListener("close", () => {
+      if (el.datenLoeschenDialog.returnValue !== "delete") return;
+      if (!lokaleCampusdatenLoeschen()) {
+        toast("Die lokalen Campusdaten konnten nicht gelöscht werden.");
+        return;
+      }
+      state.roundActive = false;
+      state.campusEntered = false;
+      location.replace("/quiz");
     });
     [el.aktionThi, el.mobilNavThi].forEach((knopf) => {
       knopf.addEventListener("click", thiOeffnen);
@@ -3621,6 +3669,7 @@
     panEinrichten();
     bogenEinrichten();
     kopfEinrichten();
+    loeschwegeAktualisieren();
 
     try {
       state.catalog = await fetchJson("/data/inseln.json");

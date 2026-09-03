@@ -821,6 +821,20 @@ body.ist-onboarding main { display: flex; }
   align-items: center;
   min-height: 44px;
 }
+.profile-data-delete,
+.colophon-loeschen {
+  min-height: var(--tap);
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--th-red);
+  font-size: .8rem;
+  font-weight: 750;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.profile-data-delete { justify-self: center; }
 
 
 @keyframes enter {
@@ -2346,6 +2360,8 @@ body.ist-onboarding main { display: flex; }
   text-decoration: none;
 }
 .menue-punkt:hover { border-color: var(--th-blue); background: var(--info-bg); }
+.menue-punkt-gefahr { color: var(--th-red); }
+.menue-punkt-gefahr .ka-icon { border-color: rgba(207, 20, 43, .25); background: #FFF2F4; }
 
 /* ------------------------------------------------------------- Startbild --- */
 
@@ -4889,6 +4905,8 @@ body.ist-quiz .masthead { display: none; }
 
 .colophon {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   justify-content: space-between;
   gap: 12px;
   margin-top: 18px;
@@ -4896,6 +4914,7 @@ body.ist-quiz .masthead { display: none; }
   color: var(--th-muted);
   font-size: .78rem;
 }
+.colophon-loeschen { margin: -7px auto; }
 
 /* ---------------------------------------------------------------- Toast --- */
 
@@ -4936,7 +4955,9 @@ body.ist-quiz .masthead { display: none; }
   .profile-submit:hover:not(:disabled) { background: #B90F27; border-color: #B90F27; }
   .profile-footer a:hover,
   .profile-consent a:hover,
-  .profile-photo-remove:hover { color: var(--th-red); }
+  .profile-photo-remove:hover,
+  .profile-data-delete:hover,
+  .colophon-loeschen:hover { color: #8E0C1D; background: #FFF2F4; }
   .island-card:hover {
     border-color: var(--th-blue);
     box-shadow: 0 16px 34px rgba(10, 39, 71, .13);

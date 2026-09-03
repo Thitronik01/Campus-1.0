@@ -43,6 +43,14 @@ pruefe("Audioknopf wird für neue Fragen zurückgesetzt", /qAudioButton\.disable
 pruefe("Jeder neue Campus-Einstieg beginnt mit der Profileinrichtung", /if \(!state\.campusEntered \|\| !participantComplete\(participant\)\) \{\s*renderOnboarding\(participant\);/.test(engine));
 pruefe("Profilabschluss führt im Gesamtcampus zur Inselkarte", /function enterCampusAfterProfile\(\)[\s\S]*?params\.delete\("insel"\);[\s\S]*?history\.replaceState\([^;]+\/quiz[\s\S]*?renderIslands\(\);/.test(engine));
 pruefe("Profilformular gibt den Campus-Einstieg frei", /profileForm\.addEventListener\("submit"[\s\S]*?state\.campusEntered = true;\s*await enterCampusAfterProfile\(\);/.test(engine));
+pruefe("lokaler Löschweg ist im Profil, Menü und Fuß erreichbar",
+  (html.match(/data-campusdaten-loeschen/g) || []).length === 3);
+pruefe("Löschdialog nennt Umfang und Servergrenze",
+  /id="daten-loeschen-dialog"[\s\S]*?Profil, Inselfortschritt und noch nicht übertragene Quizergebnisse[\s\S]*?Bereits an den Server übermittelte/.test(html));
+pruefe("Löschweg entfernt genau die drei Campus-Schlüssel",
+  /\[LS_PARTICIPANT, LS_DONE, LS_OUTBOX\][\s\S]*?localStorage\.removeItem\(schluessel\)/.test(engine));
+pruefe("Löschweg verlangt eine Bestätigung",
+  /datenLoeschenDialog\.returnValue !== "delete"/.test(engine));
 
 pruefe("Rückblick liefert die gespeicherte Reihenfolge", /state\.results\.push\(\{ question: q, answer, isCorrect, draft: draftSnapshot\(\) \}\)/.test(engine));
 pruefe("Rückblick prüft nie eine schon bewertete Frage", /if \(!state\.results\[state\.viewIndex\]\) \{ reveal\(\); return; \}/.test(engine));
