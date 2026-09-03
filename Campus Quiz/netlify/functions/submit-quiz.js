@@ -40,6 +40,22 @@ function jsonResponse(statusCode, body) {
   };
 }
 
+/** Kürzt eine Fehlerantwort von PostgREST auf das, was zur Fehlersuche
+ *  reicht: `code` und `message`. Das Feld `details` trägt bei einer
+ *  Constraint-Verletzung die abgelehnte Zeile — mit Klarname und Antworten —
+ *  und `hint` gelegentlich Spaltenwerte; beides bleibt aus dem Log. Ist die
+ *  Antwort kein JSON, gehen höchstens 200 Zeichen davon ins Log. */
+async function fehlerKurz(response) {
+  const roh = await response.text().catch(() => "");
+  try {
+    const daten = JSON.parse(roh);
+    if (daten && typeof daten === "object") {
+      return `${daten.code || "?"}: ${String(daten.message || "").slice(0, 200)}`;
+    }
+  } catch { /* kein JSON: gekürzten Rohtext loggen */ }
+  return roh.slice(0, 200);
+}
+
 function cleanString(value, maxLength) {
   return typeof value === "string" ? value.trim().slice(0, maxLength) : "";
 }
@@ -287,8 +303,12 @@ exports.handler = async function handler(event) {
     }
 
     if (!response.ok) {
-      const detail = await response.text();
-      console.error("Supabase hat abgelehnt:", response.status, detail);
+      /* Nur Status, Fehlercode und Meldung ins Log. PostgREST legt bei
+         einer Constraint-Verletzung die betroffene Zeile in `details` —
+         Klarname, Händlernummer und alle Antworten stünden sonst im
+         Netlify-Protokoll, das anderen Zugriff und andere Aufbewahrung hat
+         als die Datenbank (Rückstand R-41). */
+      console.error("Supabase hat abgelehnt:", response.status, await fehlerKurz(response));
       return jsonResponse(502, {
         error: "Die Datenbank hat die Speicherung abgelehnt.",
         fallback: "netlify_forms",

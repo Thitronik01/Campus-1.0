@@ -292,19 +292,34 @@ auf iOS und Android den systemeigenen Auswähler mit.
 
 ### Die Fragenansicht
 
-Seit Engine 1.35 besteht die Fragenansicht aus zwei Teilen: der weißen
-Arbeitskarte mit Brotkrume (Inselcode und Titel), Zähler, Fortschrittsbalken,
-Frage, Antworten und Auflösung — und ab 1100 px Fensterbreite einer
-Seitenleiste mit **Fragenübersicht**, THI-Zugang und Inselkarte. Darunter
-fällt die Seitenleiste weg; die Übersicht steht dann als Punktreihe unter dem
-Fortschrittsbalken.
+Seit Engine 1.36 besteht die Fragenansicht aus der weißen Arbeitskarte —
+Brotkrume (Inselcode und Titel), **Fragenübersicht**, Frage, Antworten und
+Auflösung — und ab 1100 px Fensterbreite einer Seitenleiste mit THI-Zugang
+und Inselkarte. Die Kopfzeile der Seite ist auf diesem Bildschirm
+ausgeblendet (`body.ist-quiz`); was man beim Antworten braucht, steht im Kopf
+der Karte: Insel, THI, Abbrechen.
 
-Das Antwortraster richtet sich nach den Daten, nicht nach einem Extra-Feld:
+Die Fragenübersicht ist ein Kreis je Frage, in einer Reihe direkt unter der
+Brotkrume, auf allen Breiten dieselbe — und die **einzige** Fortschrittsanzeige.
+Bis 1.35 standen Zähler, Balken, eine Punktreihe und die Übersicht in der
+Seitenleiste nebeneinander und sagten viermal dasselbe. Jeder Kreis ist ein
+Knopf mit 44 echten Pixeln; wo zehn nicht in eine Reihe passen, bricht sie in
+zwei Fünferreihen um. Eine Legende gibt es nicht: Farbe plus Zahl trägt, und
+der zugängliche Name jedes Knopfes nennt den Stand in Worten.
+
+**THI kennt die Frage.** Die Engine meldet THI die angezeigte Frage samt
+Antwortmöglichkeiten (`thiKontextMelden`, nie die Lösung); ab 1100 px öffnet
+er sich neben der Frage statt davor, darunter als Panel mit Kontextzeile.
+Unterhalb der Desktopbreite führt ein Knopf im Kartenkopf zu ihm, ab 1100 px
+die Karte in der Seitenleiste. Einzelheiten in [`THI.md`](THI.md).
+
+Das Antwortraster richtet sich nach den Daten, nicht nach einem Extra-Feld.
+Höchstens acht Antworten (A–H) je Frage, für Text wie für Produktkacheln:
 
 | Fall | Raster |
 |---|---|
 | bis 5 Textantworten | zwei Spalten, ab 640 px; darunter eine |
-| 6 bis 9 Textantworten | drei Spalten ab 1400 px, sonst zwei (`data-count` am Raster) |
+| 6 bis 8 Textantworten | drei Spalten ab 1400 px, sonst zwei (`data-count` am Raster) |
 | Bild neben der Frage (`media`) | Frage und Antworten links in einer Spalte, Bild rechts, ab 760 px |
 | Bildantworten | vier nebeneinander ab 900 px, sonst zwei — auch am Telefon |
 | Richtig/Falsch | zwei schmale Kacheln |

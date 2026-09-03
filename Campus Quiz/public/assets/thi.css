@@ -82,6 +82,21 @@
 
 .thi-schleier.ist-offen { opacity: 1; visibility: visible; }
 
+/* ------------------------------------------------- Neben der Frage --------
+
+   In der Fragenansicht soll THI neben der Frage stehen, nicht davor: Wer
+   eine Frage bespricht, will sie dabei lesen und die Antworten antippen.
+   Ab 1100 px bleibt die Seite deshalb bedienbar — kein Schleier —, und die
+   Hülle rückt um die Panelbreite nach links, damit das Panel nichts
+   verdeckt. Darunter (Tablet hochkant, Telefon) bleibt es beim
+   überlagernden Panel; für beides nebeneinander ist dort kein Platz, und
+   die Kontextzeile im Panel sagt, um welche Frage es geht. */
+@media (min-width: 1100px) {
+  body.ist-quiz .thi-schleier { display: none; }
+  body.ist-quiz .shell { transition: padding-right var(--duration-normal) var(--ease-out); }
+  body.ist-quiz.thi-offen .shell { padding-right: calc(var(--thi-breite) + 20px); }
+}
+
 /* ---------------------------------------------------------------- Panel --- */
 
 .thi-panel {
@@ -355,6 +370,37 @@
 
 .thi-verlauf[hidden],
 .thi-fuss[hidden] { display: none; }
+
+/* Die Kontextzeile: welche Wissenscheck-Frage THI gerade kennt. Sichtbar,
+   weil das Mitschicken sonst unbemerkt bliebe; dezent, weil sie bei jeder
+   Frage da ist. */
+.thi-kontext {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 14px 0;
+  padding: 8px 12px;
+  border: 1px solid rgba(59, 169, 211, .35);
+  border-radius: var(--radius-md);
+  background: var(--info-bg);
+  color: var(--th-navy);
+  font-size: .82rem;
+  line-height: 1.3;
+}
+.thi-kontext[hidden] { display: none; }
+.thi-kontext svg {
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.thi-kontext strong { display: block; font-weight: 800; }
+.thi-kontext small { display: block; color: var(--th-muted); font-size: .76rem; }
 
 /* Begrüßung: erscheint nur, solange nichts gefragt wurde. */
 .thi-start { display: grid; gap: 14px; padding: 6px 2px 0; }

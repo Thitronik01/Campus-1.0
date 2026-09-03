@@ -373,6 +373,24 @@ Ein Verdacht ist kein Befund. Der Unterschied kostet zwei Minuten.
 `ANYMIZE_API_KEY`. Wer in einem Test die eine Schreibweise wegnimmt, um die
 andere zu prüfen, prüft nichts.
 
+### Die Arbeitskarte hat ihre eigene Fassung — und ihre Modul-Importe auch
+
+`/arbeitskarte/assets/*` wird wie `/assets/*` ein Jahr `immutable`
+ausgeliefert, hängt aber **nicht** an `ENGINE_VERSION`: Die Marke steht in
+`public/arbeitskarte/index.html` (`?v=1.2.0`) und in jedem `import … from
+"./x.js?v=1.2.0"` der Module darunter. Ein Import ohne Marke ist ein Jahr
+lang eingefroren, egal was auf dem Server liegt.
+
+Im September 2026 wurden die vier Fahrzeugansichten von PNG auf WebP
+umgestellt und `data-v1.js` auf die neuen Pfade gesetzt — der Import
+`from "./data-v1.js"` trug aber keine Marke. Jeder Browser, der die
+Arbeitskarte schon einmal offen hatte, lud weiter die alte `data-v1.js`,
+fragte nach PNG-Dateien, die es nicht mehr gab, und zeigte leere Flächen.
+Auf einem frischen Gerät sah alles richtig aus. Seither prüft
+`tools/test-arbeitskarte.mjs`, dass jeder relative Import dieselbe Marke
+trägt wie `index.html`. Wer dort etwas ändert, zählt die Marke an allen
+Stellen hoch.
+
 ---
 
 ## 8. Die jüngeren Bausteine

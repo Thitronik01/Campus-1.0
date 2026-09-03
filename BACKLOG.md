@@ -19,15 +19,21 @@ Entwicklungsserver (R-26), die Action-Pins (R-39), der offene Dev-Server im
 WLAN (R-42), THI in der Paketprüfung (R-45) und die verschluckten Hinweise
 in montag.js (R-47).
 
-Die verbleibenden **52** stehen hier, nach Schwere geordnet. Jeder Eintrag ist so
+Sechs weitere sind am 3. September 2026 mit dem Umbau der Fragenansicht und
+dem Fragenkontext für THI erledigt: der fälschbare `<kontext>`-Block (R-38),
+die vollständigen Supabase-Fehlerantworten im Log (R-41), das Modellkürzel
+für den Anthropic-Weg (R-54), die feste „sieben Inseln" (R-55) und die toten
+data-Attribute am Quizbildschirm (R-61, R-62).
+
+Die verbleibenden **46** stehen hier, nach Schwere geordnet. Jeder Eintrag ist so
 geschrieben, dass er ohne Rückfrage zum Issue werden kann;
 `.github/issues-anlegen.sh` legt sie mit der GitHub-CLI an.
 
 | Schwere | Zahl |
 |---|---|
 | hoch | 9 |
-| mittel | 26 |
-| niedrig | 17 |
+| mittel | 24 |
+| niedrig | 13 |
 
 > **Vor dem Scharfschalten von Supabase** gehören die Punkte zu
 > Ratenbegrenzung, Datenschutzhinweis und Löschweg entschieden — sie
@@ -486,21 +492,6 @@ geschrieben, dass er ohne Rückfrage zum Issue werden kann;
 
 ---
 
-## R-38 · Der Nutzer kann einen eigenen <kontext>-Block faelschen
-<!-- labels: sicherheit, mittel -->
-
-**Schwere:** mittel · **Bereich:** sicherheit · **Ort:** `Campus Quiz/netlify/functions/thi.mjs:584-588`
-
-**Befund.** Kontextblock und Nutzerfrage werden ohne Trennung oder Maskierung in dieselbe Nachricht geschrieben. Wer `</kontext><kontext>...</kontext>Frage des Nutzers:` selbst tippt, schiebt beliebige Aussagen als vermeintlich gefundenen Wissensbestand ein.
-
-**Beleg.** Z. 587: ``content: kontext ? `${kontext}\n\nFrage des Nutzers:\n${frage}` : frage``. Nachgestellt: eine Frage mit eigenem `</kontext>`-Ende erzeugt eine Nachricht mit zwei `<kontext>`-Oeffnungen und zwei `Frage des Nutzers:`-Marken; der gefaelschte Block steht als letzter und damit naeher an der Frage. Dasselbe gilt fuer die Marke `[WERKZEUG-ERGEBNIS ...]` aus Z. 408.
-
-**Folge.** Die Systemanweisung schaerft dem Modell in Z. 127-133 ausdruecklich ein, dem Wortlaut im Kontext vor eigenem Wissen zu folgen ("WORTLAUT SCHLAEGT ANNAHME") — genau diese Regel macht den gefaelschten Block wirksam. THI bestaetigt dann eine erfundene, teils sicherheitsrelevante Aussage (Scharfschalten, Gaswarnung) und nennt dazu noch eine Fundstelle, was den Screenshot in der Schulung glaubwuerdig macht.
-
-**Vorschlag.** Die Nutzerfrage vor dem Einsetzen entschaerfen: `<kontext>`, `</kontext>` und `[WERKZEUG-ERGEBNIS` in der Frage neutralisieren (z. B. spitze Klammern ersetzen). Besser noch Kontext und Frage in getrennte Nachrichten legen, statt sie zu verketten.
-
----
-
 ## R-40 · Der Netlify-Forms-Rueckfallweg hebt die serverseitige Bewertung wieder auf
 <!-- labels: sicherheit, mittel -->
 
@@ -513,21 +504,6 @@ geschrieben, dass er ohne Rückfrage zum Issue werden kann;
 **Folge.** Ein POST auf / mit form-name=campus-quiz-result, percent=100 und einem beliebigen Namen wird von Netlify Forms angenommen — die Function und damit die gesamte serverseitige Bewertung ist dabei uebersprungen. Die Zusage im Kopf von submit-quiz.js Z. 6-9 ("ein manipuliertes Ergebnis aus dem Browser landet nicht in der Datenbank") gilt fuer den Pilotweg nicht, und genau dieser Weg ist ohne gesetzte Umgebungsvariablen der aktive. Der Honeypot bot-field ist gegen einen gezielten Aufruf wirkungslos.
 
 **Vorschlag.** Entweder Supabase vor dem ersten Schulungstag scharf schalten und den Forms-Zweig entfernen, oder im Forms-Datensatz score/total/percent weglassen und nur answers_json ablegen, damit die Auswertung spaeter erneut serverseitig rechnet. In beiden Faellen den Kommentar in Z. 1863-1866 auf den tatsaechlichen Stand bringen.
-
----
-
-## R-41 · Fehlerantworten von Supabase werden vollstaendig ins Function-Log geschrieben
-<!-- labels: sicherheit, mittel -->
-
-**Schwere:** mittel · **Bereich:** sicherheit · **Ort:** `Campus Quiz/netlify/functions/submit-feedback.js:185-186`
-
-**Befund.** Bei einer Ablehnung durch die Datenbank landet der komplette Antwortkoerper ungekuerzt im Netlify-Log — und PostgREST legt bei Constraint-Verletzungen die betroffene Zeile in das details-Feld.
-
-**Beleg.** submit-feedback.js Z. 185-186: "const detail = await response.text(); console.error(\"Supabase hat Feedback abgelehnt:\", response.status, detail);". submit-quiz.js Z. 290-291 ist wortgleich aufgebaut. Gekuerzt wird nirgends; thi.mjs macht es an vergleichbarer Stelle anders und schneidet mit "detail.slice(0, 300)" (Z. 638).
-
-**Folge.** Scheitert eine Einsendung an einem Check — etwa an campus_feedback_dealer_number_check —, koennen Teilnehmername, Haendlerbetrieb und die Freitextfelder (Verbesserungsvorschlaege, Teamstimmung, bis zu 4000 Zeichen) im Klartext in den Netlify-Funktionsprotokollen stehen. Diese Protokolle unterliegen einer anderen Aufbewahrung und einem anderen Zugriffskreis als die Datenbank, in der dieselben Daten geschuetzt sind.
-
-**Vorschlag.** Nur Statuscode und eine gekuerzte, von Feldwerten befreite Fehlermeldung protokollieren — etwa das code- und message-Feld der PostgREST-Antwort, ohne details und hint. Zur Nachverfolgung genuegt zusaetzlich die submissionId beziehungsweise session_id.
 
 ---
 
@@ -651,35 +627,6 @@ geschrieben, dass er ohne Rückfrage zum Issue werden kann;
 
 ---
 
-## R-54 · Voreingestelltes Modellkuerzel ist fuer den Anthropic-Weg unbrauchbar
-<!-- labels: doku, niedrig -->
-
-**Schwere:** niedrig · **Bereich:** doku · **Ort:** `Campus Quiz/netlify/functions/thi.mjs:70, 619`
-
-**Befund.** `MODELL` traegt die Anymize-Schreibweise `anbieter/modell` und wird ohne Umformung auch an api.anthropic.com geschickt. THI.md nennt fuer den Wechsel nur `ANTHROPIC_API_KEY`, nicht `THI_MODEL`.
-
-**Beleg.** Z. 70 `const MODELL = process.env.THI_MODEL || "anthropic/claude-sonnet-4.6";`, Z. 603 waehlt `ANTHROPIC_URL`, Z. 619 setzt `model: MODELL` unveraendert. THI.md Z. 63: "`anthropic` spricht direkt `api.anthropic.com` an (dann `ANTHROPIC_API_KEY` setzen)" — mehr wird nicht verlangt. Ein Modell-Bezeichner mit Anbieter-Praefix existiert bei Anthropic nicht.
-
-**Folge.** Der als Ausweichweg gedachte Schalter `THI_PROVIDER=anthropic` funktioniert so, wie er dokumentiert ist, nicht: die API antwortet mit einem Fehler, und der Teilnehmer sieht "Der KI-Dienst ist momentan nicht verfuegbar". Faellt genau dann auf, wenn man den Ausweichweg braucht.
-
-**Vorschlag.** Beim Anthropic-Weg einen eigenen Vorgabewert ohne Praefix verwenden (oder das Praefix abschneiden, wenn `THI_PROVIDER=anthropic`), und die Zeile in THI.md um `THI_MODEL` ergaenzen.
-
----
-
-## R-55 · "Sieben Inseln" steht fest im Text — genau der Fehler, den die Datei zu vermeiden erklaert
-<!-- labels: doku, niedrig -->
-
-**Schwere:** niedrig · **Bereich:** doku · **Ort:** `Campus Quiz/netlify/functions/thi-lib/campus-wissen.mjs:42-44`
-
-**Befund.** Der Kopfkommentar begruendet ausfuehrlich, warum die Inseln aus inseln.json erzeugt werden und nicht als Text danebenstehen. Die Zahl sieben ist trotzdem an zwei Stellen fest eingetragen.
-
-**Beleg.** campus-wissen.mjs Z. 42-44: "Der Tag ist in sieben Wissensinseln geteilt" — dagegen Z. 28-31 desselben Kopfes: "Die sieben Inseln stehen bewusst NICHT als Text hier ... ein zweiter, handgepflegter Stand waere spaetestens beim naechsten Umbenennen falsch." Dieselbe Zahl auch in thi.mjs Z. 121 ("die sieben Inseln").
-
-**Folge.** Bei einem Einzelinsel-Paket schreibt tools/build-insel.js Z. 422 eine inseln.json mit genau einer Insel; THI kennt dann eine Insel, behauptet aber weiterhin sieben. Dasselbe passiert, sobald eine Insel dazukommt oder wegfaellt.
-
-**Vorschlag.** Die Zahl aus `inselDaten.inseln.length` einsetzen, statt sie zu schreiben — oder den Satz so formulieren, dass er ohne Zahl auskommt ("Der Tag ist in Wissensinseln geteilt"). In der Systemanweisung genuegt "die Inseln".
-
----
 
 ## R-56 · Wissen/README.md: Dateizahlen veraltet, ein ganzer Medienordner nicht aufgeführt
 <!-- labels: doku, niedrig -->
@@ -753,36 +700,6 @@ geschrieben, dass er ohne Rückfrage zum Issue werden kann;
 **Folge.** 15 Deklarationen ohne Wirkung. Der Kommentar Z. 21-25 beschreibt eine "Antwortpalette A-G" mit passenden Textfarben — tatsaechlich erscheint von der Palette nur ein Rahmen und ein Schatten beim Hover, also gar nichts auf dem Tablet am Fahrzeug, wo getippt statt gehovert wird. Wer die Palette spaeter wieder auf Flaechen anwendet, verlaesst sich auf --opt-text, ohne zu merken, dass der Wert nie erprobt wurde.
 
 **Vorschlag.** Entweder die sieben `--opt-text`-Durchreichungen und die sieben `--answer-*-text`-Tokens loeschen, oder den Kommentar Z. 21-25 auf den tatsaechlichen Umfang (Rahmenfarbe beim Hover) kuerzen.
-
----
-
-## R-61 · Vier data-Attribute werden bei jeder Frage gesetzt, aber von keinem Stylesheet gelesen
-<!-- labels: hygiene, niedrig -->
-
-**Schwere:** niedrig · **Bereich:** hygiene · **Ort:** `Campus Quiz/public/assets/engine.js:1000-1006`
-
-**Befund.** `data-media-layout`, `data-question-type`, `data-answer-media` und `data-answer-layout` werden auf dem Quiz-Screen gepflegt, kommen aber weder in styles.css noch in thi.css vor.
-
-**Beleg.** engine.js Z. 1000-1006 setzt `el.screens.quiz.dataset.mediaLayout`, `.questionType`, `.answerMedia`, `.answerLayout`. `grep -n "data-media-layout|data-question-type|data-answer-media|data-answer-layout" styles.css thi.css` liefert keinen Treffer. Verwendet wird ausschliesslich `data-has-media` (Z. 999, CSS Z. 2617 ff.) und `data-revealed` (Z. 1008/1488, CSS Z. 2683).
-
-**Folge.** Vier Haken ohne Gegenstueck. Wer sie sieht, nimmt an, es gaebe dazu Gestaltung, und sucht sie; wer das CSS aendert, weiss nicht, dass diese Haken bereitliegen und stattdessen benutzt werden koennten.
-
-**Vorschlag.** Entweder benutzen (etwa `data-answer-media` statt der Klassen-Kombination in Befund 16) oder aus engine.js entfernen.
-
----
-
-## R-62 · Fünf data-Attribute am Quizbildschirm werden geschrieben und nirgends gelesen
-<!-- labels: hygiene, niedrig -->
-
-**Schwere:** niedrig · **Bereich:** hygiene · **Ort:** `Campus Quiz/public/assets/engine.js:1000-1005, 1034-1063`
-
-**Befund.** data-media-layout, data-question-type, data-answer-media, data-answer-layout und data-media-orientation haben keinen einzigen Abnehmer — samt der Nachlade-Maschinerie, die nur das letzte davon füllt.
-
-**Beleg.** Geschrieben in Zeile 1000-1005 und 1036/1046/1052/1063. Suche über public/assets/styles.css und public/assets/thi.css: 0 Treffer für `data-media-layout`, `data-question-type`, `data-answer-media`, `data-answer-layout`, `data-media-orientation`; ebenso 0 lesende Zugriffe in engine.js. Verwendet werden nur `data-has-media` (16 CSS-Treffer), `data-revealed` (1) und das separate `data-layout` an Bild bzw. .answers (14). Damit existiert setOrientation() (Zeile 1034-1039) einschließlich `el.qMediaImg.onload = setOrientation` (Zeile 1054) und `if (el.qMediaImg.complete) setOrientation()` (Zeile 1060) ausschließlich, um ein totes Attribut zu setzen.
-
-**Folge.** Rund 25 Zeilen Zustandspflege je Frage ohne Wirkung. Wer das Layout ändert, sucht die Regeln zu diesen Attributen und findet keine — und muss selbst herausfinden, ob sie einmal existierten oder nie geschrieben wurden.
-
-**Vorschlag.** Die vier reinen Schreibzugriffe entfernen und mit ihnen setOrientation() samt onload-Anbindung. `data-has-media`, `data-revealed` und `data-layout` bleiben.
 
 ---
 

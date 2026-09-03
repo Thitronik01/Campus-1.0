@@ -46,8 +46,13 @@ pruefe("Profilformular gibt den Campus-Einstieg frei", /profileForm\.addEventLis
 
 pruefe("Rückblick liefert die gespeicherte Reihenfolge", /state\.results\.push\(\{ question: q, answer, isCorrect, draft: draftSnapshot\(\) \}\)/.test(engine));
 pruefe("Rückblick prüft nie eine schon bewertete Frage", /if \(!state\.results\[state\.viewIndex\]\) \{ reveal\(\); return; \}/.test(engine));
-pruefe("Fragenübersicht und Punktreihe aus einer Schleife", /el\.qOverview\.appendChild\(li\);[\s\S]*?el\.qDots\.appendChild\(punkt\);/.test(engine));
-pruefe("Übersichtsknöpfe erfüllen die Trefferfläche", /\.quiz-overview button \{[^}]*min-height: var\(--tap\);/.test(css));
+pruefe("Fragenübersicht steht im Kopf der Karte", /<div class="quiz-head">[\s\S]*?id="q-overview"[\s\S]*?<div class="quiz-body">/.test(html));
+pruefe("nur eine Fortschrittsanzeige in der Fragenansicht", !/id="q-progress"|id="q-dots"|class="quiz-legend"|quiz-progress-row/.test(html));
+pruefe("Kopfzeile in der Fragenansicht ausgeblendet", /body\.ist-quiz \.masthead \{ display: none; \}/.test(css) && /classList\.toggle\("ist-quiz", name === "quiz"\)/.test(engine));
+pruefe("Übersichtsknöpfe erfüllen die Trefferfläche", /\.quiz-overview button \{[^}]*width: var\(--tap\);[^}]*height: var\(--tap\);/.test(css));
+pruefe("THI in der Fragenansicht erreichbar", /id="btn-quiz-thi"[^>]*aria-label="THI zu dieser Frage fragen"/.test(html) && /btnQuizThi\.addEventListener\("click", thiOeffnen\)/.test(engine));
+pruefe("THI kennt die laufende Frage, nie die Lösung", /function thiKontextMelden/.test(engine) && !/correct/.test(engine.slice(engine.indexOf("function thiKontextMelden"), engine.indexOf("function thiKontextMelden") + 2200)) && /window\.THI = /.test(thi) && /quizfrage: kontext/.test(thi));
+pruefe("THI vergisst die Frage beim Verlassen", /if \(name !== "quiz"\) thiKontextMelden\(null\);/.test(engine));
 pruefe("Seitenleiste nur ab Desktopbreite", /\.quiz-aside \{ display: none; \}\s*@media \(min-width: 1100px\) \{ \.quiz-aside \{ display: grid;/.test(css));
 pruefe("Auflösung in Zellen", /id="q-feedback-erklaert"[\s\S]*?id="q-feedback-irrtum"[\s\S]*?id="q-feedback-mitnehmen"/.test(html));
 

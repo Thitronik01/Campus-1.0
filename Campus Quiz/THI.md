@@ -201,14 +201,41 @@ Der erzeugte Bestand ist versioniert, weil Netlify aus dem Repository baut und
 den Ordner `thi-standalone/` dort nicht hat. Er wird neu erzeugt, wenn das Wiki
 einen neuen Stand hat — sonst nie.
 
-**Das Campus-Wissen** steht in `thi-lib/campus-wissen.mjs`. Die sieben Inseln
-entstehen aus `public/data/inseln.json`, damit sie beim Umbenennen nicht
-veralten; Ablauf, Wissenscheck, Arbeitskarte, Feedbackbogen und THI selbst sind
+**Das Campus-Wissen** steht in `thi-lib/campus-wissen.mjs`. Die Inseln
+entstehen aus `public/data/inseln.json`, damit Zahl und Namen beim Umbenennen
+nicht veralten; Wissenscheck, Arbeitskarte, Feedbackbogen und THI selbst sind
 dort als Text hinterlegt.
+
+**Der Schulungstag** steht ebenfalls dort, als eigener Block: Zeitplan,
+Gruppen und Rotation, der gemeinsame Auftakt auf Vejrø, die sechs
+Rotationsstationen mit ihren Schwerpunkten, Verpflegung und Pausen, Vorabend
+und Abendprogramm. Das ist der **Planungsstand vom 3. September 2026 unter
+Vorbehalt** — jeder Eintrag trägt dieses Präfix im Text, und die
+Systemanweisung hält THI dazu an, es weiterzusagen („Nach aktuellem
+Planungsstand …"), nichts als bestätigt auszugeben und Allergene oder
+Inhaltsstoffe nur zu nennen, wenn sie ausdrücklich bestätigt sind. Die
+Einträge sind absichtlich nach Themen getrennt, damit ein bestätigter
+Speiseplan eingepflegt werden kann, ohne den Zeitplan anzufassen.
+
+Wird ein Teil bestätigt: den Text des Eintrags ersetzen, das
+`PLANUNGSSTAND`-Präfix aus dem `body` nehmen und `stand` auf das Datum der
+Bestätigung setzen. Alt und neu nicht nebeneinander stehen lassen — THI
+würde sie vermischen.
+
+Was dort **nicht** steht, weil es nicht vorliegt: Räume und Aufbauorte der
+Stationen, die Gruppeneinteilung, die Rotationsreihenfolge je Gruppe,
+Allergene, eine Bestehensgrenze oder ein Zertifikat. THI verweist dazu an
+die Betreuung vor Ort. Auch die Themen der Stationen laut Planung
+(Samsø: Basisfahrzeuge und Gaswarner; Vejrø: gemeinsamer Auftakt mit
+WiPro III, NFC, Pro-finder, App) weichen von den Wissenscheck-Themen in
+`inseln.json` ab (Samsø: Einbauorte; Vejrø: Produktneuheiten CampLock,
+VanLock, Wassermelder). Beide stehen im Bestand, jeweils als das
+gekennzeichnet, was sie sind; sobald die Planung endgültig ist, gehört
+eine der beiden Seiten angeglichen.
 
 ### Campus-Wissen ergänzen
 
-In `campus-wissen.mjs` einen Eintrag an `CAMPUS_SEITEN` anhängen:
+In `campus-wissen.mjs` einen Eintrag in `campusSeiten()` anhängen:
 
 ```js
 {
@@ -250,6 +277,33 @@ Der Entwurf ließ den Browser vorab suchen und dafür die Indizes laden. Im
 Campus wären das rund 3 MB Download vor der ersten Frage — im Hallen-WLAN, auf
 Telefonen, für eine Funktion, die viele gar nicht öffnen.
 
+### Die laufende Wissenscheck-Frage
+
+Steht eine Frage auf dem Schirm, meldet die Engine sie THI über
+`window.THI.kontext({ insel, nummer, kategorie, art, prompt, optionen,
+beantwortet })` — Text und Antwortmöglichkeiten in der angezeigten
+Reihenfolge, **nie die Lösung**. Der Browser schickt sie als Feld
+`quizfrage` neben dem Verlauf mit; die Function kappt sie (600 Zeichen
+Frage, zwölf Antworten zu 220 Zeichen), sucht zusätzlich mit ihrem Text im
+Bestand und stellt sie als `<quizfrage>`-Block vor die Nutzerfrage. Im Panel
+zeigt eine Kontextzeile, welche Frage THI kennt; die Vorschläge im leeren
+Zustand richten sich nach ihr.
+
+Die Regel LERNBEGLEITUNG in der Systemanweisung macht THI zum Begleiter,
+nicht zum Vorsager: Er erklärt die Grundlagen, benennt die Kriterien und
+geht auf einzelne Antwortmöglichkeiten ein, wenn danach gefragt wird —
+diktiert aber keine Buchstabenliste. Ist die Frage laut Block beantwortet,
+darf er die Auflösung offen besprechen. Wer das strenger oder lockerer
+will, ändert genau diese Regel in `thi.mjs`.
+
+Beim Verlassen der Fragenansicht räumt die Engine den Kontext
+(`kontext(null)`), sonst spräche THI auf der Karte noch über Frage 7.
+
+Die Marken `<kontext>` und `<quizfrage>` sind das Einzige in der
+Nutzernachricht, das vom Campus stammt. Tippt jemand sie selbst, werden die
+spitzen Klammern entschärft (`[kontext]`) — ein untergeschobener
+Wissensstand erreicht das Modell nicht als Block.
+
 ---
 
 ## Strukturierte Fallaufnahme und Personalisierung
@@ -283,21 +337,26 @@ automatisch an den Modelldienst übertragen.
 node tools/test-thi.js
 ```
 
-74 Prüfungen, ohne API-Schlüssel lauffähig — der Modellaufruf geht gegen einen
-nachgebildeten Anymize-Dienst. Damit ist der komplette Weg belegt, bevor der
-erste Schlüssel eingetragen wird:
+100 Prüfungen, ohne API-Schlüssel lauffähig — der Modellaufruf geht gegen
+einen nachgebildeten Anymize-Dienst. Damit ist der komplette Weg belegt, bevor
+der erste Schlüssel eingetragen wird:
 
 - **Bestand** — Größe, keine internen Artikel, keine internen Abschnitte, keine
   Rohfelder der Händler-Projektion.
-- **Retrieval** — Normalisierung, Stoppwörter, Produktaliasse und acht echte
-  Fragen mit dem Artikel, der treffen muss.
+- **Retrieval** — Normalisierung, Stoppwörter, Produktaliasse und vierzehn
+  echte Fragen mit dem Artikel, der treffen muss — darunter sechs zum
+  Schulungstag (Essen, Mittagspause, Gruppen, Abend, Station, Premiumpartner).
 - **Schutz** — ohne Schlüssel 503 mit klarer Meldung, fremde oder fehlende
   Herkunft 403, GET 405, leerer Verlauf 400, IP-Limit 429, sichere Vorgaben
-  bei fehlerhaften Limits und keine ungeprüften Browser-Antworten als
-  `assistant`-Turns.
+  bei fehlerhaften Limits, keine ungeprüften Browser-Antworten als
+  `assistant`-Turns und ein getippter `<kontext>`-Block, der entschärft wird.
 - **Modell** — Werkzeugschleife über zwei Runden, Werkzeugergebnis als
   `user`-Nachricht (Anymize lehnt `role:"tool"` mit 400 ab), Streaming,
   Dienstfehler ohne Interna an den Browser.
+- **Quizfrage** — der `<quizfrage>`-Block erreicht das Modell mit Insel,
+  Nummer, Antworten in Anzeigereihenfolge und Status; Kappungen greifen; das
+  Lösungsfeld kommt nicht durch; das Retrieval nutzt den Fragetext; ohne
+  Frage kein Block.
 - **Browserteil** — kein `innerHTML`, kein `localStorage`.
 
 Der Lauf hängt in `tools/montag.js` und damit in der Prüfung vor jedem Commit.
@@ -347,12 +406,17 @@ Neuladen und endet mit dem Tab. „Gespräch löschen" räumt sofort auf.
 - **Keine Anmeldung.** Direkte Aufrufe ohne passende Herkunft werden
   abgewiesen; eine echte Nutzerberechtigung ist das nicht. Sobald der Campus
   eine Anmeldung erhält, muss die Function sie mitprüfen.
-- **THI läuft neben dem laufenden Wissenscheck.** Die Systemanweisung verbietet
-  das Herausgeben von Lösungen, und die Fragensätze liegen nicht im
-  Wissensbestand. Ein Sprachmodell ist aber keine Zugriffskontrolle: wer die
-  Antwort auf eine Quizfrage fachlich erfragt, bekommt die Fachauskunft. Das
-  ist gewollt — der Wissenscheck prüft Verstandenes, nicht Auswendiggelerntes.
-  Soll THI während der Bewertung ganz aus, gehört der Schalter hinter eine
-  Abfrage des Bildschirmzustands.
+- **THI hilft beim laufenden Wissenscheck — gewollt.** Seit 1.36 kennt er
+  die angezeigte Frage (siehe „Die laufende Wissenscheck-Frage") und soll
+  beim Verstehen helfen. Die Systemanweisung hält ihn davon ab, die Lösung
+  als Buchstabenliste zu diktieren; ein Sprachmodell ist aber keine
+  Zugriffskontrolle, und wer die Fachauskunft erfragt, bekommt sie. Das ist
+  in Ordnung: Der Wissenscheck prüft Verstandenes, nicht Auswendiggelerntes.
+  Soll THI während der Bewertung ganz aus, gehört der Knopf in der
+  Fragenansicht hinter eine Abfrage des Bildschirmzustands.
+- **Der Schulungstag ist Planungsstand.** Die Einträge zu Zeitplan,
+  Verpflegung und Abendprogramm stammen vom 3. September 2026 und gelten
+  unter Vorbehalt. Sobald etwas bestätigt ist, gehört es eingepflegt (siehe
+  „Wo das Wissen herkommt").
 - **Der Bestand ist vom 13.08.2026.** Ein neuer Wiki-Stand braucht einen neuen
   Lauf von `tools/thi-wissen-bauen.js`.
