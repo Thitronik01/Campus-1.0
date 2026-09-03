@@ -170,9 +170,9 @@ geschrieben, dass er ohne Rückfrage zum Issue werden kann;
 > das Ankreuzfeld ist von einer Kenntnisnahme zu einer widerruflichen
 > Einwilligung nach Art. 6 Abs. 1 lit. a umformuliert. Die Speicherdauer ist
 > auf **zwölf Monate** entschieden und wird nicht nur genannt, sondern
-> durchgesetzt: `supabase_campus_aufbewahrung_migration.sql` legt die
-> Aufräumroutine und den täglichen pg_cron-Job an — sie muss noch von Hand
-> eingespielt werden. **Offen bleiben drei Punkte**, alle in
+> durchgesetzt: `supabase_campus_aufbewahrung_migration.sql` ist seit dem
+> 3. September 2026 eingespielt, der pg_cron-Job `campus-aufbewahrung` läuft
+> täglich um 03:30 UTC. **Offen bleiben drei Punkte**, alle in
 > [`Campus Quiz/DATENSCHUTZ.md`](Campus%20Quiz/DATENSCHUTZ.md) beschrieben:
 > die Belege zu den Auftragsverarbeitern, der fehlende Nachweis der
 > Einwilligung (`privacyAccepted` bleibt im Browser) und das fehlende

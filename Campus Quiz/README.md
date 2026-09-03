@@ -1006,8 +1006,12 @@ Browser-Code. Moderne `sb_secret_`-Keys werden nur im `apikey`-Header gesendet;
 alte `service_role`-JWTs zusätzlich als Bearer-Token. Die Function unterscheidet
 das selbst.
 
-Die Variablen werden erst nach der vereinbarten Codehärtung gesetzt. Bis dahin
-bleibt das neue Projekt leer und Netlify nutzt sein Forms-Sicherheitsnetz.
+Die Variablen sind seit dem 3. September 2026 gesetzt — der Schlüssel nur im
+Kontext Production, damit Deploy Previews nicht in dieselbe Datenbank
+schreiben. Seitdem gehen Einsendungen nach Supabase; Netlify Forms bleibt als
+Netz für den Fall, dass die Datenbank einmal nicht erreichbar ist. Was wann
+tatsächlich lief, steht im Betriebsprotokoll in
+[`SUPABASE-NEUAUFBAU.md`](SUPABASE-NEUAUFBAU.md).
 
 ### Schutz der Schreibfunktionen
 

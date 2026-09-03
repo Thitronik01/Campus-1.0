@@ -20,6 +20,8 @@ was noch fehlt und wie ein Widerruf abgearbeitet wird.
 | Kontakt | `datenschutz@thitronik.de` |
 | Aufsichtsbehörde | ULD Schleswig-Holstein, Kiel |
 | Wirkbetrieb | frühestens November 2026; der Campus soll in rund zwei Monaten spielbar sein |
+| Hinweis live seit | 3. September 2026, `https://thitronik-campus.netlify.app/datenschutz/` |
+| Datenbank angeschlossen seit | 3. September 2026, 15:16 Uhr (Netlify-Variablen plus Deploy) |
 
 Die Einwilligung deckt Wissenscheck **und** Feedbackbogen ab; der Wortlaut des
 Ankreuzfeldes nennt beides. Vorher stand dort „Ich habe die
@@ -89,10 +91,11 @@ eine Spalte `anonymized_at` je Rohdatentabelle, die Funktion
 03:30 UTC aufruft. Die Funktion ist `security definer` mit festem `search_path`
 und für `anon` und `authenticated` gesperrt.
 
-`pg_cron` ist im Projekt verfügbar (1.6.4), aber noch **nicht aktiviert**. Die
-Migration legt die Erweiterung an; fehlt das Recht dazu, bricht sie nicht ab,
-sondern verlangt den Weg über **Database → Extensions** im Dashboard und einen
-zweiten Lauf. Nach dem Einspielen prüfen:
+**Stand 3. September 2026: eingespielt und geprüft.** `pg_cron` ließ sich aus
+der Migration heraus anlegen; der Job steht als
+`campus-aufbewahrung | 30 3 * * * | active = true` und läuft als `postgres` —
+also als Eigentümer der Funktion, weshalb sie ohne zusätzliches
+`grant execute` auskommt. Zur Kontrolle:
 
 ```sql
 select jobid, jobname, schedule, active from cron.job
@@ -102,6 +105,11 @@ select jobid, jobname, schedule, active from cron.job
 Erwartet wird genau eine aktive Zeile. Kommt keine zurück, läuft die Frist
 nicht — dann ist der Hinweistext unter `/datenschutz/`, Abschnitt 6, ein
 Versprechen ohne Deckung.
+
+Der erste Lauf greift in der Nacht auf den 4. September 2026 und findet nichts
+vor: Die älteste Einsendung müsste vom September 2025 sein, und der Bestand
+begann am 3. September 2026 bei null. Das ist Absicht — die Routine soll
+laufen, bevor die erste Zeile entsteht, nicht erst, wenn sie gebraucht wird.
 
 `tools/test-supabase-migration.js` prüft die Frist gegen den Text mit: Wer die
 zwölf Monate im SQL ändert, fällt durch, bis die Seite nachgezogen ist.
