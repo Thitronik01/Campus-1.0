@@ -1,11 +1,10 @@
 -- ===========================================================================
 -- THITRONIK Campus 1.0 — Quiz-Ergebnisse
--- Projekt: mhzlayhnyqlxdyiceyqz (thitronik-profinder-quiz)
--- Erstellt: 2026-08-13
+-- Zielprojekt: pstohdeknhgsywmogmiu (thitronik-campus, Frankfurt)
+-- Erstellt: 2026-08-13; auf den Neuaufbau umgestellt: 2026-09-03
 --
--- Legt eine NEUE Tabelle an. Die bestehende public.quiz_submissions (27 Zeilen
--- aus fehlerquiz-de und pro-finder-de) bleibt unangetastet — die beiden alten
--- Quizze laufen unverändert weiter.
+-- Legt die Quiz-Tabelle im neuen, leeren Campus-Projekt an. Die Testdaten des
+-- früheren Projekts werden bewusst nicht übernommen.
 --
 -- Warum eine neue Tabelle statt Spalten anzuhängen:
 -- quiz_submissions kennt weder Insel noch Händlernummer noch Tätigkeitsbereich
@@ -85,12 +84,17 @@ create index if not exists campus_quiz_created_idx   on public.campus_quiz_submi
 --
 -- RLS an, aber bewusst KEINE Policy: damit kommt weder anon noch authenticated
 -- an die Tabelle. Die Function schreibt mit dem Secret Key und umgeht RLS.
--- Das ist dasselbe Muster wie bei campus_feedback.
+-- Das ist dasselbe Muster wie bei campus_feedback aus der zuvor ausgeführten
+-- supabase_campus_basis_migration.sql.
 -- ---------------------------------------------------------------------------
 
 alter table public.campus_quiz_submissions enable row level security;
 
 revoke all on public.campus_quiz_submissions from anon, authenticated;
+
+-- Die Netlify-Function schreibt mit dem Secret Key als service_role direkt in
+-- diese Tabelle. SELECT braucht dieselbe Rolle für die internen Auswertungen.
+grant select, insert on public.campus_quiz_submissions to service_role;
 
 
 -- ---------------------------------------------------------------------------
@@ -177,13 +181,9 @@ order by island, schnitt_prozent asc;
 -- ---------------------------------------------------------------------------
 -- 7. Auswertung: Quiz und Feedback zusammengeführt
 --
--- Verbindung über die Händlernummer. Bis Abschnitt 1 der Feedbackbogen-
--- Migration (supabase_v14_migration.sql) eingespielt ist, steht die
--- Händlernummer dort ausschließlich im raw_payload — genau darauf greift
--- diese View zu. Nach der Migration kann auf die echte Spalte umgestellt
--- werden; bis dahin funktioniert sie so.
---
--- Nur v14-Feedback: ältere Bögen kennen die Händlernummer nicht.
+-- Verbindung über die Händlernummer. Die vollständige Basismigration legt sie
+-- von Anfang an als geprüfte Spalte an; ein Griff in raw_payload ist deshalb
+-- weder nötig noch erwünscht.
 -- ---------------------------------------------------------------------------
 
 create or replace view public.campus_quiz_und_feedback as
@@ -198,18 +198,19 @@ with quiz as (
 ),
 feedback as (
   select
-    f.raw_payload->>'dealerNumber' as dealer_number,
+    f.dealer_number                as dealer_number,
     max(f.dealer_name)             as haendler_feedback,
     max(f.overall_rating)          as gesamteindruck,
     max(f.recommendation)          as weiterempfehlung,
-    round(avg(r.rating)) filter (where r.section_key <> 'schulungsinseln')
+    round(avg(public.campus_note_einheitlich(f.form_version, r.rating)))
+      filter (where r.section_key <> 'schulungsinseln')
                                    as feedback_schnitt
   from public.campus_feedback f
   left join public.campus_feedback_ratings r on r.feedback_id = f.id
   where f.form_version = 'campus-2026-haendler-v14'
     and f.is_test is not true
-    and f.raw_payload->>'dealerNumber' ~ '^\d{5}$'
-  group by f.raw_payload->>'dealerNumber'
+    and f.dealer_number ~ '^\d{5}$'
+  group by f.dealer_number
 )
 select
   coalesce(q.dealer_number, fb.dealer_number) as haendlernummer,
@@ -226,8 +227,7 @@ order by q.quiz_schnitt nulls last;
 comment on view public.campus_quiz_und_feedback is
   'Quizergebnis und Schulungsfeedback je Händlernummer. Beantwortet: hängen '
   'schwache Quizergebnisse mit schlechter Bewertung der Schulung zusammen? '
-  'ACHTUNG: liest die Händlernummer aus campus_feedback.raw_payload, weil '
-  'Abschnitt 1 von supabase_v14_migration.sql noch nicht eingespielt ist.';
+  'Die Feedbacknoten liegen skalenbereinigt auf einer Achse, auf der 5 gut ist.';
 
 
 -- ---------------------------------------------------------------------------
@@ -268,6 +268,11 @@ revoke all on public.campus_quiz_inseln       from anon, authenticated;
 revoke all on public.campus_quiz_fragen       from anon, authenticated;
 revoke all on public.campus_quiz_taetigkeit   from anon, authenticated;
 revoke all on public.campus_quiz_und_feedback from anon, authenticated;
+
+grant select on public.campus_quiz_inseln           to service_role;
+grant select on public.campus_quiz_fragen           to service_role;
+grant select on public.campus_quiz_taetigkeit       to service_role;
+grant select on public.campus_quiz_und_feedback     to service_role;
 
 
 -- ---------------------------------------------------------------------------

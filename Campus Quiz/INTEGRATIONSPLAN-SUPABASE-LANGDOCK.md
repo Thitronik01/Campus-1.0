@@ -1,22 +1,37 @@
 # Integrationsplan: Supabase und Langdock
 
-Stand: 26. August 2026
+Stand: 3. September 2026
 
 Ziel ist eine sichere, nachvollziehbare Auswertung. Das Quiz und der
 Feedbackbogen bleiben dabei unabhängig von Langdock funktionsfähig.
+
+## Entscheidung zum Neuaufbau
+
+Das frühere Projekt `mhzlayhnyqlxdyiceyqz` ist über das verfügbare
+Supabase-Konto nicht erreichbar und enthielt nur Testdaten. Es wird nicht
+migriert. Das neue Ziel ist `thitronik-campus` in der Organisation
+`Thitronik Campus`, Projekt-ID `pstohdeknhgsywmogmiu`, Region Frankfurt.
+
+Die vorhandenen Langdock-Plugins bestätigen zwei eigene Endpunkte im
+Altprojekt: `quiz-analytics` mit einem benutzerdefinierten API-Key-Header und
+`campus-feedback-langdock` mit einem Bearer-Token. Beide Verbindungen werden
+neu aufgebaut; ihre alten Schlüssel werden nicht übernommen.
 
 ## Was bereits vorbereitet ist
 
 - Der Feedbackbogen sendet über die RPC `submit_campus_feedback(jsonb)`.
 - Das Quiz sendet über die serverseitige Netlify-Funktion `submit-quiz`.
-- Für Quizdaten liegt `supabase_campus_quiz_migration.sql` bereit.
-- Für den Feedbackbogen liegen die noch offenen Abschnitte 1 und 2 in
-  `Feedbackbogen/supabase_v14_migration.sql` bereit.
-- Skalenbewusste Feedback-Views und eine gemeinsame Quiz-und-Feedback-View sind
-  bereits im SQL entworfen.
+- Für das leere Projekt legt `supabase_campus_basis_migration.sql` die
+  vollständige Feedbackbasis im aktuellen v14-Zielstand an.
+- Danach legt `supabase_campus_quiz_migration.sql` Quizdaten und gemeinsame
+  Views an.
+- Ein lokaler Vertragstest prüft RLS, Rechteentzug, `security_invoker`,
+  Zielprojekt und das Fehlen destruktiver SQL-Befehle.
+- Der manuelle Ablauf und seine erwarteten Resultate stehen vollständig in
+  `SUPABASE-NEUAUFBAU.md`.
 
-Noch nicht durchgeführt werden Datenbankmigrationen, Langdock-Zugriffe oder
-produktive Schlüsseländerungen.
+Noch nicht durchgeführt sind die Datenbankmigrationen, die Codehärtung,
+Langdock-Endpunkte oder produktive Schlüsseländerungen.
 
 ## Empfohlene Architektur
 
@@ -37,13 +52,12 @@ serverseitig zu verwenden.
 
 ## Phase 1: Datenbasis stabilisieren
 
-1. Die offene Feedback-Migration zuerst in einer Sicherung oder Staging-Umgebung
-   testen und anschließend produktiv einspielen.
-2. Die Quiz-Migration einspielen und mit einer Demo-Einsendung prüfen.
+1. Die vollständige Basismigration im leeren Projekt einspielen und prüfen.
+2. Die Quiz-Migration einspielen und alle Rechte erneut prüfen.
 3. Berechtigungen und RLS kontrollieren. `anon` darf keine Rohdaten lesen.
 4. Die vorhandenen Auswertungs-Views mit bekannten Testfällen verifizieren.
-5. Die dokumentierte Testeinsendung aus produktiven Kennzahlen ausschließen
-   oder nach Freigabe löschen.
+5. Vor einem Schreibtest Herkunftsschutz, Ratenbegrenzung, Datenschutzhinweis
+   und lokalen Löschweg fertigstellen.
 
 Abnahmekriterium: Quiz und Feedback werden zuverlässig gespeichert, alte und
 neue Feedbackskalen ergeben vergleichbare Kennzahlen und Rohdaten sind nicht
@@ -64,10 +78,11 @@ Nicht an Langdock gehen standardmäßig Name, Händlernummer, Händlername,
 Session-ID oder vollständige Roh-Payloads. Kleine Gruppen werden unterdrückt,
 damit einzelne Personen nicht aus Kombinationen erkannt werden können.
 
-Der Zugriff erfolgt bevorzugt über eine kleine Supabase Edge Function mit
-eigenem Dienstschlüssel und einer festen Antwortstruktur. Supabase beschreibt
-Edge Functions ausdrücklich als serverseitigen Ort für Drittanbieteraufrufe
-und Geheimnisse.
+Der Zugriff erfolgt über zwei kleine Supabase Edge Functions mit getrennten
+Zugangswerten und festen Antwortstrukturen. Die Trennung entspricht den beiden
+bereits in Langdock vorhandenen Aufgaben und ermöglicht, einen Zugang ohne
+Ausfall des anderen zu widerrufen. Supabase beschreibt Edge Functions
+ausdrücklich als serverseitigen Ort für Drittanbieteraufrufe und Geheimnisse.
 
 ## Phase 3: Langdock-Pilot
 
@@ -96,9 +111,8 @@ nicht mit Produktionsdaten zu verbinden. Falls er für die technische
 Vorbereitung genutzt wird, dann nur projektgebunden, read-only und mit auf die
 nötigen Funktionsgruppen begrenztem Zugriff.
 
-## Nicht in dieser Runde
+## Bis zur Datenbank- und Datenschutzabnahme ausgeschlossen
 
-- keine produktive Migration
 - keine Langdock-API-Schlüssel im Repository oder Browser
 - kein direkter Langdock-Zugriff auf Rohdaten
 - kein automatisches Versenden von KI-Auswertungen

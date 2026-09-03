@@ -25,7 +25,9 @@ gebaut wurde.
 | `tools/bilder-aufbereiten.js` | Rechnet Bilder auf WebP unter 150 KB um |
 | `tools/karten-assets.js` | Macht aus dem Asset-Pack die Motive der Expeditionskarte |
 | `netlify/functions/submit-quiz.js` | Bewertet serverseitig; schreibt nach Supabase oder gibt den geprüften Netlify-Forms-Ausweichweg frei |
-| `supabase_campus_quiz_migration.sql` | Tabelle und Auswertungs-Views. **Noch nicht eingespielt.** |
+| `supabase_campus_basis_migration.sql` | Vollständige Feedbackbasis für das neue, leere Campus-Projekt. **Noch nicht eingespielt.** |
+| `supabase_campus_quiz_migration.sql` | Quiztabelle und gemeinsame Auswertungs-Views. Läuft nach der Basismigration. **Noch nicht eingespielt.** |
+| `SUPABASE-NEUAUFBAU.md` | Verbindlicher Klick-, Prüf- und Betriebsablauf für das neue Supabase-Projekt |
 | `tools/build-insel.js` | **Baut je Insel einen fertigen Netlify-Ordner.** Siehe unten. |
 | `tools/check-fragen.js` | Prüft die Fragensätze. Vor jedem Deploy laufen lassen. |
 | `tools/test-function.js` | Testet die Bewertungslogik der Quelle ohne Datenbank |
@@ -972,16 +974,21 @@ gesammelt. Netlify zeigt sie im Site-Dashboard und exportiert sie als CSV. Die
 Function prüft und bewertet jede Einsendung trotzdem serverseitig; manipulierte
 Prozentwerte aus dem Browser werden weiterhin ignoriert.
 
-### Später: Supabase
+### Supabase-Neuaufbau
 
-Supabase-Projekt `mhzlayhnyqlxdyiceyqz`, Tabelle `campus_quiz_submissions`.
+Am 3. September 2026 wurde in der Organisation `Thitronik Campus` das leere
+Projekt `thitronik-campus` angelegt. Seine Projekt-ID ist
+`pstohdeknhgsywmogmiu`, die Region ist Frankfurt. Das frühere Projekt
+`mhzlayhnyqlxdyiceyqz` wird nicht übernommen; seine Einträge waren Testdaten
+und bleiben dort unangetastet.
 
-Die Tabelle ist **neu** und lässt die bestehende `quiz_submissions` (27 Zeilen
-aus `fehlerquiz-de` und `pro-finder-de`) unangetastet — die beiden alten Quizze
-laufen unverändert weiter. `quiz_submissions` kennt weder Insel noch
-Händlernummer noch Tätigkeitsbereich und trägt eine andere `answers`-Struktur;
-sie nachträglich umzubauen hieße, 27 Zeilen mit NULL zu füllen und jede
-Auswertung mit einer Fallunterscheidung zu belasten.
+Die historischen Feedbackmigrationen v11 und v14 sind keine vollständige
+Erstinstallation: v11 beginnt mit `alter table` und setzt Tabellen voraus, die
+nur im Altprojekt vorhanden waren. Für das neue Projekt bildet deshalb
+`supabase_campus_basis_migration.sql` den vollständigen aktuellen Zielstand ab.
+Danach legt `supabase_campus_quiz_migration.sql` Quiztabelle und gemeinsame
+Views an. Der genaue Ablauf und alle erwarteten Prüfergebnisse stehen in
+[`SUPABASE-NEUAUFBAU.md`](SUPABASE-NEUAUFBAU.md).
 
 RLS ist aktiv und es gibt **bewusst keine Policy**: weder `anon` noch
 `authenticated` kommen an die Tabelle. Die Function schreibt mit dem Secret Key
@@ -991,13 +998,16 @@ und umgeht RLS. Dasselbe Muster wie bei `campus_feedback`.
 
 | Variable | Wert |
 |---|---|
-| `SUPABASE_URL` | `https://mhzlayhnyqlxdyiceyqz.supabase.co` |
+| `SUPABASE_URL` | `https://pstohdeknhgsywmogmiu.supabase.co` |
 | `SUPABASE_SECRET_KEY` | Der Secret Key aus den Projekteinstellungen |
 
 Der Secret Key gehört **ausschließlich** in die Netlify-Umgebung, nie in den
 Browser-Code. Moderne `sb_secret_`-Keys werden nur im `apikey`-Header gesendet;
 alte `service_role`-JWTs zusätzlich als Bearer-Token. Die Function unterscheidet
 das selbst.
+
+Die Variablen werden erst nach der vereinbarten Codehärtung gesetzt. Bis dahin
+bleibt das neue Projekt leer und Netlify nutzt sein Forms-Sicherheitsnetz.
 
 ### Auswertungs-Views
 
