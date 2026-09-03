@@ -128,8 +128,9 @@ select grantee, privilege_type
  order by grantee, privilege_type;
 ```
 
-Erwartet wird nur `service_role | EXECUTE`. Eine Zeile für `PUBLIC`, `anon`
-oder `authenticated` bedeutet: stoppen.
+Erwartet werden `postgres | EXECUTE` für die administrative Eigentümerrolle
+und `service_role | EXECUTE` für die Netlify-Function. Eine Zeile für `PUBLIC`,
+`anon` oder `authenticated` bedeutet: stoppen.
 
 ## Schritt 2 — Quiz und gemeinsame Views
 
@@ -247,7 +248,8 @@ Freigabe mit „ja“.
 |---|---|---|
 | 03.09.2026 | Neues Projekt in Organisation `Thitronik Campus` angelegt | Healthy; ID `pstohdeknhgsywmogmiu`; leer |
 | 03.09.2026 | Neuaufbau statt historischer v11-/v14-Kette beschlossen | Basismigration im Repository vorbereitet |
-| offen | Basismigration im SQL-Editor | noch nicht ausgeführt |
+| 03.09.2026 | Basismigration im SQL-Editor | erfolgreich; zwei Tabellen mit RLS, keine öffentlichen Rechte, Feedback-View mit `security_invoker=on` |
+| 03.09.2026 | Erster Lauf der Quizmigration | PostgreSQL `42809` an Zeile 205; `FILTER` war außerhalb von `avg(...)` geklammert; im Repository korrigiert |
 | offen | Quizmigration im SQL-Editor | noch nicht ausgeführt |
 | offen | Rechte und Views geprüft | noch nicht ausgeführt |
 | offen | Codehärtung und Deploy Preview | noch nicht ausgeführt |

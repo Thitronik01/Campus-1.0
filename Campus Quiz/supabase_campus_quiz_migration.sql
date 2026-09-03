@@ -202,8 +202,8 @@ feedback as (
     max(f.dealer_name)             as haendler_feedback,
     max(f.overall_rating)          as gesamteindruck,
     max(f.recommendation)          as weiterempfehlung,
-    round(avg(public.campus_note_einheitlich(f.form_version, r.rating)))
-      filter (where r.section_key <> 'schulungsinseln')
+    round(avg(public.campus_note_einheitlich(f.form_version, r.rating))
+      filter (where r.section_key <> 'schulungsinseln'))
                                    as feedback_schnitt
   from public.campus_feedback f
   left join public.campus_feedback_ratings r on r.feedback_id = f.id
