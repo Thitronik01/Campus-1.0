@@ -30,7 +30,9 @@ neu aufgebaut; ihre alten Schlüssel werden nicht übernommen.
 - Der manuelle Ablauf und seine erwarteten Resultate stehen vollständig in
   `SUPABASE-NEUAUFBAU.md`.
 
-Noch nicht durchgeführt sind die Datenbankmigrationen, die Codehärtung,
+Beide Datenbankmigrationen sind am 3. September 2026 im neuen Projekt
+eingespielt und anhand von RLS, Rollenrechten, View-Eigenschaften und leeren
+Startbeständen geprüft worden. Noch nicht durchgeführt sind die Codehärtung,
 Langdock-Endpunkte oder produktive Schlüsseländerungen.
 
 ## Empfohlene Architektur
@@ -51,6 +53,13 @@ ebenfalls darauf hin, geheime oder Service-Role-Schlüssel ausschließlich
 serverseitig zu verwenden.
 
 ## Phase 1: Datenbasis stabilisieren
+
+**Stand 3. September 2026: Der Datenbankaufbau ist abgeschlossen.** Die drei
+Rohdatentabellen haben RLS aktiviert. `anon` und `authenticated` besitzen keine
+Tabellenrechte. Alle fünf Auswertungs-Views laufen mit `security_invoker=on`;
+Feedback, Bewertungen und Quiz beginnen jeweils mit null Datensätzen. Der
+Schreibweg wird erst nach der Codehärtung mit bewusst erzeugten Testdaten
+abgenommen.
 
 1. Die vollständige Basismigration im leeren Projekt einspielen und prüfen.
 2. Die Quiz-Migration einspielen und alle Rechte erneut prüfen.
