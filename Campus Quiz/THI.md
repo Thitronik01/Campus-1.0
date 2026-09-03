@@ -225,13 +225,16 @@ würde sie vermischen.
 Was dort **nicht** steht, weil es nicht vorliegt: Räume und Aufbauorte der
 Stationen, die Gruppeneinteilung, die Rotationsreihenfolge je Gruppe,
 Allergene, eine Bestehensgrenze oder ein Zertifikat. THI verweist dazu an
-die Betreuung vor Ort. Auch die Themen der Stationen laut Planung
-(Samsø: Basisfahrzeuge und Gaswarner; Vejrø: gemeinsamer Auftakt mit
-WiPro III, NFC, Pro-finder, App) weichen von den Wissenscheck-Themen in
-`inseln.json` ab (Samsø: Einbauorte; Vejrø: Produktneuheiten CampLock,
-VanLock, Wassermelder). Beide stehen im Bestand, jeweils als das
-gekennzeichnet, was sie sind; sobald die Planung endgültig ist, gehört
-eine der beiden Seiten angeglichen.
+die Betreuung vor Ort.
+
+**Die Themen der Stationen kommen aus `inseln.json`**, nicht aus der
+Planung. Die Planung nannte für Samsø „Basisfahrzeuge und Gaswarner" und
+für Vejrø einen Produktblock (WiPro III, NFC, Pro-finder, App); am
+3. September 2026 ist entschieden, dass die Wissenscheck-Themen gelten
+(Samsø: Einbauorte, Vejrø: Produktneuheiten). Der Stationen-Eintrag baut
+sich deshalb aus `inseln.json` auf; `PLANUNG_JE_STATION` in
+`campus-wissen.mjs` ergänzt je Insel nur, was zum Thema passt. Wer eine
+Insel umbenennt oder ihr Thema ändert, ändert es einmal in `inseln.json`.
 
 ### Campus-Wissen ergänzen
 

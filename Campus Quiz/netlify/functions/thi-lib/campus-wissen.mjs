@@ -53,14 +53,44 @@ const PLANUNGSSTAND =
   `Nach aktuellem Planungsstand (Stand ${PLANUNGSSTAND_DATUM}, noch nicht ` +
   "endgültig bestätigt — Änderungen sind möglich): ";
 
+/* Was die Planung je Station über das Wissenscheck-Thema hinaus vorsieht.
+   Die THEMEN der Inseln kommen aus inseln.json — das ist Entscheidung vom
+   3. September 2026: Die Planung nannte für Samsø „Basisfahrzeuge und
+   Gaswarner" und für Vejrø einen Produktblock (WiPro III, NFC, Pro-finder,
+   App); der Wissenscheck sagt Samsø „Einbauorte" und Vejrø
+   „Produktneuheiten", und das gilt. Hier stehen deshalb nur Ergänzungen,
+   die zum Thema aus inseln.json passen; eine Insel ohne Eintrag bekommt
+   allein ihren Wissenscheck-Text. */
+const PLANUNG_JE_STATION = {
+  poel: "Was finde ich wo im Händlerbereich, Orientierung, relevante " +
+    "Informationen und Unterlagen für Händler.",
+  hiddensee: "Montage in der Praxis, Funk-Magnetkontakte kleben, " +
+    "Abzweigverbinder crimpen.",
+  samsoe: "Verschiedene Basisfahrzeuge und ihre Besonderheiten, geeignete " +
+    "Einbauorte je Fahrzeug, Praxisteil.",
+  langeland: "Fahrzeug richtig annehmen, Vorgehen vor dem Einbau, Übergabe an " +
+    "den Kunden nach dem Einbau, kundenorientierte Übergabe und Einweisung.",
+  usedom: "Den Konfigurator verkaufsfördernd einsetzen, das THITRONIK Display " +
+    "im Kundengespräch einsetzen, Verkaufsdisplays erklären und verwenden.",
+  fehmarn: "Fehleranalyse, Fehlerbehebung, häufig gestellte Fragen im Support, " +
+    "wichtige Supportthemen."
+};
+
 /** Handgeschriebene Einträge über Ablauf und Werkzeuge des Campus.
  *
- *  `inseln` ist die Liste aus inseln.json; sie liefert Zahl und Namen, wo
- *  ein Text sie braucht. */
+ *  `inseln` ist die Liste aus inseln.json; sie liefert Zahl, Namen und
+ *  Themen, wo ein Text sie braucht. */
 function campusSeiten(inseln) {
   const anzahl = inseln.length;
   const anzahlWort = { 1: "eine", 6: "sechs", 7: "sieben" }[anzahl] || String(anzahl);
   const namen = inseln.map((i) => i.name).join(", ");
+  const vejro = inseln.find((i) => i.slug === "vejro");
+  const stationen = inseln.filter((i) => i.slug !== "vejro");
+  // „Wo kommt was hin?" endet schon mit Satzzeichen — kein zweites dahinter.
+  const satz = (t) => (/[.!?]$/.test(t) ? t : `${t}.`);
+  const stationZeile = (i) =>
+    `- ${i.name} — ${i.title}: ${satz(i.thema)} ${satz(i.beschreibung)}` +
+    (PLANUNG_JE_STATION[i.slug] ? ` Vorgesehen: ${PLANUNG_JE_STATION[i.slug]}` : "");
 
   return [
     {
@@ -269,13 +299,9 @@ function campusSeiten(inseln) {
         "teilnehmen (bis 09:30 Uhr). Vorgesehene Inhalte:\n\n" +
         "- Begrüßung\n" +
         "- Vorstellung des neuen Premiumpartner-Konzeptes\n" +
-        "- WiPro III: Unterschiede zu herkömmlichen Alarmsystemen, Übersicht " +
-        "und Einsatzmöglichkeiten von WiPro III und WiPro III safe.lock\n" +
-        "- NFC-Modul und dessen Möglichkeiten\n" +
-        "- Pro-finder: Möglichkeiten zur Fahrzeugortung, Fahrzeugstilllegung, " +
-        "Komfortfunktionen\n" +
-        "- Vernetzungsmodul\n" +
-        "- THITRONIK App\n\n" +
+        (vejro
+          ? `- Das Thema der Insel Vejrø, „${vejro.title}“ (${vejro.thema}): ${vejro.beschreibung}\n\n`
+          : "\n") +
         "Danach beginnt die Rotation über die sechs weiteren Stationen."
     },
     {
@@ -293,27 +319,13 @@ function campusSeiten(inseln) {
         "support fehleranalyse fehlerbehebung was wird gemacht was lerne ich",
       body:
         PLANUNGSSTAND +
-        "Die sechs Rotationsstationen des Schulungstags haben diese " +
-        "Schwerpunkte:\n\n" +
-        "- Poel — Händlerbereich: Was finde ich wo im Händlerbereich, " +
-        "Orientierung, relevante Informationen und Unterlagen für Händler.\n" +
-        "- Hiddensee — Funk-Magnetkontakte: Montage in der Praxis, " +
-        "Funk-Magnetkontakte kleben, Abzweigverbinder crimpen.\n" +
-        "- Samsø — Basisfahrzeuge und Gaswarner: verschiedene Basisfahrzeuge " +
-        "und ihre Besonderheiten, geeignete Einbauorte, Praxisteil; die " +
-        "THITRONIK Gaswarner, ihre Unterschiede und häufige Einbaufehler.\n" +
-        "- Langeland — Fahrzeugübergabe und Fahrzeugübernahme: Fahrzeug " +
-        "richtig annehmen, Vorgehen vor dem Einbau, Übergabe an den Kunden " +
-        "nach dem Einbau, kundenorientierte Übergabe und Einweisung.\n" +
-        "- Usedom — Verkauf und Präsentation: den Konfigurator " +
-        "verkaufsfördernd einsetzen, das THITRONIK Display im Kundengespräch " +
-        "einsetzen, Verkaufsdisplays erklären und verwenden.\n" +
-        "- Fehmarn — Support: Fehleranalyse, Fehlerbehebung, häufig gestellte " +
-        "Fragen im Support, wichtige Supportthemen.\n\n" +
+        `Die ${stationen.length === 6 ? "sechs " : ""}Rotationsstationen des ` +
+        "Schulungstags haben diese Schwerpunkte — dieselben wie ihre " +
+        "Wissenschecks:\n\n" +
+        stationen.map(stationZeile).join("\n") + "\n\n" +
         "Vejrø ist der gemeinsame Auftakt aller Gruppen und keine " +
         "Rotationsstation. Wo eine Station aufgebaut ist, sagt die Betreuung " +
-        "vor Ort. Zu jeder Insel gehört ein Wissenscheck; dessen Themen stehen " +
-        "im Eintrag der jeweiligen Insel."
+        "vor Ort. Zu jeder Insel gehört ein Wissenscheck mit demselben Thema."
     },
     {
       route: "/campus/schulungstag/verpflegung",
@@ -426,8 +438,9 @@ function inselEintrag(insel) {
       `Die Insel ${insel.name} (${insel.code}) behandelt im Wissenscheck das Thema ` +
       `"${insel.title}": ${insel.thema}.\n\n${insel.beschreibung}\n\n` +
       "Zu dieser Insel gehört ein Wissenscheck, der nach der Station " +
-      "ausgefüllt wird. Was an der Station selbst auf dem Programm steht, " +
-      "steht im Eintrag „Schulungsinseln und ihre Inhalte“ zum Schulungstag."
+      "ausgefüllt wird; Station und Wissenscheck haben dasselbe Thema. Was " +
+      "die Planung für die Station darüber hinaus vorsieht, steht im Eintrag " +
+      "„Schulungsinseln und ihre Inhalte“ zum Schulungstag."
   };
 }
 
