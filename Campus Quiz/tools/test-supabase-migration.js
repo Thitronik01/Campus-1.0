@@ -15,7 +15,11 @@ const QUIZ = fs.readFileSync(
   path.join(__dirname, "..", "supabase_campus_quiz_migration.sql"),
   "utf8"
 );
-const BEIDE = `${BASIS}\n${QUIZ}`;
+const FRIST = fs.readFileSync(
+  path.join(__dirname, "..", "supabase_campus_aufbewahrung_migration.sql"),
+  "utf8"
+);
+const BEIDE = `${BASIS}\n${QUIZ}\n${FRIST}`;
 
 let bestanden = 0;
 let durchgefallen = 0;
@@ -79,6 +83,24 @@ pruefe("gemeinsame View liest die geprüfte Händlernummernspalte",
   && !hat(/raw_payload\s*->>\s*'dealerNumber'/i, QUIZ));
 pruefe("Feedbackschnitt ist skalenbereinigt",
   hat(/round\(avg\(public\.campus_note_einheitlich\(f\.form_version,\s*r\.rating\)\)\s*filter\s*\(where\s+r\.section_key\s*<>\s*'schulungsinseln'\)\)/i, QUIZ));
+
+/* Aufbewahrungsfrist. Die zwoelf Monate stehen zugleich im Datenschutzhinweis
+   unter /datenschutz/ — wer sie hier aendert, aendert dort mit. */
+pruefe("Aufbewahrungsfrist betraegt zwoelf Monate",
+  hat(/frist\s+interval\s+default\s+interval\s+'12 months'/i, FRIST));
+pruefe("Aufraeumroutine laeuft als Security Definer mit festem search_path",
+  hat(/create\s+or\s+replace\s+function\s+public\.campus_daten_anonymisieren\([\s\S]*?security\s+definer[\s\S]*?set\s+search_path\s*=\s*public,\s*pg_temp/i, FRIST));
+pruefe("Aufraeumroutine ist fuer Browserrollen gesperrt",
+  hat(/revoke\s+execute\s+on\s+function\s+public\.campus_daten_anonymisieren\(interval\)[\s\S]*?from\s+public,\s*anon,\s*authenticated/i, FRIST));
+pruefe("Aufraeumroutine wirkt nicht zweimal auf dieselbe Zeile",
+  (FRIST.match(/anonymized_at\s+is\s+null/gi) || []).length >= 2);
+/* raw_payload traegt jede Angabe des Feedbackbogens ein zweites Mal. Bliebe es
+   stehen, waere die Anonymisierung eine Attrappe — deshalb hier geprueft. */
+pruefe("Anonymisierung raeumt auch raw_payload und die Freitexte",
+  hat(/raw_payload\s*=\s*jsonb_build_object\('anonymisiert',\s*true\)/i, FRIST)
+  && ["recommendation_reason", "topic_wishes", "team_mood",
+      "improvement_suggestions", "positive_aspects", "additional_notes"]
+       .every((feld) => new RegExp(`${feld}\\s*=\\s*null`, "i").test(FRIST)));
 
 // Beim Neuaufbau gibt es nichts zu entfernen. Destruktive Migrationen brauchen
 // laut AGENTS.md eine eigene, ausdrückliche Freigabe und gehören nicht hierher.

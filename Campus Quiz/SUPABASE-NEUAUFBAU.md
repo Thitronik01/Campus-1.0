@@ -37,6 +37,8 @@ voraus und dürfen deshalb nicht als Erstinstallation im neuen Projekt laufen.
   geschützte Edge Functions ersetzen später die Verbindungen zum Altprojekt.
 - Datenschutzhinweis, lokaler Löschweg sowie Raten- und Herkunftsschutz werden
   vor dem produktiven Scharfschalten umgesetzt.
+- Personenbezogene Angaben werden nach zwölf Monaten anonymisiert; die Frist
+  wird von der Datenbank selbst durchgesetzt, nicht von Hand.
 
 ## Begriffe
 
@@ -69,10 +71,13 @@ zwischen den internen Views und Langdock.
    legt Feedbacktabellen, validierende RPC und die aggregierte Feedback-View an.
 2. `supabase_campus_quiz_migration.sql`
    legt Quiztabelle und vier gemeinsame Auswertungs-Views an.
+3. `supabase_campus_aufbewahrung_migration.sql`
+   setzt die Aufbewahrungsfrist von zwölf Monaten durch: Spalte
+   `anonymized_at`, die Aufräumroutine und der tägliche pg_cron-Job.
 
-Beide Dateien sind idempotent: Nach einem vollständig erfolgreichen Lauf dürfen
-sie erneut ausgeführt werden. Sie enthalten keinen `drop`, kein `delete` und
-kein `truncate`. Bei einem Fehler wird nicht mit der zweiten Datei
+Alle drei Dateien sind idempotent: Nach einem vollständig erfolgreichen Lauf
+dürfen sie erneut ausgeführt werden. Sie enthalten keinen `drop`, kein `delete`
+und kein `truncate`. Bei einem Fehler wird nicht mit der nächsten Datei
 weitergemacht; zuerst wird der vollständige Text aus dem SQL-Editor gesichert.
 
 ## Schritt 1 — Feedbackbasis
@@ -188,12 +193,77 @@ select
 
 Im neuen Projekt werden dreimal `0` erwartet.
 
-## Schritt 3 — Netlify erst nach der Codehärtung
+## Schritt 3 — Aufbewahrungsfrist scharfstellen
+
+Am 3. September 2026 entschieden: Personenbezogene Angaben werden **zwölf
+Monate** nach der Einsendung entfernt. Der Datenschutzhinweis unter
+`/datenschutz/` sagt das zu; dieser Schritt macht die Zusage wahr. Ohne ihn
+steht dort ein Versprechen ohne Deckung.
+
+1. Im SQL-Editor eine neue Query öffnen.
+2. Den vollständigen Inhalt von `supabase_campus_aufbewahrung_migration.sql`
+   einfügen.
+3. Die Query zum Beispiel `2026-09-03 Campus Aufbewahrungsfrist` nennen.
+4. **Run** anklicken.
+
+`pg_cron` ist in diesem Projekt verfügbar, aber nicht aktiviert. Meldet der Lauf
+`pg_cron liess sich nicht anlegen`, dann im Dashboard unter **Database →
+Extensions** nach `pg_cron` suchen, einschalten und die Datei erneut ausführen.
+
+Danach prüfen:
+
+```sql
+select jobid, jobname, schedule, active
+  from cron.job
+ where jobname = 'campus-aufbewahrung';
+```
+
+Erwartet wird genau eine Zeile: `30 3 * * *`, `active = true`. Keine Zeile
+bedeutet, dass die Frist nicht läuft — dann stoppen und `pg_cron` nachziehen.
+
+```sql
+select table_name, column_name
+  from information_schema.columns
+ where table_schema = 'public'
+   and column_name = 'anonymized_at'
+ order by table_name;
+```
+
+Erwartet werden zwei Zeilen: `campus_feedback` und `campus_quiz_submissions`.
+
+```sql
+select grantee, privilege_type
+  from information_schema.routine_privileges
+ where routine_schema = 'public'
+   and routine_name = 'campus_daten_anonymisieren'
+ order by grantee;
+```
+
+Eine Zeile für `PUBLIC`, `anon` oder `authenticated` bedeutet: stoppen. Die
+Routine räumt Rohdaten und umgeht als `security definer` die
+Row Level Security.
+
+```sql
+select * from public.campus_daten_anonymisieren();
+```
+
+Im leeren Projekt werden zwei Zeilen mit jeweils `0` erwartet — nichts ist alt
+genug. Der Aufruf ist gefahrlos: Er wirkt nur auf Einsendungen, die älter als
+zwölf Monate sind und noch nicht geleert wurden.
+
+## Schritt 4 — Netlify erst nach der Codehärtung
 
 Die Datenbank allein nimmt noch keine produktiven Campusdaten an. Vor dem Setzen
 der Netlify-Variablen werden Herkunftsprüfung, Ratenbegrenzung,
 Datenschutzhinweis und der lokale Löschweg umgesetzt und über einen Pull Request
-geprüft. Danach werden in Netlify gesetzt:
+geprüft.
+
+> Herkunftsprüfung und Ratenbegrenzung stehen (#91), der lokale Löschweg
+> ebenfalls (#92). Der Datenschutzhinweis liegt unter `/datenschutz/`; ihm
+> fehlt noch die Speicherdauer. Solange sie fehlt, bleiben die Variablen
+> ungesetzt — siehe [`DATENSCHUTZ.md`](DATENSCHUTZ.md).
+
+Danach werden in Netlify gesetzt:
 
 | Variable | Wert |
 |---|---|
@@ -206,7 +276,7 @@ wird weder hier dokumentiert noch in einen lokalen Testbefehl geschrieben.
 Variablen wirken erst nach einem neuen Deploy; zuerst wird ein Deploy Preview
 des Pull Requests verwendet.
 
-## Schritt 4 — Langdock neu verbinden
+## Schritt 5 — Langdock neu verbinden
 
 Die vorhandenen Langdock-Plugins zeigen noch auf das Altprojekt:
 
@@ -256,6 +326,8 @@ Freigabe mit „ja“.
 | 03.09.2026 | Leere Startbestände geprüft | Feedback `0`, Bewertungen `0`, Quiz `0` |
 | 03.09.2026 | Herkunftsprüfung und Ratenbegrenzung | für Quiz und Feedback lokal geprüft; fehlender oder fremder `Origin` ergibt 403, überschrittenes Zeitfenster 429 |
 | 03.09.2026 | Lokaler Löschweg | entfernt nach Bestätigung Profil, Inselfortschritt und Sende-Ausgang; Serverdaten, Arbeitskarten und THI-Verlauf bleiben getrennt |
+| 03.09.2026 | Speicherdauer entschieden | zwölf Monate, danach Anonymisierung; Datenschutzhinweis unter `/datenschutz/` nennt sie |
+| offen | Aufbewahrungs-Migration im SQL-Editor | noch nicht ausgeführt; danach `cron.job` auf `campus-aufbewahrung` prüfen |
 | offen | Deploy Preview der gehärteten Schreibfunktionen | noch nicht geprüft |
 | offen | bewusster Produktivtest | noch nicht ausgeführt |
 | offen | Langdock-Endpunkte und neue Verbindungen | noch nicht ausgeführt |

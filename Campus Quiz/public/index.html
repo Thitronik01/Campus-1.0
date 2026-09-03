@@ -177,8 +177,8 @@
 
               <div class="profile-consent">
                 <input id="profile-privacy" name="privacy" type="checkbox" required aria-describedby="profile-privacy-error">
-                <label for="profile-privacy">Ich habe die <a href="https://www.thitronik.de/datenschutz/" target="_blank" rel="noopener noreferrer">Datenschutzerklärung</a> gelesen und bestätige die Verarbeitung meiner Profildaten.</label>
-                <p class="profile-error" id="profile-privacy-error" hidden>Bitte bestätige die Datenschutzerklärung.</p>
+                <label for="profile-privacy">Ich willige ein, dass meine Angaben, meine Ergebnisse im Wissenscheck und mein Feedback nach dem <a href="/datenschutz/" target="_blank" rel="noopener">Datenschutzhinweis</a> verarbeitet werden. Ich kann die Einwilligung jederzeit widerrufen.</label>
+                <p class="profile-error" id="profile-privacy-error" hidden>Ohne diese Einwilligung kann der Campus nicht starten.</p>
               </div>
 
               <p class="profile-save-error" id="profile-save-error" role="alert" aria-live="assertive" hidden></p>
@@ -189,7 +189,7 @@
 
               <nav class="profile-footer" aria-label="Rechtliches und Kontakt">
                 <a href="https://www.thitronik.de/kontakt/" target="_blank" rel="noopener noreferrer">Support &amp; Kontakt</a>
-                <a href="https://www.thitronik.de/datenschutz/" target="_blank" rel="noopener noreferrer">Datenschutz</a>
+                <a href="/datenschutz/" target="_blank" rel="noopener">Datenschutz</a>
                 <a href="https://www.thitronik.de/impressum/" target="_blank" rel="noopener noreferrer">Impressum</a>
               </nav>
               <button class="profile-data-delete" type="button"
@@ -782,6 +782,10 @@
         <span class="ka-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="3" r="1.2"></circle><path d="M12 4.4V6.6"></path><rect x="3.8" y="6.6" width="16.4" height="12.6" rx="4.2"></rect><path d="M2 11.6v3M22 11.6v3"></path><path d="M9.2 11.3v1.7M14.8 11.3v1.7"></path><path d="M9.6 16q2.4 1.5 4.8 0"></path></svg></span>
         <span>THI fragen</span>
       </button>
+      <a class="menue-punkt" id="menue-datenschutz" href="/datenschutz/" target="_blank" rel="noopener">
+        <span class="ka-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 3l7 3v5.5c0 4.3-2.9 7.9-7 9.5-4.1-1.6-7-5.2-7-9.5V6l7-3Z"></path><path d="M9.3 12.2l1.9 1.9 3.5-3.8"></path></svg></span>
+        <span>Datenschutz</span>
+      </a>
       <button class="menue-punkt menue-punkt-gefahr" type="button"
               data-campusdaten-loeschen hidden>
         <span class="ka-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"></path></svg></span>
