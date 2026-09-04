@@ -13,7 +13,7 @@
 
 (function () {
   const EVENT_SLUG = "campus-2026";
-  const ENGINE_VERSION = "1.37.0";
+  const ENGINE_VERSION = "1.37.1";
   const SUBMIT_ENDPOINT = "/.netlify/functions/submit-quiz";
 
   const LS_PARTICIPANT = "thitronik.campus.2026.participant";
@@ -2901,7 +2901,6 @@
     const percent = total ? Math.round((score / total) * 100) : 0;
     const seconds = Math.max(0, Math.round((finishedAt - state.startedAt) / 1000));
 
-    el.qProgressFill.style.width = "100%";
     el.rPercent.textContent = `${percent} %`;
     el.rFraction.textContent = `${score} von ${total} richtig`;
     el.rRing.style.setProperty("--pct", "0");
