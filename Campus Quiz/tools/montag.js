@@ -177,6 +177,14 @@ const syntax = lauf(path.join("tools", "check-syntax.js"), []);
 schritt("Syntax", syntax,
   (syntax.ausgabe.match(/^Syntax: .*$/m) || [""])[0].replace(/^Syntax: /, ""));
 
+/* Direkt hinter der Syntax, aus demselben Grund: Ein Zugriff auf ein Element,
+   das es nicht gibt, ist gültiges JavaScript und fällt erst im Browser auf —
+   am 4. September 2026 erst nach zehn beantworteten Fragen, mitten in
+   finish(). Siehe den Kopf von check-elemente.js. */
+const elemente = lauf(path.join("tools", "check-elemente.js"), []);
+schritt("Elementtabelle", elemente,
+  (elemente.ausgabe.match(/^Elemente: (.*)$/m) || ["", ""])[1]);
+
 const fragen = lauf(path.join("tools", "check-fragen.js"), []);
 /* Hinweise und redaktionelle Notizen aus check-fragen.js sind zum Lesen
    gedacht — bis September 2026 verschluckte dieser Schritt sie im
