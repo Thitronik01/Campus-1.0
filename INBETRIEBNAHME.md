@@ -61,9 +61,10 @@ supabase secrets set CAMPUS_AUSWERTUNG_TOKEN=<der erzeugte Wert> --project-ref p
 Denselben Wert in Langdock ins Passwortfeld der Verbindung eintragen. Danach
 muss ein Aufruf **ohne** `Authorization`-Kopf `401` liefern — diese Probe
 gehört dazu, denn ein offener Endpunkt fällt sonst erst auf, wenn Daten drin
-sind. Der vollständige Ablauf steht in
-[`Campus Quiz/SUPABASE-NEUAUFBAU.md`](Campus%20Quiz/SUPABASE-NEUAUFBAU.md),
-Schritt 5c.
+sind. Der vollständige Ablauf von hier bis zum fertigen Agenten steht in
+[`Campus Quiz/LANGDOCK-ANBINDUNG.md`](Campus%20Quiz/LANGDOCK-ANBINDUNG.md);
+alles danach — Integration, Action, Agent, Abnahme — ist vorbereitet und
+wartet nur auf diesen einen Wert.
 
 **3. Offen bleiben zwei Datenschutzpunkte** aus
 [`Campus Quiz/DATENSCHUTZ.md`](Campus%20Quiz/DATENSCHUTZ.md): die Belege zu

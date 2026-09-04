@@ -28,6 +28,8 @@ gebaut wurde.
 | `supabase_campus_basis_migration.sql` | Vollständige Feedbackbasis für das neue, leere Campus-Projekt. Am 03.09.2026 eingespielt und geprüft. |
 | `supabase_campus_quiz_migration.sql` | Quiztabelle und gemeinsame Auswertungs-Views. Am 03.09.2026 nach der Basismigration eingespielt und geprüft. |
 | `SUPABASE-NEUAUFBAU.md` | Verbindlicher Klick-, Prüf- und Betriebsablauf für das neue Supabase-Projekt |
+| `LANGDOCK-ANBINDUNG.md` | Vier Schritte von der Edge Function bis zum Langdock-Agenten, mit Abnahmeproben |
+| `langdock/` | Was in Langdock in die Felder gehört: Action-Code und Agentenanweisung. Dort nicht versioniert, deshalb hier. |
 | `tools/build-insel.js` | **Baut je Insel einen fertigen Netlify-Ordner.** Siehe unten. |
 | `tools/check-fragen.js` | Prüft die Fragensätze. Vor jedem Deploy laufen lassen. |
 | `tools/test-function.js` | Testet die Bewertungslogik der Quelle ohne Datenbank |

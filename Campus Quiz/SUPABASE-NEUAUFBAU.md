@@ -385,6 +385,13 @@ offener Endpunkt fällt sonst erst auf, wenn Daten drin sind.
 
 ### 5c — Langdock verbinden
 
+> **Der ausführliche Ablauf steht seit dem 4. September 2026 in
+> [`LANGDOCK-ANBINDUNG.md`](LANGDOCK-ANBINDUNG.md)**: Integration, Action mit
+> Codefeld, Agent und die vier Abnahmefragen. Der Code für das Codefeld und
+> der Text für das Anweisungsfeld liegen unter `langdock/` — Langdock
+> versioniert diese Felder nicht, und ohne Kopie im Repository kann niemand
+> nachsehen, was dort steht. Was hier folgt, ist die Kurzfassung.
+
 In Langdock einen HTTP Request auf
 `https://pstohdeknhgsywmogmiu.supabase.co/functions/v1/campus-auswertung`
 anlegen, mit dem Kopf `Authorization: Bearer <Wert>` und den optionalen
