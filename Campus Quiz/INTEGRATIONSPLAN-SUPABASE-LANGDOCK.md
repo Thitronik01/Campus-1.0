@@ -114,7 +114,19 @@ ausdrücklich als serverseitigen Ort für Drittanbieteraufrufe und Geheimnisse.
 
 ## Phase 3: Langdock-Pilot
 
-Für den ersten Pilot reicht ein Langdock Workflow:
+**Stand 4. September 2026: vorbereitet, wartet auf den Zugangswert.** Der
+Ablauf steht vollständig in [`LANGDOCK-ANBINDUNG.md`](LANGDOCK-ANBINDUNG.md),
+der Action-Code und die Agentenanweisung liegen unter `langdock/`. Solange
+`CAMPUS_AUSWERTUNG_TOKEN` in den Supabase Function Secrets fehlt, antwortet
+der Endpunkt auf jede Anfrage mit `503`; das ist der sichere Zustand und
+zugleich der einzige offene Schritt.
+
+Die Annahme aus dem Plan, Langdock nehme ein OpenAPI-Schema entgegen, hat sich
+nicht bestätigt: Eigene Integrationen werden dort über Eingabefelder und ein
+JavaScript-Codefeld mit `ld.request()` beschrieben. Deshalb liegt der Code als
+Datei im Repository und nicht als Schema.
+
+Für einen wiederkehrenden Bericht reicht auch ein Langdock Workflow:
 
 1. manueller oder täglicher Start
 2. HTTP Request an den geschützten Auswertungs-Endpunkt

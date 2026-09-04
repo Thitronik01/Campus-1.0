@@ -43,27 +43,59 @@ Auftragsverarbeitern und den Nachweis der Einwilligung, beide in
 | Security-Advisor | keine Warnung mehr; drei gewollte INFO-Zeilen „RLS Enabled No Policy" |
 | Bestand | **0 Zeilen** in Quiz und Feedback |
 
+## Nachtrag — 4. September 2026, 14:20 Uhr
+
+Der Schreibweg ist abgenommen, aber erst nach drei Fehlern, von denen jeder
+den nächsten verdeckte. Die Reihenfolge ist der Grund, warum es einen halben
+Tag gedauert hat.
+
+| | |
+|---|---|
+| Engine | **1.37.1** live. `finish()` stürzte über ein Element, das es seit 1.36 nicht mehr gibt — niemand kam zur Auswertung, nichts wurde gesendet. Pull Request #98. |
+| `SUPABASE_SECRET_KEY` in Netlify | **getauscht.** Der alte Wert war kein Secret Key; die Datenbank wies jede Einsendung mit `42501 permission denied` ab. |
+| Bestand | **2 Quizeinsendungen** (SAMSØ, USEDOM) und **1 Feedbackbogen** mit 16 Bewertungen, serverseitig bewertet, `engine_version` 1.37.1 |
+| Schritt B4 | **erledigt** |
+| Langdock | Integration, Action und Agent stehen — Abnahme offen, siehe [`Campus Quiz/LANGDOCK-ANBINDUNG.md`](Campus%20Quiz/LANGDOCK-ANBINDUNG.md) |
+
+### Drei Fallen, in dieser Reihenfolge
+
+**Der Ausweichweg meldet Erfolg.** Lehnt die Datenbank ab, schickt der Browser
+das Ergebnis an Netlify Forms und hakt es als erledigt ab — die Ergebniskarte
+sagt dann „Ergebnis gespeichert. Danke!". Ein kaputter Schreibweg sieht damit
+aus wie ein funktionierender. **Wer prüft, ob gespeichert wurde, zählt in der
+Datenbank nach, nicht auf dem Bildschirm.** Dass die Meldung unterscheidbar
+werden muss, steht als Rückstand.
+
+**Ein falscher Schlüssel sieht aus wie ein Datenbankfehler.** In Netlify lag
+unter `SUPABASE_SECRET_KEY` ein Publishable Key. Der wird auf die Rolle `anon`
+abgebildet, und die hat auf Campus-Tabellen bewusst keine Rechte — PostgREST
+antwortet `401` mit `42501`, die Function daraus `502 Die Datenbank hat die
+Speicherung abgelehnt`. Der richtige Wert beginnt mit `sb_secret_`. Ein Wert,
+der mit `sb_publishable_` beginnt, ist der falsche; bei `eyJ…` sind anon und
+service_role nicht zu unterscheiden — dann den `sb_secret_`-Schlüssel nehmen.
+
+**Umgebungsvariablen greifen erst beim nächsten Bau.** Das steht unten schon
+zweimal, und es hat trotzdem wieder eine Runde gekostet: Der Schlüssel war
+getauscht, der letzte Deploy stammte von vorher, und die Function lief weiter
+mit dem alten Wert. Netlify → Deploys → **Trigger deploy → Deploy site**.
+Ein neuer Bau dauert hier zwanzig Sekunden.
+
+Der schnellste Weg, all das zu prüfen, ist ein Aufruf der Function von außen
+statt eines Durchlaufs im Browser. Antwortet sie `201 {"ok":true}`, steht der
+Weg; antwortet sie `502` mit `fallback: "netlify_forms"`, lehnt die Datenbank
+ab und der Grund steht in Netlify → Functions → `submit-quiz` → Logs.
+
 ### Was als Nächstes zu tun ist
 
-**1. Den ersten echten Durchlauf machen** — Schritt B4 unten. Eine Insel ohne
-`?demo=1` durchspielen, in Supabase nachsehen, ob Zeile und Bewertung stimmen,
-und die Testzeile danach löschen. Sie trägt einen echten Namen, und die
-Aufbewahrungsfrist greift erst in zwölf Monaten.
+**1. Die Abnahme des Langdock-Agenten** — die vier Fragen in
+[`Campus Quiz/LANGDOCK-ANBINDUNG.md`](Campus%20Quiz/LANGDOCK-ANBINDUNG.md),
+Schritt 5. Der Datenstand ist dafür günstig: Beide Inseln haben je eine
+Einsendung und liegen damit unter der Mindestmenge — die Auswertung muss die
+Anzahl nennen und den Schnitt verweigern.
 
-**2. Für Langdock das Token setzen.** Der Endpunkt steht, aber ohne
-Function Secret antwortet er auf jede Anfrage mit `503`:
-
-```bash
-openssl rand -base64 32
-supabase secrets set CAMPUS_AUSWERTUNG_TOKEN=<der erzeugte Wert> --project-ref pstohdeknhgsywmogmiu
-```
-
-Denselben Wert in Langdock ins Passwortfeld der Verbindung eintragen. Danach
-muss ein Aufruf **ohne** `Authorization`-Kopf `401` liefern — diese Probe
-gehört dazu, denn ein offener Endpunkt fällt sonst erst auf, wenn Daten drin
-sind. Der vollständige Ablauf steht in
-[`Campus Quiz/SUPABASE-NEUAUFBAU.md`](Campus%20Quiz/SUPABASE-NEUAUFBAU.md),
-Schritt 5c.
+**2. Die Einträge in Netlify Forms räumen.** Was am 4. September vor dem
+Schlüsseltausch dort ankam, erreicht die Aufräumroutine der Datenbank nicht;
+die Zwölf-Monats-Frist gilt dort nur von Hand.
 
 **3. Offen bleiben zwei Datenschutzpunkte** aus
 [`Campus Quiz/DATENSCHUTZ.md`](Campus%20Quiz/DATENSCHUTZ.md): die Belege zu
