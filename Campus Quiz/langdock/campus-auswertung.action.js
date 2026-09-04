@@ -1,17 +1,11 @@
-/* THITRONIK Campus — Langdock-Action „Quizauswertung abrufen"
+/* THITRONIK Campus — Action „Quizauswertung abrufen"
  * ==========================================================================
  *
- * Diese Datei läuft nicht in diesem Repository. Sie ist die Vorlage für das
- * Codefeld einer Action in einer eigenen Langdock-Integration. Sie liegt
- * trotzdem hier, weil sonst niemand nachlesen kann, was in Langdock steht:
- * Der Code dort ist nicht versioniert, und wer ihn ändert, hinterlässt keine
- * Spur. Wird er geändert, gehört die Änderung auch hierher.
- *
- * Ablauf: Langdock ruft diese Action auf, die Action ruft die Supabase Edge
- * Function `campus-auswertung`, und die ruft die Datenbankfunktion gleichen
- * Namens. Erst dort werden Rohdaten gelesen. Auf dem Rückweg kommen nur
- * aggregierte Zahlen — Namen, Händlernummern und Session-IDs verlassen die
- * Datenbank nicht.
+ * Langdock ruft diese Action auf, die Action ruft die Supabase Edge Function
+ * `campus-auswertung`, und die ruft die Datenbankfunktion gleichen Namens.
+ * Erst dort werden Rohdaten gelesen. Auf dem Rückweg kommen nur aggregierte
+ * Zahlen — Namen, Händlernummern und Session-IDs verlassen die Datenbank
+ * nicht.
  *
  * Warum die Action überhaupt Code enthält und nicht bloß ein HTTP-Request
  * ist: Die drei Parameter dürfen leer bleiben, und leer heißt „nicht
@@ -19,15 +13,7 @@
  * Modell füllt Felder gern mit Platzhaltern; hier werden sie weggeworfen,
  * bevor sie zur Datenbank kommen.
  *
- * Zugangswert: Er steht im Auth-Feld `token` der Integration, nicht hier.
- * Siehe LANGDOCK-ANBINDUNG.md, Schritt 2.
- *
- * `node --check` fällt über diese Datei — und das ist richtig so. Langdock
- * legt den Code in einen async-Rumpf, deshalb stehen hier `await` und
- * `return` auf oberster Ebene. Als eigenständiges Skript ist das ungültig.
- * Wer die Syntax prüfen will, packt den Inhalt vorher in
- * `async function f(data, ld) { ... }`. `tools/check-syntax.js` sieht das
- * Verzeichnis `langdock/` bewusst nicht an.
+ * Der Zugangswert steht im Auth-Feld `token` der Integration, nicht hier.
  * ========================================================================== */
 
 const ENDPUNKT =

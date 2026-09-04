@@ -149,7 +149,17 @@ womit es die Felder füllt.
 
 In das Codefeld den Inhalt von
 [`langdock/campus-auswertung.action.js`](langdock/campus-auswertung.action.js)
-einfügen — vollständig, ohne Auslassung.
+einfügen — vollständig, ohne Auslassung. Die Datei ist bewusst zeichengleich
+mit dem, was in Langdock steht: Langdock versioniert das Codefeld nicht, und
+ein Kopf voller Hinweise auf dieses Repository stünde dort nur im Weg. Was
+über die Datei selbst zu sagen ist, steht deshalb hier.
+
+Zweierlei gilt für sie: `node --check` fällt über sie, weil Langdock den Code
+in einen async-Rumpf legt und `await` und `return` deshalb auf oberster Ebene
+stehen — als eigenständiges Skript ist das ungültig. Wer die Syntax prüfen
+will, packt den Inhalt vorher in `async function f(data, ld) { … }`. Und
+`tools/check-syntax.js` sieht das Verzeichnis `langdock/` bewusst nicht an;
+sonst schlüge jede Prüfung an einer Datei fehl, die gar nicht hier läuft.
 
 **`requires confirmation` ausschalten.** Die Action liest nur, ändert nichts
 und gibt keine personenbezogenen Daten heraus. Bliebe die Rückfrage an, müsste
