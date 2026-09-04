@@ -24,6 +24,28 @@ in [`SUPABASE-NEUAUFBAU.md`](SUPABASE-NEUAUFBAU.md), Schritt 5, und in
 
 ---
 
+## Wo es steht — 4. September 2026, 14:20 Uhr
+
+| Schritt | |
+|---|---|
+| 1. `CAMPUS_AUSWERTUNG_TOKEN` in Supabase | **gesetzt.** Aufruf ohne `Authorization` liefert `401`, vorher `503`. |
+| 2. Integration `THITRONIK Campus 1.0` | **angelegt**, Auth-Typ API Key, ein Feld `token` (Id `token`), Validation request gegen den Endpunkt |
+| 3. Action `Quizauswertung abrufen` | **angelegt**, Aktionstyp *Anzeigen*, Felder `von`, `bis`, `insel`. Test: `200` mit `zeitraum`, `gesamt`, `inseln`. |
+| 4. Agent `Campus-Auswertung` | **angelegt**, Anweisung übernommen, Webzugriff aus, Kreativität 0,1 |
+| 5. Abnahme | **offen** — die vier Fragen sind noch nicht gestellt |
+
+Verbindung im Betrieb ist `Campus Produktiv 2`. Die erste, `Campus Produktiv`,
+trägt einen überholten Zugangswert und gehört gelöscht, damit niemand später
+die falsche auswählt.
+
+Der Schreibweg ist am selben Tag abgenommen worden: zwei Quizeinsendungen
+(SAMSØ, USEDOM) und ein Feedbackbogen mit sechzehn Bewertungen stehen in der
+Datenbank, serverseitig bewertet, `engine_version` 1.37.1. Die Abnahme des
+Agenten hat damit echte Zahlen — und weil beide Inseln nur je eine Einsendung
+haben, prüft sie zugleich die Mindestmenge.
+
+---
+
 ## Was Langdock zu sehen bekommt — und was nicht
 
 | Geht an Langdock | Bleibt in der Datenbank |
@@ -220,6 +242,35 @@ beiden prüfen, ob die Leitung steht; diese beiden prüfen, ob der Schutz hält.
 Im Zweifel zuerst mit `curl` prüfen (Schritt 1). Antwortet der Endpunkt dort
 richtig, liegt es an der Langdock-Seite; antwortet er nicht, an Supabase. Das
 spart das Suchen in der falschen Hälfte.
+
+---
+
+## Fallen, die am 4. September Zeit gekostet haben
+
+**Langdock leitet die Feld-Id aus dem Label ab, und Umlaute fallen dabei
+heraus.** Aus „Zugangswert für die Campus-Auswertung" wurde
+`zugangswertFRDieCampusAuswertung` — das `ü` verschwand, `F` und `R` blieben
+stehen. Die Id ist nicht editierbar. Deshalb heißt das Label schlicht `Token`;
+die Erklärung trägt die Description, die man beim Verbinden ohnehin liest.
+
+**Den Zugangswert einer bestehenden Verbindung zu ändern, ist mühsamer als
+eine neue anzulegen.** Nach einem Wechsel des Function Secrets antwortete die
+alte Verbindung weiter mit `401`. Eine zweite Verbindung mit dem neuen Wert
+war in zwei Klicks da. Die alte danach löschen, nicht liegenlassen.
+
+**Ein Wert, eine Zwischenablage, kein Scrollback.** Zwei erzeugte Werte in
+einem Terminalfenster führen zuverlässig dazu, dass an der einen Stelle der
+eine und an der anderen der andere landet. Der Befehl unten legt den Wert
+direkt in die Zwischenablage und gibt nur seinen Fingerabdruck aus — der
+lässt sich mit der Spalte **DIGEST SHA256** in der Supabase-Secrets-Liste
+vergleichen, ohne dass der Wert je auf dem Schirm steht:
+
+```powershell
+$b=[byte[]]::new(32); [System.Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($b); $v=[Convert]::ToBase64String($b); $v | Set-Clipboard; $h=[Security.Cryptography.SHA256]::Create().ComputeHash([Text.Encoding]::UTF8.GetBytes($v)); "SHA256: " + (-join($h|%{$_.ToString('x2')}))
+```
+
+Danach nichts mehr kopieren, bis der Wert an beiden Stellen steht — auch
+keinen Befehl.
 
 ---
 
