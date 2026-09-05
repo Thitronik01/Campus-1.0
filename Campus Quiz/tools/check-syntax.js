@@ -117,6 +117,7 @@ function jsonPruefen(relativ) {
 
 const jsDateien = [
   ...dateien(path.join("public", "assets"), [".js"]),
+  ...dateien(path.join("public", "praxis", "langeland"), [".js"]),
   ...dateien(path.join("public", "arbeitskarte", "assets"), [".js"]),
   ...dateien(path.join("netlify", "functions"), [".js", ".mjs"], true),
   ...dateien("tools", [".js", ".mjs"])
@@ -124,6 +125,7 @@ const jsDateien = [
 jsDateien.forEach(javascriptPruefen);
 
 dateien(path.join("public", "assets"), [".css"]).forEach(cssPruefen);
+dateien(path.join("public", "praxis", "langeland"), [".css"]).forEach(cssPruefen);
 dateien(path.join("public", "arbeitskarte", "assets"), [".css"]).forEach(cssPruefen);
 dateien(path.join("public", "data"), [".json"]).forEach(jsonPruefen);
 

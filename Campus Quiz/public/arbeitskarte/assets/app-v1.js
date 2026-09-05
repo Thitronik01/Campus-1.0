@@ -2,12 +2,15 @@ import {
   checklistItemsUebergabe, createEmptyWorkCard, generateId, groupOrder,
   grundfunktionenLabels, normalizeSketches, proFinderLabels,
   rueckfahrkameraLabels, vehicleSketchViews
-} from "./data-v1.js?v=1.2.0";
-import { deleteCard, loadInitialCard, readHistory, writeCard } from "./storage-v1.js?v=1.2.0";
-import { imageFileToDataUrl, prepareInkCanvas, prepareSignatureCanvas, startDictation } from "./media-v1.js?v=1.2.0";
-import { renderPrintView } from "./print-v1.js?v=1.2.0";
+} from "./data-v1.js?v=1.2.1";
+import { deleteCard, loadInitialCard, readHistory, writeCard } from "./storage-v1.js?v=1.2.1";
+import { imageFileToDataUrl, prepareInkCanvas, prepareSignatureCanvas, startDictation } from "./media-v1.js?v=1.2.1";
+import { renderPrintView } from "./print-v1.js?v=1.2.1";
 
 const $ = (selector, root = document) => root.querySelector(selector);
+if (new URLSearchParams(location.search).get("demo") === "1") {
+  document.querySelectorAll('a[href^="/quiz"], a[href^="/praxis/"]').forEach(a => { a.search = "?demo=1"; });
+}
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const esc = (value) => String(value ?? "").replace(/[&<>'"]/g, (character) => ({
   "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;"

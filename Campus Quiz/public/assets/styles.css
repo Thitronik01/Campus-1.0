@@ -5624,3 +5624,65 @@ body.ist-quiz .masthead { display: none; }
   #screen-start.screen[data-island] .start-form.has-participant-facts .facts li::before { width: 40px; height: 40px; }
   #screen-start.screen[data-island] .start-form.is-panel .start-actions { margin-top: 6px; }
 }
+
+/* Karte und Detailansicht teilen eine Auswahl; mobil sind alle Inseln erreichbar. */
+#screen-islands:not([hidden]) { display:grid; grid-template-columns:minmax(0,1fr); gap:24px; background:transparent; overflow:visible; }
+#screen-islands .orbit { display:block; min-width:0; padding:0; background:transparent; }
+#screen-islands .orbit-buehne { position:static; width:100%; aspect-ratio:auto; margin:0; }
+#screen-islands .orbit-pille, #screen-islands .orbit-ring, #screen-islands .orbit-pfeil, #screen-islands .orbit-punkte, #screen-islands .orbit-hinweis, #screen-islands .orbit-hand, #screen-islands .orbit-fortschritt, #screen-islands .map-schiebehinweis { display:none; }
+#screen-islands .orbit-thumbs { position:static; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin:0 0 20px; padding:0; list-style:none; }
+#screen-islands .orbit-station { position:static; transform:none; opacity:1; pointer-events:auto; }
+#screen-islands .orbit-thumb { display:flex; gap:10px; justify-content:flex-start; align-items:center; width:100%; height:auto; min-height:64px; padding:8px 12px; border:1px solid #b9cada; border-radius:12px; background:#fff; color:#1d3661; box-shadow:none; }
+#screen-islands .orbit-thumb img { width:38px; height:40px; object-fit:contain; }
+#screen-islands .orbit-thumb-label { font-size:.85rem; font-weight:800; }
+#screen-islands [aria-pressed="true"].orbit-thumb { border:2px solid #1d3661; background:#eaf6fb; }
+#screen-islands .orbit-hero { position:static; transform:none; display:flex; align-items:stretch; width:100%; padding:24px; border:1px solid #c6d4e0; border-radius:16px; background:#fff; box-shadow:0 8px 24px #1d36610b; text-align:left; }
+#screen-islands .orbit-hero-bild { width:100%; height:180px; object-fit:contain; margin:0 0 20px; }
+#screen-islands .orbit-hero-code { color:#247d9e; font-weight:800; font-size:.85rem; letter-spacing:.12em; margin:0 0 8px; }
+#screen-islands .orbit-hero-titel { color:#1d3661; font-size:clamp(1.4rem,2vw,2rem); line-height:1.2; font-weight:800; margin:0 0 16px; }
+#screen-islands .overview-description { margin:0 0 20px; line-height:1.55; color:#46586b; }
+#screen-islands .orbit-hero-stand { font-size:.9rem; margin:0 0 20px; }
+#screen-islands .orbit-start, #screen-islands .overview-praxis { width:100%; min-height:58px; white-space:normal; text-align:center; }
+#screen-islands .overview-praxis { margin-top:12px; border:1px solid #1d3661; }
+.praxis-einstieg { display:flex; gap:24px; align-items:center; justify-content:space-between; margin-top:24px; padding:24px; border:1px solid #b9cada; border-radius:16px; background:#fff; }
+.praxis-einstieg[hidden] { display:none; }
+.praxis-einstieg h2 { margin:6px 0; color:#1d3661; }
+.praxis-einstieg p { margin:6px 0; }
+@media(min-width:768px) {
+ #screen-islands .campus-map { width:100%; margin:0; align-self:start; }
+ #screen-islands .campus-szene { width:100%; max-width:none; aspect-ratio:16/9; height:auto; min-height:0; margin:0; }
+ #screen-islands .orbit-thumbs { grid-template-columns:repeat(4,minmax(0,1fr)); }
+ #screen-islands .karten-hinweis { display:none; }
+ #screen-islands .island-card .i-title, #screen-islands .island-card .i-state { display:none; }
+ #screen-islands .island-card .i-content { width:max-content; min-width:90px; min-height:55px; padding:10px 14px; justify-content:center; }
+ #screen-islands .island-card .i-code { font-size:max(.82rem,1.15cqw); }
+ #screen-islands .island-card[aria-pressed="true"] .i-content { background:#1d3661; border-color:#1d3661; }
+ #screen-islands .island-card[aria-pressed="true"] .i-code { color:#fff; }
+}
+@media(min-width:1100px) {
+ #screen-islands:not([hidden]) { grid-template-columns:minmax(0,1fr) minmax(320px,28%); align-items:start; }
+ #screen-islands .orbit-thumbs { display:none; }
+ #screen-islands .karten-aktionen, #screen-islands .mobil-nav { grid-column:1/-1; }
+}
+@media(max-width:767px) {
+ #screen-islands .campus-map { display:none; }
+ #screen-islands .orbit-hero-bild { height:110px; margin-bottom:12px; }
+ #screen-islands .orbit-hero { padding:20px; }
+ .praxis-einstieg { flex-direction:column; align-items:stretch; padding:20px; }
+}
+#screen-islands .orbit-hero { flex-direction:column; }
+#screen-islands .orbit-hero-bild { flex:none; }
+#screen-islands .overview-heading { grid-column:1/-1; }
+#screen-islands .overview-heading h1 { margin:0 0 6px; color:#1d3661; font-size:1.8rem; }
+#screen-islands .overview-heading p { margin:0; color:#46586b; }
+#screen-islands:not([hidden]) { border:0; box-shadow:none; border-radius:0; }
+#screen-islands .campus-map { border-radius:16px; overflow:hidden; }
+#screen-islands .overview-praxis { color:#1d3661; }
+#screen-islands .island-card .i-content { min-height:56px; }
+@media(max-width:767px) { #screen-islands .orbit-fortschritt { display:flex; margin-top:20px; } }
+@media (orientation:portrait) and (min-width:768px) and (max-width:1199px) {
+ #screen-islands .campus-map { width:min(100%,750px); aspect-ratio:3/4; margin-inline:auto; }
+ #screen-islands .campus-szene { aspect-ratio:3/4; }
+}
+@media(min-width:768px) { #screen-islands .orbit-thumbs { display:none; } }
+#screen-islands .orbit { scroll-margin-top:20px; }

@@ -1,4 +1,4 @@
-import { HISTORY_PREFIX, STORAGE_KEY, createEmptyWorkCard, normalizeWorkCard } from "./data-v1.js?v=1.2.0";
+import { HISTORY_PREFIX, STORAGE_KEY, createEmptyWorkCard, normalizeWorkCard } from "./data-v1.js?v=1.2.1";
 
 export function sortCards(cards) {
   return [...cards].sort((a, b) => String(b.updatedAt || "").localeCompare(String(a.updatedAt || "")));

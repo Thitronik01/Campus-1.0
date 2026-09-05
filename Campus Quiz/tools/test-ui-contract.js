@@ -26,7 +26,7 @@ function pruefe(name, bedingung) {
 
 pruefe("dauerhafter Live-Bereich", /id="live-announcer"[^>]*role="status"[^>]*aria-live="polite"/.test(html));
 pruefe("kein Live-Bereich in verborgener Quizauflösung", !/id="q-feedback"[^>]*aria-live/.test(html));
-pruefe("Arbeitskarte hat zugänglichen Namen", /id="arbeitskarte-link"[^>]*aria-label="Arbeitskarte öffnen"/.test(html));
+pruefe("Arbeitskarte ist auf Langeland statt im globalen Kopf erreichbar", /id="langeland-praxis-link"/.test(html) && !/id="arbeitskarte-link"/.test(html));
 pruefe("Feedbackbogen hat zugänglichen Namen", /id="tagesabschluss"[^>]*aria-label="Feedbackbogen öffnen"/.test(html));
 pruefe("THI hat zugänglichen Namen", /setAttribute\("aria-label", "THI fragen"\)/.test(thi));
 pruefe("Shell gleicht den Seitenzoom aus", /\.shell\s*\{[\s\S]*?min-height:\s*125vh;[\s\S]*?min-height:\s*125dvh;/.test(css));

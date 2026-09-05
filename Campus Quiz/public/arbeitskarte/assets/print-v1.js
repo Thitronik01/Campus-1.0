@@ -1,7 +1,7 @@
 import {
   checklistItemsUebergabe, groupOrder, grundfunktionenLabels,
   proFinderLabels, rueckfahrkameraLabels, vehicleSketchViews
-} from "./data-v1.js?v=1.2.0";
+} from "./data-v1.js?v=1.2.1";
 
 const esc = (value) => String(value ?? "").replace(/[&<>'"]/g, (character) => ({
   "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;"

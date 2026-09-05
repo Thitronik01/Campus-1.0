@@ -13,7 +13,7 @@
 
 (function () {
   const EVENT_SLUG = "campus-2026";
-  const ENGINE_VERSION = "1.39.0";
+  const ENGINE_VERSION = "1.40.0";
   const SUBMIT_ENDPOINT = "/.netlify/functions/submit-quiz";
 
   const LS_PARTICIPANT = "thitronik.campus.2026.participant";
@@ -95,7 +95,6 @@
     menueKnopf: $("menue-knopf"),
     menueDialog: $("menue-dialog"),
     menueZu: $("menue-zu"),
-    menueArbeitskarte: $("menue-arbeitskarte"),
     menueFeedback: $("menue-feedback"),
     menueThi: $("menue-thi"),
     datenLoeschenDialog: $("daten-loeschen-dialog"),
@@ -103,14 +102,11 @@
     campusProgressKurz: $("campus-progress-kurz"),
     campusProgressKurzwert: $("campus-progress-kurzwert"),
 
-    aktionArbeitskarte: $("aktion-arbeitskarte"),
     aktionFeedback: $("aktion-feedback"),
     aktionThi: $("aktion-thi"),
-    mobilNavArbeitskarte: $("mobil-nav-arbeitskarte"),
     mobilNavFeedback: $("mobil-nav-feedback"),
     mobilNavThi: $("mobil-nav-thi"),
 
-    arbeitskarteLink: $("arbeitskarte-link"),
     tagesabschluss: $("tagesabschluss"),
     ausgang: $("ausgang"),
     ausgangText: $("ausgang-text"),
@@ -1400,6 +1396,11 @@
         bild.decoding = "async";
         knopf.appendChild(bild);
       }
+      const label = document.createElement("span");
+      label.className = "orbit-thumb-label";
+      label.textContent = insel.code || insel.name;
+      knopf.appendChild(label);
+      knopf.setAttribute("aria-label", insel.name + ": " + insel.title + " anzeigen");
       knopf.addEventListener("click", () => orbitAktivieren(index));
       li.appendChild(knopf);
       el.orbitThumbs.appendChild(li);
@@ -1466,6 +1467,14 @@
     const insel = orbitInsel(aktivSlug);
     if (!insel) return;
 
+    $("overview-description").textContent = insel.beschreibung || "";
+    $("overview-praxis").hidden = aktivSlug !== "langeland";
+    $("overview-praxis").href = campusUrl("/praxis/langeland/");
+    el.islandGrid.querySelectorAll(".island-map-item").forEach(li => {
+      const button = li.querySelector("button");
+      if (button) button.setAttribute("aria-pressed", String(li.dataset.slug === aktivSlug));
+    });
+    orbit.thumbs.forEach((li, slug) => li.querySelector("button").setAttribute("aria-pressed", String(slug === aktivSlug)));
     const entry = done[aktivSlug];
     const unterwegs = Boolean(entry && entry.session && wartend.has(entry.session));
     if (insel.image) {
@@ -1480,7 +1489,7 @@
       : unterwegs
         ? `Abgeschlossen · ${entry.percent} % – noch nicht gesendet`
         : `Abgeschlossen · ${entry.percent} %`;
-    el.orbitStart.textContent = entry ? "Wiederholen" : "Starten";
+    el.orbitStart.textContent = entry ? "Wissenscheck wiederholen" : "Wissenscheck starten";
     el.orbitStart.setAttribute("href", campusUrl(`/quiz/${aktivSlug}`));
     el.orbitStart.setAttribute("aria-label",
       `${insel.name || insel.code}: Wissenscheck ${entry ? "wiederholen" : "starten"}`);
@@ -1749,7 +1758,7 @@
         !entry ? "noch nicht begonnen"
           : unterwegs ? `abgeschlossen mit ${entry.percent} Prozent, noch nicht gesendet`
             : `abgeschlossen mit ${entry.percent} Prozent`,
-        "Wissenscheck öffnen"
+        "Inseldetails anzeigen"
       ].filter(Boolean).join(" – "));
       if (entry) card.style.setProperty("--score", Math.max(0, Math.min(100, Number(entry.percent) || 0)));
       card.innerHTML = `
@@ -1767,17 +1776,10 @@
         </span>
         <span class="i-open" aria-hidden="true"></span>`;
       card.addEventListener("click", () => {
-        /* Auf dem Telefon fuehrt der erste Tipp nicht direkt in den
-           Wissenscheck. Die Insel traegt dort keine Beschriftung — wer
-           antippt, weiss noch nicht sicher, wo er landet. Der Bogen zeigt
-           Name, Thema und Stand und laesst die Wahl. Ab 768 px steht die
-           Infokarte daneben, dort ist der Umweg ueberfluessig. */
-        if (bogenNoetig()) {
-          zeigeBogen(island, entry, unterwegs);
-          return;
+        orbitAktivieren(orbitFolge().indexOf(island.slug));
+        if (matchMedia("(max-width: 1099px)").matches) {
+          el.orbit.scrollIntoView({ block: "start", behavior: "instant" });
         }
-        history.pushState({}, "", campusUrl(`/quiz/${island.slug}`));
-        route();
       });
       li.appendChild(card);
       el.islandGrid.appendChild(li);
@@ -1801,12 +1803,6 @@
       el.tagesabschluss.hidden = true;
     }
 
-    if (state.catalog.arbeitskarte) {
-      el.arbeitskarteLink.href = state.catalog.arbeitskarte;
-      el.arbeitskarteLink.hidden = false;
-    } else {
-      el.arbeitskarteLink.hidden = true;
-    }
 
     el.mastheadTitle.textContent = "Wissenscheck";
     el.mastheadMeta.hidden = true;
@@ -1906,6 +1902,8 @@
     const isPoel = island.island === "poel";
     const isUsedom = island.island === "usedom";
     const isLangeland = island.island === "langeland";
+    $("langeland-praxis").hidden = !isLangeland;
+    $("langeland-praxis-link").href = campusUrl("/praxis/langeland/");
     const isFehmarn = island.island === "fehmarn";
 
     el.screens.start.dataset.island = island.island || "";
@@ -3715,14 +3713,7 @@
         a.hidden = false;
       });
     }
-    if (state.catalog.arbeitskarte) {
-      el.arbeitskarteLink.href = state.catalog.arbeitskarte;
-      el.arbeitskarteLink.hidden = false;
-      [el.menueArbeitskarte, el.aktionArbeitskarte, el.mobilNavArbeitskarte].forEach((a) => {
-        a.href = state.catalog.arbeitskarte;
-        a.hidden = false;
-      });
-    }
+
 
     await route();
 
