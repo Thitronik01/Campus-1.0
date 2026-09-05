@@ -1,11 +1,37 @@
 # THI im Campus
 
+## Campus-Freigaben vom 31. August 2026
+
+`netlify/functions/thi-lib/campus-freigaben.mjs` hält zwei bereits im
+Fragensatz dokumentierte Ausnahmen fest: FEH-04 (Rückkehrschwelle des
+Pro-finder) und FEH-05 (Funktionsvorführung der G.A.S.-pro III). Das Wiki
+bleibt unverändert. THI bekommt die Ausnahmen mit Datum und Geltungsbereich
+in seiner serverseitigen Systemanweisung, im Streaming- und Werkzeugweg.
+Ein später gelesener Wiki-Auszug darf die Campus-Auflösung nicht umkehren.
+
+Das ist keine neu erteilte technische Freigabe. Für konkrete Geräteprüfungen
+außerhalb der Quizbesprechung müssen Geräte- und Anleitungsrevision geklärt
+werden. Flamme und CO-Sensor bleiben ausdrücklich ausgeschlossen; Mengen
+und Einwirkzeiten werden nicht ergänzt. Vor offenen Quizfragen gilt weiterhin
+Lernbegleitung statt bloßer Lösungsliste.
+
+Bei einer neuen fachlichen Entscheidung müssen Fragensatz und Freigabemodul
+gemeinsam geändert werden. `tools/test-thi.js` gleicht Beschluss, Spannung,
+Gastest und Grenzen ab und prüft die Anweisung in beiden Anymize-Wegen.
+Die Tests verwenden einen nachgebildeten Modelldienst; sie sind keine
+Abnahme des Antwortverhaltens eines produktiven Sprachmodells.
+
+## Einbindung
+
 Der Assistent aus der THITRONIK-Plattform, eingebaut in den Campus. Ein
 Schalter in der Kopfzeile neben Arbeitskarte und Feedbackbogen öffnet ein
 Panel; darin werden Fragen zu Produkten und zum Campus beantwortet.
 
-**Stand: eingebaut und geprüft, aber noch nicht aktiv.** Es fehlt genau eine
-Sache — der API-Schlüssel. Das ist Schritt 2, siehe unten.
+Die Einbindung ist umgesetzt und lokal mit einem nachgebildeten Modelldienst
+geprüft. Ob die produktive Site einen gültigen API-Schlüssel verwendet, lässt
+sich daraus nicht ableiten. Die folgende Anleitung beschreibt die Einrichtung
+beziehungsweise einen erneuten Aufbau; den Betriebsstand führt
+`INBETRIEBNAHME.md` im Projektstamm.
 
 ---
 

@@ -111,6 +111,7 @@ function buildPayload(mode, overrides = {}) {
     quiz_version: island.version,
     engine_version: "1.0",
     session_id: "test-" + Math.random().toString(36).slice(2),
+    consent: { accepted: true, at: new Date().toISOString(), version: "1.1" },
     participant: "Testlauf Campus",
     dealer: "Mustermann Caravaning",
     dealer_number: "34512",
@@ -135,6 +136,14 @@ function buildPayload(mode, overrides = {}) {
   check("island_code ergänzt", r.gespeichert && r.gespeichert.island_code === island.code);
   check("Antworten tragen is_correct", r.gespeichert && r.gespeichert.answers.every((a) => a.is_correct === true));
   check("Antworten tragen category", r.gespeichert && r.gespeichert.answers.every((a) => typeof a.category === "string"));
+  check("Einwilligungsnachweis wird übertragen", r.gespeichert?.consent_version === "1.1" && Boolean(r.gespeichert?.consent_accepted_at));
+  for (const consent of [undefined, { accepted: false, at: new Date().toISOString(), version: "1.1" },
+    { accepted: true, at: new Date().toISOString(), version: "1.0" },
+    { accepted: true, at: "kein Datum", version: "1.1" },
+    { accepted: true, at: new Date(Date.now() + 86400000).toISOString(), version: "1.1" }]) {
+    const invalid = await call(buildPayload("richtig", { consent }));
+    check("Ungültige Einwilligung wird vor dem Datenbankzugriff abgewiesen", invalid.status === 400 && !invalid.gespeichert);
+  }
 
   r = await call(buildPayload("falsch"));
   check("Alles falsch → 0 %", r.gespeichert && r.gespeichert.percent === 0, `percent=${r.gespeichert?.percent}`);

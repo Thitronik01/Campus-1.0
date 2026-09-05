@@ -160,6 +160,26 @@ async function bestandPruefen() {
   pruefe("Bestand: unter 8 MB", mb < 8, `${mb.toFixed(1)} MB`);
 }
 
+async function freigabenPruefen() {
+  const { CAMPUS_FREIGABEN, campusFreigabenAnweisung } = await import(pathToFileURL(
+    path.join(WURZEL, "netlify", "functions", "thi-lib", "campus-freigaben.mjs")).href);
+  const fragen = require("../public/data/inseln/fehmarn.json");
+  const spannung = fragen.questions.find(q => q.id === "FEH-04");
+  const gas = fragen.questions.find(q => q.id === "FEH-05");
+  const normal = text => text.replaceAll("*", "");
+  pruefe("Freigabe: Beschluss im Fragensatz vorhanden", fragen.internerHinweis.includes("31.08.2026"));
+  pruefe("Freigabe: Spannung passt zur aktuellen Auflösung",
+    ["11,2 V", "12,0 V"].every(wert => normal(spannung.feedback).includes(wert)
+      && CAMPUS_FREIGABEN.find(e => e.frage === spannung.id).aussage.includes(wert)));
+  pruefe("Freigabe: Gastest passt zur freigegebenen Antwort",
+    gas.options.filter(o => gas.correct.includes(o.id)).some(o => o.text.includes("unangezündetes Feuerzeuggas")));
+  const anweisung = campusFreigabenAnweisung();
+  pruefe("Freigabe: Grenzen für Flamme und CO-Sensor bleiben enthalten",
+    anweisung.includes("Keine offene Flamme") && anweisung.includes("gilt nicht für den CO-Sensor"));
+  pruefe("Freigabe: Geräteprüfung wird nicht pauschal freigegeben",
+    anweisung.includes("keine allgemeine Herstellerfreigabe") && anweisung.includes("Anleitungsrevision"));
+}
+
 async function retrievalPruefen() {
   const s = await import(SUCHE);
   const artikel = require("../netlify/functions/thi-wissen/artikel.de.json");
@@ -375,6 +395,9 @@ async function modellPruefen() {
       dienst.anfragen[0].kopf.authorization === "Bearer test-schluessel");
     pruefe("Modell: Systemanweisung vorne",
       erste.messages[0].role === "system" && /THI/.test(erste.messages[0].content));
+    pruefe("Freigabe: gilt im Werkzeugweg auch nach dem Nachschlagen",
+      dienst.anfragen.every(a => a.last.messages[0].content.includes("CAMPUS-FREIGABESTAND")
+        && a.last.messages[0].content.includes("FEH-05")));
     pruefe("Modell: Werkzeuge angeboten",
       Array.isArray(erste.tools) && erste.tools.some((t) => t.function.name === "wiki_suchen"));
 
@@ -414,6 +437,8 @@ async function modellPruefen() {
     pruefe("Strom: Antwort 200", antwort.status === 200, `war ${antwort.status}`);
     pruefe("Strom: Stücke zusammengesetzt", text === "Der Magnetkontakt wird angelernt.", text);
     pruefe("Strom: Streaming angefordert", dienst.anfragen[0].last.stream === true);
+    pruefe("Freigabe: auch ohne Werkzeuge vorhanden",
+      dienst.anfragen[0].last.messages[0].content.includes("CAMPUS-FREIGABESTAND"));
     zuruecksetzen();
     await dienst.stoppen();
   }
@@ -693,6 +718,7 @@ async function quizfragePruefen() {
 
 (async () => {
   await bestandPruefen();
+  await freigabenPruefen();
   await retrievalPruefen();
   await schutzPruefen();
   await modellPruefen();

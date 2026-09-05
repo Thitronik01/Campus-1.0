@@ -36,6 +36,7 @@ function pruefe(name, condition, detail) {
 function payload(changes = {}) {
   return Object.assign({
     submissionId: "a2c58233-d122-4a23-a63d-2144a2e6ef49",
+    consent: { accepted: true, at: new Date().toISOString(), version: "1.1" },
     createdClientAt: "2026-08-27T12:00:00.000Z",
     eventSlug: "campus-2026",
     formVersion: "campus-2026-haendler-v14",
@@ -97,6 +98,13 @@ async function call(body, method = "POST", eventOverrides = {}) {
     result.captured?.body?.payload?.source === "thitronik-campus-feedback-v14");
   pruefe("Führende Null der Händlernummer bleibt erhalten",
     result.captured?.body?.payload?.dealerNumber === "03451");
+  pruefe("Feedback überträgt den Einwilligungsnachweis",
+    result.captured?.body?.payload?.consent?.version === "1.1");
+  for (const consent of [undefined, { accepted: false, at: new Date().toISOString(), version: "1.1" },
+    { accepted: true, at: new Date().toISOString(), version: "1.0" }]) {
+    const invalid = await call(payload({ consent }));
+    pruefe("Feedback ohne gültige Einwilligung erreicht die RPC nicht", invalid.status === 400 && !invalid.captured);
+  }
 
   result = await call(payload({ dealerNumber: "3451" }));
   pruefe("Vierstellige Händlernummer → 400", result.status === 400, result.body.error);

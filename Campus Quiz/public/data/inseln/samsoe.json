@@ -3,7 +3,7 @@
   "code": "SAMSØ",
   "title": "Einbauorte im Fahrzeug",
   "subtitle": "Wo kommt was hin?",
-  "version": "11",
+  "version": "12",
   "lernziel": "Physik bestimmt den Einbauort, nicht der freie Platz. Wer das verstanden hat, muss keine Liste auswendig lernen.",
   "dauerMinuten": 8,
   "quellen": [
@@ -14,7 +14,7 @@
     "produkte/wipro-iii.md",
     "fahrzeuge/*"
   ],
-  "internerHinweis": "Fragenkatalog v11. Zehn Fragen. Redaktionsrunde 08/2026: SAM-11 neu (Sicherheitsabstand zu Batterie und Nasszelle). SAM-06 nennt die Praxisempfehlung, das NFC Modul hinter der Umweltplakette zu verstecken. SAM-09 fragt nach der Montage der externen GPS-Antenne: Aufkleber nach unten, Empfangsseite nach oben; die Aufloesung zeigt dazu sam-antenne-unterseite.webp. ACHTUNG bei diesem Bild: Es zeigt die externe GSM-Antenne, nicht die GPS-pro - die Bauform und die Lage des Aufklebers stimmen, der Schriftzug auf dem Etikett liest aber GSM ANTENNA. Deshalb nennen Alt-Text und Bildunterschrift bewusst kein Produkt. Sobald ein Foto der GPS-pro vorliegt, wird es getauscht. Nicht verwendbar sind das alte sam-produkt-gps-pro.webp und seine Quelle Wissen/03_Medien/produkte/GPS-pro.png - beide tragen Fantasietext auf dem Etikett und zeigen den Aufkleber oben. SAM-02, SAM-03 und SAM-10 arbeiten mit echten Produkt- beziehungsweise Einbaufotos. Einbauabstaende und Kabellaengen vor jeder Schulung gegen den aktuellen Anleitungsstand pruefen.",
+  "internerHinweis": "Fragenkatalog v12. Zehn Fragen. Redaktionsrunde 08/2026: SAM-11 neu (Sicherheitsabstand zu Batterie und Nasszelle). SAM-06 nennt die Praxisempfehlung, das NFC Modul hinter der Umweltplakette zu verstecken. SAM-09 erklärt die Ausrichtung der GPS-Antenne ohne Bild. Das bisher verwendete GSM-Antennenfoto wurde am 05.09.2026 aus dieser Frage entfernt. Ein korrektes GPS-pro-Originalfoto kann später ergänzt werden. Nicht verwendbar sind das alte sam-produkt-gps-pro.webp und seine Quelle Wissen/03_Medien/produkte/GPS-pro.png - beide tragen Fantasietext auf dem Etikett und zeigen den Aufkleber oben. SAM-02, SAM-03 und SAM-10 arbeiten mit echten Produkt- beziehungsweise Einbaufotos. Einbauabstaende und Kabellaengen vor jeder Schulung gegen den aktuellen Anleitungsstand pruefen.",
   "questions": [
     {
       "id": "SAM-01",
@@ -255,31 +255,46 @@
       "category": "GPS-Antenne ausrichten",
       "prompt": "Der Pro-finder braucht wegen eines abgeschirmten Einbauorts eine externe GPS-Antenne. Wie wird sie montiert?",
       "options": [
-        { "id": "a", "text": "Waagerecht mit dem Aufkleber nach unten, freie Sicht nach oben durch ein nichtmetallisches Fahrzeugteil" },
-        { "id": "b", "text": "Waagerecht mit dem Aufkleber nach oben, damit die Beschriftung lesbar bleibt" },
-        { "id": "c", "text": "Direkt unter eine geschlossene Metallverkleidung" },
-        { "id": "d", "text": "Beliebig - GPS funktioniert unabhängig von der Ausrichtung" }
+        {
+          "id": "a",
+          "text": "Waagerecht mit dem Aufkleber nach unten, freie Sicht nach oben durch ein nichtmetallisches Fahrzeugteil"
+        },
+        {
+          "id": "b",
+          "text": "Waagerecht mit dem Aufkleber nach oben, damit die Beschriftung lesbar bleibt"
+        },
+        {
+          "id": "c",
+          "text": "Direkt unter eine geschlossene Metallverkleidung"
+        },
+        {
+          "id": "d",
+          "text": "Beliebig - GPS funktioniert unabhängig von der Ausrichtung"
+        }
       ],
-      "correct": ["a"],
+      "correct": [
+        "a"
+      ],
       "feedback": "Die Empfangsseite zeigt waagerecht **nach oben** - der Aufkleber sitzt auf der Unterseite und kommt beim Kleben nach unten. Metall unmittelbar über oder um die Antenne schirmt Satellitensignale ab; ein nichtmetallischer Bereich darüber verbessert den Empfang.",
-      "feedbackMedia": {
-        "src": "/media/samsoe/sam-antenne-unterseite.webp",
-        "alt": "Runde schwarze Klebeantenne, von unten fotografiert: weißer Aufkleber mit CE-Zeichen auf der Unterseite, daneben das aufgerollte Anschlusskabel mit Schraubstecker",
-        "caption": "So sieht die Seite aus, die nach unten kommt: Auf dem Aufkleber wird geklebt. Die glatte Gegenseite ist die Empfangsseite und schaut zum Himmel."
-      },
       "irrtum": [
         {
-          "fuer": ["b"],
+          "fuer": [
+            "b"
+          ],
           "titel": "Aufkleber nach oben geklebt",
           "text": "Sieht nach Ordnung aus und dreht die Antenne genau falsch herum. Meist steckt eine Verwechslung mit dem Pro-finder selbst dahinter: Dort muss „GPS inside“ nach **oben** zeigen. Bei der externen Antenne ist es umgekehrt."
         },
         {
-          "fuer": ["d"],
+          "fuer": [
+            "d"
+          ],
           "titel": "Ausrichtung unterschätzt",
           "text": "Eine GPS-Antenne hat eine definierte Empfangsseite. Beliebige Montage verschenkt Empfangsreserve - und niemand merkt es beim Einbau."
         },
         {
-          "fuer": ["c"],
+          "fuer": [
+            "c"
+          ],
           "titel": "Unter Metall versteckt",
           "text": "Ein unauffälliger Ort ist nur dann gut, wenn das Material darüber Satellitensignale nicht abschirmt."
         }

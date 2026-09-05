@@ -27,6 +27,7 @@ const TABLE = "campus_quiz_submissions";
 const MAX_BODY_BYTES = 120_000;
 const AREAS = ["", "verkauf", "werkstatt", "verkauf-werkstatt", "leitung", "sonstiges"];
 const { schreibschutz } = require("./campus-schutz.js");
+const { pruefen: pruefeEinwilligung } = require("../../public/assets/campus-einwilligung.js");
 
 // ------------------------------------------------------------------ Helfer --
 
@@ -151,6 +152,7 @@ function normalizePayload(payload) {
     throw new Error("Der Fragensatz hat sich geändert. Bitte die Seite neu laden.");
   }
 
+  const consent = pruefeEinwilligung(payload.consent);
   const sessionId = cleanString(payload.session_id, 80);
   const participant = cleanString(payload.participant, 120);
   const dealer = cleanString(payload.dealer, 160);
@@ -217,6 +219,8 @@ function normalizePayload(payload) {
 
   return {
     session_id: sessionId,
+    consent_accepted_at: consent.at,
+    consent_version: consent.version,
     event: EVENT_SLUG,
     island: slug,
     island_code: island.code,

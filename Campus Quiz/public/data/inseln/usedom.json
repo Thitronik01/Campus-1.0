@@ -3,7 +3,7 @@
   "code": "USEDOM",
   "title": "Verkaufsdisplay & Konfigurator",
   "subtitle": "Vom Einzelprodukt zum System",
-  "version": "6",
+  "version": "7",
   "lernziel": "Wer die vier Ebenen trennt - Zentrale, Fernsteuerung, Lesestelle, Medium -, beantwortet fast jede Kundenfrage von selbst.",
   "dauerMinuten": 7,
   "quellen": [
@@ -12,7 +12,7 @@
     "produkte/nfc-modul.md",
     "referenz/zugang-bedienung.md"
   ],
-  "internerHinweis": "Fragenkatalog v6. Zehn Fragen. Redaktionsrunde 08/2026: USE-01 hat zwei weitere falsche Optionen bekommen - Funk-Wassermelder 868 (deckt keinen der drei Wuensche ab) und Fingerprint (deckt einen Wunsch doppelt ab und setzt safe.lock voraus). Damit steht die Frage bei acht Bildoptionen, dem Maximum des Produktlayouts. Die beiden Bilder sind Kopien aus media/vejro; wird dort ein Motiv ausgetauscht, muss media/usedom mitgezogen werden, weil Einzelpakete nur den eigenen Insel-Ordner mitnehmen. USE-01 nutzt ausschliesslich echte Produktbilder. Artikelnummern und Leistungswerte vor jeder Schulung gegen den aktuellen Produktstand pruefen.",
+  "internerHinweis": "Fragenkatalog v7. USE-01 fragt nach allen passenden Beratungsoptionen, nicht nach einer zwingend gemeinsam zu kaufenden Ausstattung. NFC und Fingerprint sind Alternativen. Produktstände vor der Schulung prüfen.",
   "questions": [
     {
       "id": "USE-04",
@@ -47,7 +47,7 @@
       "category": "Bedarfsanalyse",
       "layout": "product",
       "shuffleOptions": false,
-      "prompt": "Kunde: „Ich will eine Alarmanlage, Ortung bei Diebstahl und bequem ohne Schlüssel öffnen.“ Welche Komponenten brauchst du? Wähle alle zutreffenden.",
+      "prompt": "Kunde: „Ich will eine Alarmanlage, Ortung bei Diebstahl und bequem ohne Schlüssel öffnen.“ Welche Produkte passen zu diesen Wünschen und gehören als mögliche Lösungen ins Beratungsgespräch? Wähle alle zutreffenden.",
       "options": [
         { "id": "a", "text": "WiPro III (safe.lock je nach Fahrzeug)", "image": "/media/usedom/use-produkt-wipro-iii.webp", "imageAlt": "WiPro III Alarmzentrale mit Zubehör" },
         { "id": "b", "text": "Pro-finder", "image": "/media/usedom/use-produkt-pro-finder.webp", "imageAlt": "Pro-finder Ortungs- und Kommunikationsmodul" },
@@ -59,7 +59,7 @@
         { "id": "h", "text": "CampLock oder VanLock Fingerprint", "image": "/media/usedom/use-produkt-fingerprint.webp", "imageAlt": "Runder Fingerprint-Sensor mit grün leuchtendem Ring" }
       ],
       "correct": ["a", "b", "c", "d", "h"],
-      "feedback": "Drei Kundenwünsche: Die Alarmanlage ist die WiPro III, die Ortung der Pro-finder. „Bequem ohne Schlüssel öffnen“ hat zwei Wege, und beide gehören ins Gespräch - das NFC Modul mit KeyCard, KeyTag oder KeyStrap am Fahrzeug und der CampLock oder VanLock Fingerprint direkt an der Tür (setzt WiPro III safe.lock voraus). Alles Weitere ist Zusatzverkauf und gehört getrennt besprochen, nicht in diese Position.",
+      "feedback": "Die WiPro III deckt die Alarmanlage ab, der Pro-finder die Ortung. Beim Zugang gibt es Alternativen: NFC Modul mit KeyCard, KeyTag oder KeyStrap sowie CampLock oder VanLock Fingerprint (setzt WiPro III safe.lock voraus). Beide Wege gehören ins Beratungsgespräch; für das konkrete Angebot wählt ihr anschließend die passende Lösung. Es müssen nicht beide Zugangswege gekauft werden.",
       "irrtum": [
         {
           "fuer": ["d"],

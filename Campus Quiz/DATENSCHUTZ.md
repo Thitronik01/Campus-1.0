@@ -1,6 +1,6 @@
 # Datenschutz im Campus — Stand der Umsetzung
 
-Stand: 3. September 2026
+Stand: 5. September 2026
 
 Diese Datei ist das Arbeitsprotokoll zum Datenschutz. Der Text, den Teilnehmer
 sehen, steht in [`public/datenschutz/index.html`](public/datenschutz/index.html)
@@ -95,7 +95,8 @@ und für `anon` und `authenticated` gesperrt.
 der Migration heraus anlegen; der Job steht als
 `campus-aufbewahrung | 30 3 * * * | active = true` und läuft als `postgres` —
 also als Eigentümer der Funktion, weshalb sie ohne zusätzliches
-`grant execute` auskommt. Zur Kontrolle:
+`grant execute` auskommt. Am 5. September wurden der aktive Job und
+erfolgreiche Ausführungen erneut geprüft. Zur Kontrolle:
 
 ```sql
 select jobid, jobname, schedule, active from cron.job
@@ -132,27 +133,41 @@ dem Code kommen kann:
 Die Datenbank selbst liegt in der Region Frankfurt am Main — das ist im
 Supabase-Projekt festgelegt und in `SUPABASE-NEUAUFBAU.md` protokolliert.
 
-### 2. Die Einwilligung wird nicht nachweisbar gespeichert
+### 2. Einwilligungsnachweis: Datenbank bereit, Website gemeinsam ausliefern
 
-`privacyAccepted` steht im Profil im `localStorage` und geht **nicht** an den
-Server. Art. 7 Abs. 1 DSGVO verlangt aber, dass der Verantwortliche die
-Einwilligung nachweisen kann.
+Die Migration `supabase/migrations/20260905122449_campus_review_korrekturen.sql`
+ist am 5. September im Campus-Projekt eingespielt worden. Beide Rohdatentabellen
+haben `consent_accepted_at` und `consent_version`. Bestehende Datensätze bleiben
+ohne Nachweis; ein historischer Zeitpunkt wird nicht erfunden.
 
-Der kleinste Weg dorthin: zwei Spalten in `campus_quiz_submissions` und
-`campus_feedback` — Zeitpunkt der Einwilligung und die Fassung des
-Hinweistextes, den der Teilnehmer gesehen hat. Beides liegt im Browser bereits
-vor; es müsste nur in den Payload und durch die annehmenden Functions
-durchgereicht werden. Eine eigene Migration, kein Nebenbei-Schritt.
+Die überarbeitete Website erfasst Fassung 1.1 und den Zeitpunkt der Bestätigung.
+`public/assets/campus-einwilligung.js` validiert denselben Vertrag im Browser
+und in beiden Netlify Functions. Auch der Netlify-Forms-Pilotweg überträgt
+beide Felder. Die Zeit stammt vom Gerät; sie ist keine unabhängige Bestätigung
+der Identität. Ein Profil mit altem Haken muss erneut zustimmen. Die
+Anonymisierung entfernt den Nachweis zusammen mit den übrigen Angaben.
 
-### 3. Der Feedbackbogen hat kein eigenes Ankreuzfeld
+Frontend und Functions müssen gemeinsam bereitgestellt werden. Die Datenbank-RPC
+akzeptiert für den Übergang noch alte Aufrufe ohne Nachweis; die neuen Functions
+weisen Einsendungen ohne gültigen Nachweis zurück. Das gilt auch für alte
+Einträge im lokalen Sende-Ausgang.
 
-Im Gesamtpaket ist das gedeckt: Wer den Bogen unter `/feedback/` öffnet, hat
-das Profil samt Einwilligung bereits angelegt. Läuft der Bogen aber als eigene
-Site aus `Feedbackbogen/netlify-v14/`, gibt es keine Einwilligung — dann fehlt
-für die Feedbackdaten die Rechtsgrundlage.
+### 3. Eigenständiger Feedbackbogen bleibt ein gesonderter Auslieferungsweg
 
-Zu ändern wäre das in `Feedbackbogen/tools/build-index-v14.js`, nicht in der
-erzeugten `index-v14.html`.
+Im gebauten Campus-Paket hat `/feedback/` vor dem Absenden einen eigenen,
+anfangs leeren Haken. Ein Wechsel von Name oder Betrieb verwirft den Nachweis.
+`tools/feedback-einwilligung-bauen.js` ergänzt dafür den kopierten Feedbackbogen
+beim Campus-Bau und bricht ab, wenn sein erwarteter Einstiegspunkt fehlt.
+
+Die eigenständige Quelle unter `Feedbackbogen/` wurde nicht verändert.
+`tools/feedback-paket-ergaenzen.js` erzeugt stattdessen aus dessen Netlify-Paket
+die ergänzte Auslieferung `Campus Quiz/build/feedback-netlify/` mit demselben
+Nachweis und einer lokalen Kopie des Datenschutzhinweises. Auch das alte,
+versionierte Netlify-Paket bleibt unverändert. `tools/montag.js` führt diesen Schritt automatisch
+nach dem Feedback-Bau aus. Nach einem alleinigen Rohbau im Feedbackordner
+muss die Ergänzung erneut ausgeführt werden. Der statische Forms-Weg speichert
+den Nachweis im vollständigen JSON-Payload; die Bereinigung der Forms-Einträge
+bleibt ein gesonderter Vorgang.
 
 ---
 

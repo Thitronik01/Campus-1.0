@@ -3,7 +3,7 @@
   "code": "FEHMARN",
   "title": "Fehlersuche & Support",
   "subtitle": "Erst lesen, dann tauschen",
-  "version": "8",
+  "version": "9",
   "lernziel": "Bevor du tauschst, lies. Jedes Gerät sagt, was los ist - über Blinkcode, Ton, Seriennummer, Spannungsverhalten. Tauschen ist die teuerste Form der Diagnose.",
   "dauerMinuten": 9,
   "quellen": [
@@ -13,7 +13,7 @@
     "produkte/pro-finder.md",
     "referenz/mobilfunk-sim.md"
   ],
-  "internerHinweis": "Fragenkatalog v8. Zehn Fragen. Redaktionsrunde 08/2026: FEH-03 (gelbe Status-LED ab 0699-045) entfernt, FEH-01 im Prompt gekuerzt. FEH-05 folgt der internen Praxis - der Test mit unangezuendetem Feuerzeuggas ist zulaessig. FEH-04 nennt ca. 12,0 V als Rueckkehrschwelle, FEH-09 prueft die Smartphone-Kennzeichnung. Diese drei Fragen widersprechen bewusst dem Produktwissen: produkte/gas-pro-iii.md, referenz/gas.md und referenz/stoerungsbeseitigung.md verbieten den Feuerzeuggas-Test weiterhin, produkte/pro-finder.md nennt zweimal 12,5 V. Am 31.08.2026 so entschieden - das Wiki bleibt unveraendert, der Fragensatz gilt. Wer eine dieser Fragen gegen das Wiki prueft, findet dort also den alten Stand und muss nicht neu diskutieren. Blinkcodes und Spannungsschwellen vor jeder Schulung gegen den aktuellen Anleitungsstand pruefen.",
+  "internerHinweis": "Fragenkatalog v9. Zehn Fragen. Redaktionsrunde 08/2026: FEH-03 (gelbe Status-LED ab 0699-045) entfernt, FEH-01 im Prompt gekuerzt. FEH-05 folgt der internen Praxis - der Test mit unangezuendetem Feuerzeuggas ist zulaessig. FEH-04 nennt ca. 12,0 V als Rueckkehrschwelle, FEH-09 prueft die Smartphone-Kennzeichnung. Diese drei Fragen widersprechen bewusst dem Produktwissen: produkte/gas-pro-iii.md, referenz/gas.md und referenz/stoerungsbeseitigung.md verbieten den Feuerzeuggas-Test weiterhin, produkte/pro-finder.md nennt zweimal 12,5 V. Am 31.08.2026 so entschieden - das Wiki bleibt unveraendert, der Fragensatz gilt. Wer eine dieser Fragen gegen das Wiki prueft, findet dort also den alten Stand und muss nicht neu diskutieren. Blinkcodes und Spannungsschwellen vor jeder Schulung gegen den aktuellen Anleitungsstand pruefen. Redaktionsrunde 05.09.2026: FEH-09 fragt nach dem nächsten Prüfschritt, nicht nach einer aus dem Symptom eindeutig ableitbaren Ursache.",
   "questions": [
     {
       "id": "FEH-06",
@@ -153,23 +153,41 @@
       "id": "FEH-09",
       "type": "single",
       "category": "Alarmweiterleitung",
-      "prompt": "„Meine Frau bekommt die Alarm-SMS, ich nie.“ Woran liegt es?",
+      "prompt": "„Meine Frau bekommt die Alarm-SMS, ich nie.“ Welche Einstellung prüfst du als Erstes, bevor du einen Geräte- oder Providerfehler vermutest?",
       "options": [
-        { "id": "a", "text": "Sein Mobilfunkanbieter blockiert automatisiert versendete SMS" },
-        { "id": "b", "text": "Nur die Masternummer bekommt Alarm-SMS" },
-        { "id": "c", "text": "Die zweite Nummer muss als Smartphone gekennzeichnet sein" },
-        { "id": "d", "text": "Es ist immer nur eine Zielrufnummer möglich" }
+        {
+          "id": "a",
+          "text": "Sein Mobilfunkanbieter blockiert automatisiert versendete SMS"
+        },
+        {
+          "id": "b",
+          "text": "Nur die Masternummer bekommt Alarm-SMS"
+        },
+        {
+          "id": "c",
+          "text": "Die Programmier-SMS der zweiten Zielrufnummer auf die Smartphone-Kennzeichnung S prüfen"
+        },
+        {
+          "id": "d",
+          "text": "Es ist immer nur eine Zielrufnummer möglich"
+        }
       ],
-      "correct": ["c"],
-      "feedback": "Die Nummer ist ohne die Smartphone-Kennzeichnung **S** programmiert. Erst mit ihr wird eine Zielrufnummer als Smartphone geführt. Beispiel Vertragskarte: **DE+S491701234567** mit Kennzeichnung, **DE+491701234567** ohne.",
+      "correct": [
+        "c"
+      ],
+      "feedback": "Zuerst die Programmierung prüfen: Ist die zweite Nummer vollständig und mit der Smartphone-Kennzeichnung S hinterlegt? Beispiel Vertragskarte: **DE+S491701234567** mit Kennzeichnung, **DE+491701234567** ohne. Das Symptom allein beweist die Ursache noch nicht; auch ein zu früh beendeter Testalarm kommt infrage.",
       "irrtum": [
         {
-          "fuer": ["b"],
+          "fuer": [
+            "b"
+          ],
           "titel": "Nur die Masternummer",
           "text": "Passt scheinbar perfekt zur Beobachtung - und führt dazu, dass man dem Kunden eine Einschränkung erklärt, die es nicht gibt. Bis zu zehn Zielrufnummern sind möglich."
         },
         {
-          "fuer": ["a"],
+          "fuer": [
+            "a"
+          ],
           "titel": "Der Anbieter blockiert",
           "text": "Die bequemste Erklärung, weil sie den Fehler aus der eigenen Reichweite schiebt. Bevor der Provider verdächtigt wird, gehört die Programmier-SMS Zeichen für Zeichen geprüft."
         }

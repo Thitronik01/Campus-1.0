@@ -2,6 +2,13 @@
 
 Stand: 3. September 2026
 
+**Nachtrag vom 5. September:** Das Campus-Projekt ist inzwischen eingerichtet.
+Die Review-Migration `supabase/migrations/20260905122449_campus_review_korrekturen.sql`
+ist dort eingespielt. Für bestehende Datenbanken ist sie der Upgradeweg;
+die folgenden Schritte beschreiben weiterhin die Erstinstallation.
+Prüfergebnisse und Auslieferungsstand stehen in
+[KORREKTUREN-2026-09-05.md](KORREKTUREN-2026-09-05.md).
+
 Diese Anleitung beschreibt die Erstinstallation des neuen, leeren
 Supabase-Projekts. Sie ist zugleich das Betriebsprotokoll: Ein Schritt wird erst
 als erledigt markiert, nachdem sein Ergebnis im Dashboard geprüft wurde.

@@ -41,7 +41,7 @@ pruefe("erste Frage wird vor dem Fokus eingeblendet", /state\.roundActive = true
 pruefe("aktive Runde schützt Zurück und Neuladen", /addEventListener\("popstate"[\s\S]*?state\.roundActive[\s\S]*?addEventListener\("beforeunload"/.test(engine));
 pruefe("Audioknopf wird für neue Fragen zurückgesetzt", /qAudioButton\.disabled = false;[\s\S]*?qAudioStatus\.textContent = "";/.test(engine));
 pruefe("Jeder neue Campus-Einstieg beginnt mit der Profileinrichtung", /if \(!state\.campusEntered \|\| !participantComplete\(participant\)\) \{\s*renderOnboarding\(participant\);/.test(engine));
-pruefe("Profilabschluss führt im Gesamtcampus zur Inselkarte", /function enterCampusAfterProfile\(\)[\s\S]*?params\.delete\("insel"\);[\s\S]*?history\.replaceState\([^;]+\/quiz[\s\S]*?renderIslands\(\);/.test(engine));
+pruefe("Profilabschluss erhält das direkte Inselziel", /function enterCampusAfterProfile\(\)\s*\{\s*if \(readSlug\(\) \|\| state\.catalog\.inseln\.length === 1\) \{\s*await route\(\);\s*return;/.test(engine));
 pruefe("Profilformular gibt den Campus-Einstieg frei", /profileForm\.addEventListener\("submit"[\s\S]*?state\.campusEntered = true;\s*await enterCampusAfterProfile\(\);/.test(engine));
 pruefe("lokaler Löschweg ist im Profil, Menü und Fuß erreichbar",
   (html.match(/data-campusdaten-loeschen/g) || []).length === 3);

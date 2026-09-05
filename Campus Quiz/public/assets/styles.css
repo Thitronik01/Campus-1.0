@@ -679,7 +679,7 @@ body.ist-onboarding main { display: flex; }
 }
 .profile-photo-button,
 .profile-photo-remove {
-  min-height: 44px;
+  min-height: calc(var(--tap) + 12px);
   border-radius: 8px;
   background: #fff;
   color: var(--th-navy);
@@ -711,7 +711,7 @@ body.ist-onboarding main { display: flex; }
 .profile-field { display: grid; align-content: start; }
 .profile-field input {
   width: 100%;
-  min-height: 52px;
+  min-height: calc(var(--tap) + 12px);
   padding: 12px 14px;
   border: 1px solid #7B8EA6;
   border-radius: 8px;
@@ -5563,4 +5563,64 @@ body.ist-quiz .masthead { display: none; }
 
 @media (prefers-reduced-motion: reduce) {
   .insel-bogen[open] { animation: none; }
+}
+
+/* Die optionale Aufnahme unterbricht die Pflichtangaben nicht mehr. */
+.profile-photo-details summary { min-height: calc(var(--tap) + 12px); padding: 16px 0; cursor: pointer; color: var(--th-navy); font-weight: 700; }
+.profile-photo-details[open] { padding-bottom: 12px; }
+
+/* Auf dem Telefon bleibt die Bühne erkennbar, ohne den Quizstart unter
+   einen ganzen Bildschirm mit Dekoration zu schieben. */
+@media (max-width: 640px) {
+  #screen-start.screen[data-island] .start-intro,
+  #screen-start.screen[data-island]:has(.start-form.has-participant-facts) .start-intro {
+    min-height: 320px;
+    height: 320px;
+  }
+  #screen-start.screen[data-island] .start-layout { min-height: 0; }
+  #screen-start.screen[data-island] .start-form.is-panel #btn-start { order: 0; }
+  #screen-start.screen[data-island] .start-form.is-panel #btn-to-islands { order: 1; }
+
+  /* Auf Telefonen reicht eine Teilnehmerzeile. Die großen Infokarten haben
+     zuvor den eigentlichen Einstieg unter den Bildschirm geschoben. */
+  #screen-start.screen[data-island] .start-form.is-panel {
+    padding: 22px;
+    gap: 14px;
+  }
+  #screen-start.screen[data-island] .start-form.is-panel .participant-summary {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 4px 12px;
+    padding: 0 0 14px;
+    border: 0;
+    border-bottom: 1px solid var(--th-line);
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+  }
+  #screen-start.screen[data-island] .start-form.is-panel .participant-summary .form-title { display: none; }
+  #screen-start.screen[data-island] .participant-name { grid-column: 1; grid-row: 1; overflow-wrap: anywhere; }
+  #screen-start.screen[data-island] .participant-meta { grid-column: 1; grid-row: 2; overflow-wrap: anywhere; }
+  #screen-start.screen[data-island] .start-form.is-panel .participant-summary .btn {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    min-height: calc(var(--tap) + 12px);
+    margin: 0;
+    padding: 8px 0 8px 8px;
+  }
+  #screen-start.screen[data-island] .start-form.has-participant-facts .facts {
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+  }
+  #screen-start.screen[data-island] .start-form.has-participant-facts .facts li {
+    grid-template-columns: 40px minmax(0, 1fr);
+    min-height: 40px;
+    gap: 10px;
+  }
+  #screen-start.screen[data-island] .start-form.has-participant-facts .facts li::before { width: 40px; height: 40px; }
+  #screen-start.screen[data-island] .start-form.is-panel .start-actions { margin-top: 6px; }
 }

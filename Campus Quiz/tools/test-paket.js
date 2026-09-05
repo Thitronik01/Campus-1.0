@@ -106,6 +106,7 @@ function bauen(modus, aenderungen = {}) {
     quiz_version: insel.version,
     engine_version: "1.0",
     session_id: `${slug}-${Math.random().toString(36).slice(2)}`,
+    consent: { accepted: true, at: new Date().toISOString(), version: "1.1" },
     participant: "Paket Test",
     dealer: "Testbetrieb",
     dealer_number: "34512",

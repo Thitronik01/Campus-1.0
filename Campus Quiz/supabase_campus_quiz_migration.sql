@@ -24,6 +24,14 @@ create table if not exists public.campus_quiz_submissions (
   id                uuid primary key default gen_random_uuid(),
   created_at        timestamptz not null default now(),
 
+  anonymized_at timestamptz,
+  consent_accepted_at timestamptz,
+  consent_version text,
+  constraint campus_quiz_consent_pair check (
+    (consent_accepted_at is null and consent_version is null) or
+    (consent_accepted_at is not null and consent_version is not null and char_length(consent_version) between 1 and 30)
+  ),
+
   session_id        text not null unique,
   event             text not null default 'campus-2026'
                       check (event = 'campus-2026'),
@@ -38,7 +46,7 @@ create table if not exists public.campus_quiz_submissions (
   -- deshalb text. Eine führende Null darf nicht verloren gehen.
   participant       text not null check (char_length(btrim(participant)) between 2 and 120),
   dealer            text not null check (char_length(btrim(dealer)) between 2 and 160),
-  dealer_number     text not null check (dealer_number ~ '^\d{5}$'),
+  dealer_number     text not null check (dealer_number ~ '^[0-9]{5}$'),
   area              text not null default ''
                       check (area in ('','verkauf','werkstatt','verkauf-werkstatt',
                                       'leitung','sonstiges')),
@@ -106,7 +114,7 @@ select
   island,
   max(island_code)                                   as insel,
   count(*)                                           as einsendungen,
-  count(distinct dealer_number)                      as haendler,
+  count(distinct dealer_number) filter (where anonymized_at is null) as haendler,
   round(avg(percent))                                as schnitt_prozent,
   min(percent)                                       as schlechtestes,
   max(percent)                                       as bestes,
@@ -144,10 +152,11 @@ select
   round(
     100.0 * count(*) filter (where (a->>'is_correct')::boolean) / nullif(count(*), 0)
   )                                                           as prozent_richtig,
-  round(avg((a->>'response_seconds')::numeric))               as schnitt_sekunden
+  round(avg((a->>'response_seconds')::numeric))               as schnitt_sekunden,
+  s.quiz_version
 from public.campus_quiz_submissions s
 cross join lateral jsonb_array_elements(s.answers) as a
-group by s.island, a->>'id', a->>'category', a->>'type'
+group by s.island, s.quiz_version, a->>'id', a->>'category', a->>'type'
 order by prozent_richtig asc;   -- schwierigste Frage oben
 
 comment on view public.campus_quiz_fragen is
@@ -191,10 +200,20 @@ with quiz as (
   select
     dealer_number,
     max(dealer)                    as haendler,
-    count(*)                       as inseln_absolviert,
+    count(distinct island)         as inseln_absolviert,
     round(avg(percent))            as quiz_schnitt
   from public.campus_quiz_submissions
+  where anonymized_at is null
   group by dealer_number
+),
+letztes_feedback as (
+  -- Pro Betrieb gilt der letzte Bogen, kein Textmaximum über mehrere Bögen.
+  select distinct on (dealer_number) *
+    from public.campus_feedback
+   where form_version = 'campus-2026-haendler-v14'
+     and is_test is not true and anonymized_at is null
+     and dealer_number ~ '^[0-9]{5}$'
+   order by dealer_number, client_created_at desc nulls last, created_at desc, id desc
 ),
 feedback as (
   select
@@ -205,11 +224,11 @@ feedback as (
     round(avg(public.campus_note_einheitlich(f.form_version, r.rating))
       filter (where r.section_key <> 'schulungsinseln'))
                                    as feedback_schnitt
-  from public.campus_feedback f
+  from letztes_feedback f
   left join public.campus_feedback_ratings r on r.feedback_id = f.id
   where f.form_version = 'campus-2026-haendler-v14'
     and f.is_test is not true
-    and f.dealer_number ~ '^\d{5}$'
+    and f.dealer_number ~ '^[0-9]{5}$'
   group by f.dealer_number
 )
 select

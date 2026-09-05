@@ -1,8 +1,11 @@
 # THITRONIK Campus — Wissenscheck
 
+Aktueller Korrekturstand: [Review-Umsetzung vom 5. September 2026](KORREKTUREN-2026-09-05.md)
+mit Datenbankmigration, Einwilligungsnachweis, mobilen Verbesserungen und Prüfprotokoll.
+
 Die digitale Wissenskontrolle nach jeder Schulungsinsel. Statische Seite, kein
-Framework. Die Netlify-Function bewertet serverseitig; in der Pilotphase
-speichert Netlify Forms, später kann Supabase zugeschaltet werden.
+Framework. Die Netlify-Function bewertet serverseitig und speichert seit
+der Inbetriebnahme in Supabase. Netlify Forms bleibt als Ausweichweg erhalten.
 
 **Eine Engine, sieben Fragensätze.** Nicht sieben Anwendungen — das ist die
 zentrale Entscheidung dieses Projekts und der Grund, warum es überhaupt neu

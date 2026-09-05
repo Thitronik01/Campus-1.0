@@ -34,6 +34,14 @@ alter default privileges for role postgres in schema public
 create table if not exists public.campus_feedback (
   id                      uuid primary key default gen_random_uuid(),
   created_at              timestamptz not null default now(),
+  anonymized_at timestamptz,
+  consent_accepted_at timestamptz,
+  consent_version text,
+  constraint campus_feedback_consent_pair check (
+    (consent_accepted_at is null and consent_version is null) or
+    (consent_accepted_at is not null and consent_version is not null and char_length(consent_version) between 1 and 30)
+  ),
+
   submission_id           uuid not null unique,
   client_created_at       timestamptz,
   event_slug              text not null default 'campus-2026'
@@ -187,6 +195,18 @@ begin
     raise exception 'unknown source';
   end if;
 
+  -- Übergang: Alte Clients liefern keinen Nachweis. Vorhandene Nachweise
+  -- werden geprüft; die neuen Annahme-Functions verlangen sie zwingend.
+  if payload ? 'consent' then
+    if payload->'consent'->'accepted' is distinct from 'true'::jsonb
+       or payload->'consent'->>'version' is distinct from '1.1'
+       or coalesce(payload->'consent'->>'at', '') !~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}T'
+       or (payload->'consent'->>'at')::timestamptz < timestamptz '2026-09-05 00:00:00+00'
+       or (payload->'consent'->>'at')::timestamptz > now() + interval '5 minutes' then
+      raise exception 'invalid consent';
+    end if;
+  end if;
+
   if nullif(btrim(payload->>'dealerName'), '') is null then
     raise exception 'dealerName is required';
   end if;
@@ -244,7 +264,7 @@ begin
     dealer_number, participant_name, overall_rating, recommendation,
     topic_wishes, team_mood, improvement_suggestions, positive_aspects,
     additional_notes, source, participant_areas, island_choices,
-    recommendation_reason, raw_payload
+    recommendation_reason, raw_payload, consent_accepted_at, consent_version
   ) values (
     (payload->>'submissionId')::uuid,
     (payload->>'createdClientAt')::timestamptz,
@@ -264,7 +284,9 @@ begin
     participant_areas_value,
     island_choices_value,
     nullif(btrim(payload->>'recommendationReason'), ''),
-    payload
+    payload,
+    (payload->'consent'->>'at')::timestamptz,
+    payload->'consent'->>'version'
   )
   on conflict (submission_id) do update set
     client_created_at = excluded.client_created_at,
@@ -283,7 +305,9 @@ begin
     participant_areas = excluded.participant_areas,
     island_choices = excluded.island_choices,
     recommendation_reason = excluded.recommendation_reason,
-    raw_payload = excluded.raw_payload
+    raw_payload = excluded.raw_payload,
+    consent_accepted_at = excluded.consent_accepted_at,
+    consent_version = excluded.consent_version
   returning id into feedback_uuid;
 
   for rating_item in

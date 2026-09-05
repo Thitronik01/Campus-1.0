@@ -13,7 +13,7 @@
 
 (function () {
   const EVENT_SLUG = "campus-2026";
-  const ENGINE_VERSION = "1.37.1";
+  const ENGINE_VERSION = "1.39.0";
   const SUBMIT_ENDPOINT = "/.netlify/functions/submit-quiz";
 
   const LS_PARTICIPANT = "thitronik.campus.2026.participant";
@@ -27,6 +27,8 @@
   /** ?demo=1 läuft komplett durch, speichert aber absichtlich nichts.
    *  Gleiche Konvention wie im Feedbackbogen - für Tests immer verwenden. */
   const DEMO = new URLSearchParams(location.search).get("demo") === "1";
+  const Einwilligung = window.CampusEinwilligung;
+  const campusUrl = (pfad) => pfad + (DEMO ? "?demo=1" : "");
 
   /** Wer Bewegung abbestellt hat, bekommt auch keine weichen Sprünge. */
   const REDUZIERT = window.matchMedia
@@ -526,7 +528,7 @@
       && String(data.lastName || "").trim().length >= 2
       && String(data.dealer || "").trim().length >= 2
       && /^\d{5}$/.test(String(data.dealerNumber || "").trim())
-      && data.privacyAccepted === true;
+      && Einwilligung.gueltig(data.consent);
   }
 
   const PROFILE_FIELDS = [
@@ -582,7 +584,8 @@
     el.profileLastName.value = saved.lastName || "";
     el.profileCompany.value = saved.dealer || "";
     el.profileNumber.value = saved.dealerNumber || "";
-    el.profilePrivacy.checked = saved.privacyAccepted === true;
+    el.profilePrivacy.checked = Einwilligung.gueltig(saved.consent);
+    el.profilePrivacy.dataset.uebernommen = el.profilePrivacy.checked ? "ja" : "nein";
     profilePhoto = saved.profilePhoto || "";
     profileTouched.clear();
     PROFILE_FIELDS.forEach(([inputId, errorId]) => paintProfileField($(inputId), $(errorId), false));
@@ -787,11 +790,10 @@
   }
 
   /** Nach der verbindlichen Profileinrichtung beginnt die Lernreise immer
-   *  auf der Inselkarte. Das gilt auch dann, wenn der erste Aufruf über einen
-   *  alten Insel-Link oder einen QR-Code kam. Nur echte Einzel-Insel-Pakete
-   *  besitzen keine Übersicht und gehen deshalb direkt zu ihrem Startbild. */
+   *  am ursprünglich gewählten Ziel. So führt der QR-Code einer Station
+   *  auch nach dem Anlegen des Profils direkt zu dieser Insel. */
   async function enterCampusAfterProfile() {
-    if (state.catalog.inseln.length === 1) {
+    if (readSlug() || state.catalog.inseln.length === 1) {
       await route();
       return;
     }
@@ -1305,7 +1307,7 @@
     el.bogenScore.style.setProperty("--score", prozent);
 
     el.bogenStart.textContent = entry ? "Wissenscheck wiederholen" : "Wissenscheck starten";
-    el.bogenStart.href = `/quiz/${island.slug}`;
+    el.bogenStart.href = campusUrl(`/quiz/${island.slug}`);
     el.bogenStart.dataset.slug = island.slug;
 
     if (!el.bogen.open) el.bogen.showModal();
@@ -1322,7 +1324,7 @@
       if (ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.button !== 0) return;
       ev.preventDefault();
       el.bogen.close();
-      history.pushState({}, "", `/quiz/${el.bogenStart.dataset.slug}`);
+      history.pushState({}, "", campusUrl(`/quiz/${el.bogenStart.dataset.slug}`));
       route();
     });
 
@@ -1479,7 +1481,7 @@
         ? `Abgeschlossen · ${entry.percent} % – noch nicht gesendet`
         : `Abgeschlossen · ${entry.percent} %`;
     el.orbitStart.textContent = entry ? "Wiederholen" : "Starten";
-    el.orbitStart.setAttribute("href", `/quiz/${aktivSlug}`);
+    el.orbitStart.setAttribute("href", campusUrl(`/quiz/${aktivSlug}`));
     el.orbitStart.setAttribute("aria-label",
       `${insel.name || insel.code}: Wissenscheck ${entry ? "wiederholen" : "starten"}`);
 
@@ -1774,7 +1776,7 @@
           zeigeBogen(island, entry, unterwegs);
           return;
         }
-        history.pushState({}, "", `/quiz/${island.slug}`);
+        history.pushState({}, "", campusUrl(`/quiz/${island.slug}`));
         route();
       });
       li.appendChild(card);
@@ -3079,6 +3081,7 @@
       quiz_version: String(state.island.version || "1"),
       engine_version: ENGINE_VERSION,
       session_id: sessionId(),
+      consent: participant.consent,
       participant: participant.name || "",
       dealer: participant.dealer || "",
       dealer_number: participant.dealerNumber || "",
@@ -3170,7 +3173,9 @@
       score: String(pilot.score ?? ""),
       total: String(pilot.total ?? ""),
       percent: String(pilot.percent ?? ""),
-      answers_json: JSON.stringify(payload.answers)
+      answers_json: JSON.stringify(payload.answers),
+      consent_accepted_at: payload.consent.at,
+      consent_version: payload.consent.version
     });
 
     const response = await fetch("/", {
@@ -3326,6 +3331,7 @@
   });
 
   el.profilePrivacy.addEventListener("change", () => {
+    el.profilePrivacy.dataset.uebernommen = "nein";
     profileTouched.add(el.profilePrivacy.id);
     profileIsValid();
   });
@@ -3361,6 +3367,14 @@
     el.profileCameraButton.focus();
   });
 
+  for (const input of [el.profileFirstName, el.profileLastName, el.profileCompany, el.profileNumber]) {
+    input.addEventListener("input", () => {
+      el.profilePrivacy.checked = false;
+      el.profilePrivacy.dataset.uebernommen = "nein";
+      profileIsValid();
+    });
+  }
+
   el.profileForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     const firstBad = profileIsValid({ showErrors: true });
@@ -3380,6 +3394,8 @@
       dealer: el.profileCompany.value.trim(),
       dealerNumber: el.profileNumber.value.trim(),
       privacyAccepted: true,
+      consent: el.profilePrivacy.dataset.uebernommen === "ja" && Einwilligung.gueltig(loadParticipant()?.consent)
+        ? loadParticipant().consent : Einwilligung.erfassen(),
       profilePhoto
     });
 
@@ -3505,7 +3521,7 @@
   });
 
   el.btnToIslands.addEventListener("click", () => {
-    history.pushState({}, "", "/quiz");
+    history.pushState({}, "", campusUrl("/quiz"));
     route();
   });
 
@@ -3514,7 +3530,7 @@
   });
 
   el.btnNextIsland.addEventListener("click", () => {
-    history.pushState({}, "", "/quiz");
+    history.pushState({}, "", campusUrl("/quiz"));
     route();
   });
 
@@ -3557,7 +3573,7 @@
   // die Insel längst verlassen und wird von sich aus nichts mehr antippen.
   window.addEventListener("online", () => flushOutbox());
   el.btnErrBack.addEventListener("click", () => {
-    history.pushState({}, "", "/quiz");
+    history.pushState({}, "", campusUrl("/quiz"));
     route();
   });
 
@@ -3644,7 +3660,7 @@
     // gar keiner ist. Ein aufgerufener QR-Code oder ein alter Link landet
     // deshalb auf der Uebersicht.
     if (!hatWissenscheck(known)) {
-      history.replaceState({}, "", "/quiz");
+      history.replaceState({}, "", campusUrl("/quiz"));
       renderIslands();
       return;
     }

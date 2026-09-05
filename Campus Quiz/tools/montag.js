@@ -157,6 +157,7 @@ if (!SCHNELL) {
   schritt("Feedbackbogen erzeugen", lauf(path.join("tools", "build-index-v14.js"), [], feedbackQuelle));
   schritt("Feedbackbogen als Einzeldatei", lauf(path.join("tools", "build-standalone.js"), [], feedbackQuelle));
   schritt("Feedbackbogen für Netlify", lauf(path.join("tools", "build-netlify.js"), [], feedbackQuelle));
+  schritt("Feedback-Einwilligung im Einzelpaket", lauf(path.join("tools", "feedback-paket-ergaenzen.js"), []));
   schritt("Gesamtpaket", lauf(path.join("tools", "build-insel.js"), ["gesamt"]));
   schritt("sieben Einzelpakete", lauf(path.join("tools", "build-insel.js"), ["alle"]));
 } else {
@@ -225,6 +226,7 @@ schritt("Bewertungslogik", funktion,
 const feedbackFunktion = lauf(path.join("tools", "test-feedback-function.js"), []);
 schritt("Feedback-Backend", feedbackFunktion,
   (feedbackFunktion.ausgabe.match(/^\d+ bestanden.*$/m) || [""])[0]);
+schritt("Feedback-Einwilligung im Paket", lauf(path.join("tools", "test-feedback-paket.js"), []));
 
 // Die SQL-Dateien werden später von Hand im Supabase-Editor ausgeführt. Bis
 // dahin bewacht dieser Test die Verträge, die sich lokal beweisen lassen:

@@ -18,6 +18,7 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-
 const OVERALL = new Set(["Sehr zufrieden", "Zufrieden", "Teils/teils", "Eher unzufrieden", "Unzufrieden"]);
 const RECOMMENDATIONS = new Set(["Ja, auf jeden Fall", "Eher ja", "Eher nein", "Nein"]);
 const { schreibschutz } = require("./campus-schutz.js");
+const { pruefen: pruefeEinwilligung } = require("../../public/assets/campus-einwilligung.js");
 
 function jsonResponse(statusCode, body) {
   return {
@@ -71,6 +72,7 @@ function normalizePayload(input) {
   if (input.eventSlug !== EVENT_SLUG) throw new Error("Unbekannte Veranstaltung.");
   if (input.formVersion !== FORM_VERSION) throw new Error("Unbekannte Formularversion.");
 
+  const consent = pruefeEinwilligung(input.consent);
   const submissionId = cleanString(input.submissionId, 80);
   if (!UUID.test(submissionId)) throw new Error("Ungültige Einsendungs-ID.");
 
@@ -127,6 +129,7 @@ function normalizePayload(input) {
 
   return {
     submissionId,
+    consent,
     createdClientAt: new Date(created).toISOString(),
     eventSlug: EVENT_SLUG,
     formVersion: FORM_VERSION,

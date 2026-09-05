@@ -63,6 +63,17 @@ declare
   n_quiz integer;
   n_feedback integer;
 begin
+  if frist is null or frist <= interval '0 seconds' then
+    raise exception 'Die Aufbewahrungsfrist muss positiv sein.';
+  end if;
+
+  -- Auch Kommentare bereits anonymisierter Bögen nachbereinigen.
+  update public.campus_feedback_ratings r
+     set comment = null
+    from public.campus_feedback f
+   where r.feedback_id = f.id and r.comment is not null
+     and (f.created_at < grenze or f.anonymized_at is not null);
+
   -- Quiz: Name, Betrieb und Händlernummer fort. answers bleibt — dort stehen
   -- Antwortnummern, keine Personendaten. Die Prüfbedingungen der Tabelle
   -- verlangen zwei bis 120 Zeichen und fünf Ziffern, deshalb Platzhalter
@@ -71,6 +82,10 @@ begin
      set participant   = 'anonymisiert',
          dealer        = 'anonymisiert',
          dealer_number = '00000',
+         session_id = 'anon-' || id::text,
+         page_url = '',
+         consent_accepted_at = null,
+         consent_version = null,
          anonymized_at = now()
    where created_at < grenze
      and anonymized_at is null;
@@ -83,6 +98,9 @@ begin
      set participant_name        = 'anonymisiert',
          dealer_name             = 'anonymisiert',
          dealer_number           = '00000',
+         submission_id           = gen_random_uuid(),
+         consent_accepted_at      = null,
+         consent_version          = null,
          recommendation_reason   = null,
          topic_wishes            = null,
          team_mood               = null,
@@ -95,9 +113,7 @@ begin
      and anonymized_at is null;
   get diagnostics n_feedback = row_count;
 
-  -- campus_feedback_ratings bleibt unangetastet: dort stehen Abschnitt,
-  -- Merkmal und Note. Der Bezug zur Person lief über campus_feedback und ist
-  -- mit der Zeile oben erloschen.
+  -- Die Einzelnoten bleiben erhalten; ihre Freitexte wurden oben entfernt.
 
   return query
     select 'campus_quiz_submissions'::text, n_quiz
@@ -162,4 +178,5 @@ $$;
 -- select * from public.campus_daten_anonymisieren();
 
 -- Zum Erproben mit einer künstlich kurzen Frist — nur im Testprojekt:
--- select * from public.campus_daten_anonymisieren(interval '0 seconds');
+-- Künstliche Testdaten mit created_at vor mehr als zwölf Monaten anlegen.
+-- select * from public.campus_daten_anonymisieren();

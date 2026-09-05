@@ -8,8 +8,8 @@
   <meta name="description" content="THITRONIK Campus: Wissenscheck nach jeder Schulungsinsel.">
   <meta name="robots" content="noindex, nofollow">
   <title>THITRONIK Campus: Wissenscheck</title>
-  <link rel="stylesheet" href="/assets/styles.css?v=1.37.1">
-  <link rel="stylesheet" href="/assets/thi.css?v=1.37.1">
+  <link rel="stylesheet" href="/assets/styles.css?v=1.39.0">
+  <link rel="stylesheet" href="/assets/thi.css?v=1.39.0">
 </head>
 <body>
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
@@ -93,11 +93,11 @@
           <div class="onboarding-hero">
             <picture class="onboarding-picture">
               <source type="image/webp"
-                      srcset="/media/campus/firmensitz-640.webp?v=1.37.1 640w,
-                              /media/campus/firmensitz-1024.webp?v=1.37.1 1024w,
-                              /media/campus/firmensitz-1600.webp?v=1.37.1 1600w"
+                      srcset="/media/campus/firmensitz-640.webp?v=1.39.0 640w,
+                              /media/campus/firmensitz-1024.webp?v=1.39.0 1024w,
+                              /media/campus/firmensitz-1600.webp?v=1.39.0 1600w"
                       sizes="(min-width: 1200px) 50vw, 100vw">
-              <img src="/media/campus/firmensitz-1600.jpg?v=1.37.1"
+              <img src="/media/campus/firmensitz-1600.jpg?v=1.39.0"
                    alt="Luftaufnahme des THITRONIK-Firmensitzes in Eckernförde"
                    width="1600" height="1198" fetchpriority="high">
             </picture>
@@ -125,26 +125,7 @@
                 <p>Damit wir deine Lernreise personalisieren können.</p>
               </header>
 
-              <fieldset class="profile-photo-fieldset" aria-describedby="profile-photo-help profile-photo-error">
-                <legend>Profilfoto <span>optional</span></legend>
-                <div class="profile-photo-row">
-                  <div class="profile-photo-preview" id="profile-photo-preview">
-                    <img id="profile-photo-image" alt="Vorschau deines Profilfotos" hidden>
-                    <span id="profile-photo-placeholder">Foto</span>
-                  </div>
-                  <div class="profile-photo-controls">
-                    <div class="profile-photo-actions">
-                      <button class="profile-photo-button" id="profile-camera-button" type="button">Foto aufnehmen</button>
-                      <button class="profile-photo-button" id="profile-upload-button" type="button">Foto hochladen</button>
-                    </div>
-                    <button class="profile-photo-remove" id="profile-photo-remove" type="button" hidden>Foto entfernen</button>
-                    <p id="profile-photo-help">JPEG, PNG oder WebP, maximal 5 MB. Du kannst das Bild später ändern.</p>
-                    <p class="profile-error" id="profile-photo-error" role="alert" hidden></p>
-                  </div>
-                </div>
-                <input id="profile-camera" type="file" accept="image/jpeg,image/png,image/webp" capture="user" hidden>
-                <input id="profile-upload" type="file" accept="image/jpeg,image/png,image/webp" hidden>
-              </fieldset>
+
 
               <div class="profile-name-row">
                 <div class="profile-field">
@@ -186,6 +167,30 @@
                 <span>Profil speichern &amp; Campus starten</span>
                 <span class="profile-submit-arrow" aria-hidden="true">→</span>
               </button>
+
+              <details class="profile-photo-details">
+                <summary>Profilfoto hinzufügen oder ändern (optional)</summary>
+              <fieldset class="profile-photo-fieldset" aria-describedby="profile-photo-help profile-photo-error">
+                <legend>Profilfoto <span>optional</span></legend>
+                <div class="profile-photo-row">
+                  <div class="profile-photo-preview" id="profile-photo-preview">
+                    <img id="profile-photo-image" alt="Vorschau deines Profilfotos" hidden>
+                    <span id="profile-photo-placeholder">Foto</span>
+                  </div>
+                  <div class="profile-photo-controls">
+                    <div class="profile-photo-actions">
+                      <button class="profile-photo-button" id="profile-camera-button" type="button">Foto aufnehmen</button>
+                      <button class="profile-photo-button" id="profile-upload-button" type="button">Foto hochladen</button>
+                    </div>
+                    <button class="profile-photo-remove" id="profile-photo-remove" type="button" hidden>Foto entfernen</button>
+                    <p id="profile-photo-help">JPEG, PNG oder WebP, maximal 5 MB. Du kannst das Bild später ändern.</p>
+                    <p class="profile-error" id="profile-photo-error" role="alert" hidden></p>
+                  </div>
+                </div>
+                <input id="profile-camera" type="file" accept="image/jpeg,image/png,image/webp" capture="user" hidden>
+                <input id="profile-upload" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+              </fieldset>
+              </details>
 
               <nav class="profile-footer" aria-label="Rechtliches und Kontakt">
                 <a href="https://www.thitronik.de/kontakt/" target="_blank" rel="noopener noreferrer">Support &amp; Kontakt</a>
@@ -819,15 +824,17 @@
     <input name="bot-field">
     <input name="session_id"><input name="event"><input name="island">
     <input name="quiz_version"><input name="engine_version">
+    <input name="consent_accepted_at"><input name="consent_version">
     <input name="participant"><input name="dealer"><input name="dealer_number"><input name="area">
     <input name="started_at"><input name="finished_at"><input name="page_url">
     <input name="score"><input name="total"><input name="percent"><input name="answers_json">
   </form>
 
-  <script src="/assets/engine.js?v=1.37.1" defer></script>
+  <script src="/assets/campus-einwilligung.js?v=1.39.0" defer></script>
+  <script src="/assets/engine.js?v=1.39.0" defer></script>
   <!-- THI haengt seinen Schalter selbst in .masthead-tools ein und baut sein
        Panel an den Seitenkoerper. Faellt das Skript aus, fehlt nur THI —
        Kopfzeile und Quiz bleiben unberuehrt. -->
-  <script src="/assets/thi.js?v=1.37.1" defer></script>
+  <script src="/assets/thi.js?v=1.39.0" defer></script>
 </body>
 </html>

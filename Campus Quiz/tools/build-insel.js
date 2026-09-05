@@ -70,7 +70,7 @@ const DATENSCHUTZ_ZIEL = "datenschutz";
  *  stattdessen in der netlify.toml des Pakets. README.txt richtet sich an
  *  den, der hochlaedt, und hat im ausgelieferten Verzeichnis nichts zu
  *  suchen. */
-const BOGEN_AUSGENOMMEN = new Set(["_headers", "README.txt"]);
+const BOGEN_AUSGENOMMEN = new Set(["_headers", "_redirects", "README.txt", "datenschutz"]);
 /* Bilder, die nicht an einer einzelnen Insel haengen und deshalb in jedes
    Paket muessen. `karte/` ist die Deko der Expeditionskarte; sie wird
    ausschliesslich in der Karten-Medienabfrage als CSS-Hintergrund
@@ -125,7 +125,7 @@ function engineFassung() {
 
 /** Setzt die Fassung in alle ?v=-Verweise der index.html ein. */
 function fassungEinsetzen(html, fassung) {
-  return html.replace(/(\/assets\/[a-z.]+)\?v=[^"']*/g, `$1?v=${fassung}`);
+  return html.replace(/(\/assets\/[a-z.-]+)\?v=[^"']*/g, `$1?v=${fassung}`);
 }
 
 function lies(...teile) {
@@ -198,7 +198,9 @@ function kopiereBogen(oeff) {
 ` +
       "  Erst dort bauen: node tools/build-netlify.js");
   }
-  return kopiereVerzeichnis(BOGEN_QUELLE, path.join(oeff, BOGEN_ZIEL), BOGEN_AUSGENOMMEN);
+  const ziel = path.join(oeff, BOGEN_ZIEL);
+  const zahl = kopiereVerzeichnis(BOGEN_QUELLE, ziel, BOGEN_AUSGENOMMEN);
+  return zahl + require("./feedback-einwilligung-bauen.js")(ziel, engineFassung());
 }
 
 function kopiereArbeitskarte(oeff) {
@@ -507,6 +509,7 @@ function baue(slug) {
 
   // --- Engine und Stile unverändert --------------------------------------
   kopiere(path.join(WURZEL, "public", "assets", "engine.js"), path.join(oeff, "assets", "engine.js"));
+  kopiere(path.join(WURZEL, "public", "assets", "campus-einwilligung.js"), path.join(oeff, "assets", "campus-einwilligung.js"));
   kopiere(path.join(WURZEL, "public", "assets", "styles.css"), path.join(oeff, "assets", "styles.css"));
   kopiere(path.join(WURZEL, "public", "assets", "thitronik-logo.png"), path.join(oeff, "assets", "thitronik-logo.png"));
 
@@ -595,6 +598,7 @@ function baueGesamt() {
 
   // --- Engine und Stile unverändert --------------------------------------
   kopiere(path.join(WURZEL, "public", "assets", "engine.js"), path.join(oeff, "assets", "engine.js"));
+  kopiere(path.join(WURZEL, "public", "assets", "campus-einwilligung.js"), path.join(oeff, "assets", "campus-einwilligung.js"));
   kopiere(path.join(WURZEL, "public", "assets", "styles.css"), path.join(oeff, "assets", "styles.css"));
   kopiere(path.join(WURZEL, "public", "assets", "thitronik-logo.png"), path.join(oeff, "assets", "thitronik-logo.png"));
 

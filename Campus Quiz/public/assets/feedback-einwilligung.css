@@ -1,0 +1,5 @@
+.campus-feedback-consent { margin: 24px 0; padding: 16px; border: 1px solid #7b8ea6; border-radius: 12px; }
+.campus-feedback-consent label { display: flex; align-items: flex-start; gap: 12px; min-height: 56px; cursor: pointer; line-height: 1.5; }
+.campus-feedback-consent input { flex: 0 0 24px; width: 24px; height: 24px; margin-top: 2px; }
+.campus-feedback-consent a { color: #1d3661; text-decoration: underline; }
+.campus-feedback-consent input[aria-invalid="true"] { outline: 2px solid #a81024; outline-offset: 3px; }

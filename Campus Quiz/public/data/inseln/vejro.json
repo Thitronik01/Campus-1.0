@@ -3,7 +3,7 @@
   "code": "VEJRØ",
   "title": "Produktneuheiten: Zugang & Wasserschutz",
   "subtitle": "Neuheiten verstehen, passend beraten",
-  "version": "6",
+  "version": "7",
   "lernziel": "CampLock und VanLock sicher abgrenzen, den Fingerprint ehrlich beraten und die neuen Funklösungen gegen Wassereinbruch passend einsetzen.",
   "dauerMinuten": 7,
   "quellen": [
@@ -13,7 +13,7 @@
     "produkte/funk-magnetkontakt.md",
     "referenz/zugang-bedienung.md"
   ],
-  "internerHinweis": "Fragenkatalog v6. Zehn Fragen. Redaktionsrunde 08/2026: Markenname Hartal aus VEJ-01 und VEJ-09 genommen - die Fragen laufen jetzt ueber den Tuertyp. Achtung, das Produktwissen nennt die Hartal-Kompatibilitaet weiterhin als entscheidenden Punkt fuer CampLock (produkte/camplock-fingerprint.md). VEJ-02 ohne Revisionskuerzel V002+. VEJ-03 und VEJ-09 haben je eine weitere falsche Option. VEJ-08 benennt den Einbaupunkt des Fuehlers konkret. Offen: VEJ-06 und VEJ-10 fragen beide, ob der Fahrzeugschluessel zu Hause bleiben darf. Fingerprint-Kompatibilitaet und Sicherheitshinweis vom 27.07.2026 vor jeder Schulung gegen den aktuellen Freigabestand pruefen.",
+  "internerHinweis": "Fragenkatalog v7. Zehn Fragen. Redaktionsrunde 08/2026: Markenname Hartal aus VEJ-01 und VEJ-09 genommen - die Fragen laufen jetzt ueber den Tuertyp. Achtung, das Produktwissen nennt die Hartal-Kompatibilitaet weiterhin als entscheidenden Punkt fuer CampLock (produkte/camplock-fingerprint.md). VEJ-02 ohne Revisionskuerzel V002+. VEJ-03 und VEJ-09 haben je eine weitere falsche Option. VEJ-08 benennt den Einbaupunkt des Fuehlers konkret. Am 05.09.2026 trennt VEJ-06 den praktischen Nachweis des Zweitzugangs vom Sicherheitshinweis in VEJ-10. Fingerprint-Kompatibilitaet und Sicherheitshinweis vom 27.07.2026 vor jeder Schulung gegen den aktuellen Freigabestand pruefen.",
   "questions": [
     {
       "id": "VEJ-01",
@@ -280,29 +280,48 @@
     {
       "id": "VEJ-06",
       "type": "single",
-      "category": "Unabhängiger Zweitzugang",
-      "prompt": "Kunde: „Super, dann kann ich den Fahrzeugschlüssel ja zu Hause lassen.“ Deine beste Antwort?",
+      "category": "Zweitzugang prüfen",
+      "prompt": "Bei der Übergabe soll der Kunde den unabhängigen zweiten Zugangsweg selbst ausprobieren. Was ist ein belastbarer Nachweis?",
       "options": [
-        { "id": "a", "text": "Ja, der Fingerprint ersetzt den Schlüssel" },
-        { "id": "b", "text": "Nein - immer einen zweiten, unabhängigen Zugangsweg vorsehen" },
-        { "id": "c", "text": "Ja, sofern zusätzlich ein Pro-finder verbaut ist" },
-        { "id": "d", "text": "Ja, sobald safe.lock verbaut ist" }
-      ],
-      "correct": ["b"],
-      "feedback": "Jeder Bedienweg hat einen Ausfallmodus. Nasse Finger, leerer Akku, verlorene Kopplung - keiner davon darf dazu führen, dass der Kunde vor dem Fahrzeug steht.",
-      "irrtum": [
         {
-          "fuer": ["c"],
-          "titel": "Mit Pro-finder ja",
-          "text": "Naheliegend, aber der Pro-finder ist der **Fernsteuerungs**weg und braucht Mobilfunk. Ohne Netz auf dem Stellplatz ist er kein Zugang. Ein Backup, das dieselbe Voraussetzung wie das Original hat, ist keines."
+          "id": "a",
+          "text": "Der Kunde bestätigt, dass er die Erklärung verstanden hat"
         },
         {
-          "fuer": ["d"],
-          "titel": "Mit safe.lock ja",
-          "text": "safe.lock erweitert, was der Fingerprint kann - es macht ihn nicht ausfallsicher."
+          "id": "b",
+          "text": "Der Kunde führt den zweiten Zugangsweg selbst vor; der mechanische Fahrzeugschlüssel bleibt während der Prüfung verfügbar"
+        },
+        {
+          "id": "c",
+          "text": "Der Fingerprint funktioniert dreimal hintereinander"
+        },
+        {
+          "id": "d",
+          "text": "Die App zeigt eine aktive Verbindung an"
         }
       ],
-      "mitnehmen": "**Prinzip 2 - Ein Zugangsweg ist kein Zugangsweg.** Sauberster Zweitweg: Funk-Handsender 868 (101064), unabhängig vom Smartphone, bis ca. 75 m, CR2032, kein Neuanlernen nach Batteriewechsel. Satz für den Kunden: „Nehmen Sie den Schlüssel trotzdem mit - nicht weil ich dem Finger misstraue, sondern weil Sie sonst nur einen Weg ins Fahrzeug haben.“"
+      "correct": [
+        "b"
+      ],
+      "feedback": "Ein zweiter Zugangsweg ist erst nachgewiesen, wenn der Kunde ihn tatsächlich bedienen kann. Die Wiederholung desselben Fingerprint- oder App-Wegs prüft keinen unabhängigen Zugang. Während der Vorführung bleibt der mechanische Schlüssel verfügbar, damit ein fehlgeschlagener Versuch nicht zum Aussperren führt.",
+      "irrtum": [
+        {
+          "fuer": [
+            "a"
+          ],
+          "titel": "Erklärung mit Funktionsnachweis verwechselt",
+          "text": "Eine Zustimmung zeigt noch nicht, dass der Kunde den zweiten Weg ohne Hilfe bedienen kann."
+        },
+        {
+          "fuer": [
+            "c",
+            "d"
+          ],
+          "titel": "Nur den ersten Bedienweg geprüft",
+          "text": "Eine funktionierende App oder ein erneut erfolgreicher Fingerprint belegt keinen unabhängigen zweiten Zugang."
+        }
+      ],
+      "mitnehmen": "Den zweiten Weg zeigen, vom Kunden ausführen lassen und das Ergebnis bei der Übergabe festhalten. Den Hinweis zum Mitführen des Fahrzeugschlüssels behandelt VEJ-10."
     }
   ]
 }

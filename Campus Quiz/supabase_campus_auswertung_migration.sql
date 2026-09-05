@@ -59,7 +59,7 @@ begin
       z.island                                        as insel,
       max(z.island_code)                              as code,
       count(*)                                        as einsendungen,
-      count(distinct z.dealer_number)                 as haendler,
+      count(distinct z.dealer_number) filter (where z.anonymized_at is null) as haendler,
       round(avg(z.percent))                           as schnitt_prozent,
       round(avg(z.duration_seconds))                  as schnitt_sekunden,
       count(*) filter (where z.percent = 100)         as fehlerfrei,
@@ -75,7 +75,7 @@ begin
     'gesamt', (
       select jsonb_build_object(
         'einsendungen', count(*),
-        'haendler', count(distinct dealer_number)
+        'haendler', count(distinct dealer_number) filter (where anonymized_at is null)
       ) from im_zeitraum
     ),
     'inseln', coalesce((
