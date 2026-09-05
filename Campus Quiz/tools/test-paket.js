@@ -293,7 +293,7 @@ async function ruf(payload) {
     const akBilder = ["fahrerseite", "beifahrerseite", "front", "heck"]
       .map((ansicht) => path.join(paket, "public", "assets", "arbeitskarte", `wohnmobil-${ansicht}.webp`));
     pruefe("Alle vier Fahrzeugansichten sind enthalten", akBilder.every(fs.existsSync));
-    pruefe("Campus-Übersicht verlinkt die Langeland-Praxis", /id="overview-praxis"/.test(seite) && fs.existsSync(path.join(paket, "public", "praxis", "langeland", "index.html")));
+    pruefe("Langeland verlinkt direkt die Arbeitskarte", /id="overview-praxis"/.test(seite) && fs.existsSync(path.join(paket, "public", "arbeitskarte", "index.html")));
   }
 
   // THI wird mit jedem Paket ausgeliefert: Function, Bibliothek, Wissen.

@@ -1,5 +1,7 @@
 # Inselübersicht und Praxis auf Langeland
 
+Aktualisierung mit 1.42.0: Auf Wunsch wurde der Musterfall einschließlich der separaten Praxisseite entfernt. Langeland verlinkt direkt die Arbeitskarte; deren Rückweg führt nach Langeland. Hiddensee, Usedom und Langeland sind in beiden Kartenkompositionen um etwa 20–30 % vergrößert und teilweise versetzt. Browserprüfung von 320 bis 1920 px ohne horizontalen Überlauf; im Tablet-Hochformat keine Überschneidungen der Beschriftungen. Paketprüfungen erfolgreich. Die folgende Beschreibung dokumentiert den vorherigen Entwurf.
+
 Engine 1.40.0. Lokaler Prototyp für die vereinbarte erste Ausbaustufe.
 
 - Desktop: Karte und Detailbereich nebeneinander. Eine Insel auswählen zeigt Thema, Fortschritt und den Zugang zum Wissenscheck.

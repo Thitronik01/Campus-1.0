@@ -13,7 +13,7 @@
 
 (function () {
   const EVENT_SLUG = "campus-2026";
-  const ENGINE_VERSION = "1.41.0";
+  const ENGINE_VERSION = "1.42.0";
   const SUBMIT_ENDPOINT = "/.netlify/functions/submit-quiz";
 
   const LS_PARTICIPANT = "thitronik.campus.2026.participant";
@@ -925,14 +925,14 @@
                    quer: { x: 23, y: 33, scale:  .95, karte: "links",  karteY: 5, abstand: -3.5 },
                    hoch: { x: 20, y: 35, scale:  .95, karte: "unten",  karteY: -2 } },
       hiddensee: { mobil: 3,
-                   quer: { x: 75, y: 36, scale:  .82, karte: "rechts", karteY: 6, abstand: -1 },
-                   hoch: { x: 78, y: 34, scale:  .78, karte: "unten",  karteY: -2 } },
+                   quer: { x: 77, y: 34, scale:  1.04, karte: "rechts", karteY: 6, abstand: -1 },
+                   hoch: { x: 79, y: 33, scale:  .98, karte: "unten",  karteY: -2 } },
       usedom:    { mobil: 4,
-                   quer: { x: 22, y: 68, scale:  .90, karte: "links",  karteY: 5, abstand: -1 },
-                   hoch: { x: 18, y: 65, scale:  .85, karte: "unten",  karteY: -2 } },
+                   quer: { x: 22, y: 68, scale:  1.08, karte: "links",  karteY: 5, abstand: -1 },
+                   hoch: { x: 18, y: 65, scale:  1.02, karte: "unten",  karteY: -2 } },
       langeland: { mobil: 5,
-                   quer: { x: 46, y: 83, scale:  .72, karte: "rechts", karteY: 5, abstand: -2.5 },
-                   hoch: { x: 48, y: 81, scale:  .80, karte: "unten",  karteY: -3 } },
+                   quer: { x: 47, y: 80, scale:  .94, karte: "rechts", karteY: 5, abstand: -2.5 },
+                   hoch: { x: 48, y: 80, scale:  1.00, karte: "unten",  karteY: -3 } },
       poel:      { mobil: 6,
                    quer: { x: 71, y: 66, scale:  .95, karte: "rechts", karteY: 1, abstand: 1 },
                    hoch: { x: 77, y: 65, scale:  .95, karte: "unten",  karteY: -2 } }
@@ -1468,8 +1468,8 @@
     if (!insel) return;
 
     $("overview-description").textContent = insel.beschreibung || "";
-    $("overview-praxis").hidden = aktivSlug !== "langeland";
-    $("overview-praxis").href = campusUrl("/praxis/langeland/");
+    $("overview-praxis").hidden = aktivSlug !== "langeland" || !state.catalog.arbeitskarte;
+    $("overview-praxis").href = campusUrl(state.catalog.arbeitskarte || "/arbeitskarte/");
     el.islandGrid.querySelectorAll(".island-map-item").forEach(li => {
       const button = li.querySelector("button");
       if (button) button.setAttribute("aria-pressed", String(li.dataset.slug === aktivSlug));
@@ -1902,8 +1902,8 @@
     const isPoel = island.island === "poel";
     const isUsedom = island.island === "usedom";
     const isLangeland = island.island === "langeland";
-    $("langeland-praxis").hidden = !isLangeland;
-    $("langeland-praxis-link").href = campusUrl("/praxis/langeland/");
+    $("langeland-praxis").hidden = !isLangeland || !state.catalog.arbeitskarte;
+    $("langeland-praxis-link").href = campusUrl(state.catalog.arbeitskarte || "/arbeitskarte/");
     const isFehmarn = island.island === "fehmarn";
 
     el.screens.start.dataset.island = island.island || "";

@@ -515,7 +515,6 @@ function baue(slug) {
 
   // --- Datenschutzhinweis unter /datenschutz ------------------------------
   kopiereDatenschutz(oeff);
-  kopiereVerzeichnis(path.join(WURZEL, "public", "praxis"), path.join(oeff, "praxis"));
 
   // --- Daten: Katalog auf genau diese eine Insel eindampfen ---------------
   // Die Engine erkennt daran den Einzelbetrieb und überspringt die Übersicht.
@@ -605,7 +604,6 @@ function baueGesamt() {
 
   // --- Datenschutzhinweis unter /datenschutz ------------------------------
   kopiereDatenschutz(oeff);
-  kopiereVerzeichnis(path.join(WURZEL, "public", "praxis"), path.join(oeff, "praxis"));
 
   // --- Daten: vollständiger Katalog, alle Fragensätze --------------------
   // Der Gesamtstand liefert den Feedbackbogen tatsächlich mit aus. Das Feld
