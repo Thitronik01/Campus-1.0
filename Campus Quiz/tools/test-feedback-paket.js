@@ -14,11 +14,16 @@ try {
   const html = fs.readFileSync(path.join(tmp, "index.html"), "utf8");
   const app = fs.readFileSync(path.join(tmp, "app-v14.js"), "utf8");
   assert.equal((app.match(/CampusFeedbackEinwilligung.nachweis\(\)/g) || []).length, 1);
-  for (const name of ["campus-einwilligung.js", "feedback-einwilligung.js", "feedback-einwilligung.css"]) {
+  for (const name of ["campus-einwilligung.js", "feedback-einwilligung.js", "feedback-einwilligung.css", "feedback-ux.js", "feedback-ux.css"]) {
     assert.equal(html.split(`${name}?v=probe-2`).length, 2);
     assert.ok(fs.existsSync(path.join(tmp, name)));
   }
   assert.ok(!html.includes("probe-1"));
+  assert.ok(!html.includes('class="isles__poster"'));
+  for (const slug of ["vejro", "poel", "hiddensee", "samsoe", "fehmarn", "usedom", "langeland"]) {
+    assert.ok(html.includes(`assets/campus-inseln/${slug}.webp`));
+    assert.ok(fs.existsSync(path.join(tmp, "assets", "campus-inseln", `${slug}.webp`)));
+  }
   assert.ok(html.includes('href="/datenschutz/"'));
   assert.ok(app.indexOf("CampusFeedbackEinwilligung.nachweis()") < app.indexOf("const payload = { ...buildRpcPayload(), consent }"));
   // Der statische Forms-Weg muss den vollständigen Payload einschließlich

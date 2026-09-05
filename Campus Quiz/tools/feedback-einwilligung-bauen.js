@@ -23,19 +23,29 @@ module.exports = function feedbackEinwilligung(ziel, version) {
 
   // Das Gesamtpaket kopiert den bereits ergänzten Einzelbogen. Die zweite
   // Anwendung aktualisiert nur die Fassung, ohne Skripte zu verdoppeln.
-  const html = fs.readFileSync(htmlPath, "utf8")
-    .replace(/<link rel="stylesheet" href="feedback-einwilligung\.css\?v=[^"]+">\s*/g, "")
-    .replace(/<script src="(?:campus-einwilligung|feedback-einwilligung)\.js\?v=[^"]+" defer><\/script>\s*/g, "")
-    .replaceAll('href="https://www.thitronik.de/datenschutz/"', 'href="/datenschutz/"');
+  let html = fs.readFileSync(htmlPath, "utf8")
+    .replace(/<link rel="stylesheet" href="(?:feedback-einwilligung|feedback-ux)\.css\?v=[^"]+">\s*/g, "")
+    .replace(/<script src="(?:campus-einwilligung|feedback-einwilligung|feedback-ux)\.js\?v=[^"]+" defer><\/script>\s*/g, "")
+    .replaceAll('href="https://www.thitronik.de/datenschutz/"', 'href="/datenschutz/"')
+    .replaceAll('(max-width: 1228px) calc(100vw - 28px), 1200px', '(min-width: 1400px) 595px, (min-width: 1000px) 42vw, calc(100vw - 28px)');
+  // Dieselben Motive wie auf der Campus-Karte helfen beim Wiedererkennen.
+  // Das alte Plakat zeigt abweichende Themen und entfällt deshalb.
+  html = html.replace(/<figure class="isles__poster">[\s\S]*?<\/figure>/g, "");
+  const inselZiel = path.join(ziel, "assets", "campus-inseln");
+  fs.mkdirSync(inselZiel, { recursive: true });
+  for (const slug of ["vejro", "poel", "hiddensee", "samsoe", "fehmarn", "usedom", "langeland"]) {
+    fs.copyFileSync(path.join(__dirname, "..", "public", "media", "inseln", `${slug}.webp`), path.join(inselZiel, `${slug}.webp`));
+    html = html.replaceAll(`assets/v12/islands/${slug}.webp`, `assets/campus-inseln/${slug}.webp`);
+  }
   const script = /<script src="app-v14\.js\?v=[^"]+" defer><\/script>/g;
   if ([...html.matchAll(script)].length !== 1) throw new Error("Feedback: Script-Einbindung hat sich geändert.");
-  const dateien = ["campus-einwilligung.js", "feedback-einwilligung.js"];
+  const dateien = ["campus-einwilligung.js", "feedback-einwilligung.js", "feedback-ux.js"];
   fs.writeFileSync(htmlPath, html.replace(script,
-    `<link rel="stylesheet" href="feedback-einwilligung.css?v=${version}">\n` +
+    `<link rel="stylesheet" href="feedback-einwilligung.css?v=${version}">\n<link rel="stylesheet" href="feedback-ux.css?v=${version}">\n` +
     dateien.map(name => `<script src="${name}?v=${version}" defer></script>`).join("\n") +
     `\n<script src="app-v14.js?v=${version}" defer></script>`));
-  for (const name of [...dateien, "feedback-einwilligung.css"]) {
+  for (const name of [...dateien, "feedback-einwilligung.css", "feedback-ux.css"]) {
     fs.copyFileSync(path.join(__dirname, "..", "public", "assets", name), path.join(ziel, name));
   }
-  return 3;
+  return 12;
 };
