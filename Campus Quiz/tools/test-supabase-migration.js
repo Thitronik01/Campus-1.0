@@ -23,13 +23,17 @@ const AUSWERTUNG = fs.readFileSync(
   path.join(__dirname, "..", "supabase_campus_auswertung_migration.sql"),
   "utf8"
 );
+const HAERTUNG = fs.readFileSync(
+  path.join(__dirname, "..", "supabase_campus_haertung_migration.sql"),
+  "utf8"
+);
 /* Die Edge Function ist kein SQL, gehört aber zur selben Kette: Sie ist das
    einzige Tor, durch das Langdock an die Auswertung kommt. */
 const ENDPUNKT = fs.readFileSync(
   path.join(__dirname, "..", "supabase", "functions", "campus-auswertung", "index.ts"),
   "utf8"
 );
-const BEIDE = `${BASIS}\n${QUIZ}\n${FRIST}\n${AUSWERTUNG}`;
+const BEIDE = `${BASIS}\n${QUIZ}\n${FRIST}\n${AUSWERTUNG}\n${HAERTUNG}`;
 
 let bestanden = 0;
 let durchgefallen = 0;
@@ -141,6 +145,17 @@ pruefe("Langdock-Endpunkt spricht nur die Auswertungsfunktion an",
   && !/\/rest\/v1\/campus_/.test(ENDPUNKT));
 pruefe("Langdock-Endpunkt prueft das Token in konstanter Zeit",
   /function\s+gleich\s*\(/.test(ENDPUNKT) && /\^/.test(ENDPUNKT));
+
+/* Haertung. Der Security-Advisor fand am 3. September 2026 eine
+   SECURITY-DEFINER-Funktion, die ueber /rest/v1/rpc fuer anon erreichbar war —
+   sie stammt nicht aus diesem Repository, sondern aus dem Projektaufbau. */
+pruefe("Haertung entzieht rls_auto_enable die oeffentlichen Rechte",
+  hat(/revoke\s+execute\s+on\s+function\s+public\.rls_auto_enable\(\)\s+from\s+public,\s*anon,\s*authenticated/i, HAERTUNG));
+/* Ein blindes revoke auf eine Funktion, die es nicht gibt, bricht die
+   Migration ab. Der Guard haelt sie idempotent und in einem frischen Projekt
+   lauffaehig. */
+pruefe("Haertung laeuft auch, wenn die Funktion fehlt",
+  hat(/if\s+exists\s*\([\s\S]*?proname\s*=\s*'rls_auto_enable'/i, HAERTUNG));
 
 // Beim Neuaufbau gibt es nichts zu entfernen. Destruktive Migrationen brauchen
 // laut AGENTS.md eine eigene, ausdrückliche Freigabe und gehören nicht hierher.

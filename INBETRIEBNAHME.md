@@ -19,15 +19,88 @@ Punkte dazu sind offen und stehen ausführlich in [`BACKLOG.md`](BACKLOG.md):
 
 | | Stand 3. September 2026 |
 |---|---|
-| **Datenschutzhinweis** | Umgesetzt. Der Hinweis steht unter `/datenschutz/`, die Einwilligung nach Art. 6 Abs. 1 lit. a wird beim Anlegen des Profils eingeholt, die Speicherdauer beträgt zwölf Monate. **Vor dem Scharfschalten fehlt noch ein Schritt:** `Campus Quiz/supabase_campus_aufbewahrung_migration.sql` einspielen und prüfen, dass der pg_cron-Job `campus-aufbewahrung` aktiv ist — sonst läuft die Frist nicht. Siehe [`Campus Quiz/DATENSCHUTZ.md`](Campus%20Quiz/DATENSCHUTZ.md). |
+| **Datenschutzhinweis** | Umgesetzt und live. Die Einwilligung nach Art. 6 Abs. 1 lit. a wird beim Anlegen des Profils eingeholt, die Speicherdauer beträgt zwölf Monate, und die Aufräumroutine in der Datenbank setzt sie durch. Siehe [`Campus Quiz/DATENSCHUTZ.md`](Campus%20Quiz/DATENSCHUTZ.md). |
 | **Löschweg** | Umgesetzt mit Pull Request #92. Der Knopf „Lokale Campusdaten löschen" räumt Profil, Inselstand und Ausgang von diesem Gerät. Der serverseitige Weg nach einem Widerruf ist in `DATENSCHUTZ.md` beschrieben, aber Handarbeit im SQL-Editor. |
 | **Bremse an den Annahme-Functions** | Umgesetzt mit Pull Request #91: Herkunftsprüfung und Ratenbegrenzung in `netlify/functions/campus-schutz.js`. |
 
-Alle drei Punkte sind entschieden. Offen ist nur noch die Handarbeit im
-Supabase-Dashboard: die Aufbewahrungs-Migration einspielen. Der Campus soll
-frühestens im November 2026 spielbar sein — bis dahin bleibt Zeit für die
-Belege zu den Auftragsverarbeitern und den Nachweis der Einwilligung, beide in
+Alle drei Punkte sind entschieden. Der Campus soll frühestens im November 2026
+spielbar sein — bis dahin bleibt Zeit für die Belege zu den
+Auftragsverarbeitern und den Nachweis der Einwilligung, beide in
 `DATENSCHUTZ.md` beschrieben.
+
+---
+
+## Wo es steht — 3. September 2026, 15:30 Uhr
+
+| | |
+|---|---|
+| Datenschutzhinweis | **live** unter `https://thitronik-campus.netlify.app/datenschutz/`, Fassung 1.0 |
+| `SUPABASE_URL`, `SUPABASE_SECRET_KEY` in Netlify | **gesetzt**, Schlüssel nur im Production-Kontext |
+| Deploy mit den Variablen | **erfolgt**, 15:16 Uhr, `Site is live` |
+| Alle vier Migrationen | **eingespielt** — Basis, Quiz, Aufbewahrung, Auswertung |
+| Zwölf-Monats-Frist | **läuft** — Job `campus-aufbewahrung`, täglich 03:30 UTC, aktiv |
+| Endpunkt `campus-auswertung` | **ausgerollt**, Version 1, ACTIVE — antwortet `503`, solange das Token fehlt |
+| Security-Advisor | keine Warnung mehr; drei gewollte INFO-Zeilen „RLS Enabled No Policy" |
+| Bestand | **0 Zeilen** in Quiz und Feedback |
+
+## Nachtrag — 4. September 2026, 14:20 Uhr
+
+Der Schreibweg ist abgenommen, aber erst nach drei Fehlern, von denen jeder
+den nächsten verdeckte. Die Reihenfolge ist der Grund, warum es einen halben
+Tag gedauert hat.
+
+| | |
+|---|---|
+| Engine | **1.37.1** live. `finish()` stürzte über ein Element, das es seit 1.36 nicht mehr gibt — niemand kam zur Auswertung, nichts wurde gesendet. Pull Request #98. |
+| `SUPABASE_SECRET_KEY` in Netlify | **getauscht.** Der alte Wert war kein Secret Key; die Datenbank wies jede Einsendung mit `42501 permission denied` ab. |
+| Bestand | **2 Quizeinsendungen** (SAMSØ, USEDOM) und **1 Feedbackbogen** mit 16 Bewertungen, serverseitig bewertet, `engine_version` 1.37.1 |
+| Schritt B4 | **erledigt** |
+| Langdock | Integration, Action und Agent stehen — Abnahme offen, siehe [`Campus Quiz/LANGDOCK-ANBINDUNG.md`](Campus%20Quiz/LANGDOCK-ANBINDUNG.md) |
+
+### Drei Fallen, in dieser Reihenfolge
+
+**Der Ausweichweg meldet Erfolg.** Lehnt die Datenbank ab, schickt der Browser
+das Ergebnis an Netlify Forms und hakt es als erledigt ab — die Ergebniskarte
+sagt dann „Ergebnis gespeichert. Danke!". Ein kaputter Schreibweg sieht damit
+aus wie ein funktionierender. **Wer prüft, ob gespeichert wurde, zählt in der
+Datenbank nach, nicht auf dem Bildschirm.** Dass die Meldung unterscheidbar
+werden muss, steht als Rückstand.
+
+**Ein falscher Schlüssel sieht aus wie ein Datenbankfehler.** In Netlify lag
+unter `SUPABASE_SECRET_KEY` ein Publishable Key. Der wird auf die Rolle `anon`
+abgebildet, und die hat auf Campus-Tabellen bewusst keine Rechte — PostgREST
+antwortet `401` mit `42501`, die Function daraus `502 Die Datenbank hat die
+Speicherung abgelehnt`. Der richtige Wert beginnt mit `sb_secret_`. Ein Wert,
+der mit `sb_publishable_` beginnt, ist der falsche; bei `eyJ…` sind anon und
+service_role nicht zu unterscheiden — dann den `sb_secret_`-Schlüssel nehmen.
+
+**Umgebungsvariablen greifen erst beim nächsten Bau.** Das steht unten schon
+zweimal, und es hat trotzdem wieder eine Runde gekostet: Der Schlüssel war
+getauscht, der letzte Deploy stammte von vorher, und die Function lief weiter
+mit dem alten Wert. Netlify → Deploys → **Trigger deploy → Deploy site**.
+Ein neuer Bau dauert hier zwanzig Sekunden.
+
+Der schnellste Weg, all das zu prüfen, ist ein Aufruf der Function von außen
+statt eines Durchlaufs im Browser. Antwortet sie `201 {"ok":true}`, steht der
+Weg; antwortet sie `502` mit `fallback: "netlify_forms"`, lehnt die Datenbank
+ab und der Grund steht in Netlify → Functions → `submit-quiz` → Logs.
+
+### Was als Nächstes zu tun ist
+
+**1. Die Abnahme des Langdock-Agenten** — die vier Fragen in
+[`Campus Quiz/LANGDOCK-ANBINDUNG.md`](Campus%20Quiz/LANGDOCK-ANBINDUNG.md),
+Schritt 5. Der Datenstand ist dafür günstig: Beide Inseln haben je eine
+Einsendung und liegen damit unter der Mindestmenge — die Auswertung muss die
+Anzahl nennen und den Schnitt verweigern.
+
+**2. Die Einträge in Netlify Forms räumen.** Was am 4. September vor dem
+Schlüsseltausch dort ankam, erreicht die Aufräumroutine der Datenbank nicht;
+die Zwölf-Monats-Frist gilt dort nur von Hand.
+
+**3. Offen bleiben zwei Datenschutzpunkte** aus
+[`Campus Quiz/DATENSCHUTZ.md`](Campus%20Quiz/DATENSCHUTZ.md): die Belege zu
+den Auftragsverarbeitern und der Nachweis der Einwilligung, der heute nur im
+Browser liegt. Beide haben bis November Zeit, keiner blockiert den Betrieb.
 
 ---
 
@@ -77,77 +150,54 @@ Alle Einzelheiten und alle weiteren Einstellungen stehen in
 
 ## Schritt B — Supabase
 
-Projekt: `mhzlayhnyqlxdyiceyqz` (thitronik-profinder-quiz).
-Alle Skripte sind idempotent — mehrfaches Ausführen ist gefahrlos.
+Projekt: `pstohdeknhgsywmogmiu` (thitronik-campus, Frankfurt).
+
+> **Die Anleitung dazu steht nicht hier.** Sie steht in
+> [`Campus Quiz/SUPABASE-NEUAUFBAU.md`](Campus%20Quiz/SUPABASE-NEUAUFBAU.md),
+> und zwar vollständig: Reihenfolge der Migrationen, die Prüfabfragen mit
+> ihren erwarteten Ergebnissen und das Betriebsprotokoll, das festhält, was
+> wann tatsächlich lief. Bis September 2026 stand hier eine zweite Fassung
+> desselben Ablaufs — mit dem alten Projekt `mhzlayhnyqlxdyiceyqz` und den
+> Dateien `supabase_v11_migration.sql` und `supabase_v14_migration.sql`.
+> **Diese beiden Dateien dürfen im neuen Projekt nicht laufen**; sie setzen
+> Tabellen des Altprojekts voraus. Wer der veralteten Fassung gefolgt wäre,
+> hätte im falschen Projekt gearbeitet.
 
 ### B1. Migrationen einspielen
 
-Im Supabase-SQL-Editor, **in dieser Reihenfolge**:
+`SUPABASE-NEUAUFBAU.md`, Schritte 1 bis 3. Kurzfassung der Reihenfolge:
 
-1. `Feedbackbogen/supabase_v11_migration.sql`
-   — laut Kopfzeile bereits am 11.08.2026 angewendet; liegt nur zur
-   Wiederherstellung bei. Ein zweiter Lauf schadet nicht.
-2. `Feedbackbogen/supabase_v14_migration.sql`
-3. `Campus Quiz/supabase_campus_quiz_migration.sql`
+1. `Campus Quiz/supabase_campus_basis_migration.sql` — erledigt 03.09.2026
+2. `Campus Quiz/supabase_campus_quiz_migration.sql` — erledigt 03.09.2026
+3. `Campus Quiz/supabase_campus_aufbewahrung_migration.sql` — erledigt 03.09.2026
+4. `Campus Quiz/supabase_campus_auswertung_migration.sql` — erledigt 03.09.2026
+5. `Campus Quiz/supabase_campus_haertung_migration.sql` — erledigt 03.09.2026,
+   Nachtrag zu einem Advisor-Befund
 
-> **Warum v14 vor der Quiz-Migration:** Die View `campus_quiz_und_feedback`
-> liest die Händlernummer aus `campus_feedback.raw_payload`, weil Abschnitt 1
-> von v14 die eigene Spalte erst anlegt. Läuft v14 zuerst, steht die Spalte
-> bereit. Die View funktioniert in beiden Reihenfolgen — sauberer ist diese.
+Die Rechteprüfungen nach jedem Schritt stehen im Neuaufbau-Protokoll. Die
+wichtigste in einem Satz: Kommt bei der Abfrage nach Rechten für `anon` oder
+`authenticated` auch nur **eine** Zeile zurück, ist der Riegel nicht gesetzt —
+dann nicht weitermachen.
 
-### B2. Die Rechte gegenprüfen — das ist der wichtige Teil
-
-Beide Migrationen wurden heute um einen Abschnitt ergänzt, der die
-**Auswertungs-Views** verschließt. Ohne ihn wären sie über den öffentlichen
-anon-Schlüssel lesbar gewesen, mit Händlernummer, Händlername, Quizschnitt
-und Feedbackbewertung Zeile für Zeile. Zwei Voreinstellungen wirkten dabei
-zusammen: Eine View läuft in PostgreSQL mit den Rechten ihres **Besitzers**,
-nicht des Aufrufers — die RLS der Tabelle greift dadurch nicht —, und
-Supabase räumt neuen Objekten im Schema `public` von sich aus Rechte für
-`anon` und `authenticated` ein.
-
-Nach dem Einspielen diese beiden Abfragen laufen lassen:
-
-```sql
--- Erwartet: KEINE Zeile.
-select table_name, grantee, privilege_type
-  from information_schema.role_table_grants
- where table_name in ('campus_quiz_submissions',
-                      'campus_quiz_inseln', 'campus_quiz_fragen',
-                      'campus_quiz_taetigkeit', 'campus_quiz_und_feedback')
-   and grantee in ('anon', 'authenticated');
-```
-
-```sql
--- Erwartet: viermal security_invoker=on.
-select c.relname, c.reloptions
-  from pg_class c join pg_namespace n on n.oid = c.relnamespace
- where n.nspname = 'public' and c.relkind = 'v'
-   and c.relname like 'campus_quiz%';
-```
-
-Kommt bei der ersten Abfrage eine Zeile zurück, ist der Riegel nicht gesetzt
-— dann nicht weitermachen.
-
-> **Folge für die Auswertung:** Wer die Views liest — Langdock etwa —, braucht
-> danach den Service Key oder eine eigene Rolle mit ausdrücklichem `grant`.
-> Über den anon-Schlüssel geht es nicht mehr, und genau das ist der Zweck.
-> Falls Langdock heute mit dem anon-Schlüssel arbeitet, muss das vor dem
-> Scharfschalten umgestellt werden.
-
-### B3. Zwei Umgebungsvariablen setzen
+### B2. Zwei Umgebungsvariablen setzen — erledigt 03.09.2026
 
 | Variable | Wert |
 |---|---|
-| `SUPABASE_URL` | `https://mhzlayhnyqlxdyiceyqz.supabase.co` |
-| `SUPABASE_SECRET_KEY` | der Secret Key aus dem Supabase-Projekt |
+| `SUPABASE_URL` | `https://pstohdeknhgsywmogmiu.supabase.co` |
+| `SUPABASE_SECRET_KEY` | Secret Key aus dem Projekt, nur im Kontext **Production** |
 
 **Der Secret Key umgeht Row Level Security.** Er gehört ausschließlich in die
 Netlify-Umgebungsvariablen — niemals ins Repository, niemals in Browser-Code.
 
-### B4. Neu deployen
+Der Schlüssel steht bewusst nur im Production-Kontext. Läge er auch in Deploy
+Previews, schriebe jeder Testaufbau aus einem Pull Request echte
+Teilnehmerzeilen in dieselbe Datenbank.
 
-### B5. Prüfen — zuerst ohne Datenbank, dann mit
+### B3. Neu deployen — erledigt 03.09.2026, 15:16 Uhr
+
+Ohne neuen Deploy sehen die Functions die Variablen nicht.
+
+### B4. Prüfen — zuerst ohne Datenbank, dann mit
 
 1. **`/quiz/hiddensee?demo=1`** vollständig durchspielen.
    Der Vorschaumodus speichert absichtlich nichts. Die Fußzeile sagt das:
@@ -156,7 +206,7 @@ Netlify-Umgebungsvariablen — niemals ins Repository, niemals in Browser-Code.
 3. In Supabase nachsehen:
 
 ```sql
-select created_at, island, participant_name, dealer_number, score, total
+select created_at, island, participant, dealer, dealer_number, score, total
   from public.campus_quiz_submissions
  order by created_at desc
  limit 5;
@@ -172,16 +222,27 @@ select * from public.campus_quiz_taetigkeit;
 select * from public.campus_quiz_und_feedback;
 ```
 
-### B6. Danach: Netlify Forms
+6. **Die Testzeile wieder entfernen.** Sie trägt einen echten Namen, und die
+   Aufbewahrungsfrist greift erst in zwölf Monaten:
+
+```sql
+delete from public.campus_quiz_submissions where session_id = '…';
+```
+
+### B5. Danach: Netlify Forms
 
 Der Pilotweg über Netlify Forms bleibt als Sicherheitsnetz bestehen und
 schadet nicht. Er darf abgeschaltet werden, sobald ein paar Tage lang
 zuverlässig in Supabase geschrieben wurde. Vorher nicht — ein Netz nimmt man
 nicht weg, solange man es noch braucht.
 
-**Ein Nebenwirkung, die man kennen sollte:** Der Forms-Rückfallweg umgeht die
+**Eine Nebenwirkung, die man kennen sollte:** Der Forms-Rückfallweg umgeht die
 serverseitige Bewertung. Was dort ankommt, ist das vom Browser gemeldete
 Ergebnis. Für die Auswertung zählt allein, was in Supabase steht.
+
+**Und eine zweite, die den Datenschutz betrifft:** Was in Netlify Forms liegt,
+erreicht die Aufräumroutine der Datenbank nicht. Die Zwölf-Monats-Frist gilt
+dort nur, wenn jemand die Einträge von Hand räumt.
 
 ---
 

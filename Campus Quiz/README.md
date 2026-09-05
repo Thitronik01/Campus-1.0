@@ -28,6 +28,8 @@ gebaut wurde.
 | `supabase_campus_basis_migration.sql` | Vollständige Feedbackbasis für das neue, leere Campus-Projekt. Am 03.09.2026 eingespielt und geprüft. |
 | `supabase_campus_quiz_migration.sql` | Quiztabelle und gemeinsame Auswertungs-Views. Am 03.09.2026 nach der Basismigration eingespielt und geprüft. |
 | `SUPABASE-NEUAUFBAU.md` | Verbindlicher Klick-, Prüf- und Betriebsablauf für das neue Supabase-Projekt |
+| `LANGDOCK-ANBINDUNG.md` | Vier Schritte von der Edge Function bis zum Langdock-Agenten, mit Abnahmeproben |
+| `langdock/` | Was in Langdock in die Felder gehört: Action-Code und Agentenanweisung. Dort nicht versioniert, deshalb hier. |
 | `tools/build-insel.js` | **Baut je Insel einen fertigen Netlify-Ordner.** Siehe unten. |
 | `tools/check-fragen.js` | Prüft die Fragensätze. Vor jedem Deploy laufen lassen. |
 | `tools/test-function.js` | Testet die Bewertungslogik der Quelle ohne Datenbank |
@@ -1006,8 +1008,12 @@ Browser-Code. Moderne `sb_secret_`-Keys werden nur im `apikey`-Header gesendet;
 alte `service_role`-JWTs zusätzlich als Bearer-Token. Die Function unterscheidet
 das selbst.
 
-Die Variablen werden erst nach der vereinbarten Codehärtung gesetzt. Bis dahin
-bleibt das neue Projekt leer und Netlify nutzt sein Forms-Sicherheitsnetz.
+Die Variablen sind seit dem 3. September 2026 gesetzt — der Schlüssel nur im
+Kontext Production, damit Deploy Previews nicht in dieselbe Datenbank
+schreiben. Seitdem gehen Einsendungen nach Supabase; Netlify Forms bleibt als
+Netz für den Fall, dass die Datenbank einmal nicht erreichbar ist. Was wann
+tatsächlich lief, steht im Betriebsprotokoll in
+[`SUPABASE-NEUAUFBAU.md`](SUPABASE-NEUAUFBAU.md).
 
 ### Schutz der Schreibfunktionen
 
