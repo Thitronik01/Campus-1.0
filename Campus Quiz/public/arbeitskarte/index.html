@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#1D3661">
   <title>Arbeitskarte | THITRONIK Campus</title>
-  <link rel="stylesheet" href="/arbeitskarte/assets/arbeitskarte-v1.css?v=1.3.0">
+  <link rel="stylesheet" href="/arbeitskarte/assets/arbeitskarte-v1.css?v=1.4.0">
 </head>
 <body>
   <a class="skip-link" href="#arbeitskarte-main">Zum Formular springen</a>
@@ -168,6 +168,15 @@
         </article>
         <article class="ak-section">
           <label class="ak-search">Material durchsuchen<input type="search" id="material-search" placeholder="Artikel, Nummer oder Gruppe"></label>
+          <p id="material-summary" tabindex="-1"></p>
+          <div class="ak-material-filters" role="group" aria-label="Material nach Status filtern">
+            <button type="button" data-material-filter="alle" aria-pressed="true">Alle <span>0</span></button>
+            <button type="button" data-material-filter="geplant" aria-pressed="false">Geplant <span>0</span></button>
+            <button type="button" data-material-filter="verbaut" aria-pressed="false">Verbaut <span>0</span></button>
+            <button type="button" data-material-filter="pruefen" aria-pressed="false">Prüfpunkte <span>0</span></button>
+          </div>
+          <p id="material-filter-result" role="status"></p>
+          <button type="button" class="ak-button ak-button--quiet" id="material-filter-clear" hidden>Alle Materialien anzeigen</button>
         </article>
         <article class="ak-section">
           <details>
@@ -246,6 +255,6 @@
 
   <div id="toast" class="ak-toast" role="status" aria-live="polite" hidden></div>
   <div id="print-view" class="ak-print-view" aria-hidden="true"></div>
-  <script type="module" src="/arbeitskarte/assets/app-v1.js?v=1.3.0"></script>
+  <script type="module" src="/arbeitskarte/assets/app-v1.js?v=1.4.0"></script>
 </body>
 </html>

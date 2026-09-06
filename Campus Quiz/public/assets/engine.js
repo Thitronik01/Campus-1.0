@@ -13,7 +13,7 @@
 
 (function () {
   const EVENT_SLUG = "campus-2026";
-  const ENGINE_VERSION = "1.44.0";
+  const ENGINE_VERSION = "1.45.0";
   const SUBMIT_ENDPOINT = "/.netlify/functions/submit-quiz";
 
   const LS_PARTICIPANT = "thitronik.campus.2026.participant";
@@ -2164,7 +2164,7 @@
       order: "Schritte in Reihenfolge antippen",
       match: "Jede Zeile zuordnen"
     };
-    el.qMode.textContent = modeNames[q.type] || "Antwort auswählen";
+    el.qMode.textContent = `${state.isRepeatRound ? "Übungsrunde · " : ""}${modeNames[q.type] || "Antwort auswählen"}`;
     el.qTitle.textContent = q.prompt;
 
     if (q.hint) {
@@ -2881,6 +2881,11 @@
 
     const wrong = state.results.filter((r) => !r.isCorrect);
     el.btnWrongOnly.hidden = wrong.length === 0;
+    el.btnWrongOnly.textContent = `${wrong.length} ${wrong.length === 1 ? "Frage gezielt nachlernen" : "Fragen gezielt nachlernen"}`;
+    $("r-learning-note").hidden = wrong.length === 0;
+    $("r-learning-note").textContent = state.isRepeatRound
+      ? "Diese Übungsrunde verändert dein gespeichertes Quiz-Ergebnis nicht. Die noch offenen Fragen kannst du erneut üben."
+      : "Übe die falsch beantworteten Fragen noch einmal. Dein Ergebnis aus diesem Durchlauf bleibt dabei erhalten.";
     el.btnNextIsland.hidden = istEinzelinsel();
 
     if (!state.isRepeatRound) {

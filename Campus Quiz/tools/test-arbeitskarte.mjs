@@ -8,6 +8,7 @@ import {
 } from "../public/arbeitskarte/assets/data-v1.js";
 import { loadInitialCard, readHistory, writeCard } from "../public/arbeitskarte/assets/storage-v1.js";
 import { daten, fahrzeugListe, pruefeArbeitskarte, pruefSignatur, pruefungBestaetigt } from "../public/arbeitskarte/assets/konfigurator-check.js";
+import { ergaenzeMaterial, materialAnsicht } from "../public/arbeitskarte/assets/material-plan.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const publicDir = path.resolve(here, "../public");
@@ -145,4 +146,27 @@ const legacy = normalizeWorkCard({version:1, materials:[{id:"44",artNr:"100699",
 check("Altkarten erhalten fehlende Hupe ohne Verbaut-Markierung", legacy.materials.some(i=>i.artNr === "105339" && !i.verbaut) && legacy.version === 2);
 const removed = normalizeWorkCard({...legacy, materials:legacy.materials.filter(i=>i.artNr !== "105339")});
 check("Bewusst gelöschte neue Position bleibt gelöscht", !removed.materials.some(i=>i.artNr === "105339"));
+const plan = scenario(654, [["105458",1,{konfiguratorProdukt:"151"}]]);
+plan.materials.push({...initialMaterials.find(i => i.artNr === "105339"), menge: 9});
+const vorher = plan.materials.length;
+const added = ergaenzeMaterial(plan, "regel-203");
+check("Zusatzhupe verwendet Katalogposition statt Duplikat", added && plan.materials.length === vorher);
+check("Ergänzung setzt Bedarf statt ungeprüfter Katalogmenge", plan.materials.find(i=>i.artNr === "105339").menge === 1);
+check("Ergänzung plant, bestätigt aber keinen Einbau", plan.materials.find(i=>i.artNr === "105339").geplant && !plan.materials.find(i=>i.artNr === "105339").verbaut);
+check("Doppelklick ergänzt nicht erneut", ergaenzeMaterial(plan, "regel-203") === null);
+const teilmontage = scenario(43, [["100758",3,{garagenMenge:3}],["100729",1,{geplant:false,verbaut:true}]]);
+ergaenzeMaterial(teilmontage, "adapter-11");
+check("Teilbestand bleibt verbaut und unverändert", teilmontage.materials.find(i=>i.verbaut).menge === 1);
+check("Nur das fehlende zweite Set wird geplant", teilmontage.materials.filter(i=>i.artNr === "100729" && !i.verbaut).reduce((n,i)=>n+i.menge,0) === 1);
+check("Ausreichender Gesamtbestand löst Adapterhinweis", !ids(teilmontage).includes("adapter-11"));
+const nachbedarf = scenario(43, [["100758",5,{garagenMenge:5}],["100729",1]]);
+ergaenzeMaterial(nachbedarf, "adapter-11");
+check("Bestehende Planposition wird auf Gesamtbedarf erhöht", nachbedarf.materials.length === 2 && nachbedarf.materials[1].menge === 3);
+check("Unbekannte oder veraltete Aktion ändert nichts", ergaenzeMaterial(nachbedarf, "regel-203") === null);
+const filterkarte = scenario(654, [["105458",1,{konfiguratorProdukt:"151"}],["100700",1,{geplant:false,verbaut:true}]]);
+check("Prüffilter zeigt betroffenen Auslöser ohne fremdes Material", materialAnsicht(filterkarte,"pruefen").items.length === 1 && materialAnsicht(filterkarte,"pruefen").items[0].artNr === "105458");
+check("Planfilter trennt verbauten Bestand", materialAnsicht(filterkarte,"geplant").items.length === 1 && materialAnsicht(filterkarte,"verbaut").items.length === 1);
+check("Suche und Statusfilter werden kombiniert", materialAnsicht(filterkarte,"geplant","100700").items.length === 0);
+check("Artikelnummernsuche findet verbauten Bestand", materialAnsicht(filterkarte,"verbaut","100700").items.length === 1);
+check("Filter verändert keine Arbeitskartendaten", materialAnsicht(filterkarte,"alle").items.length === filterkarte.materials.length);
 console.log(`Arbeitskarte: ${checks.length} Prüfungen erfolgreich.`);

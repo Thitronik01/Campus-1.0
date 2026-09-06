@@ -2,11 +2,12 @@ import {
   checklistItemsUebergabe, createEmptyWorkCard, generateId, groupOrder,
   grundfunktionenLabels, normalizeSketches, proFinderLabels,
   rueckfahrkameraLabels, vehicleSketchViews
-} from "./data-v1.js?v=1.3.0";
-import { deleteCard, loadInitialCard, readHistory, writeCard } from "./storage-v1.js?v=1.3.0";
-import { imageFileToDataUrl, prepareInkCanvas, prepareSignatureCanvas, startDictation } from "./media-v1.js?v=1.3.0";
-import { renderPrintView } from "./print-v1.js?v=1.3.0";
-import { fahrzeugListe, produktVarianten, istKontakt, pruefeArbeitskarte, pruefSignatur, pruefungBestaetigt } from "./konfigurator-check.js?v=1.3.0";
+} from "./data-v1.js?v=1.4.0";
+import { deleteCard, loadInitialCard, readHistory, writeCard } from "./storage-v1.js?v=1.4.0";
+import { imageFileToDataUrl, prepareInkCanvas, prepareSignatureCanvas, startDictation } from "./media-v1.js?v=1.4.0";
+import { renderPrintView } from "./print-v1.js?v=1.4.0";
+import { fahrzeugListe, produktVarianten, istKontakt, pruefeArbeitskarte, pruefSignatur, pruefungBestaetigt } from "./konfigurator-check.js?v=1.4.0";
+import { ergaenzeMaterial, materialAnsicht } from "./material-plan.js?v=1.4.0";
 
 const $ = (selector, root = document) => root.querySelector(selector);
 if (new URLSearchParams(location.search).get("demo") === "1") {
@@ -19,6 +20,7 @@ const esc = (value) => String(value ?? "").replace(/[&<>'"]/g, (character) => ({
 
 let card = loadInitialCard();
 let activeTab = "auftrag";
+let materialFilter = "alle";
 let triedSave = false;
 let saveTimer = 0;
 let toastTimer = 0;
@@ -275,6 +277,25 @@ function renderKonfigurator() {
   const offen = result.hinweise.filter(h => h.typ === "pruefen").length;
   const bestaetigt = pruefungBestaetigt(card);
   $("#konfigurator-ergebnis").innerHTML = `${result.vehicle ? `<p><b>Gewähltes Fahrzeug:</b> ${esc(result.vehicle)}</p>` : ""}<p class="ak-check-status"><strong>${!result.aktiv ? "Noch keine Teile zur Prüfung markiert." : offen ? `${offen} ${offen === 1 ? "Punkt" : "Punkte"} fachlich prüfen${bestaetigt ? " · Prüfvermerk aktuell" : ""}` : "Keine offenen Prüfpunkte im erfassten Konfiguratorumfang."}</strong></p>${result.hinweise.length ? `<ul class="ak-check-results">${result.hinweise.map(h => `<li class="ak-check-result ak-check-result--${h.typ}"><strong>${h.typ === "pruefen" ? "Prüfen" : "Hinweis"}</strong><span>${esc(h.text)}</span></li>`).join("")}</ul>` : ""}`;
+  $$('.ak-check-result', $('#konfigurator-ergebnis')).forEach((row, index) => {
+    const hint = result.hinweise[index];
+    if (!hint.ergaenzung) return;
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'ak-button ak-button--quiet ak-add-suggestion';
+    button.textContent = 'Als geplant ergänzen';
+    button.setAttribute('aria-label', `${hint.ergaenzung.artikel} als geplant ergänzen`);
+    button.dataset.addSuggestion = hint.id;
+    button.addEventListener('click', () => {
+      const added = ergaenzeMaterial(card, hint.id);
+      if (!added) { renderKonfigurator(); return; }
+      markChanged();
+      renderMaterials();
+      $('#material-summary').focus({ preventScroll: true });
+      toast(`${added.hinzugefuegt} × ${added.artikel} als geplant ergänzt. Einbau noch nicht bestätigt.`);
+    });
+    row.append(button);
+  });
 }
 
 function materialOptionen(item) {
@@ -286,14 +307,22 @@ function materialOptionen(item) {
 
 function renderMaterials() {
   const query = $("#material-search").value.trim().toLocaleLowerCase("de");
-  const filtered = card.materials.filter((item) => [item.artikel,item.artNr,item.gruppe].some((value) => String(value).toLocaleLowerCase("de").includes(query)));
+  const view = materialAnsicht(card, materialFilter, query);
+  const filtered = view.items;
+  $('#material-summary').textContent = `${view.counts.geplant} geplant · ${view.counts.verbaut} verbaut · ${view.pruefpunkte} ${view.pruefpunkte === 1 ? 'offener Prüfpunkt' : 'offene Prüfpunkte'}`;
+  $$('[data-material-filter]').forEach(button => {
+    button.setAttribute('aria-pressed', String(button.dataset.materialFilter === materialFilter));
+    button.querySelector('span').textContent = view.counts[button.dataset.materialFilter];
+  });
+  $('#material-filter-result').textContent = `${filtered.length} von ${card.materials.length} Materialpositionen angezeigt${materialFilter === 'pruefen' ? ' · von offenen Prüfpunkten betroffen' : ''}.`;
+  $('#material-filter-clear').hidden = materialFilter === 'alle' && !query;
   const foundGroups = [...groupOrder.filter((group) => filtered.some((item) => item.gruppe === group)), ...new Set(filtered.map((item) => item.gruppe).filter((group) => !groupOrder.includes(group)))];
   const root = $("#material-groups");
   root.innerHTML = foundGroups.length ? foundGroups.map((group) => {
     const items = filtered.filter((item) => item.gruppe === group);
     const count = items.filter((item) => item.verbaut).length;
     return `<details class="ak-material-group" data-material-group="${esc(group)}" ${collapsedGroups.has(group) ? "" : "open"}><summary><span><strong>${esc(group)}</strong><small> · ${items.length} Artikel</small></span><span>${count} verbaut</span></summary><div class="ak-material-list">${items.map((item) => `<div class="ak-material-row" data-material-id="${esc(item.id)}"><div class="ak-material-name"><strong>${esc(item.artikel)}</strong><small class="ak-mono">${esc(item.artNr || "ohne Artikelnummer")}</small></div><input type="number" min="1" value="${esc(item.menge)}" aria-label="Menge ${esc(item.artikel)}" data-material-count><button type="button" class="ak-installed" aria-pressed="${item.verbaut}" data-material-installed>${item.verbaut ? "Verbaut" : "Offen"}</button><input value="${esc(item.notiz)}" aria-label="Notiz ${esc(item.artikel)}" placeholder="Notiz" data-material-note><button type="button" class="ak-delete-material" aria-label="${esc(item.artikel)} entfernen" data-material-delete>×</button></div>`).join("")}</div></details>`;
-  }).join("") : `<div class="ak-section ak-empty">Keine passende Materialposition gefunden.</div>`;
+  }).join("") : `<div class="ak-section ak-empty">${materialFilter === 'pruefen' && !view.pruefpunkte ? 'Keine offenen Prüfpunkte für die erfasste Auswahl.' : 'Keine Materialposition passt zu dieser Suche und Filterauswahl.'}</div>`;
   $$('[data-material-group]', root).forEach((details) => details.addEventListener("toggle", () => {
     if (details.open) collapsedGroups.delete(details.dataset.materialGroup);
     else collapsedGroups.add(details.dataset.materialGroup);
@@ -397,6 +426,13 @@ function bindEvents() {
     });
   });
   $("#material-search").addEventListener("input", renderMaterials);
+  $$('[data-material-filter]').forEach(button => button.addEventListener('click', () => {
+    materialFilter = button.dataset.materialFilter;
+    renderMaterials();
+  }));
+  $('#material-filter-clear').addEventListener('click', () => {
+    materialFilter = 'alle'; $('#material-search').value = ''; renderMaterials(); $('#material-search').focus();
+  });
   $("#material-add-form").addEventListener("submit", (event) => {
     event.preventDefault();
     const name = $("#new-material-name").value.trim();

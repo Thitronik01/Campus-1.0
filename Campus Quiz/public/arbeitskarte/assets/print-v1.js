@@ -1,8 +1,8 @@
 import {
   checklistItemsUebergabe, groupOrder, grundfunktionenLabels,
   proFinderLabels, rueckfahrkameraLabels, vehicleSketchViews
-} from "./data-v1.js?v=1.3.0";
-import { pruefeArbeitskarte, pruefungBestaetigt } from "./konfigurator-check.js?v=1.3.0";
+} from "./data-v1.js?v=1.4.0";
+import { pruefeArbeitskarte, pruefungBestaetigt } from "./konfigurator-check.js?v=1.4.0";
 
 const esc = (value) => String(value ?? "").replace(/[&<>'"]/g, (character) => ({
   "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;"

@@ -1,4 +1,4 @@
-import daten from "./konfigurator-daten.js?v=1.3.0";
+import daten from "./konfigurator-daten.js?v=1.4.0";
 
 export { daten };
 const fahrzeuge = new Map(daten.vehicleOptions.map(v => [v.id, v]));
@@ -29,7 +29,12 @@ export function pruefeArbeitskarte(card) {
   const vehicle = fahrzeugListe.find(v => v.id === vehicleId);
   const installed = card.materials.filter(i => i.verbaut || i.geplant);
   const p = new Map(), a = new Map(), hinweise = [];
-  const add = (id, typ, text) => { if (!hinweise.some(h => h.id === id)) hinweise.push({ id, typ, text }); };
+  const materialIds = (productIds = [], accessoryIds = []) => installed.filter(item =>
+    productIds.some(id => Number(item.konfiguratorProdukt) === id || produkte.get(id)?.itemNumber === item.artNr) ||
+    accessoryIds.some(id => zubehoer.get(id)?.itemNumber === item.artNr)).map(item => item.id);
+  const add = (id, typ, text, extra = {}) => { if (!hinweise.some(h => h.id === id)) hinweise.push({ id, typ, text, materialIds: installed.map(i => i.id), ...extra }); };
+  const ergaenzung = (acc, zielmenge) => daten.accessoryHideVehicleOption_mm.some(r => r.vehicleOption_id === vehicleId && r.accessory_id === acc.id)
+    ? {} : { ergaenzung: { artNr: acc.itemNumber, artikel: acc.title, zielmenge } };
   const count = (map, id) => map.get(id) || 0;
   const sum = (map, id, n) => map.set(id, count(map, id) + n);
   if (!installed.length) return { hinweise, vehicle: vehicle?.label || "", aktiv: false };
@@ -40,7 +45,7 @@ export function pruefeArbeitskarte(card) {
     if (/^WiPro III(?: safe\.lock)?$/.test(item.artikel)) {
       const chosen = produkte.get(Number(item.konfiguratorProdukt));
       matches = chosen && chosen.title === item.artikel ? [chosen] : [];
-      if (!matches.length) add(`variante-${item.id}`, "pruefen", `${item.artikel}: genaue Artikelvariante auswählen.`);
+      if (!matches.length) add(`variante-${item.id}`, "pruefen", `${item.artikel}: genaue Artikelvariante auswählen.`, { materialIds: [item.id] });
     } else if (matches.length > 1 && vehicle) {
       matches = matches.filter(product => daten.vehicleOptionProduct_mm.some(r => r.vehicleOption_id === vehicleId && r.product_id === product.id));
     }
@@ -59,11 +64,11 @@ export function pruefeArbeitskarte(card) {
   if (vehicle) {
     for (const [id] of p) if (!daten.vehicleOptionProduct_mm.some(r => r.vehicleOption_id === vehicleId && r.product_id === id)) {
       const product = produkte.get(id);
-      add(`produkt-${id}`, "pruefen", `${product.title} (${product.itemNumber}) wird für dieses Fahrzeug im Konfigurator nicht angeboten. Variante und Kompatibilität prüfen.`);
+      add(`produkt-${id}`, "pruefen", `${product.title} (${product.itemNumber}) wird für dieses Fahrzeug im Konfigurator nicht angeboten. Variante und Kompatibilität prüfen.`, { materialIds: materialIds([id]) });
     }
     for (const row of daten.accessoryHideVehicleOption_mm) if (row.vehicleOption_id === vehicleId && count(a, row.accessory_id)) {
       const acc = zubehoer.get(row.accessory_id);
-      add(`hidden-${row.accessory_id}`, "pruefen", `${acc.title} (${acc.itemNumber}) ist für dieses Fahrzeug im Konfigurator ausgeblendet. Einsatz fachlich klären.`);
+      add(`hidden-${row.accessory_id}`, "pruefen", `${acc.title} (${acc.itemNumber}) ist für dieses Fahrzeug im Konfigurator ausgeblendet. Einsatz fachlich klären.`, { materialIds: materialIds([], [row.accessory_id]) });
     }
     let node = fahrzeuge.get(vehicleId), security = false;
     while (node) { security ||= Boolean(node.hasSecurityIssues); node = fahrzeuge.get(node.parent_id); }
@@ -89,20 +94,23 @@ export function pruefeArbeitskarte(card) {
       const trigger = produkte.get(r.triggerProductAdd_id) || zubehoer.get(r.triggerAccessoryAdd_id);
       text = `${trigger.title} zusammen mit ${zubehoer.get(r.actionAccessoryRemove_id).title}: Der Konfigurator entfernt diese Kombination. Bestückung prüfen. ${text}`;
     }
-    add(`regel-${r.id}`, r.actionRequired || r.actionProductRemove_id || (r.actionAccessoryRemove_id && r.actionAccessoryRemove_id !== r.triggerAccessoryAdd_id) ? "pruefen" : "info", text);
+    add(`regel-${r.id}`, r.actionRequired || r.actionProductRemove_id || (r.actionAccessoryRemove_id && r.actionAccessoryRemove_id !== r.triggerAccessoryAdd_id) ? "pruefen" : "info", text, {
+      materialIds: materialIds([r.triggerProductAdd_id, r.conditionProductInOrder_id].filter(Boolean), [r.triggerAccessoryAdd_id, r.conditionAccessoryInOrder_id].filter(Boolean)),
+      ...(target ? ergaenzung(target, 1) : {})
+    });
   }
   for (const r of daten.accessoryRequiredAccessory_mm) {
     const needed = Math.round(count(a, r.triggerAccessory_id) * r.quantity);
     if (needed > count(a, r.requiredAccessory_id)) {
       const acc = zubehoer.get(r.requiredAccessory_id);
-      add(`adapter-${acc.id}`, "pruefen", `Für ${count(a, r.triggerAccessory_id)} Garagenkontakt(e): ${needed} × ${acc.title} (${acc.itemNumber}) erforderlich; ${count(a, acc.id)} Set(s) erfasst.`);
+      add(`adapter-${acc.id}`, "pruefen", `Für ${count(a, r.triggerAccessory_id)} Garagenkontakt(e): ${needed} × ${acc.title} (${acc.itemNumber}) erforderlich; ${count(a, acc.id)} Set(s) erfasst.`, { materialIds: materialIds([], [r.triggerAccessory_id, acc.id]), ...ergaenzung(acc, needed) });
     }
   }
   const gasIII = count(p, 56) + count(p, 57);
-  if (gasIII && count(a, 13) + count(a, 15) > gasIII) add("sensorlimit", "pruefen", "G.A.S.-pro III / CO besitzt je Gerät einen externen Sensoreingang. Die erfasste Sensoranzahl überschreitet diese Zahl. Zuordnung zu weiteren Geräten gegebenenfalls dokumentieren.");
+  if (gasIII && count(a, 13) + count(a, 15) > gasIII) add("sensorlimit", "pruefen", "G.A.S.-pro III / CO besitzt je Gerät einen externen Sensoreingang. Die erfasste Sensoranzahl überschreitet diese Zahl. Zuordnung zu weiteren Geräten gegebenenfalls dokumentieren.", { materialIds: materialIds([56,57], [13,15]) });
   for (const [id, n] of p) if (produkte.get(id).title.startsWith("WiPro III")) {
     add(`lieferumfang-${id}`, "info", `${n} × ${produkte.get(id).title}: laut Lieferumfang je 1 Funk-Handsender 868 und 1 schwarzer Funk-Magnetkontakt 868 enthalten. Gesamtmenge einschließlich Lieferumfang erfassen; nicht zusätzlich doppelt bestellen.`);
   }
-  if (count(a, 232)) add("keyless", "pruefen", "Abschalteinrichtung mehrpolig: laut Konfigurator nicht mit Keyless Entry & Go kompatibel. Fahrzeugausstattung und aktuelle Einbauunterlagen prüfen.");
+  if (count(a, 232)) add("keyless", "pruefen", "Abschalteinrichtung mehrpolig: laut Konfigurator nicht mit Keyless Entry & Go kompatibel. Fahrzeugausstattung und aktuelle Einbauunterlagen prüfen.", { materialIds: materialIds([], [232]) });
   return { hinweise, vehicle: vehicle?.label || "", aktiv: true };
 }

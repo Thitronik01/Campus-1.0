@@ -27,6 +27,13 @@
 .ak-material-detail select { font-size: .85rem; }
 .ak-pr-findings { padding-left: 18px; }
 .ak-pr-findings li { break-inside: avoid; margin-bottom: 5px; }
+.ak-material-filters { display: flex; flex-wrap: wrap; gap: 8px; }
+.ak-material-filters button { min-height: 46px; padding: 10px 16px; border: 1px solid var(--line); border-radius: 9px; background: white; color: var(--navy); font-weight: 700; }
+.ak-material-filters button[aria-pressed="true"] { background: var(--navy); color: white; }
+.ak-material-filters span { margin-left: 6px; font-variant-numeric: tabular-nums; }
+#material-summary { color: var(--navy); font-weight: 700; }
+#material-filter-result { color: var(--muted); font-size: .9rem; }
+.ak-check-result .ak-add-suggestion { grid-column: 2; justify-self: start; }
 
 @media (max-width: 760px) {
   body .ak-material-row { grid-template-columns: 62px minmax(0,1fr) minmax(82px,1fr); }
@@ -35,6 +42,7 @@
   body .ak-material-row > input { min-width: 0; }
   body .ak-delete-material { justify-self: end; }
   .ak-check-result { grid-template-columns: minmax(0,1fr); gap: 4px; }
+  .ak-check-result .ak-add-suggestion { grid-column: 1; margin-top: 8px; white-space: normal; }
 }
 
 * { box-sizing: border-box; }
