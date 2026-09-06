@@ -13,7 +13,7 @@
 
 (function () {
   const EVENT_SLUG = "campus-2026";
-  const ENGINE_VERSION = "1.43.0";
+  const ENGINE_VERSION = "1.44.0";
   const SUBMIT_ENDPOINT = "/.netlify/functions/submit-quiz";
 
   const LS_PARTICIPANT = "thitronik.campus.2026.participant";
@@ -916,26 +916,26 @@
        sechs Themeninseln bilden den Ring darum. */
     inseln: {
       vejro:     { mobil: 0,
-                   quer: { x: 50, y: 43, scale: 1.20, karte: "unten", karteY: 0 },
-                   hoch: { x: 50, y: 48, scale: 1.15, karte: "unten", karteY: 0 } },
+                   quer: { x: 49, y: 44, scale: 1.40, karte: "unten", karteY: 0 },
+                   hoch: { x: 50, y: 48, scale: 1.30, karte: "unten", karteY: 0 } },
       samsoe:    { mobil: 1,
-                   quer: { x: 43, y: 13, scale:  .80, karte: "unten", karteY: 0 },
-                   hoch: { x: 50, y: 13, scale:  .80, karte: "unten", karteY: 0 } },
+                   quer: { x: 72, y: 14, scale:  .92, karte: "unten", karteY: 0 },
+                   hoch: { x: 50, y: 12, scale:  .92, karte: "unten", karteY: 0 } },
       fehmarn:   { mobil: 2,
-                   quer: { x: 23, y: 30, scale:  .95, karte: "unten", karteY: 0 },
-                   hoch: { x: 20, y: 35, scale:  .95, karte: "unten", karteY: 0 } },
+                   quer: { x: 22, y: 28, scale: 1.16, karte: "unten", karteY: 0 },
+                   hoch: { x: 18, y: 32, scale: 1.08, karte: "unten", karteY: 0 } },
       hiddensee: { mobil: 3,
-                   quer: { x: 79, y: 28, scale:  1.04, karte: "unten", karteY: 0 },
-                   hoch: { x: 79, y: 33, scale:  .98, karte: "unten", karteY: 0 } },
+                   quer: { x: 90, y: 45, scale: 1.14, karte: "unten", karteY: 0 },
+                   hoch: { x: 82, y: 33, scale: 1.10, karte: "unten", karteY: 0 } },
       usedom:    { mobil: 4,
-                   quer: { x: 20, y: 66, scale:  1.04, karte: "unten", karteY: 0 },
-                   hoch: { x: 18, y: 65, scale:  1.02, karte: "unten", karteY: 0 } },
+                   quer: { x: 20, y: 73, scale: 1.16, karte: "unten", karteY: 0 },
+                   hoch: { x: 18, y: 64, scale: 1.10, karte: "unten", karteY: 0 } },
       langeland: { mobil: 5,
-                   quer: { x: 48, y: 83, scale:  1.18, karte: "unten", karteY: 0 },
-                   hoch: { x: 48, y: 83, scale:  1.26, karte: "unten", karteY: 0 } },
+                   quer: { x: 47, y: 83, scale: 1.30, karte: "unten", karteY: 0 },
+                   hoch: { x: 48, y: 87, scale: 1.38, karte: "unten", karteY: 0 } },
       poel:      { mobil: 6,
-                   quer: { x: 78, y: 69, scale:  .95, karte: "unten", karteY: 0 },
-                   hoch: { x: 77, y: 65, scale:  .95, karte: "unten", karteY: 0 } }
+                   quer: { x: 73, y: 74, scale: 1.05, karte: "unten", karteY: 0 },
+                   hoch: { x: 82, y: 65, scale: 1.08, karte: "unten", karteY: 0 } }
     }
   };
 
@@ -1076,54 +1076,7 @@
       if (!vorhanden.has(k.dataset.wegpunkt)) k.remove();
     });
 
-    zeichneOrbitlinien(anordnung);
-  }
 
-  /** Die Expeditionsmetapher der Karte: feine Kreise um VEJRO und
-   *  gepunktete Strahlen zu den sechs Themeninseln.
-   *
-   *  Anders als die frueheren Rundreise-Boegen koennen die Strahlen nichts
-   *  kreuzen: Sie laufen von der Mitte nach aussen, und zwischen Mitte und
-   *  Insel liegt konstruktionsbedingt nur Wasser. Beschnitten werden sie an
-   *  beiden Enden — am Orbitkreis und vor der Zielinsel —, damit sie unter
-   *  keinem Motiv verschwinden. Alles in Szeneneinheiten aus KARTE, nichts
-   *  wird aus dem DOM gemessen. */
-  function zeichneOrbitlinien(anordnung) {
-    const gruppe = el.campusMapArt.querySelector(".campus-orbit");
-    if (!gruppe) return;
-    gruppe.textContent = "";
-
-    const mitte = inselMitte("vejro", anordnung);
-    if (!mitte) return;
-
-    const ns = "http://www.w3.org/2000/svg";
-    const radien = [mitte.halb * 1.16, mitte.halb * 1.38];
-    radien.forEach((r) => {
-      const kreis = document.createElementNS(ns, "circle");
-      kreis.setAttribute("cx", mitte.x.toFixed(1));
-      kreis.setAttribute("cy", mitte.y.toFixed(1));
-      kreis.setAttribute("r", r.toFixed(1));
-      gruppe.appendChild(kreis);
-    });
-
-    Object.keys(KARTE.inseln).forEach((slug) => {
-      if (slug === "vejro") return;
-      if (!el.islandGrid.querySelector(`.island-${slug}`)) return;
-      const ziel = inselMitte(slug, anordnung);
-      if (!ziel) return;
-      const dx = ziel.x - mitte.x;
-      const dy = ziel.y - mitte.y;
-      const abstand = Math.hypot(dx, dy);
-      const von = radien[1] + 10;
-      const bis = abstand - ziel.halb * 0.95;
-      if (bis <= von) return;
-      const linie = document.createElementNS(ns, "line");
-      linie.setAttribute("x1", (mitte.x + dx / abstand * von).toFixed(1));
-      linie.setAttribute("y1", (mitte.y + dy / abstand * von).toFixed(1));
-      linie.setAttribute("x2", (mitte.x + dx / abstand * bis).toFixed(1));
-      linie.setAttribute("y2", (mitte.y + dy / abstand * bis).toFixed(1));
-      gruppe.appendChild(linie);
-    });
   }
 
   /** Schreibt Position, Groesse und Kartenlage jeder Insel aus der

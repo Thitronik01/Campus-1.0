@@ -5729,3 +5729,24 @@ body > svg[width="0"][height="0"] { position:absolute; }
 #screen-islands .campus-map-art { z-index:0; }
 
 body img[src*='langeland-horizontal.webp'] { filter:url(#island-cutout); }
+
+/* Freie Wasserräume gehören der Dekoration; die Inseln führen. */
+@media(min-width:768px) {
+ #screen-islands .map-deko .deko-kompass { left:2%; top:3%; width:8cqw; }
+ #screen-islands .map-deko .deko-boot { width:5cqw; }
+ #screen-islands .map-deko .deko-boot-a { left:43%; top:4%; }
+ #screen-islands .map-deko .deko-boot-b { left:3%; top:55%; }
+ #screen-islands .map-deko .deko-wal { left:3%; top:85%; width:7cqw; }
+ #screen-islands .map-deko .deko-moewen { width:5cqw; }
+ #screen-islands .map-deko .deko-moewen-a { left:54%; top:11%; }
+ #screen-islands .map-deko .deko-moewen-b { left:29%; top:58%; }
+ #screen-islands .map-deko .deko-wellen { display:none; }
+}
+@media(orientation:portrait) and (min-width:768px) and (max-width:1199px) {
+ #screen-islands .map-deko .deko-kompass { left:4%; top:3%; width:11cqw; }
+ #screen-islands .map-deko .deko-boot-a { left:83%; top:6%; width:7cqw; }
+ #screen-islands .map-deko .deko-boot-b { left:6%; top:85%; width:7cqw; }
+ #screen-islands .map-deko .deko-wal { left:80%; top:88%; width:10cqw; }
+ #screen-islands .map-deko .deko-moewen-a { left:21%; top:18%; width:8cqw; }
+ #screen-islands .map-deko .deko-moewen-b { left:45%; top:73%; width:8cqw; }
+}
