@@ -7,6 +7,7 @@ import {
   normalizeSketches, normalizeWorkCard, vehicleSketchViews
 } from "../public/arbeitskarte/assets/data-v1.js";
 import { loadInitialCard, readHistory, writeCard } from "../public/arbeitskarte/assets/storage-v1.js";
+import { daten, fahrzeugListe, pruefeArbeitskarte, pruefSignatur, pruefungBestaetigt } from "../public/arbeitskarte/assets/konfigurator-check.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const publicDir = path.resolve(here, "../public");
@@ -26,11 +27,9 @@ function check(label, condition) {
   checks.push(label);
 }
 
-/* 47 statt vormals 48: Das "Netzteil GBA-I 230 V" (100083) ist aus dem
-   Angebot und im September 2026 aus dem Katalog genommen worden. Die Zahl
-   steht hier, damit ein versehentliches Loeschen auffaellt — wer sie
-   aendert, sollte wissen, welche Position warum entfallen ist. */
-check("47 produktive Materialpositionen übernommen", initialMaterials.length === 47);
+/* Nach Entfernung des alten Netzteils ergänzt der Materialabgleich die
+   Zusatzhupe und den separaten Sensor für die ältere G.A.S.-pro. */
+check("49 Materialpositionen einschließlich Zusatzhupe und G.A.S.-pro-Sensor übernommen", initialMaterials.length === 49);
 check("NFC Modul kanonisch geschrieben", initialMaterials.some((item) => item.artikel === "NFC Modul" && item.artNr === "105299"));
 check("Pro-Finder kanonisch geschrieben", initialMaterials.some((item) => item.artikel === "Pro-Finder" && item.artNr === "100699"));
 check("13 Übergabepunkte übernommen", checklistItemsUebergabe.length === 13);
@@ -104,4 +103,46 @@ for (const datei of fs.readdirSync(assetDir).filter((name) => name.endsWith(".js
     importe.every((pfad) => pfad.endsWith(`?v=${fassung}`)));
 }
 
+function scenario(vehicleId, rows) {
+  const c = createEmptyWorkCard();
+  c.formData.konfigurator.fahrzeugId = String(vehicleId || "");
+  c.materials = rows.map(([artNr, menge = 1, extra = {}], index) => ({ id: String(index), artNr, artikel: daten.products.find(p => p.itemNumber === artNr)?.title || daten.accessories.find(a => a.itemNumber === artNr)?.title || artNr, menge, geplant: true, verbaut: false, ...extra }));
+  return c;
+}
+const ids = c => pruefeArbeitskarte(c).hinweise.map(h => h.id);
+check("Exakter geprüfter Datenstand eingebunden", daten.md5 === "827e235c49b9c9565639b3631535767f" && fahrzeugListe.length === 176);
+check("Unmarkierter Katalog löst keine Regeln aus", !pruefeArbeitskarte(createEmptyWorkCard()).aktiv);
+check("Unbekanntes Fahrzeug bleibt ungeprüft", ids(scenario(null, [["100699"]])).includes("fahrzeug"));
+check("Sprinter bis 2006 benötigt Zusatzsirene", ids(scenario(43, [["100754",1,{konfiguratorProdukt:"1"}]])).includes("regel-34"));
+check("Sprinter ab 2006 benötigt Hupe und Abschaltung gleichzeitig", ["regel-33","regel-95"].every(id => ids(scenario(44, [["100753",1,{konfiguratorProdukt:"52"}],["100699"]])).includes(id)));
+check("Sprinter safe.lock greift über exakte Produktvariante", ids(scenario(654, [["105458",1,{konfiguratorProdukt:"151"}]])).includes("regel-203"));
+check("Vorhandene Zusatzhupe löst Pflichtpunkt", !ids(scenario(654, [["105458",1,{konfiguratorProdukt:"151"}],["105339"]])).includes("regel-203"));
+check("Ducato 2024 erhält mehrpolige statt einpolige Abschaltung", ids(scenario(987, [["100699"]])).includes("regel-217") && !ids(scenario(987, [["100699"]])).includes("regel-95"));
+check("Ausgeblendete Umrüstplatine wird gemeldet", ids(scenario(987, [["101052"]])).includes("hidden-3"));
+check("Nicht angebotene WiPro-Variante wird gemeldet", ids(scenario(43, [["105458",1,{konfiguratorProdukt:"151"}]])).includes("produkt-151"));
+check("Eine Sirene ist keine zweite Sirene", !ids(scenario(43, [["100089"]])).includes("regel-3"));
+check("Zwei Sirenen gleicher Art werden geprüft", ids(scenario(43, [["100089",2]])).includes("regel-3"));
+check("Gegenseitiger Sirenenausschluss unabhängig von Reihenfolge", ids(scenario(43, [["100089"],["100190"]])).includes("regel-1"));
+for (const [kontakte, sets] of [[1,1],[2,1],[3,2],[4,2]]) {
+  const c = scenario(43, [["100758",kontakte,{garagenMenge:kontakte}]]);
+  check(`${kontakte} Garagenkontakte benötigen ${sets} Set(s)`, pruefeArbeitskarte(c).hinweise.some(h => h.id === "adapter-11" && h.text.includes(`${sets} ×`)));
+  c.materials.push({id:"adapter",artNr:"100729",artikel:"Adapter",menge:sets,verbaut:true});
+  check(`${sets} weiße Set(s) lösen Bedarf für ${kontakte} Kontakte`, !ids(c).includes("adapter-11"));
+}
+check("Normale Kontakte erzwingen keinen Garagenadapter", !ids(scenario(43, [["100758",3]])).includes("adapter-11"));
+check("Falsche Adapterfarbe erfüllt Bedarf nicht", ids(scenario(43, [["100758",3,{garagenMenge:3}],["100428",2]])).includes("adapter-11"));
+check("G.A.S.-pro III Sensorlimit über gemischte Sensoren", ids(scenario(43, [["101286"],["101289"],["100433"]])).includes("sensorlimit"));
+check("G.A.S.-connect-Konflikt ohne Duplikat", ids(scenario(43, [["101286"],["105750"]])).includes("regel-11") && !ids(scenario(43, [["101286"],["105750"]])).includes("regel-258"));
+check("T.S.A.-Empfehlung bleibt optional", pruefeArbeitskarte(scenario(43, [["105753"]])).hinweise.some(h => h.id === "regel-221" && h.typ === "info"));
+const reviewed = scenario(44, [["100699"]]);
+reviewed.formData.konfigurator.pruefvermerk = "Ausstattung geprüft";
+reviewed.formData.konfigurator.pruefstand = pruefSignatur(reviewed);
+check("Fachlicher Vermerk gilt für aktuellen Stand", pruefungBestaetigt(reviewed));
+reviewed.materials[0].menge = 2;
+check("Materialänderung entwertet vorherigen Prüfvermerk", !pruefungBestaetigt(reviewed));
+check("Neue Prüffelder überleben Speicherung", normalizeWorkCard(reviewed).formData.konfigurator.pruefvermerk === "Ausstattung geprüft" && normalizeWorkCard(reviewed).materials[0].geplant);
+const legacy = normalizeWorkCard({version:1, materials:[{id:"44",artNr:"100699",artikel:"Pro-Finder",verbaut:true}]});
+check("Altkarten erhalten fehlende Hupe ohne Verbaut-Markierung", legacy.materials.some(i=>i.artNr === "105339" && !i.verbaut) && legacy.version === 2);
+const removed = normalizeWorkCard({...legacy, materials:legacy.materials.filter(i=>i.artNr !== "105339")});
+check("Bewusst gelöschte neue Position bleibt gelöscht", !removed.materials.some(i=>i.artNr === "105339"));
 console.log(`Arbeitskarte: ${checks.length} Prüfungen erfolgreich.`);

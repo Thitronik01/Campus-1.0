@@ -2,10 +2,11 @@ import {
   checklistItemsUebergabe, createEmptyWorkCard, generateId, groupOrder,
   grundfunktionenLabels, normalizeSketches, proFinderLabels,
   rueckfahrkameraLabels, vehicleSketchViews
-} from "./data-v1.js?v=1.2.1";
-import { deleteCard, loadInitialCard, readHistory, writeCard } from "./storage-v1.js?v=1.2.1";
-import { imageFileToDataUrl, prepareInkCanvas, prepareSignatureCanvas, startDictation } from "./media-v1.js?v=1.2.1";
-import { renderPrintView } from "./print-v1.js?v=1.2.1";
+} from "./data-v1.js?v=1.3.0";
+import { deleteCard, loadInitialCard, readHistory, writeCard } from "./storage-v1.js?v=1.3.0";
+import { imageFileToDataUrl, prepareInkCanvas, prepareSignatureCanvas, startDictation } from "./media-v1.js?v=1.3.0";
+import { renderPrintView } from "./print-v1.js?v=1.3.0";
+import { fahrzeugListe, produktVarianten, istKontakt, pruefeArbeitskarte, pruefSignatur, pruefungBestaetigt } from "./konfigurator-check.js?v=1.3.0";
 
 const $ = (selector, root = document) => root.querySelector(selector);
 if (new URLSearchParams(location.search).get("demo") === "1") {
@@ -54,6 +55,7 @@ function markChanged({ rerender = false } = {}) {
   saveTimer = setTimeout(() => saveCard(false), 450);
   if (rerender) renderDynamic();
   else updateStatus();
+  renderKonfigurator();
 }
 
 function saveCard(withFeedback = true) {
@@ -268,6 +270,20 @@ function updateMaterial(id, updates, rerender = false) {
   if (rerender) renderMaterials();
 }
 
+function renderKonfigurator() {
+  const result = pruefeArbeitskarte(card);
+  const offen = result.hinweise.filter(h => h.typ === "pruefen").length;
+  const bestaetigt = pruefungBestaetigt(card);
+  $("#konfigurator-ergebnis").innerHTML = `${result.vehicle ? `<p><b>Gewähltes Fahrzeug:</b> ${esc(result.vehicle)}</p>` : ""}<p class="ak-check-status"><strong>${!result.aktiv ? "Noch keine Teile zur Prüfung markiert." : offen ? `${offen} ${offen === 1 ? "Punkt" : "Punkte"} fachlich prüfen${bestaetigt ? " · Prüfvermerk aktuell" : ""}` : "Keine offenen Prüfpunkte im erfassten Konfiguratorumfang."}</strong></p>${result.hinweise.length ? `<ul class="ak-check-results">${result.hinweise.map(h => `<li class="ak-check-result ak-check-result--${h.typ}"><strong>${h.typ === "pruefen" ? "Prüfen" : "Hinweis"}</strong><span>${esc(h.text)}</span></li>`).join("")}</ul>` : ""}`;
+}
+
+function materialOptionen(item) {
+  if (/^WiPro III(?: safe\.lock)?$/.test(item.artikel)) {
+    return `<label class="ak-material-detail">Artikelvariante<select data-material-variant><option value="">Bitte auswählen</option>${produktVarianten(item, card.formData.konfigurator.fahrzeugId).map(p => `<option value="${p.id}" ${String(p.id) === item.konfiguratorProdukt ? "selected" : ""}>${esc(p.itemNumber)} · ${esc(p.title)}</option>`).join("")}</select></label>`;
+  }
+  return istKontakt(item) ? `<label class="ak-material-detail">Davon Garagenklappe<input type="number" min="0" max="${item.menge}" value="${item.garagenMenge || 0}" data-material-garage></label>` : "";
+}
+
 function renderMaterials() {
   const query = $("#material-search").value.trim().toLocaleLowerCase("de");
   const filtered = card.materials.filter((item) => [item.artikel,item.artNr,item.gruppe].some((value) => String(value).toLocaleLowerCase("de").includes(query)));
@@ -284,7 +300,19 @@ function renderMaterials() {
   }));
   $$('[data-material-id]', root).forEach((row) => {
     const id = row.dataset.materialId;
-    $('[data-material-count]', row).addEventListener("change", (event) => updateMaterial(id, { menge: Math.max(1, Number.parseInt(event.target.value, 10) || 1) }));
+    const item = card.materials.find(i => i.id === id);
+    $('.ak-material-name', row).insertAdjacentHTML("beforeend", materialOptionen(item));
+    $('[data-material-installed]', row).insertAdjacentHTML("beforebegin", `<button type="button" class="ak-installed ak-planned" aria-pressed="${Boolean(item.geplant)}" data-material-planned>Geplant</button>`);
+    $('[data-material-planned]', row).addEventListener("click", () => updateMaterial(id, { geplant: !item.geplant }, true));
+    $('[data-material-variant]', row)?.addEventListener("change", event => {
+      const product = produktVarianten(item, card.formData.konfigurator.fahrzeugId).find(p => p.id === Number(event.target.value));
+      updateMaterial(id, { konfiguratorProdukt: event.target.value, artNr: product?.itemNumber || "" }, true);
+    });
+    $('[data-material-garage]', row)?.addEventListener("change", event => updateMaterial(id, { garagenMenge: Math.min(item.menge, Math.max(0, Number.parseInt(event.target.value, 10) || 0)) }, true));
+    $('[data-material-count]', row).addEventListener("change", (event) => {
+      const menge = Math.max(1, Number.parseInt(event.target.value, 10) || 1);
+      updateMaterial(id, { menge, garagenMenge: Math.min(item.garagenMenge || 0, menge) }, true);
+    });
     $('[data-material-note]', row).addEventListener("input", (event) => updateMaterial(id, { notiz: event.target.value }));
     $('[data-material-installed]', row).addEventListener("click", (event) => updateMaterial(id, { verbaut: event.currentTarget.getAttribute("aria-pressed") !== "true" }, true));
     $('[data-material-delete]', row).addEventListener("click", () => {
@@ -296,6 +324,7 @@ function renderMaterials() {
     });
   });
   updateStatus();
+  renderKonfigurator();
 }
 
 function renderDynamic() {
@@ -344,10 +373,12 @@ function renderHistory() {
 
 function bindEvents() {
   $$('.ak-tab').forEach((tab) => tab.addEventListener("click", () => switchTab(tab.dataset.tab)));
-  $$('[data-path]').forEach((input) => input.addEventListener(input.type === "checkbox" ? "change" : "input", () => {
+  $$('[data-path]').forEach((input) => input.addEventListener(input.type === "checkbox" || input.tagName === "SELECT" ? "change" : "input", () => {
     if (input.dataset.uppercase !== undefined) input.value = input.value.toUpperCase();
     setPath(card.formData, input.dataset.path, input.type === "checkbox" ? input.checked : input.value);
+    if (input.dataset.path === "konfigurator.pruefvermerk") card.formData.konfigurator.pruefstand = pruefSignatur(card);
     markChanged();
+    if (input.dataset.path === "konfigurator.fahrzeugId") renderMaterials();
     if (triedSave) showValidation();
   }));
   $$('input[name="tacho-fehler"]').forEach((input) => input.addEventListener("change", () => {
@@ -430,6 +461,12 @@ function bindEvents() {
   });
   $("#history-search").addEventListener("input", renderHistory);
   $("#btn-finalize").addEventListener("click", () => {
+    if (pruefeArbeitskarte(card).hinweise.some(h => h.typ === "pruefen") && !pruefungBestaetigt(card)) {
+      switchTab("material");
+      $("#konfigurator-heading").focus();
+      toast("Bitte die offenen Materialpunkte klären oder die fachliche Prüfung im Prüfvermerk dokumentieren.");
+      return;
+    }
     triedSave = true;
     const missing = showValidation({ includeHandoff: true, focus: true });
     if (missing.length) {
@@ -447,6 +484,7 @@ function bindEvents() {
 }
 
 function start() {
+  $("#konfigurator-fahrzeug").innerHTML = `<option value="">Fahrzeug wählen / noch nicht zugeordnet</option>${fahrzeugListe.map(v => `<option value="${v.id}">${esc(v.label)}</option>`).join("")}`;
   const now = new Date();
   $("#current-date").textContent = new Intl.DateTimeFormat("de-DE", { dateStyle: "full" }).format(now);
   $("#current-time").textContent = `${new Intl.DateTimeFormat("de-DE", { hour: "2-digit", minute: "2-digit" }).format(now)} Uhr`;

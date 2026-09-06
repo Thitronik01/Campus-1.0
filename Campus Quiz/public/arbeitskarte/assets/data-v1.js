@@ -58,14 +58,16 @@ export const initialMaterials = [
   ["33","Gaswarnsystem","G.A.S.-pro","100001"],["34","Gaswarnsystem","GBA-I","100061"],
   ["35","Gaswarnsystem","G.A.S.","105700"],["36","Gaswarnsystem","G.A.S.-plug 'all-in-one'","100042"],
   ["37","Gaswarnsystem","G.A.S.-connect","105750"],["38","Gaswarnsystem","CO-Sensor (G.A.S.-pro & G.A.S.-pro III)","100433"],
-  ["39","Gaswarnsystem","Zusatzsensor (G.A.S.-pro & G.A.S.-pro III)","101289"],
+  ["39","Gaswarnsystem","Zusatzsensor G.A.S.-pro III","101289"],
   ["40","Rauchmelder","T.S.A. Funk-Rauchmelder, weiß","105753"],["41","Rauchmelder","T.S.A. Funk-Rauchmelder, grau","105754"],
   ["42","Rauchmelder","Montagewinkel T.S.A., weiß","105755"],["43","Rauchmelder","Montagewinkel T.S.A., grau","105756"],
   ["44","Fahrzeugortung","Pro-Finder","100699"],
   ["45","Fahrzeugortung Zubehör","Abschalteinrichtung einpolig","101283"],
   ["46","Fahrzeugortung Zubehör","Abschalteinrichtung mehrpolig","105821"],
-  ["47","Fahrzeugortung Zubehör","Externe GSM-Antenne","100700"],["48","Fahrzeugortung Zubehör","GPS-pro","100686"]
-].map(([id, gruppe, artikel, artNr]) => ({ id, gruppe, artikel, artNr, menge: 1, verbaut: false, notiz: "" }));
+  ["47","Fahrzeugortung Zubehör","Externe GSM-Antenne","100700"],["48","Fahrzeugortung Zubehör","GPS-pro","100686"],
+  ["49","Zubehör","Zusatzhupe","105339"],
+  ["50","Gaswarnsystem","Zusatzsensor G.A.S.-pro","100456"]
+].map(([id, gruppe, artikel, artNr]) => ({ id, gruppe, artikel, artNr, menge: 1, geplant: false, verbaut: false, garagenMenge: 0, konfiguratorProdukt: "", notiz: "" }));
 
 export const clone = (value) => typeof structuredClone === "function"
   ? structuredClone(value)
@@ -91,6 +93,7 @@ export function initialFormData() {
     kunde: { firma: "", name: "", telefon: "", kennzeichen: "", fahrzeugtyp: "", fahrgestellnummer: "" },
     monteur: { name: "", funktionenGeprueft: false, seriennummern: "" },
     hinweis: "",
+    konfigurator: { fahrzeugId: "", pruefvermerk: "", pruefstand: "" },
     obd: { eingang: "", ausgang: "", uhrzeit: "" },
     tachoFehler: { ja: false, nein: false, code: "" },
     ledEinbauort: "",
@@ -118,7 +121,7 @@ export function generateId() {
 
 export function createEmptyWorkCard(id = generateId(), now = new Date().toISOString()) {
   return {
-    version: 1, id, status: "draft", createdAt: now, updatedAt: now, completedAt: null,
+    version: 2, id, status: "draft", createdAt: now, updatedAt: now, completedAt: null,
     formData: initialFormData(), materials: clone(initialMaterials), sketches: normalizeSketches()
   };
 }
@@ -141,10 +144,13 @@ function normalizeMaterial(item, index) {
   return {
     id: item.id == null ? `imp-${index}` : String(item.id),
     gruppe: typeof item.gruppe === "string" && item.gruppe ? item.gruppe : "Sonstiges",
-    artikel: typeof item.artikel === "string" ? item.artikel.replace(/^Pro-finder$/i, "Pro-Finder").replace(/^NFC-Modul$/i, "NFC Modul") : "",
+    artikel: item.artNr === "101289" ? "Zusatzsensor G.A.S.-pro III" : typeof item.artikel === "string" ? item.artikel.replace(/^Pro-finder$/i, "Pro-Finder").replace(/^NFC-Modul$/i, "NFC Modul") : "",
     artNr: typeof item.artNr === "string" ? item.artNr : "",
     menge: Number.isFinite(count) && count > 0 ? count : 1,
     verbaut: Boolean(item.verbaut),
+    geplant: Boolean(item.geplant),
+    garagenMenge: Math.min(Number.isFinite(count) && count > 0 ? count : 1, Math.max(0, Number.parseInt(item.garagenMenge, 10) || 0)),
+    konfiguratorProdukt: String(item.konfiguratorProdukt || ""),
     notiz: typeof item.notiz === "string" ? item.notiz : ""
   };
 }
@@ -170,7 +176,10 @@ export function normalizeWorkCard(raw, fallbackId) {
     updatedAt: raw.updatedAt || empty.updatedAt,
     completedAt: raw.completedAt || null,
     formData,
-    materials: Array.isArray(raw.materials) ? raw.materials.map(normalizeMaterial).filter(Boolean) : empty.materials,
+    materials: Array.isArray(raw.materials) ? [
+      ...raw.materials.map(normalizeMaterial).filter(Boolean),
+      ...(Number(raw.version || 1) < 2 ? initialMaterials.filter(i => ["49", "50"].includes(i.id) && !raw.materials.some(m => m.artNr === i.artNr || String(m.id) === i.id)).map(clone) : [])
+    ] : empty.materials,
     sketches: normalizeSketches(raw.sketches)
   };
 }

@@ -15,6 +15,28 @@
   --radius: 16px;
 }
 
+.ak-konfigurator { border-left: 4px solid var(--cyan); }
+.ak-konfigurator select { max-width: 100%; }
+.ak-konfigurator > p, .ak-konfigurator details p { color: var(--muted); font-size: .9rem; }
+.ak-konfigurator > a { display: inline-flex; align-items: center; min-height: 44px; color: var(--navy); }
+.ak-check-results { list-style: none; padding: 0; display: grid; gap: 10px; }
+.ak-check-result { display: grid; grid-template-columns: 68px minmax(0,1fr); gap: 12px; padding: 12px; background: var(--soft); border-left: 3px solid var(--cyan); overflow-wrap: anywhere; }
+.ak-check-result--pruefen { border-color: #a96708; background: #fff7e8; }
+.ak-check-result > strong { color: var(--navy); }
+.ak-material-detail { display: block; margin-top: 10px; font-size: .8rem; }
+.ak-material-detail select { font-size: .85rem; }
+.ak-pr-findings { padding-left: 18px; }
+.ak-pr-findings li { break-inside: avoid; margin-bottom: 5px; }
+
+@media (max-width: 760px) {
+  body .ak-material-row { grid-template-columns: 62px minmax(0,1fr) minmax(82px,1fr); }
+  body .ak-material-name { grid-column: 1 / -1; }
+  body .ak-material-row > input[aria-label^="Notiz"] { grid-column: 1 / 3; }
+  body .ak-material-row > input { min-width: 0; }
+  body .ak-delete-material { justify-self: end; }
+  .ak-check-result { grid-template-columns: minmax(0,1fr); gap: 4px; }
+}
+
 * { box-sizing: border-box; }
 html { font-family: Arial, Helvetica, sans-serif; color: var(--ink); background: #eaf0f5; }
 body { margin: 0; min-width: 320px; min-height: 100dvh; font-size: 16px; line-height: 1.5; }
@@ -289,7 +311,8 @@ details > summary { min-height: 44px; padding: 8px 0; color: var(--navy); font-w
 
 @media (max-width: 520px) {
   body { font-size: 16px; }
-  .ak-topbar { padding-inline: 14px; }
+  .ak-topbar { padding-inline: 14px; gap: 10px; grid-template-columns: minmax(0,1fr) auto; }
+  .ak-brand span { display: none; }
   .ak-back { font-size: .88rem; }
   .ak-shell { padding-inline: 10px; }
   .ak-command, .ak-progress, .ak-section, .ak-finalize { border-radius: 12px; }

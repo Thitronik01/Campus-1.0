@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#1D3661">
   <title>Arbeitskarte | THITRONIK Campus</title>
-  <link rel="stylesheet" href="/arbeitskarte/assets/arbeitskarte-v1.css?v=1.2.1">
+  <link rel="stylesheet" href="/arbeitskarte/assets/arbeitskarte-v1.css?v=1.3.0">
 </head>
 <body>
   <a class="skip-link" href="#arbeitskarte-main">Zum Formular springen</a>
@@ -182,6 +182,14 @@
             </form>
           </details>
         </article>
+        <article class="ak-section ak-konfigurator" aria-labelledby="konfigurator-heading">
+          <header><p class="ak-eyebrow">Vor dem Einbau prüfen</p><h3 id="konfigurator-heading" tabindex="-1">Fahrzeug &amp; Materialabgleich</h3><p>Markiere vorgesehene Teile als „Geplant“ oder bereits eingebaute als „Verbaut“. Alle anderen Katalogpositionen bleiben unberücksichtigt.</p></header>
+          <label>Fahrzeug im Konfigurator<select id="konfigurator-fahrzeug" data-path="konfigurator.fahrzeugId" aria-describedby="konfigurator-grenze"></select></label>
+          <p id="konfigurator-grenze">DE-Konfigurator · Stand 06.09.2026. Aufbau und Baujahr genau wählen. Der Abgleich ersetzt keine technische Kompatibilitäts- oder Einbauprüfung.</p>
+          <div id="konfigurator-ergebnis" aria-live="polite" aria-atomic="true"></div>
+          <details><summary>Fachliche Prüfung / Abweichung dokumentieren</summary><label>Prüfvermerk<textarea data-path="konfigurator.pruefvermerk" rows="3" placeholder="Welche offenen Punkte wurden wie geklärt? Zum Beispiel vorhandenes Zubehör oder geprüfte Fahrzeugausstattung."></textarea></label><p>Der Vermerk bestätigt nur den aktuellen Fahrzeug- und Materialstand. Nach Änderungen ist eine erneute Prüfung nötig.</p></details>
+          <a href="https://www.thitronik.de/konfigurator/" target="_blank" rel="noopener">Original-Konfigurator öffnen</a>
+        </article>
         <div id="material-groups"></div>
       </section>
 
@@ -238,6 +246,6 @@
 
   <div id="toast" class="ak-toast" role="status" aria-live="polite" hidden></div>
   <div id="print-view" class="ak-print-view" aria-hidden="true"></div>
-  <script type="module" src="/arbeitskarte/assets/app-v1.js?v=1.2.1"></script>
+  <script type="module" src="/arbeitskarte/assets/app-v1.js?v=1.3.0"></script>
 </body>
 </html>

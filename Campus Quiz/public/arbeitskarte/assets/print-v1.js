@@ -1,7 +1,8 @@
 import {
   checklistItemsUebergabe, groupOrder, grundfunktionenLabels,
   proFinderLabels, rueckfahrkameraLabels, vehicleSketchViews
-} from "./data-v1.js?v=1.2.1";
+} from "./data-v1.js?v=1.3.0";
+import { pruefeArbeitskarte, pruefungBestaetigt } from "./konfigurator-check.js?v=1.3.0";
 
 const esc = (value) => String(value ?? "").replace(/[&<>'"]/g, (character) => ({
   "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;"
@@ -36,6 +37,7 @@ function pageFooter(page) {
 
 export function renderPrintView(card, target) {
   const f = card.formData;
+  const abgleich = pruefeArbeitskarte(card);
   const orderTypes = [f.orderType.einbau && "Einbau", f.orderType.nachruestung && "Nachrüstung", f.orderType.service && "Service"].filter(Boolean).join(", ");
   const error = f.tachoFehler.ja ? `Ja${f.tachoFehler.code ? ` (${f.tachoFehler.code})` : ""}` : f.tachoFehler.nein ? "Nein" : "-";
   const installed = card.materials.filter((item) => item.verbaut);
@@ -64,6 +66,8 @@ export function renderPrintView(card, target) {
     </section>
     <section class="ak-pr-section">
       ${pageHeader(3, "Verbautes Material")}
+      ${abgleich.aktiv ? `<p><b>Konfigurator-Abgleich:</b> ${esc(abgleich.vehicle || "Fahrzeug noch nicht zugeordnet")} · DE-Stand 06.09.2026</p><p>${pruefungBestaetigt(card) ? "Fachliche Prüfung für diesen Stand dokumentiert." : "Kein aktueller fachlicher Prüfvermerk."}</p>${field("Prüfvermerk", f.konfigurator?.pruefvermerk)}<ul class="ak-pr-findings">${abgleich.hinweise.map(h => `<li><b>${h.typ === "pruefen" ? "Prüfen" : "Hinweis"}:</b> ${esc(h.text)}</li>`).join("")}</ul><p>Geplante Teile sind in die Prüfung einbezogen. Der Abgleich ersetzt keine technische Einbau- oder Kompatibilitätsprüfung.</p>` : ""}
+      ${card.materials.some(i => i.geplant && !i.verbaut) ? field("Noch geplant, nicht als verbaut bestätigt", card.materials.filter(i => i.geplant && !i.verbaut).map(i => `${i.menge} × ${i.artikel} (${i.artNr || "Variante offen"})`).join("; ")) : ""}
       ${installed.length ? `<table class="ak-pr-table"><thead><tr><th>Gruppe / Artikel</th><th>Art.-Nr.</th><th>Menge</th><th>Notiz</th></tr></thead><tbody>${groups.map((group) => `<tr class="group"><td colspan="4">${esc(group)}</td></tr>${installed.filter((item) => item.gruppe === group).map((item) => `<tr><td>${esc(item.artikel)}</td><td>${esc(item.artNr || "-")}</td><td>${esc(item.menge)}</td><td>${esc(item.notiz)}</td></tr>`).join("")}`).join("")}</tbody></table>` : "<p>Keine Materialien als verbaut markiert.</p>"}
       ${pageFooter(3)}
     </section>
