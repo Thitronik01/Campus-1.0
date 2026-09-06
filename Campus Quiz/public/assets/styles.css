@@ -5686,3 +5686,46 @@ body.ist-quiz .masthead { display: none; }
 }
 @media(min-width:768px) { #screen-islands .orbit-thumbs { display:none; } }
 #screen-islands .orbit { scroll-margin-top:20px; }
+
+/* Ein gemeinsamer Kopf verbindet Wegweiser, Karte und Inseldetails. */
+#screen-islands .overview-heading { display:flex; align-items:center; justify-content:space-between; gap:24px; padding:24px 28px; background:#fff; border:1px solid #c6d4e0; border-left:6px solid #3ba9d3; border-radius:16px; }
+#screen-islands .overview-heading .overview-kicker { margin:0 0 8px; color:#247d9e; font-size:.78rem; font-weight:800; letter-spacing:.13em; }
+#screen-islands .overview-heading h1 { font-size:clamp(1.5rem,2.5vw,2.2rem); margin:0 0 8px; }
+#screen-islands .overview-heading .overview-plan { flex:none; padding-left:24px; border-left:1px solid #dce5ec; font-size:.85rem; line-height:1.6; }
+#screen-islands .overview-plan strong { color:#1d3661; }
+#screen-islands .orbit-hero-bild { height:130px; margin-bottom:16px; filter:none; }
+#screen-islands .overview-description { font-size:1rem; margin-bottom:16px; }
+#screen-islands .overview-topics { display:grid; gap:8px; list-style:none; padding:0; margin:0 0 24px; color:#1d3661; font-size:.94rem; }
+#screen-islands .overview-topics li { position:relative; padding-left:18px; }
+#screen-islands .overview-topics li::before { content:''; position:absolute; left:0; top:.65em; width:6px; height:6px; border-radius:50%; background:#3ba9d3; }
+#screen-islands .overview-location { padding:16px; margin:0 0 20px; background:#edf7fb; border:1px solid #c7dfea; border-radius:12px; }
+#screen-islands .overview-location-head { display:flex; gap:12px; justify-content:space-between; align-items:center; }
+#screen-islands .overview-location h3 { margin:0; font-size:.94rem; color:#1d3661; }
+#screen-islands #overview-location-note { font-size:.75rem; color:#46586b; }
+#screen-islands .overview-location dl { display:grid; grid-template-columns:1.2fr 1fr 1fr; gap:12px; margin:14px 0 0; }
+#screen-islands .overview-location dt { font-size:.75rem; color:#46586b; }
+#screen-islands .overview-location dd { margin:3px 0 0; font-weight:800; color:#1d3661; }
+
+
+#screen-islands .island-langeland .i-visual img { filter:none; }
+@media(min-width:768px) {
+ #screen-islands .island-card .i-content { top:calc(100% - 12px); left:50%; right:auto; transform:translateX(-50%); border-radius:10px; padding:10px 16px; min-width:105px; gap:0; }
+ #screen-islands .island-card:hover .i-content, #screen-islands .island-card:active .i-content { transform:translateX(-50%); }
+}
+@media(max-width:767px) {
+ #screen-islands .overview-heading { padding:20px; align-items:flex-start; flex-direction:column; gap:12px; }
+ #screen-islands .overview-heading .overview-plan { padding:0; border:0; }
+ #screen-islands .overview-plan br { display:none; }
+ #screen-islands .overview-plan strong { margin-left:6px; }
+ #screen-islands .orbit-hero-bild { height:100px; }
+ #screen-islands .overview-location dl { gap:8px; }
+}
+/* Das generierte Querformat besitzt einen schwarzen Hintergrund. Die
+   SVG-Farbmatrix macht ihn beim Zeichnen durchsichtig. */
+#screen-islands .island-langeland { mix-blend-mode:normal; }
+#screen-islands img[src*="langeland-horizontal.webp"], #screen-islands .island-langeland .i-visual img { filter:url(#island-cutout); }
+#screen-islands .campus-map-art { pointer-events:none; }
+body > svg[width="0"][height="0"] { position:absolute; }
+#screen-islands .campus-map-art { z-index:0; }
+
+body img[src*='langeland-horizontal.webp'] { filter:url(#island-cutout); }

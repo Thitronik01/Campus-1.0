@@ -10,10 +10,21 @@
       "code": "VEJRØ",
       "title": "Produktneuheiten",
       "thema": "Zugang & Wasserschutz",
-      "beschreibung": "CampLock, VanLock, Funk-Wassermelder 868 und wasserdichter Funk-Magnetkontakt.",
+      "beschreibung": "Entdecke, wie sich neue Zugangs- und Schutzlösungen im Fahrzeugalltag ergänzen. Du lernst, Kundenwünsche einzuordnen und passende Produkte verständlich zu erklären – mit Blick auf Einsatzbereiche, Voraussetzungen und Grenzen.",
       "image": "/media/inseln/vejro.webp",
       "imageBreite": 608,
-      "imageHoehe": 620
+      "imageHoehe": 620,
+      "lernfelder": [
+        "CampLock und VanLock im Kundengespräch",
+        "Wassermelder und wasserdichte Funkkontakte",
+        "Passende Lösungen und ihre Grenzen"
+      ],
+      "standort": {
+        "gebaeude": "Neubau",
+        "ebene": "EG",
+        "raum": "N 01",
+        "vorlaeufig": true
+      }
     },
     {
       "slug": "poel",
@@ -21,10 +32,21 @@
       "code": "POEL",
       "title": "Händlerbereich",
       "thema": "Beratung & Werkstatt vorbereiten",
-      "beschreibung": "Aktuelle Unterlagen finden, Kundeninformationen trennen und Werkstattaufträge professionell vorbereiten.",
+      "beschreibung": "Hier findest du dich im Händlerbereich zurecht und bereitest Beratung und Werkstattarbeit vor. Im Mittelpunkt stehen aktuelle Unterlagen, der sichere Umgang mit Kundeninformationen und die Angaben, die einen Auftrag nachvollziehbar machen.",
       "image": "/media/inseln/poel.webp",
       "imageBreite": 576,
-      "imageHoehe": 620
+      "imageHoehe": 620,
+      "lernfelder": [
+        "Unterlagen gezielt finden",
+        "Kundeninformationen richtig zuordnen",
+        "Werkstattaufträge vorbereiten"
+      ],
+      "standort": {
+        "gebaeude": "Altbau",
+        "ebene": "OG",
+        "raum": "A 12",
+        "vorlaeufig": true
+      }
     },
     {
       "slug": "hiddensee",
@@ -32,10 +54,21 @@
       "code": "HIDDENSEE",
       "title": "Funkkontakte & Verbindungen",
       "thema": "Montage, Abzweigen & Crimpen",
-      "beschreibung": "Funk-Magnetkontakte, gelgefüllte Abzweigverbinder und belastbare Crimpverbindungen.",
+      "beschreibung": "Eine gute Verbindung beginnt bei der richtigen Vorbereitung. Auf Hiddensee geht es um Funkkontakte, Abzweigverbinder und Crimpverbindungen: Du beschäftigst dich mit der Montage und erkennst, worauf es bei dauerhaft zuverlässigen Verbindungen ankommt.",
       "image": "/media/inseln/hiddensee.webp",
       "imageBreite": 308,
-      "imageHoehe": 620
+      "imageHoehe": 620,
+      "lernfelder": [
+        "Funkkontakte montieren",
+        "Abzweigverbinder passend einsetzen",
+        "Crimpverbindungen beurteilen"
+      ],
+      "standort": {
+        "gebaeude": "Neubau",
+        "ebene": "EG",
+        "raum": "N 03",
+        "vorlaeufig": true
+      }
     },
     {
       "slug": "samsoe",
@@ -43,10 +76,21 @@
       "code": "SAMSØ",
       "title": "Einbauorte",
       "thema": "Wo kommt was hin?",
-      "beschreibung": "Geeignete Einbauorte für Zentralen, Melder, Antennen und Bedienkomponenten im Fahrzeug.",
+      "beschreibung": "Wo ein Bauteil eingebaut wird, beeinflusst seine Funktion und die spätere Wartung. Auf Samsø vergleichst du Einbauorte für Zentralen, Melder und Antennen und überträgst die Überlegungen auf typische Situationen am Fahrzeug.",
       "image": "/media/inseln/samsoe.webp",
       "imageBreite": 620,
-      "imageHoehe": 510
+      "imageHoehe": 510,
+      "lernfelder": [
+        "Geeignete Einbauorte erkennen",
+        "Funktion und Zugänglichkeit berücksichtigen",
+        "Einbauentscheidungen begründen"
+      ],
+      "standort": {
+        "gebaeude": "Neubau",
+        "ebene": "EG",
+        "raum": "N 02",
+        "vorlaeufig": true
+      }
     },
     {
       "slug": "fehmarn",
@@ -54,10 +98,21 @@
       "code": "FEHMARN",
       "title": "Fehlersuche & Support",
       "thema": "Diagnose",
-      "beschreibung": "Gerätesignale lesen, Fehler strukturiert analysieren und Pro-Finder-Mobilfunk sicher beurteilen.",
+      "beschreibung": "Gehe einer Störung Schritt für Schritt auf den Grund. Du lernst, Gerätesignale und Kundenbeschreibungen einzuordnen, mögliche Ursachen einzugrenzen und einen Supportfall so vorzubereiten, dass alle Beteiligten gezielt weiterarbeiten können.",
       "image": "/media/inseln/fehmarn.webp",
       "imageBreite": 620,
-      "imageHoehe": 423
+      "imageHoehe": 423,
+      "lernfelder": [
+        "Signale und Fehlerbilder einordnen",
+        "Pro-finder und Mobilfunk beurteilen",
+        "Supportfälle nachvollziehbar vorbereiten"
+      ],
+      "standort": {
+        "gebaeude": "Altbau",
+        "ebene": "EG",
+        "raum": "A 02",
+        "vorlaeufig": true
+      }
     },
     {
       "slug": "usedom",
@@ -65,10 +120,21 @@
       "code": "USEDOM",
       "title": "Verkaufsdisplay & Konfigurator",
       "thema": "Vom Produkt zum System",
-      "beschreibung": "Produkte am Display verständlich erklären, kombinieren und aus dem Kundenbedarf ein System bilden.",
+      "beschreibung": "Aus einzelnen Produkten wird eine Lösung für den Kunden. Nutze Verkaufsdisplay und Konfigurator, um den Bedarf zu klären, Zusammenhänge sichtbar zu machen und passende Kombinationen im Beratungsgespräch verständlich vorzustellen.",
       "image": "/media/inseln/usedom.webp",
       "imageBreite": 291,
-      "imageHoehe": 620
+      "imageHoehe": 620,
+      "lernfelder": [
+        "Kundenbedarf gezielt erfragen",
+        "Produkte am Display erklären",
+        "Systeme mit dem Konfigurator zusammenstellen"
+      ],
+      "standort": {
+        "gebaeude": "Altbau",
+        "ebene": "EG",
+        "raum": "A 01",
+        "vorlaeufig": true
+      }
     },
     {
       "slug": "langeland",
@@ -76,10 +142,21 @@
       "code": "LANGELAND",
       "title": "Annahme & Übergabe",
       "thema": "Der Kundenprozess",
-      "beschreibung": "Fahrzeug vollständig annehmen, Einbau dokumentieren und System sicher an den Kunden übergeben.",
-      "image": "/media/inseln/langeland.webp",
-      "imageBreite": 394,
-      "imageHoehe": 620
+      "beschreibung": "Eine sorgfältige Annahme und eine verständliche Übergabe gehören zum Einbau dazu. Hier verbindest du Fahrzeugdaten, Kundenwünsche und dokumentierte Prüfungen zu einem nachvollziehbaren Ablauf. Die Arbeitskarte unterstützt dich dabei von der Annahme bis zur Übergabe.",
+      "image": "/media/inseln/langeland-horizontal.webp",
+      "imageBreite": 900,
+      "imageHoehe": 360,
+      "lernfelder": [
+        "Fahrzeug und Auftrag vollständig aufnehmen",
+        "Einbau und Funktionsprüfung dokumentieren",
+        "Bedienung und Systemgrenzen erklären"
+      ],
+      "standort": {
+        "gebaeude": "Neubau",
+        "ebene": "OG",
+        "raum": "N 11",
+        "vorlaeufig": true
+      }
     }
   ]
 }

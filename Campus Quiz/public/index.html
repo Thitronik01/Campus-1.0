@@ -8,10 +8,11 @@
   <meta name="description" content="THITRONIK Campus: Wissenscheck nach jeder Schulungsinsel.">
   <meta name="robots" content="noindex, nofollow">
   <title>THITRONIK Campus: Wissenscheck</title>
-  <link rel="stylesheet" href="/assets/styles.css?v=1.42.0">
-  <link rel="stylesheet" href="/assets/thi.css?v=1.42.0">
+  <link rel="stylesheet" href="/assets/styles.css?v=1.43.0">
+  <link rel="stylesheet" href="/assets/thi.css?v=1.43.0">
 </head>
 <body>
+  <svg width="0" height="0" aria-hidden="true" focusable="false"><defs><filter id="island-cutout" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  10 10 10 0 -1"/></filter></defs></svg>
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
   <p class="visually-hidden" id="live-announcer" role="status" aria-live="polite" aria-atomic="true"></p>
 
@@ -83,11 +84,11 @@
           <div class="onboarding-hero">
             <picture class="onboarding-picture">
               <source type="image/webp"
-                      srcset="/media/campus/firmensitz-640.webp?v=1.42.0 640w,
-                              /media/campus/firmensitz-1024.webp?v=1.42.0 1024w,
-                              /media/campus/firmensitz-1600.webp?v=1.42.0 1600w"
+                      srcset="/media/campus/firmensitz-640.webp?v=1.43.0 640w,
+                              /media/campus/firmensitz-1024.webp?v=1.43.0 1024w,
+                              /media/campus/firmensitz-1600.webp?v=1.43.0 1600w"
                       sizes="(min-width: 1200px) 50vw, 100vw">
-              <img src="/media/campus/firmensitz-1600.jpg?v=1.42.0"
+              <img src="/media/campus/firmensitz-1600.jpg?v=1.43.0"
                    alt="Luftaufnahme des THITRONIK-Firmensitzes in Eckernförde"
                    width="1600" height="1198" fetchpriority="high">
             </picture>
@@ -195,7 +196,7 @@
       </section>
 
       <!-- ==================== Inselübersicht ==================== -->
-      <section class="screen" id="screen-islands" aria-labelledby="islands-title" hidden><div class="overview-heading"><h1 id="islands-title">Deine Inseln im Campus</h1><p>Wähle eine Insel. Hier findest du ihren Wissenscheck und passende Praxisangebote.</p></div>
+      <section class="screen" id="screen-islands" aria-labelledby="islands-title" hidden><div class="overview-heading"><div><p class="overview-kicker">THITRONIK CAMPUS · DEIN WEGWEISER</p><h1 id="islands-title">Sieben Inseln. Dein Wissen für die Praxis.</h1><p>Wähle dein Thema, finde deinen Raum und starte den Wissenscheck.</p></div><p class="overview-plan">Standortplanung<br><strong>Räume vorläufig</strong></p></div>
         <!-- #campus-map ist der AUSSCHNITT, .campus-szene die Karte selbst.
              Getrennt, weil auf schmalen Geraeten die Szene breiter als der
              Ausschnitt bleibt und mit dem Finger geschoben wird. Alles, was
@@ -280,6 +281,8 @@
               <p class="orbit-hero-code" id="orbit-hero-code">VEJRØ</p>
               <p class="orbit-hero-titel" id="orbit-hero-titel">Produktneuheiten</p>
               <p id="overview-description" class="overview-description"></p>
+              <ul id="overview-topics" class="overview-topics" aria-label="Lernschwerpunkte"></ul>
+              <section id="overview-location" class="overview-location" aria-label="Standort der Insel"><div class="overview-location-head"><h3>Hier findest du die Insel</h3><span id="overview-location-note">Vorläufig</span></div><dl><div><dt>Gebäude</dt><dd id="overview-building"></dd></div><div><dt>Geschoss</dt><dd id="overview-floor"></dd></div><div><dt>Raum</dt><dd id="overview-room"></dd></div></dl></section>
               <p class="orbit-hero-stand" id="orbit-hero-stand">Noch nicht begonnen</p>
               <a class="btn btn-primary orbit-start" id="orbit-start" href="/quiz/vejro">Starten</a>
               <a class="btn overview-praxis" id="overview-praxis" href="/arbeitskarte/" hidden>Arbeitskarte öffnen →</a>
@@ -818,11 +821,11 @@
     <input name="score"><input name="total"><input name="percent"><input name="answers_json">
   </form>
 
-  <script src="/assets/campus-einwilligung.js?v=1.42.0" defer></script>
-  <script src="/assets/engine.js?v=1.42.0" defer></script>
+  <script src="/assets/campus-einwilligung.js?v=1.43.0" defer></script>
+  <script src="/assets/engine.js?v=1.43.0" defer></script>
   <!-- THI haengt seinen Schalter selbst in .masthead-tools ein und baut sein
        Panel an den Seitenkoerper. Faellt das Skript aus, fehlt nur THI —
        Kopfzeile und Quiz bleiben unberuehrt. -->
-  <script src="/assets/thi.js?v=1.42.0" defer></script>
+  <script src="/assets/thi.js?v=1.43.0" defer></script>
 </body>
 </html>

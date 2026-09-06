@@ -13,7 +13,7 @@
 
 (function () {
   const EVENT_SLUG = "campus-2026";
-  const ENGINE_VERSION = "1.42.0";
+  const ENGINE_VERSION = "1.43.0";
   const SUBMIT_ENDPOINT = "/.netlify/functions/submit-quiz";
 
   const LS_PARTICIPANT = "thitronik.campus.2026.participant";
@@ -916,26 +916,26 @@
        sechs Themeninseln bilden den Ring darum. */
     inseln: {
       vejro:     { mobil: 0,
-                   quer: { x: 50, y: 45, scale: 1.25, karte: "unten",  karteY: -9 },
-                   hoch: { x: 50, y: 48, scale: 1.15, karte: "unten",  karteY: -5 } },
+                   quer: { x: 50, y: 43, scale: 1.20, karte: "unten", karteY: 0 },
+                   hoch: { x: 50, y: 48, scale: 1.15, karte: "unten", karteY: 0 } },
       samsoe:    { mobil: 1,
-                   quer: { x: 47, y: 14, scale:  .80, karte: "rechts", karteY: 0 },
-                   hoch: { x: 50, y: 13, scale:  .80, karte: "unten",  karteY: -2 } },
+                   quer: { x: 43, y: 13, scale:  .80, karte: "unten", karteY: 0 },
+                   hoch: { x: 50, y: 13, scale:  .80, karte: "unten", karteY: 0 } },
       fehmarn:   { mobil: 2,
-                   quer: { x: 23, y: 33, scale:  .95, karte: "links",  karteY: 5, abstand: -3.5 },
-                   hoch: { x: 20, y: 35, scale:  .95, karte: "unten",  karteY: -2 } },
+                   quer: { x: 23, y: 30, scale:  .95, karte: "unten", karteY: 0 },
+                   hoch: { x: 20, y: 35, scale:  .95, karte: "unten", karteY: 0 } },
       hiddensee: { mobil: 3,
-                   quer: { x: 77, y: 34, scale:  1.04, karte: "rechts", karteY: 6, abstand: -1 },
-                   hoch: { x: 79, y: 33, scale:  .98, karte: "unten",  karteY: -2 } },
+                   quer: { x: 79, y: 28, scale:  1.04, karte: "unten", karteY: 0 },
+                   hoch: { x: 79, y: 33, scale:  .98, karte: "unten", karteY: 0 } },
       usedom:    { mobil: 4,
-                   quer: { x: 22, y: 68, scale:  1.08, karte: "links",  karteY: 5, abstand: -1 },
-                   hoch: { x: 18, y: 65, scale:  1.02, karte: "unten",  karteY: -2 } },
+                   quer: { x: 20, y: 66, scale:  1.04, karte: "unten", karteY: 0 },
+                   hoch: { x: 18, y: 65, scale:  1.02, karte: "unten", karteY: 0 } },
       langeland: { mobil: 5,
-                   quer: { x: 47, y: 80, scale:  .94, karte: "rechts", karteY: 5, abstand: -2.5 },
-                   hoch: { x: 48, y: 80, scale:  1.00, karte: "unten",  karteY: -3 } },
+                   quer: { x: 48, y: 83, scale:  1.18, karte: "unten", karteY: 0 },
+                   hoch: { x: 48, y: 83, scale:  1.26, karte: "unten", karteY: 0 } },
       poel:      { mobil: 6,
-                   quer: { x: 71, y: 66, scale:  .95, karte: "rechts", karteY: 1, abstand: 1 },
-                   hoch: { x: 77, y: 65, scale:  .95, karte: "unten",  karteY: -2 } }
+                   quer: { x: 78, y: 69, scale:  .95, karte: "unten", karteY: 0 },
+                   hoch: { x: 77, y: 65, scale:  .95, karte: "unten", karteY: 0 } }
     }
   };
 
@@ -1468,6 +1468,16 @@
     if (!insel) return;
 
     $("overview-description").textContent = insel.beschreibung || "";
+    $("overview-topics").replaceChildren(...(insel.lernfelder || []).map(text => {
+      const item = document.createElement("li"); item.textContent = text; return item;
+    }));
+    const ort = insel.standort;
+    $("overview-location").hidden = !ort;
+    $("overview-building").textContent = ort?.gebaeude || "";
+    $("overview-floor").textContent = ort?.ebene || "";
+    $("overview-room").textContent = ort?.raum || "";
+    $("overview-location-note").hidden = !ort?.vorlaeufig;
+    el.orbit.dataset.slug = aktivSlug;
     $("overview-praxis").hidden = aktivSlug !== "langeland" || !state.catalog.arbeitskarte;
     $("overview-praxis").href = campusUrl(state.catalog.arbeitskarte || "/arbeitskarte/");
     el.islandGrid.querySelectorAll(".island-map-item").forEach(li => {
