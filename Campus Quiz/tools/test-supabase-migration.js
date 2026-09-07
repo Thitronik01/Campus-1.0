@@ -119,16 +119,54 @@ pruefe("Anonymisierung raeumt auch raw_payload und die Freitexte",
 /* Auswertung für Langdock. Der Endpunkt ist die einzige Stelle, an der Daten
    das Projekt in Richtung eines Sprachmodells verlassen — hier zaehlt jede
    Zusage aus dem Integrationsplan doppelt. */
-pruefe("Auswertung laeuft als Security Definer mit festem search_path",
-  hat(/create\s+or\s+replace\s+function\s+public\.campus_auswertung\([\s\S]*?security\s+definer[\s\S]*?set\s+search_path\s*=\s*public,\s*pg_temp/i, AUSWERTUNG));
-pruefe("Auswertung ist nur fuer service_role ausfuehrbar",
-  hat(/revoke\s+execute\s+on\s+function\s+public\.campus_auswertung\(date,\s*date,\s*text\)[\s\S]*?from\s+public,\s*anon,\s*authenticated/i, AUSWERTUNG)
-  && hat(/grant\s+execute\s+on\s+function\s+public\.campus_auswertung\(date,\s*date,\s*text\)[\s\S]*?to\s+service_role/i, AUSWERTUNG));
-/* Als Parameter liesse sich die Mindestmenge von aussen auf 1 setzen und der
-   Schutz kleiner Gruppen damit abschalten. */
-pruefe("Mindestmenge steht als Konstante, nicht als Parameter",
-  hat(/mindestmenge\s+constant\s+integer\s*:=\s*[1-9]/i, AUSWERTUNG)
+/* Vier Bereiche, vier Funktionen. Sie tragen denselben Vertrag, und ein
+   Zusatz, der ihn nur bei dreien erfuellt, faellt hier durch. Die
+   Signaturen stehen mit, weil ein zusaetzlicher Parameter in Postgres eine
+   ZWEITE Funktion erzeugt statt die alte zu ersetzen — die alte bliebe dann
+   mit altem Rumpf fuer service_role ausfuehrbar. */
+const AUSWERTUNGSFUNKTIONEN = [
+  ["campus_auswertung", "date,\\s*date,\\s*text"],
+  ["campus_auswertung_fragen", "date,\\s*date,\\s*text"],
+  ["campus_auswertung_taetigkeit", "date,\\s*date,\\s*text"],
+  ["campus_auswertung_feedback", "date,\\s*date"]
+];
+
+for (const [name, signatur] of AUSWERTUNGSFUNKTIONEN) {
+  pruefe(`${name} laeuft als Security Definer mit festem search_path`,
+    hat(new RegExp(
+      `create\\s+or\\s+replace\\s+function\\s+public\\.${name}\\(` +
+      `[\\s\\S]*?security\\s+definer[\\s\\S]*?set\\s+search_path\\s*=\\s*public,\\s*pg_temp`,
+      "i"), AUSWERTUNG));
+  pruefe(`${name} ist nur fuer service_role ausfuehrbar`,
+    hat(new RegExp(
+      `revoke\\s+execute\\s+on\\s+function\\s+public\\.${name}\\(${signatur}\\)` +
+      `[\\s\\S]*?from\\s+public,\\s*anon,\\s*authenticated`, "i"), AUSWERTUNG)
+    && hat(new RegExp(
+      `grant\\s+execute\\s+on\\s+function\\s+public\\.${name}\\(${signatur}\\)` +
+      `[\\s\\S]*?to\\s+service_role`, "i"), AUSWERTUNG));
+}
+
+/* Als Parameter liesse sich die Mindestmenge von aussen setzen und der Schutz
+   kleiner Gruppen damit abschalten. Wo die Grenze liegt, entscheidet der
+   Betrieb — dass sie nicht von aussen kommt, entscheidet dieser Test. Seit
+   dem 7. September 2026 steht sie auf 1; die Begruendung steht im Kopf der
+   Migration. */
+pruefe("Mindestmenge steht in jeder Funktion als Konstante, nicht als Parameter",
+  (AUSWERTUNG.match(/mindestmenge\s+constant\s+integer\s*:=\s*[1-9]/gi) || []).length
+    >= AUSWERTUNGSFUNKTIONEN.length
   && !/mindestmenge\s+integer\s+default/i.test(AUSWERTUNG));
+/* Ohne die Anzahl neben der Kennzahl ist ein Schnitt aus zwei Durchlaeufen
+   von einem aus zwanzig nicht zu unterscheiden. */
+pruefe("jede Kennzahl traegt ihre Grundlage mit",
+  (AUSWERTUNG.match(/'einsendungen',/g) || []).length >= 4
+  && /'beantwortet',/.test(AUSWERTUNG)
+  && /'anzahl_bewertungen',/.test(AUSWERTUNG));
+/* Der Feedbackbogen fragt nach Namen, Wuenschen und Stimmung im Betrieb.
+   Herausgegeben wird davon die Anzahl, nie der Text. */
+pruefe("Feedback-Auswertung gibt keine Freitexte heraus",
+  /count\(w\.comment\)/.test(AUSWERTUNG)
+  && !/'recommendation_reason'|'topic_wishes'|'team_mood'|'improvement_suggestions'|'positive_aspects'|'additional_notes'/i
+       .test(AUSWERTUNG));
 pruefe("Tagesgrenzen liegen in Europe/Berlin, nicht in UTC",
   (AUSWERTUNG.match(/at time zone 'Europe\/Berlin'/gi) || []).length >= 3);
 pruefe("Auswertung gibt keine Personenfelder heraus",
@@ -138,11 +176,27 @@ pruefe("Langdock-Endpunkt verlangt ein eigenes Bearer-Token",
   /CAMPUS_AUSWERTUNG_TOKEN/.test(ENDPUNKT)
   && /Bearer /.test(ENDPUNKT)
   && /401/.test(ENDPUNKT));
-/* Der Endpunkt darf ausschliesslich die aggregierende Funktion aufrufen. Ein
-   Pfad auf /rest/v1/campus_... waere ein Fenster zu den Rohdaten. */
-pruefe("Langdock-Endpunkt spricht nur die Auswertungsfunktion an",
+/* Der Endpunkt darf ausschliesslich die aggregierenden Funktionen aufrufen.
+   Ein Pfad auf /rest/v1/campus_... waere ein Fenster zu den Rohdaten. */
+pruefe("Langdock-Endpunkt spricht nur die Auswertungsfunktionen an",
   /\/rest\/v1\/rpc\/campus_auswertung/.test(ENDPUNKT)
   && !/\/rest\/v1\/campus_/.test(ENDPUNKT));
+/* Seit dem 7. September 2026 waehlt ein Parameter `bereich` unter vier
+   Funktionen aus. Der Funktionsname wird deshalb NICHT aus der Anfrage
+   gebaut, sondern aus einer festen Liste von Endungen an den Stamm
+   `campus_auswertung` gehaengt. Stuende dort ein ganzer Name aus der Liste,
+   koennte eine spaetere Bearbeitung ihn unbemerkt gegen einen beliebigen
+   tauschen — und der Endpunkt riefe, was in der Anfrage steht. */
+pruefe("Langdock-Endpunkt haengt nur Endungen an einen festen Stamm",
+  /rpc\/campus_auswertung\$\{[a-z]+\.endung\}/.test(ENDPUNKT)
+  && /endung:\s*"(?:|_[a-z]+)"/.test(ENDPUNKT)
+  && !/endung:\s*"campus_/.test(ENDPUNKT));
+/* Ein Bereich, der nicht in der Liste steht, darf keinen Aufruf ausloesen.
+   Ohne hasOwnProperty liefert BEREICHE["constructor"] ein Objekt statt
+   undefined, und der Zweig "unbekannter Bereich" wird nie erreicht. */
+pruefe("Langdock-Endpunkt prueft den Bereich gegen die eigene Liste",
+  /hasOwnProperty\.call\(BEREICHE/.test(ENDPUNKT)
+  && /erlaubt:\s*Object\.keys\(BEREICHE\)/.test(ENDPUNKT));
 pruefe("Langdock-Endpunkt prueft das Token in konstanter Zeit",
   /function\s+gleich\s*\(/.test(ENDPUNKT) && /\^/.test(ENDPUNKT));
 

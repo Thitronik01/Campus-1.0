@@ -76,14 +76,22 @@ neue Feedbackskalen ergeben vergleichbare Kennzahlen und Rohdaten sind nicht
 
 ## Phase 2: Datenschutzarme Auswertungsschnittstelle
 
-**Stand 3. September 2026: gebaut, noch nicht ausgerollt.** Für das Quiz liegen
-`supabase_campus_auswertung_migration.sql` (Funktion `campus_auswertung` mit
-Zeitraum und Insel) und `supabase/functions/campus-auswertung/index.ts` (Endpunkt
-mit eigenem Bearer-Token) im Repository. Die Mindestmenge ist auf **fünf**
-Einsendungen festgelegt und steht als Konstante im Funktionsrumpf, damit sie
-nicht von außen abgeschaltet werden kann. Der Feedback-Endpunkt folgt nach
-demselben Muster mit eigenem Token. Der Ablauf zum Ausrollen steht in
-`SUPABASE-NEUAUFBAU.md`, Schritt 5.
+**Stand 7. September 2026: im Betrieb, Abnahme offen.** Für das Quiz liegen
+`supabase_campus_auswertung_migration.sql` (vier Funktionen `campus_auswertung*`
+mit Zeitraum und Insel) und `supabase/functions/campus-auswertung/index.ts`
+(ein Endpunkt mit eigenem Bearer-Token, Bereichswahl über `bereich`) im
+Repository. Der Ablauf zum Ausrollen steht in `SUPABASE-NEUAUFBAU.md`,
+Schritt 5.
+
+Zwei Festlegungen dieses Plans sind am 7. September bewusst aufgegeben worden;
+beide sind in `LANGDOCK-ANBINDUNG.md` begründet:
+
+- **Die Mindestmenge von fünf Einsendungen** steht auf 1. Sie unterdrückte bei
+  17 Einsendungen auf sieben Inseln ausnahmslos jede Kennzahl. Sie steht
+  weiterhin als Konstante im Funktionsrumpf und ist von außen nicht setzbar —
+  wer sie wieder hochsetzt, ändert eine Zahl an vier Stellen.
+- **Der eigene Zugangswert für das Feedback** ist derselbe geblieben wie für
+  das Quiz. Ein Endpunkt, ein Token, vier Bereiche.
 
 Eine Funktion statt einer weiteren View, weil eine View keinen Zeitraum
 entgegennehmen kann: Langdock müsste sonst selbst filtern und bräuchte dafür
