@@ -209,7 +209,18 @@ ist gewollt.
 | Feld | Wert |
 |---|---|
 | Name | `Campus-Auswertung abrufen` |
-| Beschreibung | `Liefert aggregierte Zahlen des THITRONIK Campus für einen Zeitraum: Kennzahlen je Insel, Trefferquote je Quizfrage, Vergleich der Tätigkeitsbereiche oder die Bewertungen aus dem Feedbackbogen. Ohne Zeitraum: heute. Enthält keine personenbezogenen Daten.` |
+| Beschreibung | `Aggregierte Zahlen des THITRONIK Campus je Zeitraum: Kennzahlen je Insel, Trefferquote je Quizfrage, Verkauf gegen Werkstatt, oder Feedbackbogen. Ohne Zeitraum: heute. Keine Personendaten.` |
+
+**Das Beschreibungsfeld fasst rund 200 Zeichen.** Am 7. September 2026 aufgefallen:
+Eine ausformulierte Fassung mit 192 Zeichen liess sich nicht mehr ergänzen — das
+Feld nimmt schlicht keine Eingabe mehr an, ohne Meldung und ohne Zähler. Die
+Fassung oben hat 188 Zeichen und lässt Luft.
+
+Was bei knappem Platz zuerst hineingehört, ist die Aufzählung der vier Bereiche:
+Langdock entscheidet allein an dieser Beschreibung, ob es die Action für eine
+Frage überhaupt in Betracht zieht. „Verkauf gegen Werkstatt" steht deshalb da,
+wo vorher „Vergleich der Tätigkeitsbereiche" stand — kürzer, und es enthält die
+beiden Wörter, nach denen ein Modell tatsächlich sucht.
 
 Vier Eingabefelder, alle **optional**:
 
