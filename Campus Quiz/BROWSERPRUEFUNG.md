@@ -2,6 +2,10 @@
 
 Die Browserprüfung ist Teil von `node tools/montag.js --ohne-server` und läuft dadurch auch im bestehenden GitHub-Workflow vor der Freigabe des Gesamtpakets. Fehlgeschlagene Browserabläufe lassen die Gesamtprüfung mit Rückgabewert 1 enden. Es gibt keine automatische Wiederholung, die sporadische Fehler verdecken würde.
 
+Im separaten Netlify-Build wird ausschließlich die Browserprüfung ausgelassen: Dort fehlen die Administratorrechte für die Installation der Chromium-Systempakete (`su: Authentication failure`). Alle übrigen Bau-, Quell-, Backend- und Paketprüfungen bleiben aktiv. `montag.js` erkennt diese Umgebung an der von Netlify gesetzten [Build-Variablen `NETLIFY=true`](https://docs.netlify.com/build/configure-builds/environment-variables/) und protokolliert die Browserprüfung als extern, niemals als bestanden. In GitHub Actions wird sie auch dann ausgeführt, wenn zusätzlich `NETLIFY=true` gesetzt wäre.
+
+GitHub Actions und der automatische Netlify-Deploy laufen unabhängig voneinander. Ein grüner GitHub-Lauf bestätigt daher keinen erfolgreichen Produktionsdeploy; umgekehrt bestätigt ein grüner Netlify-Build keine bestandenen Browserabläufe. Nach dem Push beide Ergebnisse für denselben Commit prüfen. Der direkte Netlify-Deploy wartet nicht auf GitHub Actions.
+
 ## Umfang
 
 Acht Abläufe laufen jeweils bei 1440 × 1000, 820 × 1180, 390 × 844 und 320 × 740 Pixeln, insgesamt 32 Tests:

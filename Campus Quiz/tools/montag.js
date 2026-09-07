@@ -291,13 +291,19 @@ const deploy = lauf(path.join("tools", "check-deploy.js"), []);
 schritt("Deploy-Konfiguration", deploy,
   (deploy.ausgabe.match(/^Deploy: (.*)$/m) || ["", ""])[1]);
 
-// Der vorhandene GitHub-Workflow ruft dieses Werkzeug ebenfalls auf. Damit
-// bewachen echte Browserabläufe denselben Stand wie die Paketprüfungen.
+// Netlify erlaubt keine Installation der Linux-Systempakete für Chromium.
+// Browserabläufe bleiben lokal und im GitHub-Workflow verpflichtend; der
+// separate Netlify-Build meldet die Ausnahme ausdrücklich im Protokoll.
 titel("Bedienung im Browser prüfen");
-const browser = lauf(path.join("tools", "browser", "run.mjs"), []);
-schritt("Desktop, Tablet und Handy", browser,
-  (browser.ausgabe.match(/\d+ passed[^\n]*/) || ["Browserabläufe geprüft"])[0]);
-if (!browser.ok) console.log("        Details: Campus Quiz/tools/browser/bericht/index.html; einzeln: node tools/browser/run.mjs");
+const browserExtern = process.env.NETLIFY === "true" && process.env.GITHUB_ACTIONS !== "true";
+if (browserExtern) {
+  console.log(`  ${gelb("extern")} Desktop, Tablet und Handy — Browserprüfung im GitHub-Workflow, hier nicht ausgeführt.`);
+} else {
+  const browser = lauf(path.join("tools", "browser", "run.mjs"), []);
+  schritt("Desktop, Tablet und Handy", browser,
+    (browser.ausgabe.match(/\d+ passed[^\n]*/) || ["Browserabläufe geprüft"])[0]);
+  if (!browser.ok) console.log("        Details: Campus Quiz/tools/browser/bericht/index.html; einzeln: node tools/browser/run.mjs");
+}
 
 // ----------------------------------------------------------------- Bilanz ---
 
@@ -309,7 +315,7 @@ if (fehlgeschlagen) {
   process.exit(1);
 }
 
-console.log(`  ${gruen("Alles grün.")}`);
+console.log(`  ${gruen(browserExtern ? "Alle hier ausgeführten Prüfungen grün. Browserergebnis separat in GitHub prüfen." : "Alles grün.")}`);
 
 // Seit dem 3. September 2026 schreiben Quiz und Feedback über die geschützten
 // Functions nach Supabase; Netlify Forms bleibt nur noch als Netz für den
