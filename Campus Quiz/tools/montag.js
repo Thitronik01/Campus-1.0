@@ -291,6 +291,14 @@ const deploy = lauf(path.join("tools", "check-deploy.js"), []);
 schritt("Deploy-Konfiguration", deploy,
   (deploy.ausgabe.match(/^Deploy: (.*)$/m) || ["", ""])[1]);
 
+// Der vorhandene GitHub-Workflow ruft dieses Werkzeug ebenfalls auf. Damit
+// bewachen echte Browserabläufe denselben Stand wie die Paketprüfungen.
+titel("Bedienung im Browser prüfen");
+const browser = lauf(path.join("tools", "browser", "run.mjs"), []);
+schritt("Desktop, Tablet und Handy", browser,
+  (browser.ausgabe.match(/\d+ passed[^\n]*/) || ["Browserabläufe geprüft"])[0]);
+if (!browser.ok) console.log("        Details: Campus Quiz/tools/browser/bericht/index.html; einzeln: node tools/browser/run.mjs");
+
 // ----------------------------------------------------------------- Bilanz ---
 
 titel("Bilanz");

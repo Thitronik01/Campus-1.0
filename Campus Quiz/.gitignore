@@ -1,2 +1,6 @@
 # Ergänzte Auslieferungen werden aus den versionierten Quellen gebaut.
 /build/
+/tools/browser/node_modules/
+/tools/browser/bericht/
+/tools/browser/ergebnisse/
+!/tools/browser/package-lock.json
