@@ -79,7 +79,12 @@ const BOGEN_AUSGENOMMEN = new Set(["_headers", "_redirects", "README.txt", "date
    `campus-hintergrund-v1.webp` und `campus-kompass-v2.webp` stehen seit dem
    Umbau der Karte nicht mehr hier: Seegrund und Kompassrose kommen jetzt
    aus dem Asset-Pack. Die Dateien liegen weiter in public/media/campus/,
-   ausgeliefert werden sie nicht mehr. */
+   ausgeliefert werden sie nicht mehr.
+
+   `campus-hex-fragetypen.webp` stand bis September 2026 mit in der Liste und
+   wurde damit in jedes der acht Pakete kopiert, obwohl kein Stylesheet und
+   kein Skript es je einband — eine Handliste faellt nicht auf, wenn sie zu
+   viel enthaelt. Genau das prueft `tools/check-medien.js` jetzt mit. */
 const GEMEINSAME_MEDIEN = [
   path.join("media", "campus", "karte", "see.webp"),
   path.join("media", "campus", "karte", "kompass.webp"),
@@ -88,7 +93,6 @@ const GEMEINSAME_MEDIEN = [
   path.join("media", "campus", "karte", "moewen.webp"),
   path.join("media", "campus", "karte", "wellen.webp"),
   path.join("media", "campus", "campus-hex-fragen.webp"),
-  path.join("media", "campus", "campus-hex-fragetypen.webp"),
   path.join("media", "campus", "campus-hex-aufloesung.webp"),
   path.join("media", "campus", "campus-hex-zeitlimit.webp"),
   path.join("media", "campus", "firmensitz-640.webp"),

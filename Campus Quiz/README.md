@@ -22,7 +22,7 @@ gebaut wurde.
 | `public/assets/styles.css` | Stile. Tokens aus dem bestehenden Fehmarn-/Vejrø-Quiz übernommen. |
 | `public/data/inseln.json` | Der Insel-Index für die Übersicht |
 | `public/data/inseln/*.json` | **Die Fragen.** Eine Datei je Insel. |
-| `public/media/<insel>/` | Bilder der Bildfragen. SAMSØ ist bestückt, der Rest fehlt noch. |
+| `public/media/<insel>/` | Bilder der Bildfragen. Alle sieben Inseln sind bestückt, aber ungleich dicht: SAMSØ 21, USEDOM 15, VEJRØ 10, FEHMARN 7 — HIDDENSEE und LANGELAND je 2, POEL 1. Was noch fehlt, steht in `BILDER-WUNSCHLISTE.md`. |
 | `BILDER-WUNSCHLISTE.md` | Was an Bildern fehlt, über alle Inseln — mit Angabe, was generierbar ist und was ein echtes Foto braucht |
 | `FOTOLISTE-HIDDENSEE.md` | Dasselbe ausführlich für HIDDENSEE, mit Aufnahmehinweisen |
 | `tools/bilder-aufbereiten.js` | Rechnet Bilder auf WebP unter 150 KB um |

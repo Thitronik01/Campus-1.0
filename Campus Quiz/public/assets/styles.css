@@ -925,31 +925,12 @@ body.ist-onboarding main { display: flex; }
 
 /* ------------------------------------------------- Tagesabschluss --- */
 
-/* Steht unter der Karte, nicht darauf: Der Feedbackbogen ist keine Insel
-   und darf in "7 von 7" nicht mitzaehlen. Im Ruhezustand eine ruhige
-   Karte; sind alle Inseln erledigt, wird er zur naechsten Handlung und
-   traegt dann den Lime-Rahmen, den sonst nur abgeschlossene Inseln haben. */
-.tagesabschluss {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
-  flex-wrap: wrap;
-  margin: 18px 0 0;
-  padding: 18px 20px;
-  border: 1px solid var(--th-line);
-  border-radius: var(--radius-lg);
-  background: var(--th-white);
-  box-shadow: var(--shadow-sm);
-  color: inherit;
-  text-decoration: none;
-  transition: border-color var(--duration-fast) var(--ease-out),
-              box-shadow var(--duration-fast) var(--ease-out),
-              transform var(--duration-press) var(--ease-out);
-}
-.tagesabschluss[hidden] { display: none; }
-.tagesabschluss:hover { border-color: var(--th-blue); box-shadow: var(--shadow-md); }
-.tagesabschluss:active { transform: scale(.995); }
+/* Der Feedbackbogen sass frueher als breite Karte unter der Inselkarte und
+   trug dafuer die Klasse .tagesabschluss. Seit er als Symbol in die
+   Kopfzeile gewandert ist, traegt das Element `class="masthead-tool"` und
+   nur noch `id="tagesabschluss"` — die Gestaltung steht oben bei
+   .masthead-tool. Die Kindklassen .ta-* sind geblieben und werden von dort
+   angesprochen. */
 
 .ta-icon {
   display: grid;
@@ -994,21 +975,11 @@ body.ist-onboarding main { display: flex; }
   white-space: nowrap;
 }
 
-/* Alle Inseln erledigt: Der Bogen ist jetzt das, was als Naechstes dran
-   ist. Die Farbe allein traegt das nicht — der Text darueber wechselt
-   ebenfalls auf "Expedition abgeschlossen". */
-.tagesabschluss.is-ready {
-  border-color: var(--success-line);
-  background: linear-gradient(180deg, var(--th-white), #F9FCEB);
-}
-.tagesabschluss.is-ready .ta-kicker { color: var(--th-lime-text); }
-.tagesabschluss.is-ready .ta-icon { background: var(--success-bg); }
-.campus-tool { border-left: 4px solid var(--th-blue); }
-.campus-tool .ta-kicker { color: var(--th-navy); }
-.campus-tool-icon { background: #e9f6fb; color: var(--th-blue-text); }
+/* "Alle Inseln erledigt" faerbt heute .masthead-tool.is-ready ein, siehe
+   oben. Die Klassen .campus-tool und .campus-tool-icon stammen aus
+   derselben Kartenfassung und werden seither nirgends mehr vergeben. */
 
 @media (max-width: 560px) {
-  .tagesabschluss { align-items: flex-start; }
   .ta-icon { flex-basis: 44px; width: 44px; height: 44px; border-radius: 14px; }
   .ta-cta { justify-content: center; }
 }
