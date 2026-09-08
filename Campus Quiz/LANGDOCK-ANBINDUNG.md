@@ -24,19 +24,20 @@ in [`SUPABASE-NEUAUFBAU.md`](SUPABASE-NEUAUFBAU.md), Schritt 5, und in
 
 ---
 
-## Wo es steht — 4. September 2026, 14:20 Uhr
+## Wo es steht — 8. September 2026, 14:30 Uhr
 
 | Schritt | |
 |---|---|
 | 1. `CAMPUS_AUSWERTUNG_TOKEN` in Supabase | **gesetzt.** Aufruf ohne `Authorization` liefert `401`, vorher `503`. |
 | 2. Integration `THITRONIK Campus 1.0` | **angelegt**, Auth-Typ API Key, ein Feld `token` (Id `token`), Validation request gegen den Endpunkt |
-| 3. Action `Campus-Auswertung abrufen` | **angelegt**, Aktionstyp *Anzeigen*, Felder `von`, `bis`, `insel`. Test: `200` mit `zeitraum`, `gesamt`, `inseln`. **Am 7.9. nachzuziehen:** Feld `bereich` ergänzen, Code neu einfügen, Name und Beschreibung anpassen. |
-| 4. Agent `Campus-Auswertung` | **angelegt**, Webzugriff aus, Kreativität 0,1. **Am 7.9. nachzuziehen:** Anweisung neu übernehmen — die alte verlangt noch, Kennzahlen zu unterdrücken. |
+| 3. Action `Campus-Auswertung abrufen` | **fertig.** Felder `von`, `bis`, `insel`, `bereich`; die Auswahlliste von `bereich` trägt alle vier Werte. Direkttest am 8.9.: `bereich=feedback` → `200` mit `boegen: 2`, `bewertungen: 19`, 16 Positionen, Schnitt 4,63. |
+| 4. Agent `Campus-Auswertung` | **Anweisung am 8.9. erneuert.** Die alte kannte weder `bereich` noch `feedback` — deshalb rief der Agent den Feedbackbogen nie ab. |
 | 5. Abnahme | **offen** — die vier Fragen sind noch nicht gestellt |
 
-Verbindung im Betrieb ist `Campus Produktiv 2`. Die erste, `Campus Produktiv`,
-trägt einen überholten Zugangswert und gehört gelöscht, damit niemand später
-die falsche auswählt.
+Verbindung im Betrieb ist **`Campus Produktiv 1`**, und sie funktioniert
+(`200 OK` im Direkttest am 8.9.). Eine `Campus Produktiv 2` gibt es nicht —
+bis zum 8. September stand hier das Gegenteil, und wer danach suchte, suchte
+eine Verbindung, die es nie gab.
 
 Der Schreibweg ist am 4. September abgenommen worden: Quizeinsendungen und
 ein Feedbackbogen stehen in der Datenbank, serverseitig bewertet.
@@ -308,6 +309,31 @@ eine Insel, und sie ist eine über zwei Betriebe.
 
 ## Wenn es klemmt
 
+### Zuerst: „Aktion testen", nicht raten
+
+In der Action steht unter **Schritt 4** ein Knopf **Aktion testen**. Er ruft
+den Endpunkt mit von Hand gesetzten Feldern auf und **umgeht den Agenten
+vollständig**. Damit ist in einem Zug getrennt, in welcher Hälfte der Fehler
+liegt:
+
+- **Kommt `200` mit den erwarteten Daten**, sind Endpunkt, Token, Verbindung,
+  Action und Datenbank in Ordnung. Der Fehler liegt dann beim Agenten — an
+  seiner Anweisung, oder daran, dass er den Bereich nicht für gemeint hielt.
+- **Kommt ein Fehler oder das falsche Feld**, liegt es davor, und die Tabelle
+  unten sagt wo.
+
+Am 8. September 2026 hiess der Befund „der Feedbackbogen funktioniert nicht".
+Geprüft wurden nacheinander Datenbankfunktion, Ausführungsrecht, Edge
+Function, Action-Code und Optionsliste — alles fehlerfrei. Ein einziger Klick
+auf **Aktion testen** mit `bereich = feedback` hätte das in einer Minute
+gezeigt: `200`, zwei Bögen, 19 Bewertungen. Der Agent hatte den Bereich nie
+aufgerufen, weil seine Anweisung ihn nicht kannte.
+
+**Merke: erst testen, dann suchen.** Die Reihenfolge kostet nichts und spart
+die Suche in der falschen Hälfte.
+
+### Die Fehlertabelle
+
 | Bild | Ursache | Was zu tun ist |
 |---|---|---|
 | „Der Auswertungsendpunkt ist noch nicht scharfgeschaltet" | `CAMPUS_AUSWERTUNG_TOKEN` fehlt | Schritt 1 |
@@ -320,42 +346,31 @@ eine Insel, und sie ist eine über zwei Betriebe.
 | Agent findet nur die Inselzahlen | Feld `bereich` fehlt in der Action | Schritt 3 |
 | Antwort enthält ein Feld `hinweise` | ein Filter wurde nicht verstanden und weggelassen | Text im Hinweis lesen — er nennt die erlaubten Werte |
 | Alles antwortet, aber überall steht `0` | richtig — im Zeitraum liegt nichts | Zeitraum weiten, [`INBETRIEBNAHME.md`](../INBETRIEBNAHME.md) Schritt B4 |
-| Drei Bereiche antworten, **`feedback` nicht** | Optionsliste des Feldes `bereich` — siehe unten | `supabase_campus_feedback_diagnose.sql` |
-| Agent ruft **jede Insel einzeln** ab, POEL fehlt im Ergebnis | Optionsliste des Feldes `insel` — siehe unten | Action, Schritt 2 |
+| Drei Bereiche antworten, **`feedback` nicht** | meist: die Agentenanweisung kennt den Bereich nicht. Erst „Aktion testen" mit `bereich = feedback` — kommen dort Daten, ist es der Agent | `agent-anweisung.md`, sonst `supabase_campus_feedback_diagnose.sql` |
+| Agent ruft **jede Insel einzeln** ab, POEL fehlt im Ergebnis | der Agent filtert von sich aus. `insel` leer bzw. „Keine" liefert alle sieben in einem Aufruf — am 8.9. so nachgemessen | Anweisung erneuern |
 
 ### Die Auswahlfelder sind nicht im Code
 
 `insel` und `bereich` sind in der Action vom Typ **Auswahl**. Was darin zur
 Wahl steht, wird in der Langdock-Oberfläche gepflegt — **nicht** in dem Code,
 der daneben steht. Beide Listen können deshalb vom Code abweichen, ohne dass
-irgendetwas eine Fehlermeldung wirft. Genau das ist am 8. September zweimal
-aufgefallen:
+irgendetwas eine Fehlermeldung wirft.
 
-- Der Agent schrieb: „Die Campus-Schnittstelle verlangt leider ein Inselkürzel;
-  ich rufe deshalb die **sechs** verfügbaren Inseln einzeln ab." Der Bericht
-  führte danach Hiddensee, Samsø, Fehmarn, Usedom, Langeland und Vejrø auf —
-  **POEL fehlte ganz**, obwohl Inseln mit null Einsendungen sehr wohl
-  auftauchten. POEL wurde also nie abgefragt.
-- Der Action-Code lässt einen leeren Inselwert ausdrücklich zu; dann greift
-  gar kein Filter und alle sieben werden ausgewertet (`if (insel)
-  params.insel = insel;`). Das war schon vor dem 7.9. so. Verlangt die
-  Oberfläche trotzdem eine Auswahl, fehlt dort der leere Eintrag.
+Am 8. September 2026 nachgesehen: **Beide Listen sind vollständig.** `bereich`
+trägt `inseln`, `fragen`, `taetigkeit`, `feedback`; `insel` alle sieben Kürzel
+und einen leeren Eintrag. Der Verdacht, hier fehle etwas, war falsch — er kam
+daher, dass das Feld `bereich` im Testformular leer aussieht. Es hat nur keine
+Vorauswahl, „Erforderlich" ist nicht angehakt. Ein leeres Feld ist kein
+fehlender Eintrag.
 
-**Zu prüfen:** Action öffnen → Schritt 2 Eingabefelder → Feld antippen →
-Optionsliste.
+Wer die Listen trotzdem prüfen will: Action öffnen → Schritt 2 Eingabefelder →
+`...` neben dem Feld → **Optionen**.
 
-- `insel` braucht alle sieben Kürzel — `vejro`, `poel`, `hiddensee`, `samsoe`,
-  `fehmarn`, `usedom`, `langeland` — und einen leeren Eintrag für „alle
-  Inseln".
-- `bereich` braucht alle vier — `inseln`, `fragen`, `taetigkeit`, `feedback`.
-  Fehlt `feedback`, fällt die Action stillschweigend auf `inseln` zurück
-  (`BEREICHE[normal(bereichRoh)] || "inseln"`) und liefert Inselzahlen, wo
-  Feedback erwartet wird. Nach außen sieht das aus, als sei der
-  Feedbackbereich kaputt.
-
-Im Zweifel zuerst mit `curl` prüfen (Schritt 1). Antwortet der Endpunkt dort
-richtig, liegt es an der Langdock-Seite; antwortet er nicht, an Supabase. Das
-spart das Suchen in der falschen Hälfte.
+Bleibt der Hinweis auf den stillen Rückfall: Fehlt ein Wert wirklich einmal,
+wirft die Action keinen Fehler, sondern nimmt die Vorgabe —
+`BEREICHE[normal(bereichRoh)] || "inseln"`. Von aussen sieht das aus, als sei
+der gewünschte Bereich kaputt. Deshalb steht „Aktion testen" oben an erster
+Stelle: Dort ist sofort zu sehen, welcher `bereich` tatsächlich zurückkam.
 
 Für den Feedbackbereich nimmt
 [`supabase_campus_feedback_diagnose.sql`](supabase_campus_feedback_diagnose.sql)

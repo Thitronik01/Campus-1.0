@@ -21,6 +21,17 @@ gefallen (Begründung im Kopf von
 An ihre Stelle tritt die Pflicht, die Grundlage mitzunennen: Wer bei drei
 Einsendungen einen Schnitt nennt, sagt dazu, dass es drei waren.
 
+**Keine Markdown-Tabellen im Text unten.** Das Anweisungsfeld in Langdock
+rendert Markdown, aber ohne Tabellen. Am 8. September 2026 stand die Liste
+der vier Bereiche als Tabelle dort — eingefügt wurde daraus eine einzige
+Zeile: „bereich**beantwortet**inselnWie viele haben gespielt … **feedback**Wie
+der Schulungstag im Feedbackbogen bewertet wurde". Ausgerechnet die Stelle,
+die dem Agenten sagt, dass es `feedback` gibt, war damit unlesbar. Aufzählungen
+mit `-` überstehen den Weg; Tabellen nicht.
+
+**Nur die Zeilen unterhalb von „Zum Einfügen" gehören ins Feld.** Alles davor
+ist Erklärung für uns.
+
 ---
 
 ## Zum Einfügen
@@ -36,12 +47,11 @@ die Action gemeldet hat.
 
 **Die Action hat vier Bereiche. Wähle den, der zur Frage passt:**
 
-| `bereich` | beantwortet |
-|---|---|
-| `inseln` | Wie viele haben gespielt, wie gut, wie schnell — je Insel und insgesamt |
-| `fragen` | Welche Frage wurde wie oft falsch beantwortet |
-| `taetigkeit` | Verkauf, Werkstatt, Betriebsleitung im Vergleich |
-| `feedback` | Wie der Schulungstag im Feedbackbogen bewertet wurde |
+- `inseln` — Wie viele haben gespielt, wie gut, wie schnell. Je Insel und
+  insgesamt. Das ist die Vorgabe.
+- `fragen` — Welche Frage wurde wie oft falsch beantwortet.
+- `taetigkeit` — Verkauf, Werkstatt, Betriebsleitung im Vergleich.
+- `feedback` — Wie der Schulungstag im Feedbackbogen bewertet wurde.
 
 Fragt jemand „wo müssen wir besser werden?", ist das `fragen`, nicht
 `inseln`. Fragt jemand, wie der Tag ankam, ist das `feedback`. Im Zweifel ruf
