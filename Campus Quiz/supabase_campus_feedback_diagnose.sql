@@ -22,6 +22,71 @@
 -- ---------------------------------------------------------------------------
 
 
+-- ---------------------------------------------------------------------------
+-- 0. Alles auf einmal — mit dieser Abfrage anfangen
+--
+-- Der SQL-Editor zeigt nur das Ergebnis der LETZTEN Anweisung. Laufen die
+-- vier Abfragen unten hintereinander, sind drei Antworten weg, bevor sie
+-- jemand liest. Deshalb steht hier alles in einer einzigen Zeile.
+--
+-- Am 08.09.2026 so gelaufen: Der Feedbackbereich antwortete, `funktionen`
+-- war vollstaendig — die Ursache lag danach in Langdock, nicht hier.
+--
+-- Worauf zu achten ist:
+--   funktionen                 muss die vier campus_auswertung* nennen
+--   darf_service_role          muss true sein  <-- der Editor arbeitet als
+--                              `postgres`, die Edge Function aber als
+--                              `service_role`. Dass eine Abfrage hier
+--                              gelingt, beweist deren Recht NICHT.
+--   echte_boegen               0 heisst: nichts kaputt, nur nichts da
+--   antwortet / boegen_laut_funktion
+--                              muessen zu echte_boegen passen
+-- ---------------------------------------------------------------------------
+
+select jsonb_pretty(jsonb_build_object(
+  'funktionen', (
+    select coalesce(jsonb_agg(p.proname order by p.proname), '[]'::jsonb)
+      from pg_proc p
+      join pg_namespace n on n.oid = p.pronamespace
+     where n.nspname = 'public'
+       and p.proname like 'campus_auswertung%'
+  ),
+  'darf_service_role', exists (
+    select 1 from information_schema.routine_privileges
+     where routine_schema = 'public'
+       and routine_name   = 'campus_auswertung_feedback'
+       and grantee        = 'service_role'
+       and privilege_type = 'EXECUTE'
+  ),
+  'boegen_gesamt',  (select count(*) from public.campus_feedback),
+  'davon_test',     (select count(*) from public.campus_feedback where is_test),
+  'echte_boegen',   (select count(*) from public.campus_feedback where not is_test),
+  'bewertungen_echt', (
+    select count(*) from public.campus_feedback_ratings r
+      join public.campus_feedback f on f.id = r.feedback_id
+     where not f.is_test
+  ),
+  'erster_tag', (select min((created_at at time zone 'Europe/Berlin')::date)
+                   from public.campus_feedback),
+  'letzter_tag', (select max((created_at at time zone 'Europe/Berlin')::date)
+                   from public.campus_feedback),
+  'antwortet', (
+    public.campus_auswertung_feedback('2026-01-01'::date, '2026-12-31'::date)
+      is not null
+  ),
+  'boegen_laut_funktion', (
+    public.campus_auswertung_feedback('2026-01-01'::date, '2026-12-31'::date)
+      -> 'gesamt' -> 'boegen'
+  )
+)) as diagnose;
+
+
+-- ---------------------------------------------------------------------------
+-- Die vier Einzelabfragen. Nur noch noetig, wenn Abfrage 0 etwas
+-- Unerwartetes meldet — dann einzeln markieren und ausfuehren.
+-- ---------------------------------------------------------------------------
+
+
 -- 1. Gibt es die Funktion ueberhaupt?
 --
 -- Sie kam erst mit der Auswertungsmigration vom 7. September dazu. Lief nur
