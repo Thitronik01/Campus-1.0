@@ -1,6 +1,6 @@
 # Campus 1.0 — Wissenspaket
 
-**Erstellt:** 13.08.2026 · **292 Dateien, ~91 MB**
+**Erstellt:** 13.08.2026 · **Stand 08.09.2026: 301 Dateien, ~95 MB**
 
 Dieser Ordner bündelt das THITRONIK-Wissen, das für die Digitalisierung der
 Campus-Schulung gebraucht wird. Er ist als **Initialzündung für ein neues Projekt**
@@ -14,7 +14,7 @@ gedacht und funktioniert eigenständig — ohne Zugriff auf die bestehende Platt
 |---|---|---|
 | **[`01_Produktwissen/`](01_Produktwissen/)** | 82 Wiki-Artikel auf Deutsch: Produkte, Zubehör, Fahrzeuge, Diagnose, Prozesse. Plus maschinenlesbare Daten (Glossar, Artikel-JSONs, 11 fertige Quizze) | 171 Dateien, 5,5 MB |
 | **[`02_Design-System/`](02_Design-System/)** | Design-Tokens, Farbrollen, Layout, Komponenten — konsolidiert und um die bekannten Fallen ergänzt | 6 Dateien |
-| **[`03_Medien/`](03_Medien/)** | 34 Produktbilder, 11 Fahrzeugbilder, 23 CI-Icons und Logos, 8 Wohnmobil-Marken, 13 Themenbilder, 11 Alarmtöne | 107 Dateien, 85 MB |
+| **[`03_Medien/`](03_Medien/)** | 34 Produktbilder, 23 CI-Icons und Logos, 13 Themenbilder, 11 Fahrzeugbilder, 11 Alarmtöne, 8 Wohnmobil-Marken, 8 Inselmotive im Original (`inseln-original/`), 5 Firmenbilder (`firma/`) | 115 Dateien |
 | **[`04_Campus-Konzept/`](04_Campus-Konzept/)** | Das Campus-Konzept plus ~60 ausgearbeitete Quizfragen für die sieben Inseln | 7 Dateien |
 
 ---

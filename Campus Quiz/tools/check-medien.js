@@ -137,6 +137,41 @@ for (const datei of medien) {
   HINWEIS(`${rel} (${kb(fs.statSync(datei).size)}) — kein Verweis gefunden. Vor dem Löschen den ganzen Baum durchsuchen.`);
 }
 
+// ------------------------------------------- 3. GEMEINSAME_MEDIEN ---
+
+/* Die Liste in build-insel.js sagt, welche Bilder nicht an einer einzelnen
+   Insel haengen und deshalb in jedes der acht Pakete muessen. Sie wird von
+   Hand gepflegt, und eine Handliste faellt in beide Richtungen um: Ein
+   fehlender Eintrag bricht den Bau sofort und faellt auf. Ein ueberfluessiger
+   faellt nie auf — er kostet nur in jedem Paket Platz. So reiste
+   `campus-hex-fragetypen.webp` achtfach mit, ohne je eingebunden zu sein.
+
+   Geprueft wird nur gegen die Quelle. In einem gebauten Paket liegen die
+   Dateien zwar auch, aber dort steht build-insel.js nicht daneben. */
+
+const BAUWERKZEUG = path.join(__dirname, "build-insel.js");
+const istQuelle = path.resolve(WURZEL) === path.resolve(__dirname, "..", "public");
+
+if (istQuelle && fs.existsSync(BAUWERKZEUG)) {
+  const quelltext = fs.readFileSync(BAUWERKZEUG, "utf8");
+  const block = quelltext.match(/const GEMEINSAME_MEDIEN = \[([\s\S]*?)\];/);
+  if (!block) {
+    FEHLER("build-insel.js: GEMEINSAME_MEDIEN nicht gefunden — hat sich die Schreibweise geändert?");
+  } else {
+    const eintraege = [...block[1].matchAll(/path\.join\(([^)]*)\)/g)].map((m) =>
+      [...m[1].matchAll(/"([^"]+)"/g)].map((s) => s[1]).join("/")
+    );
+    if (!eintraege.length) FEHLER("build-insel.js: GEMEINSAME_MEDIEN ist leer.");
+    for (const eintrag of eintraege) {
+      if (!fs.existsSync(path.join(WURZEL, eintrag))) {
+        FEHLER(`GEMEINSAME_MEDIEN nennt ${eintrag} — die Datei gibt es unter public/ nicht.`);
+      } else if (!referenziert.has(eintrag)) {
+        FEHLER(`GEMEINSAME_MEDIEN nennt ${eintrag}, aber nichts bindet es ein — es reist in jedes der acht Pakete mit. Entweder einbinden oder aus der Liste nehmen.`);
+      }
+    }
+  }
+}
+
 // ------------------------------------------------------------- Bilanz ---
 
 console.log(`\nMedien: ${medien.length} Dateien, ${mb(gesamt)} unter ${path.relative(process.cwd(), WURZEL) || "."}.`);

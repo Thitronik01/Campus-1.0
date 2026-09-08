@@ -5,9 +5,11 @@ Dieses Repository ist für eine gemeinsame Netlify-Site vorbereitet:
 - `/quiz` zeigt die Campus-Karte mit allen sieben Wissensinseln.
 - `/quiz/<insel>` öffnet die jeweilige Insel direkt.
 - `/feedback/` ist der Tagesabschluss.
+- `/arbeitskarte/` ist die digitale Arbeitskarte.
+- `/datenschutz/` ist der Datenschutzhinweis nach Art. 13 DSGVO. Beide Einwilligungsdialoge verlinken dorthin, er darf also nicht wegfallen.
 - Quiz-Ergebnisse und Feedback werden immer zuerst an geschützte Netlify Functions gesendet.
-- Solange Supabase noch nicht eingerichtet ist, dienen Netlify Forms nur als Pilot-Sicherheitsnetz.
-- Sobald Supabase eingerichtet ist, speichern beide Functions automatisch dort. Langdock kann anschließend direkt auf den vorhandenen Supabase-Views auswerten.
+- Supabase ist seit dem 03.09.2026 eingerichtet; beide Functions speichern dort. Netlify Forms sind nur noch der Ausweichweg, wenn die Datenbank ablehnt — siehe `Campus Quiz/SUPABASE-NEUAUFBAU.md`.
+- Langdock wertet über die Supabase-Views aus, nicht über Netlify Forms.
 
 ## Empfohlener Weg: Git-Deployment
 
@@ -17,7 +19,10 @@ Dieses Repository ist für eine gemeinsame Netlify-Site vorbereitet:
 4. Unter **Forms → Enable form detection** die Formularerkennung aktivieren.
 5. Einen neuen Deploy auslösen, damit Netlify die beiden Formulare erkennt.
 
-Für die Pilotphase sind keine Datenbank und keine Umgebungsvariablen nötig.
+Die Formularerkennung bleibt aktiv, weil Netlify Forms der Ausweichweg ist.
+Für den Betrieb werden die Supabase-Umgebungsvariablen gebraucht; welche das
+sind, steht in `Campus Quiz/SUPABASE-NEUAUFBAU.md`. Sie greifen erst nach
+einem neuen Deploy.
 
 ## Direkt nach dem Deploy prüfen
 
