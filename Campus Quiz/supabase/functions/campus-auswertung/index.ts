@@ -2,14 +2,25 @@
  *
  * Langdock stellt eine Frage wie "Wie viele Händler haben heute VEJRØ
  * gespielt?" und bekommt aggregierte Zahlen zurück. Rohdaten verlassen die
- * Datenbank nicht: Diese Funktion kann nur `campus_auswertung` aufrufen, und
- * die gibt Namen, Händlernummern und Session-IDs gar nicht erst heraus.
+ * Datenbank nicht: Diese Funktion kann nur die vier `campus_auswertung*`
+ * Datenbankfunktionen aufrufen, und die geben Namen, Händlernummern,
+ * Session-IDs und Freitexte gar nicht erst heraus.
+ *
+ * Vier Bereiche über einen Endpunkt, gewählt mit `bereich`:
+ *   inseln      Kennzahlen je Schulungsinsel (Vorgabe)
+ *   fragen      Trefferquote je Quizfrage
+ *   taetigkeit  Verkauf gegen Werkstatt
+ *   feedback    Feedbackbogen, aggregiert
+ *
+ * Der Name der Datenbankfunktion wird nicht aus der Anfrage gebaut, sondern
+ * aus einer festen Liste von Endungen an einen festen Stamm gehängt. Ein
+ * Bereich, der nicht in der Liste steht, kann deshalb keinen anderen Pfad
+ * erzeugen — auch nicht mit einem geschickt gewählten Wert.
  *
  * Eigener Zugangswert statt Supabase-JWT: Der Endpunkt wird mit
  * `verify_jwt = false` ausgerollt und prüft stattdessen ein Bearer-Token aus
  * den Function Secrets. So lässt sich der Langdock-Zugang widerrufen, ohne
- * Projektschlüssel zu tauschen — und ein zweiter Endpunkt (Feedback) bekommt
- * später seinen eigenen Wert, wie im Integrationsplan festgelegt.
+ * Projektschlüssel zu tauschen.
  *
  * Der Secret Key des Projekts steht Edge Functions von Haus aus zur
  * Verfügung. Er bleibt in dieser Funktion und geht nie an Langdock.
@@ -20,6 +31,20 @@ const INSELN = new Set([
 ]);
 
 const TAG = /^\d{4}-\d{2}-\d{2}$/;
+
+/* Bereich -> Endung an `campus_auswertung`. Der Stamm steht als Literal im
+ * Pfad weiter unten; hier stehen ausschliesslich Endungen. Damit ist der
+ * erreichbare Namensraum vollständig aufgezählt und nicht erweiterbar.
+ *
+ * `nimmt_insel` sagt, ob die Funktion einen dritten Parameter hat. Der
+ * Feedbackbogen kennt keine Insel: Er wird einmal für den ganzen Tag
+ * ausgefüllt, nicht je Station. */
+const BEREICHE: Record<string, { endung: string; nimmt_insel: boolean }> = {
+  inseln:     { endung: "",             nimmt_insel: true  },
+  fragen:     { endung: "_fragen",      nimmt_insel: true  },
+  taetigkeit: { endung: "_taetigkeit",  nimmt_insel: true  },
+  feedback:   { endung: "_feedback",    nimmt_insel: false }
+};
 
 /** Vergleich in konstanter Zeit. Ein `===` auf Zeichenketten bricht beim
  *  ersten Unterschied ab und verrät über die Laufzeit, wie viele Zeichen
@@ -66,21 +91,35 @@ Deno.serve(async (req: Request): Promise<Response> => {
   let von: string | null = null;
   let bis: string | null = null;
   let insel: string | null = null;
+  let bereich: string | null = null;
 
   if (req.method === "GET") {
     const q = new URL(req.url).searchParams;
     von = q.get("von");
     bis = q.get("bis");
     insel = q.get("insel");
+    bereich = q.get("bereich");
   } else {
     const rumpf = await req.json().catch(() => ({}));
     von = rumpf?.von ?? null;
     bis = rumpf?.bis ?? null;
     insel = rumpf?.insel ?? null;
+    bereich = rumpf?.bereich ?? null;
+  }
+
+  const gewaehlt = (bereich ?? "").trim().toLowerCase() || "inseln";
+  const eintrag = Object.prototype.hasOwnProperty.call(BEREICHE, gewaehlt)
+    ? BEREICHE[gewaehlt]
+    : undefined;
+  if (!eintrag) {
+    return antwort(400, {
+      fehler: "Unbekannter Bereich.",
+      erlaubt: Object.keys(BEREICHE)
+    });
   }
 
   for (const [name, wert] of [["von", von], ["bis", bis]] as const) {
-    if (wert !== null && !TAG.test(wert)) {
+    if (wert !== null && wert !== "" && !TAG.test(wert)) {
       return antwort(400, { fehler: `${name} muss ein Datum im Format JJJJ-MM-TT sein.` });
     }
   }
@@ -104,24 +143,29 @@ Deno.serve(async (req: Request): Promise<Response> => {
   const parameter: Record<string, string> = {};
   if (von) parameter.von = von;
   if (bis) parameter.bis = bis;
-  if (insel) parameter.insel = insel;
+  // Eine Insel an eine Funktion ohne diesen Parameter zu schicken, wäre ein
+  // PostgREST-404 auf eine Signatur, die es nicht gibt.
+  if (insel && eintrag.nimmt_insel) parameter.insel = insel;
 
   try {
-    const rpc = await fetch(`${url.replace(/\/$/, "")}/rest/v1/rpc/campus_auswertung`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-        "apikey": schluessel,
-        "Authorization": `Bearer ${schluessel}`
-      },
-      body: JSON.stringify(parameter)
-    });
+    const rpc = await fetch(
+      `${url.replace(/\/$/, "")}/rest/v1/rpc/campus_auswertung${eintrag.endung}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "apikey": schluessel,
+          "Authorization": `Bearer ${schluessel}`
+        },
+        body: JSON.stringify(parameter)
+      }
+    );
 
     if (!rpc.ok) {
       // Nur Status ins Log. PostgREST legt in `details` gern die betroffene
       // Zeile ab — dieselbe Falle wie in submit-quiz (Rückstand R-41).
-      console.error("Auswertung abgelehnt:", rpc.status);
+      console.error("Auswertung abgelehnt:", gewaehlt, rpc.status);
       return antwort(502, { fehler: "Die Auswertung ist nicht verfügbar." });
     }
 

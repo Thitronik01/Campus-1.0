@@ -307,11 +307,18 @@ Sie erhalten voneinander getrennte Zugangswerte, damit ein einzelner Zugang
 widerrufen werden kann. Diese Werte liegen nur in den Supabase Function Secrets
 und in den Passwortfeldern der jeweiligen Langdock-Verbindung.
 
-Die Endpunkte liefern keine Namen, Händlernummern, Session-IDs oder vollständige
-Payloads. **Die Mindestmenge ist auf fünf Einsendungen festgelegt:** Darunter
-nennt die Auswertung nur, wie viele es waren, und keine Kennzahlen. Ein
+Die Endpunkte liefern keine Namen, Händlernummern, Session-IDs, Freitexte oder
+vollständige Payloads.
+
+**Die Mindestmenge stand bis zum 7. September 2026 auf fünf Einsendungen** —
+darunter nannte die Auswertung nur, wie viele es waren, und keine Kennzahlen.
+Sie steht jetzt auf 1. Der Grund war ein gemessener: Bei 17 Einsendungen auf
+sieben Inseln lag jede Insel darunter, und der Langdock-Agent konnte auf keine
+Frage einen Schnitt nennen. Der Einwand dagegen bleibt richtig — ein
 Durchschnitt aus zwei Einsendungen ist keine Kennzahl, sondern eine Aussage
-über zwei Personen.
+über zwei Betriebe. Er wird jetzt in der Agentenanweisung aufgefangen: Die
+Anzahl steht in jeder Zeile neben der Kennzahl und muss mitgenannt werden.
+Ausführlich in `LANGDOCK-ANBINDUNG.md`.
 
 ### 5a — Quiz-Auswertung einspielen — erledigt 03.09.2026
 
@@ -413,10 +420,16 @@ Namen — und die verlassen die Datenbank nicht.
 Die Antwort nennt Zeitraum, Zeitzone, Datenstand und Mindestmenge mit, damit
 eine Auswertung in Langdock ihre Grundlage angeben kann.
 
-Der Feedback-Endpunkt folgt nach demselben Muster mit einem **eigenen** Token,
-sobald der erste im Betrieb steht. Bis Endpunkte, Mindestmenge und
-Antwortschema geprüft sind, werden die alten Langdock-Verbindungen nicht auf
-das neue Projekt umgestellt.
+Seit dem 7. September 2026 wählt der Parameter `bereich` unter vier
+Auswertungen aus: `inseln` (Vorgabe), `fragen` (Trefferquote je Quizfrage),
+`taetigkeit` (Verkauf gegen Werkstatt) und `feedback` (der Feedbackbogen,
+aggregiert). Jeder Bereich hat eine eigene Datenbankfunktion; der Endpunkt
+hängt nur eine Endung aus einer festen Liste an den Stamm `campus_auswertung`,
+damit aus der Anfrage kein beliebiger Funktionsname werden kann.
+
+Damit ist auch der Feedbackzugang gebaut — über **denselben** Token, nicht
+über einen eigenen wie ursprünglich geplant. Die Begründung steht in
+`LANGDOCK-ANBINDUNG.md`, Abschnitt „Ein Token statt zwei".
 
 ## Schritt 6 — Advisor lesen, nicht überfliegen
 

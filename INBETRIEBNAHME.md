@@ -87,11 +87,12 @@ ab und der Grund steht in Netlify → Functions → `submit-quiz` → Logs.
 
 ### Was als Nächstes zu tun ist
 
-**1. Die Abnahme des Langdock-Agenten** — die vier Fragen in
+**1. Die Abnahme des Langdock-Agenten** — die sieben Fragen in
 [`Campus Quiz/LANGDOCK-ANBINDUNG.md`](Campus%20Quiz/LANGDOCK-ANBINDUNG.md),
-Schritt 5. Der Datenstand ist dafür günstig: Beide Inseln haben je eine
-Einsendung und liegen damit unter der Mindestmenge — die Auswertung muss die
-Anzahl nennen und den Schnitt verweigern.
+Schritt 5. Vorher gehören drei Dinge in Langdock nachgezogen, die am
+7. September im Repository geändert wurden: der Action-Code, das neue Feld
+`bereich` und die Agentenanweisung. Die alte Anweisung verlangt noch, Schnitte
+zu unterdrücken — mit ihr fällt die Abnahme durch, obwohl die Technik stimmt.
 
 **2. Die Einträge in Netlify Forms räumen.** Was am 4. September vor dem
 Schlüsseltausch dort ankam, erreicht die Aufräumroutine der Datenbank nicht;
