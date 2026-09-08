@@ -1207,15 +1207,31 @@ die Zuordnung beim Übertragen ins JSON-Schema nicht verlorengeht — 28 Bilder,
 Vorher müssten aber die beiden Befunde unter 5a geklärt sein, sonst wandern
 sie mit.
 
-> **Der Ordner war ohnehin nie deploybar:** seine `netlify.toml` deklariert
-> `publish = "public"` und `functions = "netlify/functions"` — beide
-> Verzeichnisse gibt es dort nicht, und die `index.html` liegt im
-> Wurzelverzeichnis. Die Live-Version muss aus einer anderen Quelle stammen.
-> Wer `FehlerQuiz/` künftig deployen will, muss das erst geradeziehen.
+> **Der Ordner ist eine Arbeitskopie, kein Deploy-Paket.** Am 8. September
+> 2026 geklärt und in [`FehlerQuiz/README.md`](../FehlerQuiz/README.md)
+> ausführlich festgehalten: Die Seite läuft als eigenes Netlify-Projekt
+> `thitronik-fehlerquiz`, aus einem **von Hand abgelegten Ordner** vom
+> 10. August — kein Git, keine CI. Dieser Ordner enthielt zusätzlich
+> `netlify/functions/submit-quiz.js`; die Function ist auf keinem Rechner mehr
+> auffindbar und aus Netlify nicht herunterladbar.
+>
+> Wer hier die `index.html` ändert, ändert nichts an der laufenden Seite. Und
+> ein Drag-and-drop nur dieser Datei würde die Function löschen — die Seite
+> liefe weiter, speicherte aber kein Ergebnis mehr. Details und der Weg für
+> den Fall, dass es doch einmal live soll, stehen im README des Ordners.
 
 **5a. Zwei Befunde am laufenden FehlerQuiz.** Aufgefallen beim Sichten der
-Bilder, beide **nicht** behoben — bewusst, weil die Entscheidung Fachwissen
-braucht und das Quiz live ist.
+Bilder.
+
+> **Stand 8. September 2026: beide im Repository behoben, live weiterhin
+> vorhanden.** Der THITRONIK-Support hat die Frage Q02 in der korrigierten
+> Fassung bestätigt. Dass die Korrektur die laufende Seite nicht erreicht,
+> ist eine bewusste Entscheidung und in
+> [`FehlerQuiz/README.md`](../FehlerQuiz/README.md) begründet: Die Function
+> der Live-Site bewertet selbst und trägt einen zweiten Antwortschlüssel;
+> eine Änderung allein an der `index.html` würde die Anzeige richtigstellen,
+> die Bewertung aber nicht. Die Korrektur wandert mit der Migration nach
+> Issue #11 mit.
 
 Zur Einordnung vorweg: `correct` indexiert das `images`-Array und ist
 0-basiert (`question.correct + 1` in der Anzeige). Das ist geprüft — bei Q01
