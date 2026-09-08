@@ -494,8 +494,10 @@ Freigabe mit „ja“.
 | 03.09.2026 | Auswertungs-Migration | erfolgreich; ACL von `campus_auswertung` ist `postgres=X \| service_role=X`, kein Recht für `anon` oder `authenticated` |
 | 03.09.2026 | Edge Function `campus-auswertung` ausgerollt | Version 1, Status ACTIVE, `verify_jwt = false`; ohne Function Secret antwortet sie `503` — geprüft mit und ohne erfundenes Token |
 | 03.09.2026 | Security-Advisor nach den Migrationen | zwei WARN zu `public.rls_auto_enable()` (für `anon` und `authenticated` ausführbar, SECURITY DEFINER); Härtungsmigration eingespielt, danach nur noch die drei gewollten INFO-Zeilen „RLS Enabled No Policy" |
-| offen | `CAMPUS_AUSWERTUNG_TOKEN` als Function Secret | ohne den Wert bleibt der Endpunkt bei `503` |
-| offen | erster echter Durchlauf ohne `?demo=1` | Bestand am 03.09.2026 um 15:40 Uhr: Quiz `0`, Feedback `0` |
+| 04.09.2026 | `CAMPUS_AUSWERTUNG_TOKEN` als Function Secret | **gesetzt.** Am 08.09.2026 nachgeprüft, ohne Zugangswert und damit gefahrlos: `curl -o /dev/null -w "%{http_code}" .../functions/v1/campus-auswertung` → `401`. `503` hieße, das Secret fehlt. Diese Probe ist der schnellste Weg, den Zustand zu klären, ohne das Token anzufassen. |
+| 07.09.2026 | Auswertungsmigration mit den vier Bereichen | eingespielt — nicht einzeln protokolliert, aber belegt: Ein Langdock-Bericht vom 08.09. enthält den Abschnitt „Trefferquote je Quizfrage", und der setzt `campus_auswertung_fragen` voraus. Die Funktion kam erst mit dieser Migration dazu. |
+| 04.09.2026 | erster echter Durchlauf ohne `?demo=1` | erledigt; Einsendungen stehen seither in der Datenbank. Startbestand am 03.09.2026 um 15:40 Uhr war Quiz `0`, Feedback `0`. |
+| 08.09.2026 | `bereich=feedback` antwortet nicht | offen. Der Weg ist im Repository geprüft und fehlerfrei: Action kennt `feedback`/`feedbackbogen`/`bogen`, die Edge Function führt den Bereich in ihrer festen Liste, `campus_note_einheitlich` steht in der Basismigration mit Recht für `service_role`, alle benutzten Spalten existieren. Bleibt die Datenbank oder die Optionsliste des Feldes `bereich` in Langdock — [`supabase_campus_feedback_diagnose.sql`](supabase_campus_feedback_diagnose.sql) entscheidet das in vier nur lesenden Abfragen. |
 | offen | Deploy Preview der gehärteten Schreibfunktionen | noch nicht geprüft |
 | offen | bewusster Produktivtest | noch nicht ausgeführt |
 | offen | Langdock-Endpunkte und neue Verbindungen | noch nicht ausgeführt |

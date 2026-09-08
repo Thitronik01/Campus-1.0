@@ -320,10 +320,47 @@ eine Insel, und sie ist eine über zwei Betriebe.
 | Agent findet nur die Inselzahlen | Feld `bereich` fehlt in der Action | Schritt 3 |
 | Antwort enthält ein Feld `hinweise` | ein Filter wurde nicht verstanden und weggelassen | Text im Hinweis lesen — er nennt die erlaubten Werte |
 | Alles antwortet, aber überall steht `0` | richtig — im Zeitraum liegt nichts | Zeitraum weiten, [`INBETRIEBNAHME.md`](../INBETRIEBNAHME.md) Schritt B4 |
+| Drei Bereiche antworten, **`feedback` nicht** | Optionsliste des Feldes `bereich` — siehe unten | `supabase_campus_feedback_diagnose.sql` |
+| Agent ruft **jede Insel einzeln** ab, POEL fehlt im Ergebnis | Optionsliste des Feldes `insel` — siehe unten | Action, Schritt 2 |
+
+### Die Auswahlfelder sind nicht im Code
+
+`insel` und `bereich` sind in der Action vom Typ **Auswahl**. Was darin zur
+Wahl steht, wird in der Langdock-Oberfläche gepflegt — **nicht** in dem Code,
+der daneben steht. Beide Listen können deshalb vom Code abweichen, ohne dass
+irgendetwas eine Fehlermeldung wirft. Genau das ist am 8. September zweimal
+aufgefallen:
+
+- Der Agent schrieb: „Die Campus-Schnittstelle verlangt leider ein Inselkürzel;
+  ich rufe deshalb die **sechs** verfügbaren Inseln einzeln ab." Der Bericht
+  führte danach Hiddensee, Samsø, Fehmarn, Usedom, Langeland und Vejrø auf —
+  **POEL fehlte ganz**, obwohl Inseln mit null Einsendungen sehr wohl
+  auftauchten. POEL wurde also nie abgefragt.
+- Der Action-Code lässt einen leeren Inselwert ausdrücklich zu; dann greift
+  gar kein Filter und alle sieben werden ausgewertet (`if (insel)
+  params.insel = insel;`). Das war schon vor dem 7.9. so. Verlangt die
+  Oberfläche trotzdem eine Auswahl, fehlt dort der leere Eintrag.
+
+**Zu prüfen:** Action öffnen → Schritt 2 Eingabefelder → Feld antippen →
+Optionsliste.
+
+- `insel` braucht alle sieben Kürzel — `vejro`, `poel`, `hiddensee`, `samsoe`,
+  `fehmarn`, `usedom`, `langeland` — und einen leeren Eintrag für „alle
+  Inseln".
+- `bereich` braucht alle vier — `inseln`, `fragen`, `taetigkeit`, `feedback`.
+  Fehlt `feedback`, fällt die Action stillschweigend auf `inseln` zurück
+  (`BEREICHE[normal(bereichRoh)] || "inseln"`) und liefert Inselzahlen, wo
+  Feedback erwartet wird. Nach außen sieht das aus, als sei der
+  Feedbackbereich kaputt.
 
 Im Zweifel zuerst mit `curl` prüfen (Schritt 1). Antwortet der Endpunkt dort
 richtig, liegt es an der Langdock-Seite; antwortet er nicht, an Supabase. Das
 spart das Suchen in der falschen Hälfte.
+
+Für den Feedbackbereich nimmt
+[`supabase_campus_feedback_diagnose.sql`](supabase_campus_feedback_diagnose.sql)
+diese Entscheidung ab: vier nur lesende Abfragen, einmal in den SQL-Editor
+eingefügt. Antwortet die Datenbank dort richtig, liegt es an Langdock.
 
 ---
 
