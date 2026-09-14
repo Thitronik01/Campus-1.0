@@ -25,14 +25,21 @@ die vollständigen Supabase-Fehlerantworten im Log (R-41), das Modellkürzel
 für den Anthropic-Weg (R-54), die feste „sieben Inseln" (R-55) und die toten
 data-Attribute am Quizbildschirm (R-61, R-62).
 
-Die verbleibenden **46** stehen hier, nach Schwere geordnet. Jeder Eintrag ist so
+Sechs weitere sind am 14. September 2026 mit dem Härten der THI-Function
+erledigt (Issues #35 bis #39 und #59): der falsche Schlüssel als scheinbare
+Antwort (R-20), die fehlende Zeitgrenze an den fetch-Aufrufen (R-21), das
+von Müllanfragen verbrauchte Tageslimit (R-22), die Kauderwelsch-Suche
+(R-23), die offenen Werkzeugergebnisse je Runde (R-24) und die ungetesteten
+Fehlerpfade (R-44).
+
+Die verbleibenden **40** stehen hier, nach Schwere geordnet. Jeder Eintrag ist so
 geschrieben, dass er ohne Rückfrage zum Issue werden kann;
 `.github/issues-anlegen.sh` legt sie mit der GitHub-CLI an.
 
 | Schwere | Zahl |
 |---|---|
 | hoch | 9 |
-| mittel | 24 |
+| mittel | 18 |
 | niedrig | 13 |
 
 > **Vor dem Scharfschalten von Supabase** gehören die Punkte zu
@@ -251,81 +258,6 @@ geschrieben, dass er ohne Rückfrage zum Issue werden kann;
 
 ---
 
-## R-20 · Falscher API-Schluessel erreicht den Nutzer als scheinbare Antwort mit HTTP 200
-<!-- labels: code, mittel -->
-
-**Schwere:** mittel · **Bereich:** code · **Ort:** `Campus Quiz/netlify/functions/thi.mjs:424-449`
-
-**Befund.** Auf dem voreingestellten Werkzeugweg wird die Response mit Status 200 zurueckgegeben, bevor der erste Modellaufruf laeuft. Jeder Fehler danach — auch 401 wegen falschem Schluessel — landet als Fliesstext im Antwortstrom.
-
-**Beleg.** Z. 599 gibt `new Response(werkzeugStrom(...))` ohne Statuspruefung zurueck; der catch in Z. 439-443 schreibt "Beim Nachschlagen ist ein Fehler aufgetreten..." in den Strom. Nachgestellt mit einem Dienst, der 401 liefert: Werkzeugweg -> HTTP 200, Koerper `[[STATUS:Denkt nach …]]Beim Nachschlagen ist ein Fehler aufgetreten...`. Derselbe 401 auf dem reinen Stromweg (THI_TOOLS=false) liefert korrekt HTTP 401 mit `{"fehler":"dienst"}`.
-
-**Folge.** Zwei Wirkungen. Erstens sieht der Teilnehmer bei einem falsch eingetragenen Schluessel dieselbe Meldung wie bei einem Netzwerkaussetzer — die in THI.md Z. 37-40 versprochene klare Ansage "ANYMIZE_API_KEY fehlt" greift nur bei gar keinem Schluessel, nicht bei einem falschen. Zweitens haelt der Browserteil den Fehlertext fuer eine Antwort: public/assets/thi.js Z. 628 legt ihn als `rolle: "thi"` in den Verlauf, speichert ihn in sessionStorage und schickt ihn bei der naechsten Frage als assistant-Turn ans Modell.
-
-**Vorschlag.** Den ersten Modellaufruf vor dem Oeffnen des Stroms machen und bei einem Fehler wie auf dem Stromweg mit `json(401|502, ...)` antworten; erst danach streamen. Fehlertexte im Strom zusaetzlich mit einer eigenen Marke (etwa `[[FEHLER:...]]`) kennzeichnen, damit thi.js sie nicht in den Verlauf uebernimmt.
-
----
-
-## R-21 · Keiner der drei fetch-Aufrufe hat eine Zeitgrenze
-<!-- labels: code, mittel -->
-
-**Schwere:** mittel · **Bereich:** code · **Ort:** `Campus Quiz/netlify/functions/thi.mjs:359, 628`
-
-**Befund.** Weder `anymizeAufruf` noch der Stromweg uebergeben ein `signal`. Das Zeitbudget FRIST_MS entscheidet nur, ob vor einer Runde noch Werkzeuge angeboten werden — es begrenzt keinen einzelnen Aufruf.
-
-**Beleg.** `grep -n "AbortSignal|AbortController|signal|timeout|setTimeout" netlify/functions/thi.mjs` liefert keinen Treffer. Z. 394 prueft `(Date.now() - beginn) < FRIST_MS` nur am Schleifenkopf; eine Runde, die bei 39,9 s startet, laeuft danach unbegrenzt weiter.
-
-**Folge.** Haengt Anymize, laeuft die Function bis zum 60-Sekunden-Abbruch durch Netlify. Der Teilnehmer sieht dabei eine Minute lang "Denkt nach …" und anschliessend — weil der Strom abbricht statt sauber zu enden — den Hinweis "THI hat nichts zurueckgegeben" (public/assets/thi.js Z. 615-622). Die Function-Sekunden fallen trotzdem an.
-
-**Vorschlag.** Jedem fetch ein `signal: AbortSignal.timeout(...)` mitgeben, bemessen am Restbudget (`FRIST_MS - (Date.now() - beginn)`), und den Abbruch als eigenen Fall behandeln: eine kurze, ehrliche Meldung mit Support-Nummer statt eines abgeschnittenen Stroms.
-
----
-
-## R-22 · Das Tageslimit wird auch von Anfragen verbraucht, die nie ein Modell erreichen
-<!-- labels: code, mittel -->
-
-**Schwere:** mittel · **Bereich:** code · **Ort:** `Campus Quiz/netlify/functions/thi.mjs:475-495, 524`
-
-**Befund.** `limitGeprueft()` laeuft als Erstes und zaehlt jede Anfrage, obwohl die teuren Pruefungen (Schluessel, gueltiger Koerper, letzte Nachricht vom Nutzer) erst danach kommen. Der Zaehler, der Kosten deckeln soll, zaehlt Anfragen statt Modellaufrufe.
-
-**Beleg.** Z. 524 ruft `limitGeprueft(anfrage)` auf; Z. 489 `tag.anzahl += 1;` laeuft dabei durch. Die 400er-Pfade folgen erst in Z. 557 und Z. 570. Nachgestellt mit `THI_DAILY_LIMIT=5`: fuenf POSTs mit leerem `nachrichten`-Array (je HTTP 400, kein Modellaufruf) genuegen — die sechste Anfrage und jede weitere, auch eine gueltige, bekommt 429 "Das Tageslimit fuer THI-Anfragen ist erreicht".
-
-**Folge.** THI laesst sich mit voellig kostenlosen Muellanfragen fuer den Rest des Tages abschalten. Bei der Vorgabe 1000 reichen 1000 leere POSTs pro Function-Instanz — waehrend der Schulung sitzen die Teilnehmer dann vor einem Assistenten, der nur noch "bitte spaeter erneut versuchen" sagt.
-
-**Vorschlag.** Den Tageszaehler erst unmittelbar vor dem Modellaufruf hochzaehlen, das IP-Fenster dagegen weiterhin frueh pruefen. Ungueltige Anfragen duerfen das IP-Fenster belasten, aber nicht das Kostenbudget.
-
----
-
-## R-23 · Unsinnsfrage kostet das Hundertfache an Rechenzeit — vor jedem Modellaufruf
-<!-- labels: code, mittel -->
-
-**Schwere:** mittel · **Bereich:** code · **Ort:** `Campus Quiz/netlify/functions/thi-lib/suche.mjs:342-356`
-
-**Befund.** `verwandteArtikel()` ruft fuer JEDEN Suchbegriff die vollstaendige Artikelsuche auf, bei langen Begriffen sogar zweimal. Der einzige `break` verlaesst nur die innere Proben-Schleife, nicht die Schleife ueber die Begriffe.
-
-**Beleg.** Z. 347-354: `for (const term of terme) { const proben = ...; for (const probe of proben) { ... sucheArtikel(bestand, probe, grenze) ...; if (nachRoute.size >= grenze * 2) break; } }` — der break bricht nur `proben` ab. Gemessen gegen den echten Bestand (150 Artikel, 1251 Abschnitte): normale Frage 19 ms, eine Frage aus 400 erfundenen Begriffen 2080 ms. Erreicht wird der Pfad ueber thi.mjs Z. 336-347, also genau dann, wenn nichts gefunden wurde.
-
-**Folge.** Rund zwei Sekunden Rechenzeit pro Anfrage, ausgeloest durch einen einzigen 4000-Zeichen-POST mit Kauderwelsch, und zwar bevor ueberhaupt ein Modell gefragt wird. Bei erlaubten 30 Anfragen je IP und fuenf Minuten sind das knapp eine Minute Function-Rechenzeit pro IP; parallel laufende echte Fragen warten mit.
-
-**Vorschlag.** Die Begriffe vor der Schleife entdoppeln und auf die laengsten 8 bis 10 begrenzen, und den Abbruch auf die aeussere Schleife ziehen (`if (nachRoute.size >= grenze * 2) break;` auch dort). Zusaetzlich in thi.mjs die Zahl der Suchbegriffe je Frage deckeln.
-
----
-
-## R-24 · Werkzeugergebnisse je Runde sind nach oben offen
-<!-- labels: code, mittel -->
-
-**Schwere:** mittel · **Bereich:** code · **Ort:** `Campus Quiz/netlify/functions/thi.mjs:402-413`
-
-**Befund.** Jedes einzelne Werkzeugergebnis ist auf 16.000 Zeichen begrenzt, die Zahl der Werkzeugaufrufe pro Runde aber nicht. Alle Ergebnisse werden verkettet und wandern anschliessend in jede weitere Runde mit.
-
-**Beleg.** Z. 229 `const MAX_WERKZEUG_ZEICHEN = 16000;`, aber Z. 400 `const aufrufe = Array.isArray(nachricht.tool_calls) ? nachricht.tool_calls : [];` und Z. 405 `const bloecke = aufrufe.map(...)` ohne `slice`. Z. 410-413 haengt das Ergebnis unbegrenzt an `nachrichten` an.
-
-**Folge.** Fordert das Modell in einer Runde zehn Suchen an, wachsen 160.000 Zeichen (rund 50.000 Token) in den Verlauf — und werden in den bis zu drei Folgeaufrufen jedes Mal erneut bezahlt. Das ist der teuerste Einzelposten pro Anfrage und wird ausgerechnet von der Gegenseite bestimmt.
-
-**Vorschlag.** Die Aufrufe je Runde deckeln (`aufrufe.slice(0, 2)`) und zusaetzlich ein Gesamtbudget ueber alle Runden fuehren; ist es erschoepft, keine Werkzeuge mehr anbieten — dieselbe Mechanik wie bei FRIST_MS.
-
----
-
 ## R-25 · Verwaiste Bilder in public/media wandern trotzdem ins Deploy-Paket
 <!-- labels: code, mittel -->
 
@@ -533,21 +465,6 @@ geschrieben, dass er ohne Rückfrage zum Issue werden kann;
 **Folge.** Eine Regression in `gleicheHerkunft()` — etwa der naheliegende Griff nach `x-forwarded-host` statt `host` hinter Netlifys Proxy — wuerde jede echte Browseranfrage mit 403 abweisen, waehrend alle 69 Pruefungen weiter gruen sind. Umgekehrt wuerde auch das Schliessen der Origin-Luecke (Fund oben) unbemerkt die halbe Testsuite unbrauchbar machen.
 
 **Vorschlag.** `anfrage()` standardmaessig `origin: "http://localhost:8788"` mitgeben und einen eigenen Fall "gleiche Herkunft wird durchgelassen" aufnehmen. Den Fall ohne Origin dann als eigenen, bewusst benannten Test fuehren.
-
----
-
-## R-44 · Wichtige Fehlerpfade sind ungetestet: Tageslimit, Zeitbudget, 429 und abgerissener Strom
-<!-- labels: test, mittel -->
-
-**Schwere:** mittel · **Bereich:** test · **Ort:** `Campus Quiz/tools/test-thi.js:211-377`
-
-**Befund.** Der Schutz- und Modellblock deckt den jeweils ersten Fehlerfall ab, aber nicht die Faelle, die im Betrieb tatsaechlich auftreten werden.
-
-**Beleg.** In `schutzPruefen()` (Z. 211-267) gibt es einen Fall fuers IP-Limit, aber keinen fuer `PRO_TAG` (thi.mjs Z. 478) und keinen fuer die Laengenkappungen MAX_ZEICHEN/MAX_NACHRICHTEN (thi.mjs Z. 100-101, 565-567). In `modellPruefen()` (Z. 269-377) wird nur der Stromweg mit einem 500er geprueft (Z. 358-376); fuer den voreingestellten Werkzeugweg gibt es keinen Fehlerfall, kein 429 vom Anbieter, keinen Test des Zeitbudgets FRIST_MS und keinen abgerissenen SSE-Strom — die Nachbildung in Z. 61-67 endet immer sauber mit `[DONE]`.
-
-**Folge.** Die drei Fehler dieser Liste (401 auf dem Werkzeugweg wird als Antwort ausgeliefert, Tageslimit von Muellanfragen aufgebraucht, kein fetch-Timeout) sitzen alle in ungetestetem Gelaende. Die Suite meldet 69 gruene Pruefungen und deckt den haeufigsten Betriebsfall — der Anbieter antwortet nicht wie erwartet — auf dem voreingestellten Weg gar nicht ab.
-
-**Vorschlag.** Vier Faelle ergaenzen: Anbieter antwortet 401 und 429 auf dem Werkzeugweg (erwartet: HTTP-Fehlerstatus, kein Fehlertext im Strom), `THI_DAILY_LIMIT=2` mit einer dritten gueltigen Anfrage, ein Dienst, der die Verbindung mitten im SSE-Strom schliesst, und `THI_ZEITBUDGET_MS=1` mit der Erwartung, dass keine zweite Werkzeugrunde mehr angeboten wird.
 
 ---
 

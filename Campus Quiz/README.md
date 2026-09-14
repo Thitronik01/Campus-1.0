@@ -1407,8 +1407,9 @@ Gemessen, nicht geschätzt:
   (155 × 206 px), alle vier Bilder geladen, Großansicht als echtes Modal mit
   Fokus im Dialog, Auflösung markiert gewählt-falsch und übersehen-richtig
   getrennt, kein verschachtelter Button, Lupe 44 × 44 bei 6 % Kachelfläche
-- 107 Prüfungen für THI, darunter der komplette Modellweg gegen einen
-  nachgebildeten Anymize-Dienst — siehe [`THI.md`](THI.md)
+- 143 Prüfungen für THI, darunter der komplette Modellweg und die
+  Fehlerpfade gegen einen nachgebildeten Anymize-Dienst — siehe
+  [`THI.md`](THI.md)
 - 83 Prüfungen der Arbeitskarte ohne Browser, darunter 45 Konfiguratorfälle
   und die Cache-Marken aller Modul-Importe — siehe
   [Die digitale Arbeitskarte](#die-digitale-arbeitskarte)

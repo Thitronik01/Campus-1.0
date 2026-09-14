@@ -140,7 +140,8 @@ sofort.
 | Bild | Ursache | Nachsehen |
 |---|---|---|
 | „Der Schlüssel fehlt" trotz gesetzter Variable | Deploy lief vor dem Setzen | erneut deployen |
-| Antwort bricht nach ~60 s ab | Netlify-Zeitgrenze | `THI_ZEITBUDGET_MS` senken (Vorgabe 40000) |
+| „THI hat nicht rechtzeitig geantwortet" | Anbieter langsam oder hängend; die Function bricht selbst ab, bevor Netlify es nach 60 s tut | Function-Log; `THI_ZEITBUDGET_MS` (Vorgabe 40000) und `THI_AUFRUF_MINDEST_MS` (8000) prüfen — Budget + 2 × Mindestzeit unter 60 s halten |
+| „Der KI-Dienst hat den Zugang abgelehnt" | Schlüssel eingetragen, aber vom Anbieter abgewiesen (401) | Wert von `ANYMIZE_API_KEY` im Anymize-Konto prüfen, danach erneut deployen |
 | `MODULE_NOT_FOUND` im Function-Log | Wissensdaten nicht mitverpackt | siehe „Was auf Netlify zu beachten ist" in [`Campus Quiz/THI.md`](Campus%20Quiz/THI.md) |
 | 400 vom Anymize-Dienst | Der `llm-anonymous`-Endpunkt weist `role:"tool"` ab | ist umschifft; falls doch: `THI_TOOLS=false` |
 
