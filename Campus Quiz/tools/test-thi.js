@@ -45,7 +45,17 @@ function pruefe(name, bedingung, hinweis) {
  *  `drehbuch` ist eine Liste von Antworten, die der Reihe nach ausgeliefert
  *  werden — so lässt sich eine Werkzeugrunde gefolgt von der eigentlichen
  *  Antwort nachstellen. Jede Anfrage wird mitgeschrieben, damit die Prüfungen
- *  hineinsehen können, was die Function tatsächlich geschickt hat. */
+ *  hineinsehen können, was die Function tatsächlich geschickt hat.
+ *
+ *  Ein Schritt kann sich auch schlecht benehmen, denn genau das prüft der
+ *  Block "Fehlerpfade":
+ *    { haengen: true }             antwortet nie — der Aufruf muss an der
+ *                                  Zeitgrenze der Function scheitern, nicht
+ *                                  an Netlifys 60 Sekunden.
+ *    { sse: [...], abreissen: true } schliesst die Verbindung nach den
+ *                                  Stücken, ohne [DONE].
+ *    { sse: [...], haengen: true } schickt die Stücke und bleibt dann stumm.
+ */
 function starteAnymize(drehbuch) {
   const anfragen = [];
   let index = 0;
@@ -63,9 +73,15 @@ function starteAnymize(drehbuch) {
         for (const stueck of schritt.sse) {
           res.write(`data: ${JSON.stringify({ choices: [{ delta: { content: stueck } }] })}\n\n`);
         }
+        // Erst hinausschreiben lassen, dann trennen: ein destroy() direkt
+        // nach write() verwirft die gepufferten Stücke, und der Abriss
+        // träfe den Verbindungsaufbau statt den offenen Strom.
+        if (schritt.abreissen) { setTimeout(() => res.destroy(), 30); return; }
+        if (schritt.haengen) return;
         res.end("data: [DONE]\n\n");
         return;
       }
+      if (schritt.haengen) return;
       res.writeHead(schritt.status || 200, { "Content-Type": "application/json" });
       res.end(JSON.stringify({ choices: [{ message: schritt.nachricht }] }));
     });
@@ -75,7 +91,9 @@ function starteAnymize(drehbuch) {
       fertig({
         adresse: `http://127.0.0.1:${server.address().port}/v1/chat/completions`,
         anfragen,
-        stoppen: () => new Promise((zu) => server.close(zu))
+        // closeAllConnections, weil hängende Schritte ihre Verbindung
+        // absichtlich offen lassen — server.close() wartete sonst ewig.
+        stoppen: () => new Promise((zu) => { server.closeAllConnections(); server.close(zu); })
       });
     });
   });
@@ -239,6 +257,25 @@ async function retrievalPruefen() {
   const fenster = s.ausschnitt(lang, "Erschütterungssensor", 200);
   pruefe("Retrieval: Ausschnitt trifft die Fundstelle",
     fenster.includes("Erschütterungssensor"), fenster.slice(0, 60));
+
+  /* Die lockere Einzelbegriff-Suche lief einmal je Begriff über den ganzen
+     Bestand — 400 erfundene Begriffe kosteten das Hundertfache einer echten
+     Frage, vor jedem Modellaufruf. Gemessen wird warm (der Feld-Cache ist
+     nach den Fällen oben gefüllt), damit die Zahl die Suche misst und nicht
+     die einmalige Normalisierung des Bestands. */
+  const kauderwelsch = Array.from({ length: 400 }, (_, i) => `xq${i.toString(36)}zzk`).join(" ");
+  const beginn = Date.now();
+  const verwandt = s.verwandteArtikel(bestand, kauderwelsch, 3);
+  s.sucheArtikel(bestand, kauderwelsch, 4);
+  s.sucheAbschnitte(abschnitte, kauderwelsch, 4);
+  const dauer = Date.now() - beginn;
+  pruefe("Retrieval: Kauderwelsch mit 400 Begriffen bleibt unter 500 ms", dauer < 500, `${dauer} ms`);
+  pruefe("Retrieval: Kauderwelsch findet nichts Verwandtes", verwandt.length === 0);
+  // Gegenprobe: die Deckelung nimmt der echten Frage nichts.
+  const verwandtEcht = s.verwandteArtikel(bestand, "Anlernprozedur für den Magnetkontakt", 3);
+  pruefe("Retrieval: verwandte Artikel bei echter Frage weiterhin gefunden",
+    verwandtEcht.some((t) => /magnetkontakt/.test(t.slug || "")),
+    verwandtEcht.map((t) => t.slug).join(", ") || "nichts");
 }
 
 async function schutzPruefen() {
@@ -539,6 +576,277 @@ async function werkzeugAusgabePruefen() {
   await dienst.stoppen();
 }
 
+// ------------------------------------------------------- Fehlerpfade ------
+
+/* Was der Anbieter im Betrieb tatsächlich tut, wenn er nicht antwortet wie
+   erwartet: Schlüssel ablehnen, überlastet sein, hängen, mitten im Strom
+   abreissen. Jeder Fall hier ist auf dem voreingestellten Werkzeugweg
+   nachgestellt, weil dort der Fehler früher als Antworttext im Verlauf des
+   Teilnehmers landete (Rückstand R-20). */
+async function fehlerpfadePruefen() {
+  const umgebung = (dienst, extra = {}) => ({
+    ANYMIZE_API_KEY: "test-schluessel",
+    ANYMIZE_API_URL: dienst.adresse,
+    THI_PROVIDER: "anymize",
+    THI_TOOLS: "true",
+    THI_RATE_LIMIT: "500",
+    ...extra
+  });
+  const anfrageMit = (koerper) => new Request("http://localhost:8788/.netlify/functions/thi", {
+    method: "POST",
+    headers: { "content-type": "application/json", host: "localhost:8788", origin: "http://localhost:8788" },
+    body: JSON.stringify(koerper)
+  });
+
+  // --- Falscher Schlüssel auf dem Werkzeugweg: 401, kein Strom -------------
+  {
+    const dienst = await starteAnymize([{ status: 401, nachricht: { content: "invalid api key sk-geheim" } }]);
+    const { handler, zuruecksetzen } = await ladeFunction(umgebung(dienst), "werkzeug-401");
+    const antwort = await handler(anfrage("Testfrage"));
+    const text = await antwort.text();
+    pruefe("Fehlerpfad: 401 auf dem Werkzeugweg wird zum HTTP 401", antwort.status === 401, `war ${antwort.status}`);
+    pruefe("Fehlerpfad: 401 kommt als JSON, nicht als Strom",
+      antwort.headers.get("content-type").includes("application/json") && !text.includes("[[STATUS:"), text.slice(0, 80));
+    let last = {};
+    try { last = JSON.parse(text); } catch { /* Prüfung oben sieht es */ }
+    pruefe("Fehlerpfad: 401 trägt fehler:dienst", last.fehler === "dienst", last.fehler);
+    pruefe("Fehlerpfad: 401 nennt keine Interna", !text.includes("sk-geheim"));
+    pruefe("Fehlerpfad: 401 ist kein Fehlertext im Strom", !text.includes("Beim Nachschlagen"));
+    zuruecksetzen();
+    await dienst.stoppen();
+  }
+
+  // --- Anbieter überlastet: 429 durchreichen, damit der Browser "Kurz
+  //     warten" zeigt und nicht "Nicht erreichbar" -----------------------------
+  {
+    const dienst = await starteAnymize([{ status: 429, nachricht: { content: "rate limited" } }]);
+    const { handler, zuruecksetzen } = await ladeFunction(umgebung(dienst), "werkzeug-429");
+    const antwort = await handler(anfrage("Testfrage"));
+    const last = await antwort.json();
+    pruefe("Fehlerpfad: 429 des Anbieters wird zum HTTP 429", antwort.status === 429, `war ${antwort.status}`);
+    pruefe("Fehlerpfad: 429 trägt fehler:limit", last.fehler === "limit", last.fehler);
+    zuruecksetzen();
+    await dienst.stoppen();
+  }
+
+  // --- Sonstiger Dienstfehler auf dem Werkzeugweg: 502 ---------------------
+  {
+    const dienst = await starteAnymize([{ status: 500, nachricht: { content: "geheimer Innendienstfehler" } }]);
+    const { handler, zuruecksetzen } = await ladeFunction(umgebung(dienst), "werkzeug-500");
+    const antwort = await handler(anfrage("Testfrage"));
+    const text = await antwort.text();
+    pruefe("Fehlerpfad: 500 auf dem Werkzeugweg wird zum HTTP 502", antwort.status === 502, `war ${antwort.status}`);
+    pruefe("Fehlerpfad: 500 ohne Interna", !text.includes("geheimer Innendienstfehler"));
+    zuruecksetzen();
+    await dienst.stoppen();
+  }
+
+  // --- Tageslimit zählt Modellaufrufe, nicht Anfragen (R-22) ---------------
+  {
+    const dienst = await starteAnymize([{ nachricht: { content: "Antwort." } }]);
+    const { handler, zuruecksetzen } = await ladeFunction(
+      umgebung(dienst, { THI_DAILY_LIMIT: "2" }), "tageslimit");
+    // Zwei ungültige Anfragen: leerer Verlauf, je 400, kein Modellaufruf.
+    const ungueltig = [];
+    for (let i = 0; i < 2; i++) {
+      ungueltig.push((await handler(anfrageMit({ nachrichten: [] }))).status);
+    }
+    pruefe("Tageslimit: ungültige Anfragen werden mit 400 abgewiesen",
+      ungueltig.every((s) => s === 400), ungueltig.join(", "));
+    const erste = await handler(anfrage("Erste gültige Frage"));
+    await erste.text();
+    pruefe("Tageslimit: gültige Anfrage nach zwei ungültigen bekommt kein 429",
+      erste.status === 200, `war ${erste.status}`);
+    // Gegenprobe: echte Modellaufrufe zählen weiterhin — die dritte
+    // gültige Anfrage ist über dem Limit von zwei.
+    await (await handler(anfrage("Zweite gültige Frage"))).text();
+    const dritte = await handler(anfrage("Dritte gültige Frage"));
+    pruefe("Tageslimit: Modellaufrufe zählen weiterhin", dritte.status === 429, `war ${dritte.status}`);
+    pruefe("Tageslimit: genau zwei Modellaufrufe gelaufen", dienst.anfragen.length === 2,
+      `${dienst.anfragen.length}`);
+    zuruecksetzen();
+    await dienst.stoppen();
+  }
+
+  // --- Verbindung reisst mitten im SSE-Strom ab: sauberes Ende -------------
+  {
+    const dienst = await starteAnymize([{ sse: ["Der ", "Magnetkontakt "], abreissen: true }]);
+    const { handler, zuruecksetzen } = await ladeFunction(
+      umgebung(dienst, { THI_TOOLS: "false" }), "strom-abriss");
+    const antwort = await handler(anfrage("Testfrage"));
+    let text = null;
+    try { text = await antwort.text(); } catch (f) { text = null; }
+    pruefe("Strom: Abriss mitten im Strom lässt die Function nicht abstürzen", antwort.status === 200 && text !== null);
+    pruefe("Strom: bis zum Abriss empfangene Stücke kommen an",
+      text !== null && text.startsWith("Der Magnetkontakt"), String(text).slice(0, 40));
+    zuruecksetzen();
+    await dienst.stoppen();
+  }
+
+  // --- Zeitbudget abgelaufen: keine zweite Werkzeugrunde (FRIST_MS) --------
+  {
+    const dienst = await starteAnymize([
+      {
+        nachricht: {
+          content: "",
+          tool_calls: [{ id: "1", type: "function",
+            function: { name: "wiki_suchen", arguments: JSON.stringify({ query: "Magnetkontakt" }) } }]
+        }
+      },
+      // Würde wieder nachschlagen wollen — darf aber kein Werkzeug mehr
+      // angeboten bekommen, und ohne Angebot zählt nur noch der Text.
+      {
+        nachricht: {
+          content: "Antwort ohne weiteres Nachschlagen.",
+          tool_calls: [{ id: "2", type: "function",
+            function: { name: "wiki_suchen", arguments: JSON.stringify({ query: "noch einmal" }) } }]
+        }
+      }
+    ]);
+    const { handler, zuruecksetzen } = await ladeFunction(
+      umgebung(dienst, { THI_ZEITBUDGET_MS: "1" }), "zeitbudget");
+    const antwort = await handler(anfrage("Wie lerne ich einen Magnetkontakt an?"));
+    const text = await antwort.text();
+    pruefe("Zeitbudget: erste Runde bietet Werkzeuge an", Array.isArray(dienst.anfragen[0]?.last.tools));
+    pruefe("Zeitbudget: zweite Runde bietet keine Werkzeuge mehr an",
+      dienst.anfragen.length === 2 && dienst.anfragen[1].last.tools === undefined,
+      `${dienst.anfragen.length} Runden, tools=${JSON.stringify(dienst.anfragen[1]?.last.tools)}`);
+    pruefe("Zeitbudget: der Text der letzten Runde wird ausgeliefert",
+      text.includes("Antwort ohne weiteres Nachschlagen."), text.slice(-60));
+    zuruecksetzen();
+    await dienst.stoppen();
+  }
+
+  // --- Hängender Dienst: Abbruch durch die Function, nicht durch Netlify ---
+  //     Das Budget ist klein gesetzt, damit die Prüfung schnell bleibt; im
+  //     Betrieb gelten 40 s plus 8 s Mindestzeit je Aufruf.
+  {
+    const dienst = await starteAnymize([{ haengen: true }]);
+    const { handler, zuruecksetzen } = await ladeFunction(
+      umgebung(dienst, { THI_ZEITBUDGET_MS: "1", THI_AUFRUF_MINDEST_MS: "300" }), "haengt-werkzeug");
+    const beginn = Date.now();
+    const antwort = await handler(anfrage("Testfrage"));
+    const dauer = Date.now() - beginn;
+    const last = await antwort.json().catch(() => ({}));
+    pruefe("Zeitgrenze: hängender Dienst auf dem Werkzeugweg endet als 504",
+      antwort.status === 504, `war ${antwort.status}`);
+    pruefe("Zeitgrenze: Abbruch kommt aus der Function, nicht aus Netlify", dauer < 3000, `${dauer} ms`);
+    pruefe("Zeitgrenze: Meldung nennt die Support-Nummer",
+      String(last.meldung).includes("+49 (0)4351 76744-112"), last.meldung);
+    zuruecksetzen();
+    await dienst.stoppen();
+  }
+  {
+    const dienst = await starteAnymize([{ haengen: true }]);
+    const { handler, zuruecksetzen } = await ladeFunction(
+      umgebung(dienst, { THI_TOOLS: "false", THI_ZEITBUDGET_MS: "1", THI_AUFRUF_MINDEST_MS: "300" }), "haengt-strom");
+    const beginn = Date.now();
+    const antwort = await handler(anfrage("Testfrage"));
+    const dauer = Date.now() - beginn;
+    pruefe("Zeitgrenze: hängender Dienst auf dem Stromweg endet als 504",
+      antwort.status === 504 && dauer < 3000, `war ${antwort.status} nach ${dauer} ms`);
+    zuruecksetzen();
+    await dienst.stoppen();
+  }
+  // Hängt der Dienst erst, nachdem der Strom schon offen ist, bleibt nur
+  // Text: Der Hinweis hängt hinter dem, was schon angekommen war.
+  {
+    const dienst = await starteAnymize([{ sse: ["Der Magnetkontakt "], haengen: true }]);
+    const { handler, zuruecksetzen } = await ladeFunction(
+      umgebung(dienst, { THI_TOOLS: "false", THI_ZEITBUDGET_MS: "1", THI_AUFRUF_MINDEST_MS: "300" }), "haengt-mitten");
+    const beginn = Date.now();
+    const antwort = await handler(anfrage("Testfrage"));
+    const text = await antwort.text();
+    const dauer = Date.now() - beginn;
+    pruefe("Zeitgrenze: Stillstand mitten im Strom wird gemeldet",
+      text.startsWith("Der Magnetkontakt") && text.includes("Zeitgrenze") && text.includes("+49 (0)4351 76744-112"),
+      text.slice(0, 80));
+    pruefe("Zeitgrenze: Stillstand mitten im Strom endet rechtzeitig", dauer < 3000, `${dauer} ms`);
+    zuruecksetzen();
+    await dienst.stoppen();
+  }
+  // Ein Zeitablauf in einer späteren Werkzeugrunde: die Kopfzeilen sind
+  // längst beim Browser, also Text mit Support-Nummer statt eines
+  // abgeschnittenen Stroms.
+  {
+    const dienst = await starteAnymize([
+      {
+        nachricht: {
+          content: "",
+          tool_calls: [{ id: "1", type: "function",
+            function: { name: "wiki_suchen", arguments: JSON.stringify({ query: "Magnetkontakt" }) } }]
+        }
+      },
+      { haengen: true }
+    ]);
+    // Die Frist des zweiten Aufrufs ist die Restzeit des Budgets, mindestens
+    // die Mindestzeit. Das Budget ist bewusst so klein, dass die Mindestzeit
+    // greift — sonst wartete die Prüfung das volle Budget ab.
+    const { handler, zuruecksetzen } = await ladeFunction(
+      umgebung(dienst, { THI_ZEITBUDGET_MS: "1", THI_AUFRUF_MINDEST_MS: "300" }), "haengt-runde-zwei");
+    const beginn = Date.now();
+    const antwort = await handler(anfrage("Wie lerne ich einen Magnetkontakt an?"));
+    pruefe("Zeitgrenze: Runde eins ist durch, der Strom ist offen", antwort.status === 200, `war ${antwort.status}`);
+    const text = await antwort.text();
+    const dauer = Date.now() - beginn;
+    pruefe("Zeitgrenze: Zeitablauf in Runde zwei wird als Text mit Support-Nummer gemeldet",
+      text.includes("nicht rechtzeitig") && text.includes("+49 (0)4351 76744-112"), text.slice(-120));
+    pruefe("Zeitgrenze: Runde zwei endet rechtzeitig", dauer < 3000, `${dauer} ms`);
+    zuruecksetzen();
+    await dienst.stoppen();
+  }
+
+  // --- Werkzeugaufrufe je Runde und Gesamtbudget (R-24) --------------------
+  {
+    const vieleAufrufe = Array.from({ length: 6 }, (_, i) => ({
+      id: String(i + 1), type: "function",
+      function: { name: "artikel_lesen", arguments: JSON.stringify({ route: ["/de/wipro-iii", "/de/pro-finder", "/de/gas-pro-iii"][i % 3] }) }
+    }));
+    const dienst = await starteAnymize([
+      { nachricht: { content: "", tool_calls: vieleAufrufe } },
+      // Will noch einmal — bekommt aber kein Werkzeug mehr angeboten, weil
+      // drei volle Artikel das Gesamtbudget aufgebraucht haben.
+      { nachricht: { content: "Fertig.", tool_calls: vieleAufrufe.slice(0, 1) } }
+    ]);
+    const { handler, zuruecksetzen } = await ladeFunction(umgebung(dienst), "werkzeug-deckel");
+    const antwort = await handler(anfrage("Was ist die WiPro III?"));
+    const text = await antwort.text();
+    const zweite = dienst.anfragen[1]?.last.messages || [];
+    const assistant = zweite.find((m) => m.role === "assistant");
+    const ergebnisse = String(zweite.find((m) => String(m.content).includes("[WERKZEUG-ERGEBNIS"))?.content || "");
+    pruefe("Werkzeugdeckel: höchstens drei Aufrufe je Runde ausgeführt",
+      (ergebnisse.match(/\[WERKZEUG-ERGEBNIS/g) || []).length === 3,
+      `${(ergebnisse.match(/\[WERKZEUG-ERGEBNIS/g) || []).length} Ergebnisse`);
+    pruefe("Werkzeugdeckel: assistant-Nachricht trägt nur die ausgeführten Aufrufe",
+      assistant && assistant.tool_calls.length === 3, assistant && String(assistant.tool_calls.length));
+    pruefe("Werkzeugdeckel: Ergebnisse einer Runde bleiben unter dem Gesamtbudget",
+      ergebnisse.length <= 40000 + 600, `${ergebnisse.length} Zeichen`);
+    pruefe("Werkzeugdeckel: nach erschöpftem Budget keine Werkzeuge mehr",
+      dienst.anfragen.length === 2 && dienst.anfragen[1].last.tools === undefined,
+      `${dienst.anfragen.length} Runden, tools=${JSON.stringify(dienst.anfragen[1]?.last.tools)}`);
+    pruefe("Werkzeugdeckel: Antwort kommt trotzdem an", text.includes("Fertig."));
+    zuruecksetzen();
+    await dienst.stoppen();
+  }
+
+  // --- Kauderwelsch durch die ganze Function: bleibt schnell (R-23) --------
+  {
+    const dienst = await starteAnymize([{ nachricht: { content: "Dazu finde ich nichts." } }]);
+    const { handler, zuruecksetzen } = await ladeFunction(umgebung(dienst), "kauderwelsch");
+    const kauderwelsch = Array.from({ length: 400 }, (_, i) => `xq${i.toString(36)}zzk`).join(" ");
+    // Erste Anfrage füllt den Feld-Cache; gemessen wird die zweite.
+    await (await handler(anfrage("Aufwärmen"))).text();
+    const beginn = Date.now();
+    const antwort = await handler(anfrage(kauderwelsch));
+    await antwort.text();
+    const dauer = Date.now() - beginn;
+    pruefe("Kauderwelsch: 400 Begriffe durch die Function unter einer Sekunde",
+      antwort.status === 200 && dauer < 1000, `${antwort.status} nach ${dauer} ms`);
+    zuruecksetzen();
+    await dienst.stoppen();
+  }
+}
+
 function verpackungPruefen() {
   /* Der Fehler, den dieser Block verhindert, kostete beinahe ein kaputtes
      Deployment — und war lokal unsichtbar:
@@ -724,6 +1032,7 @@ async function quizfragePruefen() {
   await modellPruefen();
   await quizfragePruefen();
   await werkzeugAusgabePruefen();
+  await fehlerpfadePruefen();
   verpackungPruefen();
   browserteilPruefen();
 

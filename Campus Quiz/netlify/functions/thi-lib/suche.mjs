@@ -161,10 +161,17 @@ export function sucheAnfrage(frage, fruehereFragen = []) {
   return erweitere(zusammen);
 }
 
+/* Jeder Begriff kostet einen Durchlauf über den ganzen Bestand. Eine echte
+   Frage hat selten mehr als zwanzig aussagekräftige Begriffe, die längste
+   Wissenscheck-Frage mit allen Antworten unter fünfzig — ein 4000-Zeichen-
+   POST aus Kauderwelsch dagegen vierhundert. Die Grenze trifft also nur
+   das, was ohnehin nichts findet. */
+const MAX_SUCHBEGRIFFE = 60;
+
 function suchBegriffe(frage) {
   const b = begriffe(frage);
-  if (b.length) return [...new Set(b)];
-  return [...new Set(normalisiere(frage).split(/\s+/).filter(Boolean))];
+  if (b.length) return [...new Set(b)].slice(0, MAX_SUCHBEGRIFFE);
+  return [...new Set(normalisiere(frage).split(/\s+/).filter(Boolean))].slice(0, MAX_SUCHBEGRIFFE);
 }
 
 /** Seltene Fachbegriffe zählen mehr als überall vorkommende Wörter.
@@ -336,20 +343,30 @@ export function ausschnitt(text, frage, groesse = 800) {
   return `${start > 0 ? "… " : ""}${teil}${start + groesse < t.length ? " …" : ""}`;
 }
 
+/* Jeder Begriff hier ist eine volle Artikelsuche, lange Begriffe zwei. Die
+   längsten Begriffe sind die spezifischsten — mehr als eine Handvoll davon
+   findet nichts, was die ersten nicht schon gefunden hätten. Ohne diese
+   Grenze kostete eine Frage aus 400 erfundenen Begriffen das Hundertfache
+   einer echten, und zwar vor jedem Modellaufruf. */
+const MAX_VERWANDTE_BEGRIFFE = 8;
+
 /** Lockere Einzelbegriff-Suche für den Fall, dass die volle Frage nichts
  *  findet. Jeder Begriff sucht für sich, lange zusätzlich als Präfix
  *  ("anlernprozedur" → "anlern"). Besser ein verwandter Artikel als nichts. */
 export function verwandteArtikel(bestand, frage, grenze = 3) {
-  const terme = begriffe(erweitere(frage)).sort((a, b) => b.length - a.length);
+  const terme = [...new Set(begriffe(erweitere(frage)))]
+    .sort((a, b) => b.length - a.length)
+    .slice(0, MAX_VERWANDTE_BEGRIFFE);
   const nachRoute = new Map();
-  for (const term of terme) {
+  aussen: for (const term of terme) {
     const proben = term.length >= 8 ? [term, term.slice(0, 6)] : [term];
     for (const probe of proben) {
       for (const treffer of sucheArtikel(bestand, probe, grenze)) {
         const vorher = nachRoute.get(treffer.route);
         if (!vorher || treffer.punkte > vorher.punkte) nachRoute.set(treffer.route, treffer);
       }
-      if (nachRoute.size >= grenze * 2) break;
+      // Genug Kandidaten: beide Schleifen verlassen, nicht nur die Proben.
+      if (nachRoute.size >= grenze * 2) break aussen;
     }
   }
   return [...nachRoute.values()].sort((a, b) => b.punkte - a.punkte).slice(0, grenze);

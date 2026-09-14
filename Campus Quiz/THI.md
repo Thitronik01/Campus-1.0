@@ -89,9 +89,10 @@ Alle optional, alle mit brauchbarer Vorgabe.
 | `THI_PROVIDER` | `anymize` | `anthropic` spricht direkt `api.anthropic.com` an (dann `ANTHROPIC_API_KEY` setzen). Werkzeuge gibt es nur bei `anymize`. |
 | `THI_TOOLS` | `true` | `false` schaltet das eigenständige Nachschlagen ab. Nur nötig, falls Anymize das Format ändert. |
 | `THI_TOOL_HOPS` | `3` | Wie oft THI je Frage höchstens nachschlägt. |
-| `THI_ZEITBUDGET_MS` | `40000` | Ab dieser Zeit werden keine Werkzeuge mehr angeboten — Netlify bricht nach 60 s ab. |
-| `THI_RATE_LIMIT` | `30` | Anfragen pro IP in fünf Minuten. |
-| `THI_DAILY_LIMIT` | `1000` | Anfragen pro Tag und Function-Instanz. |
+| `THI_ZEITBUDGET_MS` | `40000` | Zeitbudget je Anfrage: Ab dieser Zeit werden keine Werkzeuge mehr angeboten, und jeder Aufruf beim Anbieter bekommt die Restzeit als Zeitgrenze — Netlify bricht nach 60 s ab. |
+| `THI_AUFRUF_MINDEST_MS` | `8000` | Mindestzeit, die ein einzelner Aufruf beim Anbieter bekommt, auch wenn das Budget schon verbraucht ist — sonst würde die Antwortrunde nach Millisekunden abgebrochen. Budget + 2 × Mindestzeit muss unter 60 s bleiben. |
+| `THI_RATE_LIMIT` | `30` | Anfragen pro IP in fünf Minuten — auch ungültige zählen. |
+| `THI_DAILY_LIMIT` | `1000` | Modellaufrufe pro Tag und Function-Instanz. Gezählt wird erst unmittelbar vor dem Aufruf beim Anbieter; abgewiesene Anfragen (fehlender Schlüssel, ungültiger Körper) verbrauchen nichts. |
 | `THI_TRUSTED_PROXIES` | `1` | Wie viele Einträge von hinten aus `X-Forwarded-For` einem vertrauenswürdigen Proxy gehören. Bestimmt, welche Adresse als Client-IP gilt — und damit, worauf `THI_RATE_LIMIT` zählt. Bei Netlify ohne vorgelagerten Dienst richtig. |
 
 ### Was die Grenzen leisten — und was nicht
@@ -157,6 +158,24 @@ Werkzeuge mehr angeboten, das Modell muss mit dem antworten, was es hat.
 Lieber eine Antwort aus unvollständigem Kontext als ein Abbruch nach einer
 Minute Wartezeit.
 
+Dasselbe Budget begrenzt jeden einzelnen Aufruf beim Anbieter: Jeder `fetch`
+bekommt die Restzeit als `AbortSignal.timeout`, mindestens aber
+`THI_AUFRUF_MINDEST_MS` (8 s), damit die Antwortrunde nach verbrauchtem
+Budget nicht nach Millisekunden abgebrochen wird. Hängt der Anbieter, endet
+die Function selbst — vor dem ersten Antwortbyte mit HTTP 504 und einer
+Meldung samt Support-Nummer, im offenen Strom mit demselben Hinweis als
+Text. Der schlechteste Fall ist eine Werkzeugrunde, die kurz vor Ablauf des
+Budgets startet: 40 + 8 + 8 = 56 Sekunden, knapp unter Netlify. Wer das
+Budget ändert, rechnet die Summe nach.
+
+**Die erste Modellrunde läuft vor dem Öffnen des Stroms.** Solange die
+Kopfzeilen nicht beim Browser sind, kann ein abgelehnter Schlüssel als
+HTTP 401 zurückgehen, ein überlasteter Anbieter als 429 und ein Zeitablauf
+als 504 — der Browser zeigt dann einen Hinweis. Im offenen Strom bliebe nur
+Fließtext, den `thi.js` als Antwort in den Verlauf legt. Ein Fehler in einer
+späteren Werkzeugrunde geht deshalb weiterhin als Text hinaus; das ist der
+Preis dafür, dass die Statuszeile während des Nachschlagens laufen kann.
+
 Die verbreitete Angabe „10 Sekunden" betrifft den **Lambda-Kompatibilitätsmodus**,
 der zum 1. Juli 2027 abgekündigt ist. Diese Function nutzt ihn nicht.
 
@@ -191,7 +210,7 @@ Ohne `config.path` ist eine v2-Function unter dem Standardpfad
 | `public/assets/thi.js` | Schalter, Panel, Verlauf |
 | `public/assets/thi.css` | Gestaltung |
 | `tools/thi-wissen-bauen.js` | Erzeugt den Wissensbestand aus `thi-standalone/` |
-| `tools/test-thi.js` | 80 Prüfungen, ohne Schlüssel lauffähig |
+| `tools/test-thi.js` | 143 Prüfungen, ohne Schlüssel lauffähig |
 
 Die Function ist eine Netlify-Function im **v2-Format** (Web-API: Request rein,
 Response raus). Die beiden anderen Functions des Campus sind v1. Beides darf
@@ -366,7 +385,7 @@ automatisch an den Modelldienst übertragen.
 node tools/test-thi.js
 ```
 
-100 Prüfungen, ohne API-Schlüssel lauffähig — der Modellaufruf geht gegen
+143 Prüfungen, ohne API-Schlüssel lauffähig — der Modellaufruf geht gegen
 einen nachgebildeten Anymize-Dienst. Damit ist der komplette Weg belegt, bevor
 der erste Schlüssel eingetragen wird:
 
@@ -375,6 +394,7 @@ der erste Schlüssel eingetragen wird:
 - **Retrieval** — Normalisierung, Stoppwörter, Produktaliasse und vierzehn
   echte Fragen mit dem Artikel, der treffen muss — darunter sechs zum
   Schulungstag (Essen, Mittagspause, Gruppen, Abend, Station, Premiumpartner).
+  Dazu eine Frage aus 400 erfundenen Begriffen, die unter 500 ms bleiben muss.
 - **Schutz** — ohne Schlüssel 503 mit klarer Meldung, fremde oder fehlende
   Herkunft 403, GET 405, leerer Verlauf 400, IP-Limit 429, sichere Vorgaben
   bei fehlerhaften Limits, keine ungeprüften Browser-Antworten als
@@ -382,6 +402,14 @@ der erste Schlüssel eingetragen wird:
 - **Modell** — Werkzeugschleife über zwei Runden, Werkzeugergebnis als
   `user`-Nachricht (Anymize lehnt `role:"tool"` mit 400 ab), Streaming,
   Dienstfehler ohne Interna an den Browser.
+- **Fehlerpfade** — der Anbieter antwortet 401, 429 oder 500 auf dem
+  Werkzeugweg (HTTP-Status, kein Fehlertext im Strom); das Tageslimit zählt
+  nur Modellaufrufe; ein mitten im SSE-Strom abgerissener Dienst lässt die
+  Function sauber enden; nach abgelaufenem Zeitbudget keine zweite
+  Werkzeugrunde; ein hängender Dienst endet an der Zeitgrenze der Function
+  (504 beziehungsweise Hinweis im Strom, jeweils mit Support-Nummer);
+  höchstens drei Werkzeugaufrufe je Runde und keine Werkzeuge mehr, wenn das
+  Gesamtbudget verbraucht ist.
 - **Quizfrage** — der `<quizfrage>`-Block erreicht das Modell mit Insel,
   Nummer, Antworten in Anzeigereihenfolge und Status; Kappungen greifen; das
   Lösungsfeld kommt nicht durch; das Retrieval nutzt den Fragetext; ohne

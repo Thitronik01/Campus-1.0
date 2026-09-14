@@ -103,13 +103,28 @@ const WERKZEUGE_AN =
   String(process.env.THI_TOOLS ?? "true").toLowerCase() !== "false";
 const MAX_RUNDEN = positiveGanzeZahl("THI_TOOL_HOPS", 3);
 
-/* Zeitgrenze für die Werkzeugrunden. Netlify bricht eine Function nach
-   60 Sekunden ab — dann steht der Teilnehmer ohne Antwort da, obwohl das
-   Modell bereits dreimal nachgeschlagen hat. Ab dieser Frist wird deshalb
-   keine weitere Werkzeugrunde mehr angeboten: das Modell muss dann mit dem
-   antworten, was es hat. Lieber eine Antwort aus unvollständigem Kontext als
-   ein Abbruch nach einer Minute Wartezeit. */
-const FRIST_MS = Math.max(5000, positiveGanzeZahl("THI_ZEITBUDGET_MS", 40000));
+/* Zeitbudget einer Anfrage. Netlify bricht eine Function nach 60 Sekunden
+   ab — dann steht der Teilnehmer ohne Antwort da, obwohl das Modell bereits
+   dreimal nachgeschlagen hat. Ab dieser Frist wird deshalb keine weitere
+   Werkzeugrunde mehr angeboten: das Modell muss dann mit dem antworten, was
+   es hat. Lieber eine Antwort aus unvollständigem Kontext als ein Abbruch
+   nach einer Minute Wartezeit.
+
+   Dasselbe Budget begrenzt jeden einzelnen Aufruf beim Anbieter: Ein fetch
+   bekommt die Restzeit als Zeitgrenze, mindestens aber AUFRUF_MINDEST_MS —
+   sonst würde die letzte Runde, die das Budget schon aufgebraucht hat,
+   nach wenigen Millisekunden abgebrochen, obwohl sie die Antwort liefern
+   soll. Im schlechtesten Fall startet eine Werkzeugrunde kurz vor Ablauf
+   des Budgets und braucht die Mindestzeit, danach die Antwortrunde noch
+   einmal: 40 + 8 + 8 = 56 Sekunden, knapp unter Netlifys Abbruch. Wer das
+   Budget ändert, rechnet diese Summe nach.
+
+   Ohne Untergrenze: Ein versehentlich winziger Wert nimmt THI nur das
+   Nachschlagen, nicht das Antworten — jeder Aufruf bekommt weiterhin die
+   Mindestzeit. Und tools/test-thi.js braucht kleine Werte, um den Ablauf
+   der Frist ohne lange Wartezeit nachzustellen. */
+const FRIST_MS = positiveGanzeZahl("THI_ZEITBUDGET_MS", 40000);
+const AUFRUF_MINDEST_MS = positiveGanzeZahl("THI_AUFRUF_MINDEST_MS", 8000);
 
 /* Missbrauchsbremsen. Der Campus hat keine Anmeldung — ohne diese Grenzen
    wäre die Function ein offener Zugang zu einem kostenpflichtigen Modell.
@@ -275,12 +290,25 @@ const WERKZEUG_DEFINITIONEN = [
   }
 ];
 
+/* Drei Grenzen für das, was Werkzeuge in den Verlauf tragen. Die Gegenseite
+   bestimmt, wie viele Aufrufe eine Runde anfordert — ohne Deckel wären zehn
+   Suchen je Runde 160.000 Zeichen, die in jeder Folgerunde erneut bezahlt
+   werden. Deshalb: je Ergebnis, je Runde, und ein Gesamtbudget über alle
+   Runden. Ist das Gesamtbudget verbraucht, werden keine Werkzeuge mehr
+   angeboten — dieselbe Mechanik wie bei FRIST_MS. */
 const MAX_WERKZEUG_ZEICHEN = 16000;
+const MAX_AUFRUFE_JE_RUNDE = 3;
+const MAX_WERKZEUG_GESAMT = 40000;
 const TREFFER = 6;
 const AUSZUG_ZEICHEN = 1000;
+/* Die Werkzeugparameter kommen vom Modell und sind damit nicht in der
+   Hand des Campus. Die Suche kostet je Begriff; ein ganzer Absatz als
+   query wäre die teuerste Form einer Anfrage, die laut Beschreibung aus
+   zwei bis sechs Wörtern besteht. */
+const MAX_PARAMETER_ZEICHEN = 300;
 
 function fuehreSuche(args) {
-  const frage = String(args?.query || "").trim();
+  const frage = String(args?.query || "").trim().slice(0, MAX_PARAMETER_ZEICHEN);
   if (frage.length < 2) return "Fehler: query fehlt oder ist zu kurz.";
   const treffer = sucheArtikel(BESTAND, sucheAnfrage(frage), TREFFER);
   if (!treffer.length) {
@@ -297,7 +325,7 @@ function fuehreSuche(args) {
 }
 
 function fuehreLesen(args) {
-  const gesucht = String(args?.route || "").trim();
+  const gesucht = String(args?.route || "").trim().slice(0, MAX_PARAMETER_ZEICHEN);
   if (!gesucht) return "Fehler: route fehlt.";
   const schluessel = (v) => normalisiere(String(v || "")).replace(/\s+/g, "");
   const eintrag = BESTAND.find(
@@ -476,7 +504,50 @@ function baueKontext(frage, fruehereFragen, quizText = "") {
 
 // ------------------------------------------------------------- Anbieter -----
 
-async function anymizeAufruf(schluessel, nachrichten, { werkzeuge } = {}) {
+/* Der Zustand einer einzelnen Anfrage: wann sie begann und wie viele
+   Werkzeugzeichen sie schon in den Verlauf getragen hat. Beides entscheidet,
+   ob noch Werkzeuge angeboten werden und wie lange ein Aufruf warten darf. */
+function neuerLauf() {
+  return { beginn: Date.now(), werkzeugZeichen: 0 };
+}
+
+/* Zeitgrenze für den nächsten Aufruf beim Anbieter: die Restzeit des
+   Budgets, mindestens die Mindestzeit (siehe FRIST_MS). */
+function aufrufFrist(lauf) {
+  return Math.max(AUFRUF_MINDEST_MS, FRIST_MS - (Date.now() - lauf.beginn));
+}
+
+/* Drei Gründe, keine Werkzeuge mehr anzubieten: die Rundenzahl ist erreicht,
+   die Frist ist abgelaufen, oder das Zeichenbudget der Werkzeuge ist
+   verbraucht. In allen Fällen muss das Modell im nächsten Aufruf antworten.
+   Die erste Runde bekommt die Werkzeuge immer — verstrichen ist da noch
+   nichts, und Date.now() zählt in Millisekunden: Bei einem kleinen Budget
+   entschiede sonst der Tick zwischen zwei Aufrufen. */
+function werkzeugeErlaubt(lauf, runde) {
+  return runde < MAX_RUNDEN
+    && (runde === 0 || (Date.now() - lauf.beginn) < FRIST_MS)
+    && lauf.werkzeugZeichen < MAX_WERKZEUG_GESAMT;
+}
+
+/* Eine Antwort des Anbieters, die kein 2xx war. Der Status bleibt am Fehler,
+   damit die Zuordnung zur Browser-Antwort (401, 429, 502) an einer Stelle
+   steht — für beide Wege. Das Detail geht nur ins Log. */
+class DienstFehler extends Error {
+  constructor(status, detail) {
+    super(`Dienst antwortete ${status}: ${String(detail || "").slice(0, 300)}`);
+    this.name = "DienstFehler";
+    this.status = status;
+  }
+}
+
+/* AbortSignal.timeout() bricht mit einer DOMException namens TimeoutError
+   ab; ein von Hand abgebrochenes Signal hieße AbortError. Beides ist hier
+   dasselbe: der Anbieter hat nicht rechtzeitig geantwortet. */
+function istZeitablauf(fehler) {
+  return fehler?.name === "TimeoutError" || fehler?.name === "AbortError";
+}
+
+async function anymizeAufruf(schluessel, nachrichten, { werkzeuge, lauf } = {}) {
   const antwort = await fetch(ANYMIZE_URL, {
     method: "POST",
     headers: { Authorization: `Bearer ${schluessel}`, "content-type": "application/json" },
@@ -485,11 +556,12 @@ async function anymizeAufruf(schluessel, nachrichten, { werkzeuge } = {}) {
       max_tokens: 4096,
       messages: nachrichten,
       ...(werkzeuge ? { tools: werkzeuge, tool_choice: "auto" } : {})
-    })
+    }),
+    signal: AbortSignal.timeout(aufrufFrist(lauf))
   });
   if (!antwort.ok) {
     const detail = await antwort.text().catch(() => "");
-    throw new Error(`anymize ${antwort.status}: ${detail.slice(0, 300)}`);
+    throw new DienstFehler(antwort.status, detail);
   }
   return antwort.json();
 }
@@ -499,34 +571,58 @@ const WERKZEUG_STATUS = {
   artikel_lesen: "Liest den passenden Artikel …"
 };
 
+/** Führt einen Werkzeugaufruf im Zeichenbudget der Anfrage aus. Was über
+ *  das Budget hinausgeht, wird abgeschnitten; ist es aufgebraucht, bekommt
+ *  das Modell statt eines Ergebnisses den Hinweis, mit dem Vorhandenen zu
+ *  antworten. */
+function fuehreWerkzeugImBudget(lauf, name, rohArgs) {
+  const rest = MAX_WERKZEUG_GESAMT - lauf.werkzeugZeichen;
+  if (rest <= 0) return "Das Nachschlagebudget für diese Frage ist aufgebraucht. Antworte mit dem, was vorliegt.";
+  const ergebnis = fuehreWerkzeug(name, rohArgs).slice(0, rest);
+  lauf.werkzeugZeichen += ergebnis.length;
+  return ergebnis;
+}
+
 /** Werkzeugschleife: lässt das Modell nachschlagen, bis es antworten kann.
  *
  *  Anymize-Besonderheit, im Entwurf live festgestellt: der llm-anonymous-
  *  Endpunkt lehnt Nachrichten mit role:"tool" mit 400 ab. Die Ergebnisse
  *  gehen deshalb als user-Nachricht mit Präfix zurueck; die
- *  assistant-Nachricht behält ihr tool_calls-Feld. */
-async function werkzeugSchleife(schluessel, basis, aufStatus) {
+ *  assistant-Nachricht behält ihr tool_calls-Feld.
+ *
+ *  Der erste Modellaufruf ist schon gelaufen, bevor der Strom geöffnet
+ *  wurde (`erste`), damit ein 401 oder 502 dort noch als HTTP-Status
+ *  zurückgehen kann — im offenen Strom gäbe es nur noch Fließtext, und der
+ *  Browser hielte den für eine Antwort. */
+async function werkzeugSchleife(schluessel, basis, lauf, erste, aufStatus) {
   const nachrichten = [...basis];
-  const beginn = Date.now();
   for (let runde = 0; ; runde++) {
-    // Zwei Gründe, keine Werkzeuge mehr anzubieten: die Rundenzahl ist
-    // erreicht, oder die Frist läuft ab (siehe FRIST_MS). In beiden Fällen
-    // muss das Modell in diesem Aufruf antworten.
-    const nochWerkzeuge = runde < MAX_RUNDEN && (Date.now() - beginn) < FRIST_MS;
-    if (aufStatus) aufStatus(runde === 0 ? "Denkt nach …" : "Wertet die Treffer aus …");
-    const daten = await anymizeAufruf(schluessel, nachrichten, {
-      werkzeuge: nochWerkzeuge ? WERKZEUG_DEFINITIONEN : null
-    });
+    let daten;
+    let nochWerkzeuge;
+    if (runde === 0) {
+      ({ daten, mitWerkzeugen: nochWerkzeuge } = erste);
+    } else {
+      nochWerkzeuge = werkzeugeErlaubt(lauf, runde);
+      if (aufStatus) aufStatus("Wertet die Treffer aus …");
+      daten = await anymizeAufruf(schluessel, nachrichten, {
+        werkzeuge: nochWerkzeuge ? WERKZEUG_DEFINITIONEN : null,
+        lauf
+      });
+    }
     const nachricht = daten?.choices?.[0]?.message || {};
-    const aufrufe = Array.isArray(nachricht.tool_calls) ? nachricht.tool_calls : [];
+    const gewuenscht = Array.isArray(nachricht.tool_calls) ? nachricht.tool_calls : [];
 
-    if (nochWerkzeuge && aufrufe.length) {
+    if (nochWerkzeuge && gewuenscht.length) {
+      // Nur die ausgeführten Aufrufe bleiben in der assistant-Nachricht —
+      // ein angeforderter Aufruf ohne Ergebnis wäre für das Modell eine
+      // offene Frage, auf die nie eine Antwort kommt.
+      const aufrufe = gewuenscht.slice(0, MAX_AUFRUFE_JE_RUNDE);
       if (aufStatus) aufStatus(WERKZEUG_STATUS[aufrufe[0]?.function?.name] || "Schlägt nach …");
       nachrichten.push({ role: "assistant", content: nachricht.content || "", tool_calls: aufrufe });
       const bloecke = aufrufe.map((a) => {
         const name = a.function?.name || "";
         const roh = a.function?.arguments || "{}";
-        return `[WERKZEUG-ERGEBNIS ${name}(${roh})]\n${fuehreWerkzeug(name, roh)}`;
+        return `[WERKZEUG-ERGEBNIS ${name}(${roh})]\n${fuehreWerkzeugImBudget(lauf, name, roh)}`;
       });
       nachrichten.push({
         role: "user",
@@ -541,8 +637,12 @@ async function werkzeugSchleife(schluessel, basis, aufStatus) {
 /* Der Weg mit Werkzeugen kann nicht wirklich streamen — das Modell antwortet
    erst, nachdem es nachgeschlagen hat. Statt einer stillen Wartezeit gehen
    währenddessen Statusmarker heraus; der Browser zeigt sie als Zeile an. Der
-   Antworttext folgt in Stücken. Statustext enthält nie eckige Klammern. */
-function werkzeugStrom(schluessel, basis) {
+   Antworttext folgt in Stücken. Statustext enthält nie eckige Klammern.
+
+   Ein Fehler in einer späteren Runde kann nur noch als Text hinausgehen —
+   die Kopfzeilen sind längst beim Browser. Deshalb läuft die erste Runde
+   vor dem Öffnen des Stroms (siehe handler). */
+function werkzeugStrom(schluessel, basis, lauf, erste) {
   const codierer = new TextEncoder();
   const STUECK = 80;
   return new ReadableStream({
@@ -551,7 +651,7 @@ function werkzeugStrom(schluessel, basis) {
         try { steuerung.enqueue(codierer.encode(`[[STATUS:${t}]]`)); } catch { /* Strom zu */ }
       };
       try {
-        const antwort = await werkzeugSchleife(schluessel, basis, status);
+        const antwort = await werkzeugSchleife(schluessel, basis, lauf, erste, status);
         const text = antwort
           || `Dazu habe ich leider keine gesicherte Antwort gefunden. Bitte wende dich an den THITRONIK-Support: ${SUPPORT}.`;
         for (let i = 0; i < text.length; i += STUECK) {
@@ -559,8 +659,9 @@ function werkzeugStrom(schluessel, basis) {
         }
       } catch (fehler) {
         console.error("[thi] Werkzeugschleife fehlgeschlagen:", fehler);
-        steuerung.enqueue(codierer.encode(
-          `Beim Nachschlagen ist ein Fehler aufgetreten. Bitte versuche es erneut oder wende dich an den THITRONIK-Support: ${SUPPORT}.`
+        steuerung.enqueue(codierer.encode(istZeitablauf(fehler)
+          ? `THI hat nicht rechtzeitig geantwortet. Bitte stelle die Frage noch einmal — im Zweifel hilft der THITRONIK-Support: ${SUPPORT}.`
+          : `Beim Nachschlagen ist ein Fehler aufgetreten. Bitte versuche es erneut oder wende dich an den THITRONIK-Support: ${SUPPORT}.`
         ));
       } finally {
         try { steuerung.close(); } catch { /* schon zu */ }
@@ -592,11 +693,30 @@ function clientIp(anfrage) {
     || "unbekannt";
 }
 
-function limitGeprueft(anfrage) {
+/* Das Tageslimit zählt Modellaufrufe, nicht Anfragen. Geprüft wird es früh,
+   hochgezählt erst unmittelbar vor dem ersten Aufruf beim Anbieter
+   (`tagZaehlen`). Sonst verbrauchen Anfragen, die nie ein Modell erreichen
+   — fehlender Schlüssel, ungültiger Körper, leerer Verlauf — das Budget:
+   Mit der Vorgabe 1000 reichten tausend leere POSTs, um THI für den Rest
+   des Tages abzuschalten. */
+function tagHeute() {
   const heute = new Date().toDateString();
   if (tag.datum !== heute) tag = { anzahl: 0, datum: heute };
-  if (tag.anzahl >= PRO_TAG) return "tag";
+  return tag;
+}
 
+function tagesLimitErreicht() {
+  return tagHeute().anzahl >= PRO_TAG;
+}
+
+function tagZaehlen() {
+  tagHeute().anzahl += 1;
+}
+
+/* Das IP-Fenster wird dagegen von jeder Anfrage belastet, auch von einer
+   ungültigen: Es bremst denjenigen, der die Function bestürmt, und soll
+   gerade bei Müllanfragen greifen. */
+function ipGebremst(anfrage) {
   const ip = clientIp(anfrage);
   const jetzt = Date.now();
   const eintrag = ipTreffer.get(ip);
@@ -604,14 +724,13 @@ function limitGeprueft(anfrage) {
     ipTreffer.set(ip, { anzahl: 1, bis: jetzt + FENSTER_MS });
   } else {
     eintrag.anzahl += 1;
-    if (eintrag.anzahl > PRO_IP) return "ip";
+    if (eintrag.anzahl > PRO_IP) return true;
   }
-  tag.anzahl += 1;
 
   if (ipTreffer.size > 5000) {
     for (const [k, v] of ipTreffer) if (jetzt > v.bis) ipTreffer.delete(k);
   }
-  return null;
+  return false;
 }
 
 function gleicheHerkunft(anfrage) {
@@ -634,6 +753,45 @@ function json(status, koerper) {
   });
 }
 
+/* Ein Fehler vor dem ersten Antwortbyte wird zum HTTP-Status — für beide
+   Wege dieselbe Zuordnung. Details nur ins Log, nicht zum Browser: sie
+   enthalten Anbieter- und Konfigurationsangaben, die dort nichts zu suchen
+   haben. Die Felder `fehler` und `meldung` sind die, die thi.js kennt;
+   `limit` lässt den Browser "Kurz warten" zeigen statt "Nicht erreichbar". */
+function dienstAntwort(fehler, weg) {
+  if (istZeitablauf(fehler)) {
+    console.error(`[thi] ${weg}: Der Dienst hat nicht rechtzeitig geantwortet.`);
+    return json(504, {
+      fehler: "zeit",
+      meldung: `THI hat nicht rechtzeitig geantwortet. Bitte die Frage noch einmal stellen — im Zweifel hilft der THITRONIK-Support: ${SUPPORT}.`
+    });
+  }
+  if (fehler instanceof DienstFehler) {
+    console.error(`[thi] ${weg}: ${fehler.message}`);
+    if (fehler.status === 401 || fehler.status === 403) {
+      /* Ein Schlüssel ist eingetragen, aber der Anbieter lehnt ihn ab. Das
+         ist ein Einrichtungsfehler, kein Netzaussetzer — und soll auch so
+         aussehen, sonst wartet jemand auf eine Besserung, die nicht kommt. */
+      return json(401, {
+        fehler: "dienst",
+        meldung: "Der KI-Dienst hat den Zugang abgelehnt. THI ist damit nicht richtig eingerichtet — bitte die Betreuung informieren."
+      });
+    }
+    if (fehler.status === 429) {
+      return json(429, {
+        fehler: "limit",
+        meldung: "Der KI-Dienst ist gerade ausgelastet — bitte einen Moment warten."
+      });
+    }
+    return json(502, {
+      fehler: "dienst",
+      meldung: "Der KI-Dienst ist momentan nicht verfügbar. Bitte später erneut versuchen."
+    });
+  }
+  console.error(`[thi] ${weg}: Verbindung zum Dienst fehlgeschlagen:`, fehler);
+  return json(502, { fehler: "dienst", meldung: "Der KI-Dienst ist momentan nicht erreichbar." });
+}
+
 // ----------------------------------------------------------------- Ablauf ---
 
 export default async function handler(anfrage) {
@@ -644,13 +802,16 @@ export default async function handler(anfrage) {
     return json(403, { fehler: "herkunft", meldung: "Ungültige Herkunft." });
   }
 
-  const gebremst = limitGeprueft(anfrage);
-  if (gebremst) {
+  if (tagesLimitErreicht()) {
     return json(429, {
       fehler: "limit",
-      meldung: gebremst === "tag"
-        ? "Das Tageslimit für THI-Anfragen ist erreicht. Bitte später erneut versuchen."
-        : "Zu viele Anfragen in kurzer Zeit — bitte einen Moment warten."
+      meldung: "Das Tageslimit für THI-Anfragen ist erreicht. Bitte später erneut versuchen."
+    });
+  }
+  if (ipGebremst(anfrage)) {
+    return json(429, {
+      fehler: "limit",
+      meldung: "Zu viele Anfragen in kurzer Zeit — bitte einen Moment warten."
     });
   }
 
@@ -728,10 +889,32 @@ export default async function handler(anfrage) {
     "X-Accel-Buffering": "no"
   };
 
+  const lauf = neuerLauf();
+
   // --- Weg 1: mit Werkzeugen (Anymize) ------------------------------------
   if (WERKZEUGE_AN) {
     const basis = [{ role: "system", content: HALTUNG_WERKZEUGE }, ...nachrichten];
-    return new Response(werkzeugStrom(schluessel, basis), { headers: stromKopf });
+    /* Die erste Runde läuft VOR dem Öffnen des Stroms. Solange die
+       Kopfzeilen nicht beim Browser sind, kann ein abgelehnter Schlüssel
+       noch als 401 zurückgehen und ein Zeitablauf als 504 — der Browser
+       zeigt dann einen Hinweis. Im offenen Strom bliebe nur Fließtext,
+       den thi.js als Antwort in den Verlauf legt und beim nächsten Mal
+       als Gesprächsbeitrag mitschickt. */
+    const mitWerkzeugen = werkzeugeErlaubt(lauf, 0);
+    tagZaehlen();
+    let daten;
+    try {
+      daten = await anymizeAufruf(schluessel, basis, {
+        werkzeuge: mitWerkzeugen ? WERKZEUG_DEFINITIONEN : null,
+        lauf
+      });
+    } catch (fehler) {
+      return dienstAntwort(fehler, "Werkzeugweg");
+    }
+    return new Response(
+      werkzeugStrom(schluessel, basis, lauf, { daten, mitWerkzeugen }),
+      { headers: stromKopf }
+    );
   }
 
   // --- Weg 2: reiner Textstrom --------------------------------------------
@@ -758,23 +941,22 @@ export default async function handler(anfrage) {
         stream: true
       };
 
+  /* Die Zeitgrenze gilt für den ganzen Aufruf, nicht nur bis zur Kopfzeile:
+     Bleibt der Strom danach stehen, bricht auch das Lesen ab. */
+  tagZaehlen();
   let oben;
   try {
-    oben = await fetch(adresse, { method: "POST", headers: kopfzeilen, body: JSON.stringify(koerper) });
-  } catch (fehler) {
-    console.error("[thi] Verbindung zum Dienst fehlgeschlagen:", fehler);
-    return json(502, { fehler: "dienst", meldung: "Der KI-Dienst ist momentan nicht erreichbar." });
-  }
-
-  if (!oben.ok || !oben.body) {
-    // Details nur ins Log, nicht zum Browser: sie enthalten Anbieter- und
-    // Konfigurationsangaben, die dort nichts zu suchen haben.
-    const detail = await oben.text().catch(() => "");
-    console.error(`[thi] Dienst antwortete ${oben.status}:`, detail.slice(0, 300));
-    return json(oben.status === 401 ? 401 : 502, {
-      fehler: "dienst",
-      meldung: "Der KI-Dienst ist momentan nicht verfügbar. Bitte später erneut versuchen."
+    oben = await fetch(adresse, {
+      method: "POST",
+      headers: kopfzeilen,
+      body: JSON.stringify(koerper),
+      signal: AbortSignal.timeout(aufrufFrist(lauf))
     });
+    if (!oben.ok || !oben.body) {
+      throw new DienstFehler(oben.status, await oben.text().catch(() => ""));
+    }
+  } catch (fehler) {
+    return dienstAntwort(fehler, "Stromweg");
   }
 
   const strom = new ReadableStream({
@@ -807,6 +989,17 @@ export default async function handler(anfrage) {
         }
       } catch (fehler) {
         console.error("[thi] Übertragung abgebrochen:", fehler);
+        /* Ein Zeitablauf mitten im Strom soll nicht wie ein fertiger Satz
+           enden. Der Hinweis hängt hinter dem, was schon da ist — ein
+           Verbindungsabriss dagegen bleibt stumm, den sieht der Browser
+           selbst am unvollständigen Strom. */
+        if (istZeitablauf(fehler)) {
+          try {
+            steuerung.enqueue(codierer.encode(
+              `\n\n(Die Antwort wurde nach Ablauf der Zeitgrenze abgebrochen. Bitte die Frage noch einmal stellen — im Zweifel hilft der THITRONIK-Support: ${SUPPORT}.)`
+            ));
+          } catch { /* Strom zu */ }
+        }
       } finally {
         try { steuerung.close(); } catch { /* schon zu */ }
       }
