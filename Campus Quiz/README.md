@@ -22,7 +22,7 @@ gebaut wurde.
 | `public/assets/styles.css` | Stile. Tokens aus dem bestehenden Fehmarn-/Vejrø-Quiz übernommen. |
 | `public/data/inseln.json` | Der Insel-Index für die Übersicht |
 | `public/data/inseln/*.json` | **Die Fragen.** Eine Datei je Insel. |
-| `public/media/<insel>/` | Bilder der Bildfragen. Alle sieben Inseln sind bestückt, aber ungleich dicht: SAMSØ 21, USEDOM 15, VEJRØ 10, FEHMARN 7 — HIDDENSEE und LANGELAND je 2, POEL 1. Was noch fehlt, steht in `BILDER-WUNSCHLISTE.md`. |
+| `public/media/<insel>/` | Bilder der Bildfragen, Bühnen und Startbildschirme, dazu die Audiodatei von FEHMARN. Alle sieben Inseln sind bestückt, aber ungleich dicht: SAMSØ 21, USEDOM 15, VEJRØ 10, FEHMARN 7 (davon eine MP3) — HIDDENSEE und LANGELAND je 2, POEL 1. Was noch fehlt, steht in `BILDER-WUNSCHLISTE.md`. |
 | `BILDER-WUNSCHLISTE.md` | Was an Bildern fehlt, über alle Inseln — mit Angabe, was generierbar ist und was ein echtes Foto braucht |
 | `FOTOLISTE-HIDDENSEE.md` | Dasselbe ausführlich für HIDDENSEE, mit Aufnahmehinweisen |
 | `tools/bilder-aufbereiten.js` | Rechnet Bilder auf WebP unter 150 KB um |
@@ -44,6 +44,12 @@ gebaut wurde.
 | `netlify/functions/thi-wissen/` | Der Wissensbestand von THI. Erzeugt, nicht von Hand ändern. |
 | `public/assets/thi.js`, `thi.css` | THI im Browser: Schalter in der Kopfzeile und Panel |
 | `tools/test-thi.js` | Prüft THI — ohne API-Schlüssel lauffähig |
+| `tools/test-audio.mjs` | Prüft die Audio-Frage: Engine, MP3, Textalternative, Fortschritt, und dass nichts von selbst abspielt — siehe [Audio-Fragen](#audio-fragen) |
+| `public/arbeitskarte/` | **Die digitale Arbeitskarte**, das Werkstatt-Modul unter `/arbeitskarte/`: eigene `index.html`, acht Module und ein Stylesheet unter `assets/`. Eigene Cache-Marke, unabhängig von `ENGINE_VERSION` — siehe [Die digitale Arbeitskarte](#die-digitale-arbeitskarte) |
+| `public/assets/arbeitskarte/` | Die vier Fahrzeugansichten der Arbeitskarte, WebP, zusammen 148 KB — Hintergrund für Skizzen und Druckansicht |
+| `ARBEITSKARTE-KONFIGURATOR.md` | Der Materialabgleich der Arbeitskarte gegen den Konfigurator: Bedienung, Auswertungsgrenzen, Pflege des Datenstands |
+| `tools/test-arbeitskarte.mjs` | Prüft die Arbeitskarte ohne Browser: Datenmodell, Speicherung, Altdaten, Oberfläche, Cache-Marken, Konfigurator-Regeln — 83 Prüfungen |
+| `tools/konfigurator-daten-bauen.mjs` | Erzeugt aus einem geprüften Abruf von `configuratorData.json` den Snapshot `konfigurator-daten.js` |
 
 **Inhalt steht in den JSON-Dateien, nicht im Code.** Eine Frage zu ändern heißt,
 eine JSON-Datei zu ändern — sonst nichts.
@@ -112,8 +118,9 @@ node tools/test-paket.js "../Samsø Quiz" samsoe
 ```
 
 Prüft Bewertung, Manipulationsschutz, Cache-Buster und die statisch erkannten
-Netlify-Formulare. Der aktuelle Komplettlauf umfasst **167 Prüfungen der sieben
-Einzelpakete und 223 Prüfungen des Gesamtpakets**.
+Netlify-Formulare. Der aktuelle Komplettlauf umfasst **215 Prüfungen der sieben
+Einzelpakete und 278 Prüfungen des Gesamtpakets** (Stand 14.09.2026,
+`node tools/montag.js --ohne-server` nennt die aktuellen Zahlen).
 
 Das Gesamtpaket wird mit demselben Werkzeug geprüft, einmal je Insel:
 
@@ -130,14 +137,18 @@ gibt.
 
 | Ordner | Insel | Fragen | Größe |
 |---|---|---|---|
-| `Vejrø Quiz` | VEJRØ | 10 | 5354 KB |
-| `Poel Quiz` | POEL | 10 | 3856 KB |
-| `Hiddensee Quiz` | HIDDENSEE | 12 | 3936 KB |
-| `Samsø Quiz` | SAMSØ | 9 · 3 Bildfragen | 4842 KB |
-| `Fehmarn Quiz` | FEHMARN | 11 · 1 Audiofrage | 6065 KB |
-| `Usedom Quiz` | USEDOM | 10 · Bildfragen | 4814 KB |
-| `Langeland Quiz` | LANGELAND | 10 | 3821 KB |
-| `Campus Gesamtpaket` | **alle sieben** | 72 · 3 Bildfragen | 16238 KB |
+| `Vejrø Quiz` | VEJRØ | 10 · 1 Bildfrage | 6724 KB |
+| `Poel Quiz` | POEL | 10 | 5177 KB |
+| `Hiddensee Quiz` | HIDDENSEE | 10 | 5254 KB |
+| `Samsø Quiz` | SAMSØ | 10 · 3 Bildfragen | 6243 KB |
+| `Fehmarn Quiz` | FEHMARN | 10 · 1 Audiofrage | 5696 KB |
+| `Usedom Quiz` | USEDOM | 10 · 1 Bildfrage | 6264 KB |
+| `Langeland Quiz` | LANGELAND | 10 | 5155 KB |
+| `Campus Gesamtpaket` | **alle sieben** | 70 · 5 Bildfragen · 1 Audiofrage, dazu Feedbackbogen und Arbeitskarte | 12863 KB |
+
+Gemessen am 14.09.2026 über alle Dateien des jeweiligen Ordners; als
+Bildfrage zählt hier eine Frage mit Bildantworten. Die Zahlen veralten
+still — nach einem Bau nachmessen, nicht abschreiben.
 
 ### Das Gesamtpaket
 
@@ -241,6 +252,24 @@ die stabile Adresse je Station.
 
 `?insel=hiddensee` funktioniert als Ersatzweg, falls ein Rewrite einmal nicht
 greift.
+
+Drei weitere Adressen sind **eigene Verzeichnisse mit eigener `index.html`**
+und laufen nicht über die Engine:
+
+```
+/arbeitskarte/        Die digitale Arbeitskarte, das Werkstatt-Modul
+/feedback/            Der Feedbackbogen, Tagesabschluss
+/datenschutz/         Der Datenschutzhinweis
+```
+
+Ohne Schrägstrich leiten `/arbeitskarte` und `/datenschutz` mit 301 auf die
+Form mit Schrägstrich um (`netlify.toml`), damit die relativen Pfade in den
+Seiten stimmen. Den Datenschutzhinweis tragen beide Paketformen;
+Arbeitskarte und Feedbackbogen gibt es **nur im Gesamtpaket**. Die Engine
+zeigt die Verknüpfungen dorthin nur, wenn der Katalog `inseln.json` die
+Felder `arbeitskarte` beziehungsweise `feedback` trägt — siehe
+[Die digitale Arbeitskarte](#die-digitale-arbeitskarte) und
+[Das Gesamtpaket](#das-gesamtpaket).
 
 ---
 
@@ -411,17 +440,82 @@ Lupe als Geschwister in einem Wrapper — und die vier Kachelfarben hängen an
 festen Klassen (`opt-1` bis `opt-4`) statt an `:nth-child`, weil die
 DOM-Position durch den Wrapper nicht mehr der Antwortnummer entspricht.
 
-**SAMSØ hat bereits drei echte Bildfragen.** Zwei davon zeigen Einbauorte —
+**SAMSØ hat drei echte Bildfragen.** Zwei davon zeigen Einbauorte —
 Gaswarner und Pro-finder, acht geprüfte Werkstattfotos, gehoben aus dem
 bestehenden FehlerQuiz. Inhaltlich gehören sie ohnehin zu SAMSØ (Einbauorte)
 und nicht zur Fehlersuche. Die dritte, SAM-10, fragt mit acht Produktbildern
 ab, welche Komponenten gar keinen festen Einbauort haben — dieselbe Technik,
-aber als Mehrfachauswahl.
+aber als Mehrfachauswahl. USEDOM und VEJRØ haben je eine Bildfrage mit
+Produktbildern; ein Bild zur Frage (`media`) haben alle Inseln außer SAMSØ
+und POEL. POEL hat gar keine Bildfrage.
 
-Für die übrigen Inseln fehlen die Bilder noch:
-[`BILDER-WUNSCHLISTE.md`](BILDER-WUNSCHLISTE.md) listet sie über alle Inseln und
-markiert, was sich generieren lässt und was ein echtes Foto braucht —
-ausführlich für Hiddensee in [`FOTOLISTE-HIDDENSEE.md`](FOTOLISTE-HIDDENSEE.md).
+Was noch fehlt, steht in [`BILDER-WUNSCHLISTE.md`](BILDER-WUNSCHLISTE.md) —
+über alle Inseln, mit Angabe, was sich generieren lässt und was ein echtes
+Foto braucht; ausführlich für Hiddensee in
+[`FOTOLISTE-HIDDENSEE.md`](FOTOLISTE-HIDDENSEE.md). Der Stand steht unter
+[Offene Punkte](#offene-punkte), Punkt 2.
+
+### Audio-Fragen
+
+FEHMARN hat eine Frage, bei der der Ton die Aufgabe ist: `FEH-A01` spielt
+den Hauptalarm der WiPro III aus einem Kundenmitschnitt, gefragt wird nach
+dem nächsten Prüfschritt. Der Fragetyp bleibt `single` — Audio ist wie das
+Bild kein eigener Typ, sondern ein Feld an der Frage, das zu jedem Typ
+passt:
+
+```json
+"audio": {
+  "src": "/media/fehmarn/feh-wipro-hauptalarm.mp3",
+  "fallbackText": "Anhaltender, lauter Sirenenalarm der WiPro III."
+}
+```
+
+| Feld | |
+|---|---|
+| `src` | Pfad ab `/`, Ablage unter `public/media/<insel>/`, als MP3. Ein anderes Format meldet `check-fragen.js` als ungeprüft |
+| `fallbackText` | **Pflicht.** Ein Satz, der sagt, was zu hören ist — die Frage muss auch ohne Ton lösbar sein |
+
+**Warum die Textalternative Pflicht ist.** Die Frage wird in einer
+Messehalle beantwortet, auf einem Telefon ohne Kopfhörer, neben laufenden
+Gesprächen. Wer den Ton nicht hören kann oder will, klappt unter dem
+Player „Textbeschreibung des Tons" auf. Dasselbe brauchen Screenreader und
+jedes Gerät, auf dem die Datei nicht lädt. `check-fragen.js` lehnt eine
+Audiofrage ohne `fallbackText` ab, ebenso einen fehlenden `src` oder eine
+Datei, die es unter `public/` nicht gibt.
+
+**Nichts spielt von selbst.** Das `<audio>` in `index.html` trägt
+`preload="metadata"` und kein `autoplay`; `test-audio.mjs` prüft, dass das
+so bleibt. Der Ton startet über den Knopf „Ton abspielen", der zu „Ton
+pausieren", „Ton fortsetzen" und nach dem Ende zu „Ton noch einmal
+abspielen" wird — beliebig oft, die Frage bleibt derweil offen. Daneben ein
+Fortschrittsbalken mit Zeitangabe, darunter eine Statuszeile als
+Live-Region. Wer den Fragebildschirm verlässt — Abbrechen, Ergebnis —,
+dessen Ton hält `show()` in `engine.js` an. Schlägt das Laden fehl, wird
+der Knopf gesperrt und der Status verweist auf die Textbeschreibung.
+
+**Vorgeholt wird wie bei Bildern.** Die Stelle in der Engine, die die
+Bilder der nächsten Frage im Hintergrund lädt, holt auch die Metadaten
+ihrer Audiodatei — der erste Tipp auf „Ton abspielen" wartet dann nicht
+auf das Netz.
+
+**Der Startbildschirm sagt es vorher.** Hat eine Insel mindestens eine
+Audiofrage, steht unter den drei Fakten eine vierte Zeile: „Ton
+einschalten oder Kopfhörer nutzen - eine Frage enthält Audio" (Klasse
+`fact-audio`, Symbol `feh-icon-ton.webp`). Ohne Audiofrage entfällt die
+Zeile.
+
+**Budget.** `check-medien.js` zählt MP3 wie Bilder: 500 KB je Datei sind
+die Grenze, ab 250 KB kommt ein Hinweis, alles unter `public/` zusammen
+höchstens 12 MB. Der Alarmmitschnitt hat 98 KB. Ein Alarmton braucht keine
+hohe Bitrate — es geht um das Muster, nicht um den Klang.
+
+**Geprüft:** `node tools/test-audio.mjs` nimmt die Probefrage
+`tools/fixtures/audio-question.json` und prüft, dass die Datei existiert
+und MP3 ist, die Textalternative da ist, `index.html` alle sechs Elemente
+des Players trägt, kein `autoplay` gesetzt ist, `renderAudio()` und das
+`timeupdate`-Ereignis in der Engine stehen, der Knopf verdrahtet ist und
+seine Trefferfläche `--tap` einhält. In `montag.js` läuft das als
+„Audio-Fragen".
 
 ### Bilder aufbereiten
 
@@ -586,11 +680,15 @@ volle Minuten aufgerundet, plus eine Minute bei Inseln mit Bildfragen.
 Nach der ersten Schulung gehört er gegen echte Zeiten ersetzt. Fehlt das
 Feld, entfällt die Zeile ersatzlos.
 
-> **Die Symbole der drei Zeilen hängen an Klassen** (`fact-fragen`,
-> `fact-zeit`, `fact-aufloesung`), nicht an `:nth-child`. Die Reihenfolge
-> ist Redaktionssache; bei Positionsauswahl wandert sonst still das falsche
-> Bild an die falsche Zeile. Gleiche Begründung wie bei `opt-1` bis `opt-4`
-> an den Antwortkacheln.
+Bei Inseln mit einer Audiofrage kommt eine vierte Zeile dazu — „Ton
+einschalten oder Kopfhörer nutzen" —, siehe [Audio-Fragen](#audio-fragen).
+
+> **Die Symbole der Zeilen hängen an Klassen** (`fact-fragen`,
+> `fact-zeit`, `fact-aufloesung`, `fact-audio`), nicht an `:nth-child`.
+> Die Reihenfolge ist Redaktionssache, und die vierte Zeile gibt es nur
+> manchmal; bei Positionsauswahl wanderte sonst still das falsche Bild an
+> die falsche Zeile. Gleiche Begründung wie bei `opt-1` bis `opt-4` an den
+> Antwortkacheln.
 
 ### Betreuung einer Insel
 
@@ -790,6 +888,173 @@ Für die Karte kommt dreierlei dazu, und keins davon meldet eine Prüfung:
 
 Soll die Insel Teil der Reiseroute werden, gehört sie außerdem in
 `CAMPUS_ROUTES` und `ROUTEN_BOGEN` in `engine.js`.
+
+---
+
+## Die digitale Arbeitskarte
+
+Unter `/arbeitskarte/` liegt das Werkstatt-Modul des Campus: die
+Arbeitskarte, die ein Monteur bei Annahme, Einbau und Übergabe eines
+Fahrzeugs ausfüllt — als Formular auf Tablet oder Telefon statt auf
+Papier. Sie gehört inhaltlich zu LANGELAND (Fahrzeugannahme und
+-übergabe); der Startbildschirm dieser Insel und ihre Station in der
+Übersicht tragen den Knopf „Arbeitskarte öffnen". Beide erscheinen nur,
+wenn der Katalog das Feld `"arbeitskarte": "/arbeitskarte/"` trägt —
+dasselbe Muster wie `feedback` beim Tagesabschluss. Im Repository seit dem
+28.08.2026; ausgeliefert wird sie **nur im Gesamtpaket**.
+
+> Nicht zu verwechseln mit der „weißen Arbeitskarte" der Fragenansicht: So
+> heißt in `styles.css` und im Abschnitt „Die Fragenansicht" die Karte mit
+> Frage, Antworten und Auflösung. Das Werkstatt-Modul ist eine eigene
+> Seite mit eigenem Code, die mit `engine.js` nichts teilt.
+
+### Vier Seiten
+
+| Seite | Inhalt |
+|---|---|
+| 1 Auftrag | Auftragsart, Kunde und Fahrzeug, Monteur, OBD- und Tachowerte, Hinweise, Skizzen auf den vier Fahrzeugansichten |
+| 2 Sichtkontrolle | Vorschaden-Fotos je Ansicht mit der Kamera, Schadensbeschreibung, drei Checklisten (Grundfunktionen, Pro-Finder, Rückfahrkamera), Unterschriften von Monteur und Kunde |
+| 3 Material | Der THITRONIK-Materialkatalog mit Menge, „Geplant" und „Verbaut", Suche und Filter, eigene Positionen — und der Abgleich gegen den Konfigurator |
+| 4 Übergabe | 13 Übergabepunkte, Vermerk, Ort und Datum, Kundenunterschrift, Abschluss |
+
+Fotos kommen direkt von der Kamera (`capture="environment"`) und werden
+vor dem Speichern auf höchstens 1600 × 1200 px verkleinert; Skizzen und
+Unterschriften sind Canvas-Zeichnungen; die drei Freitextfelder lassen
+sich diktieren, wo der Browser `SpeechRecognition` kann — sonst fehlt der
+Knopf. **Deshalb steht in der `netlify.toml` des Gesamtpakets
+`camera=(self), microphone=(self)`**, während die Einzelpakete beides
+sperren: Sie liefern die Arbeitskarte nicht aus.
+
+„PDF exportieren" öffnet die Druckansicht — `print-v1.js`, vier Seiten mit
+Logo und Kopfzeile — und ruft `window.print()`; das PDF entsteht im
+Druckdialog des Geräts. Einen JSON-Import oder -Export gibt es nicht mehr;
+`test-arbeitskarte.mjs` prüft, dass beides nicht zurückkommt.
+
+„Als abgeschlossen markieren" verlangt die Kundenunterschrift der Übergabe
+und keine offenen Prüfpunkte aus dem Materialabgleich — oder einen
+Prüfvermerk dazu. Jede spätere Änderung setzt die Karte auf „In Arbeit"
+zurück.
+
+### Alles bleibt auf dem Gerät
+
+Die Arbeitskarte sendet nichts. Karten liegen im `localStorage` unter
+`thitronik-arbeitskarte-card-v1:demo:<id>`, eine je Karte, dazu unter
+`thitronik-arbeitskarte-data-demo` die zuletzt bearbeitete; „Verlauf"
+listet alle, „Neue Karte" legt eine weitere an, „Zurücksetzen" löscht nur
+die aktive. Gespeichert wird 450 ms nach jeder Eingabe von selbst. Fotos,
+Skizzen und Unterschriften stehen als Data-URLs mit in diesen Einträgen —
+der Speicher einer Domain ist begrenzt, üblicherweise 5 bis 10 MB, deshalb
+die Verkleinerung der Fotos. „Lokale Campusdaten löschen" räumt die drei
+Campus-Schlüssel und lässt die Arbeitskarten stehen.
+
+Ein Datensatz trägt `version: 2`, `status` (`draft` oder `completed`),
+`formData`, `materials` und `sketches`. `normalizeWorkCard()` in
+`data-v1.js` liest jede gespeicherte Karte durch dieses Schema: fehlende
+Felder werden ergänzt, Altdaten umgeschrieben — die frühere Ansicht `dach`
+heißt heute `front`, Karten mit `version` 1 bekommen Zusatzhupe und
+G.A.S.-pro-Sensor in den Katalog, eine bewusst gelöschte Position kommt
+dabei nicht zurück. Wer das Datenmodell ändert, ändert es dort und zählt
+`version` hoch.
+
+### Der Materialabgleich gegen den Konfigurator
+
+Auf Seite 3 wird das Fahrzeug aus dem Konfigurator gewählt — Aufbau und
+Baujahr, 176 Einträge. `konfigurator-check.js` prüft die als geplant oder
+verbaut markierten Positionen gegen die 35 Abhängigkeitsregeln des
+deutschen Konfigurators: Pflichtzubehör wie Zusatzhupe, Abschaltung oder
+zweite Sirene, unzulässige Kombinationen, am Fahrzeug ausgeblendete
+Artikel, Montageadapter je Garagenklappe. Ein Hinweis vom Typ „prüfen"
+sperrt den Abschluss, bis das Material korrigiert ist oder ein fachlicher
+Prüfvermerk vorliegt; der Vermerk trägt eine Signatur des Fahrzeug- und
+Materialstands (`pruefSignatur`) und verfällt bei jeder Änderung daran.
+
+Datenquelle ist `konfigurator-daten.js`: ein versionierter Snapshot von
+`https://www.thitronik.de/configuratorData.json`, Stand 06.09.2026, mit
+der MD5 des Abrufs. **Kein Liveabruf** — es fließen weder Fahrzeug- noch
+Kundendaten nach außen, und der Stand ist reproduzierbar. Neu erzeugt wird
+er nach einem geprüften Abruf:
+
+```bash
+node tools/konfigurator-daten-bauen.mjs configuratorData.json
+```
+
+Dabei das Datum im Werkzeug und in `index.html` („Stand 06.09.2026")
+nachziehen, und die MD5 in `test-arbeitskarte.mjs`: Die Prüfung vergleicht
+sie und fällt bei einem neuen Stand durch, bis sie mitgezogen ist.
+Bedienung, Auswertungsgrenzen und die Regeln, die bewusst nicht wirken,
+stehen in [`ARBEITSKARTE-KONFIGURATOR.md`](ARBEITSKARTE-KONFIGURATOR.md).
+
+### Die Dateien
+
+| Datei | |
+|---|---|
+| `public/arbeitskarte/index.html` | Die Seite: vier Seiten als `data-page`, Dialoge für Unterschrift und Verlauf, Druckcontainer. Trägt die Cache-Marke |
+| `assets/app-v1.js` | Oberfläche: Reiter, Formularbindung über `data-path`, Fotos, Skizzen, Material, Speichern |
+| `assets/data-v1.js` | **Das Datenmodell**: Speicherschlüssel, die vier Fahrzeugansichten, der Materialkatalog (49 Positionen), die 13 Übergabepunkte, `createEmptyWorkCard()` und `normalizeWorkCard()` |
+| `assets/storage-v1.js` | Lesen und Schreiben im `localStorage`, Verlauf |
+| `assets/media-v1.js` | Canvas für Skizzen und Unterschriften, Fotoverkleinerung, Diktat |
+| `assets/print-v1.js` | Die Druckansicht |
+| `assets/konfigurator-check.js` | Der Materialabgleich |
+| `assets/konfigurator-daten.js` | Der Konfigurator-Snapshot, 99 KB. Erzeugt — nicht von Hand ändern |
+| `assets/material-plan.js` | „Als geplant ergänzen" und die Materialfilter |
+| `assets/arbeitskarte-v1.css` | Eigene Stile; `styles.css` wird nicht geladen |
+| `public/assets/arbeitskarte/wohnmobil-*.webp` | Die vier Fahrzeugansichten, 148 KB zusammen. Liegen absichtlich unter `/assets/`, damit Skizze und Druckansicht denselben Hintergrund holen |
+
+Wer den Materialkatalog oder die Übergabepunkte ändert, ändert
+`initialMaterials` beziehungsweise `checklistItemsUebergabe` in
+`data-v1.js` — und die Zahlen 49 und 13, die `test-arbeitskarte.mjs`
+dagegen hält. Ins Paket kommt das alles über `kopiereArbeitskarte()` in
+`build-insel.js`, nur beim Gesamtpaket. Der Bau schreibt an der
+Arbeitskarte **nichts um**: keine Marken, keine Pfade.
+
+### Die Cache-Marke der Arbeitskarte
+
+`/arbeitskarte/assets/*` wird wie `/assets/*` ein Jahr `immutable`
+ausgeliefert, `/arbeitskarte/` und ihre `index.html` mit `no-cache`. Die
+Marke dafür ist **nicht `ENGINE_VERSION`**: Sie steht in `index.html` an
+Stylesheet und `app-v1.js` (`?v=1.4.0`) und in jedem relativen Import der
+Module — `from "./data-v1.js?v=1.4.0"` —, zwölf Importe in fünf Dateien,
+vierzehn Stellen insgesamt. `build-insel.js` fasst sie nicht an.
+
+Ein Import ohne Marke ist ein Jahr lang eingefroren. Im September 2026
+wurden die Fahrzeugansichten von PNG auf WebP umgestellt und `data-v1.js`
+auf die neuen Pfade gesetzt — der Import in `app-v1.js` trug aber keine
+Marke. Jeder Browser, der die Arbeitskarte schon einmal offen hatte, lud
+die alte `data-v1.js`, fragte nach PNG-Dateien, die es nicht mehr gab, und
+zeigte leere Flächen; auf einem frischen Gerät sah alles richtig aus.
+
+**Wer eine Datei unter `public/arbeitskarte/` ändert, zählt die Marke an
+allen vierzehn Stellen hoch** — am sichersten mit Suchen und Ersetzen über
+`?v=1.4.0` in diesem Ordner. `test-arbeitskarte.mjs` liest die Marke von
+`app-v1.js` in `index.html` ab und fällt durch, sobald das Stylesheet oder
+ein Import eine andere trägt. Für die Fassung selbst gilt dasselbe wie bei
+`ENGINE_VERSION`: Ob jemand sie überhaupt hochgezählt hat, prüft niemand.
+
+> **Noch offen:** Die vier Fahrzeugansichten stehen in `data-v1.js` ohne
+> Marke und liegen unter `/assets/*`, also ebenfalls ein Jahr `immutable`.
+> Wer eine Ansicht unter gleichem Namen ersetzt, tappt in dieselbe Falle
+> wie bei `/media/*` (siehe `AGENTS.md`, Abschnitt 7). Bis dahin: neuer
+> Dateiname, Pfad in `data-v1.js` anpassen, Marke hoch.
+
+### Prüfung
+
+```bash
+node tools/test-arbeitskarte.mjs
+```
+
+83 Prüfungen, ohne Browser: Katalog und Übergabepunkte, Speichern und
+Wiederladen gegen einen Speicher im Arbeitsspeicher, Normalisierung von
+Altdaten, die vier Seiten und Knöpfe in `index.html`, die vier Bilder, die
+Cache-Marken — und 45 Konfiguratorfälle: Sprinter vor und nach 2006,
+Ducato 2024, Garagenkontakte gegen Adaptersets, Sensorlimit, Prüfvermerk,
+„Als geplant ergänzen", Filter. In `montag.js` läuft das als „Digitale
+Arbeitskarte"; `test-paket.js` prüft am Gesamtpaket zusätzlich, dass
+Seite, Logik, Druckansicht und die vier Bilder angekommen sind und
+LANGELAND verlinkt. Die Bilder selbst zählt `check-medien.js` mit.
+
+Im Browser wie überall mit `?demo=1` — `app-v1.js` reicht den Parameter an
+die Verknüpfungen zurück zum Campus durch. Für die Arbeitskarte selbst
+ändert er nichts: Sie speichert ohnehin nur lokal.
 
 ---
 
@@ -1142,8 +1407,13 @@ Gemessen, nicht geschätzt:
   (155 × 206 px), alle vier Bilder geladen, Großansicht als echtes Modal mit
   Fokus im Dialog, Auflösung markiert gewählt-falsch und übersehen-richtig
   getrennt, kein verschachtelter Button, Lupe 44 × 44 bei 6 % Kachelfläche
-- 74 Prüfungen für THI, darunter der komplette Modellweg gegen einen
+- 107 Prüfungen für THI, darunter der komplette Modellweg gegen einen
   nachgebildeten Anymize-Dienst — siehe [`THI.md`](THI.md)
+- 83 Prüfungen der Arbeitskarte ohne Browser, darunter 45 Konfiguratorfälle
+  und die Cache-Marken aller Modul-Importe — siehe
+  [Die digitale Arbeitskarte](#die-digitale-arbeitskarte)
+- Die Audiofrage gegen eine Probefrage: Datei, Textalternative, die sechs
+  Elemente des Players, kein `autoplay` — siehe [Audio-Fragen](#audio-fragen)
 
 **Nicht geprüft:** echte Hardware. Getestet wurde emuliert. Offen bleibt, was
 sich nur auf einem echten Gerät zeigt — iOS-Safari mit eingeblendeter Tastatur,
@@ -1165,15 +1435,23 @@ raus, sobald die Tabelle steht — sofern dieselben Geräte die Seite noch
 einmal aufrufen. Darauf zu bauen wäre trotzdem leichtsinnig. Die Migration
 gehört vor die Schulung, nicht danach.
 
-**2. Bildfragen: SAMSØ steht, den übrigen Inseln fehlen die Fotos.** Die
-Technik ist fertig und mit echtem Material bewiesen — SAMSØ hat drei
-Bildfragen aus acht Werkstattfotos und acht Produktbildern. Für HIDDENSEE, USEDOM, VEJRØ und
-POEL fehlen die Aufnahmen; siehe [`BILDER-WUNSCHLISTE.md`](BILDER-WUNSCHLISTE.md).
-Ab dann ist es reine Datenarbeit an den JSON-Dateien.
+**2. Bildfragen: die Technik steht, drei Posten brauchen Aufnahmen vor Ort.**
+Alle sieben Medienordner sind bestückt; Bildantworten haben SAMSØ (drei
+Fragen), USEDOM und VEJRØ (je eine). Was fehlt, steht in
+[`BILDER-WUNSCHLISTE.md`](BILDER-WUNSCHLISTE.md) — der Rest daraus lässt
+sich nicht generieren, sondern nur aufnehmen:
 
-Produktbilder für USEDOM und zwei Hiddensee-Fragen liegen bereits in
-`Wissen/03_Medien/produkte/`, allerdings mit je gut 2 MB — vorher durch
-`tools/bilder-aufbereiten.js` schicken.
+- **HIDDENSEE** braucht die Werkstattfotos zu Platinenlage, Anordnung an
+  der Tür, Heckgarage und Abstand — 16 echte Aufnahmen, Aufnahmehinweise
+  in [`FOTOLISTE-HIDDENSEE.md`](FOTOLISTE-HIDDENSEE.md). Issue #6.
+- **POEL** braucht Bildschirmfotos der echten Rubriken des Händlerbereichs,
+  erst nach dem Login-Abgleich aus Punkt 3. Issues #13 und #3.
+- **VEJRØ** fehlen die Farbvarianten silber/schwarz für die
+  Artikelnummern-Zuordnung. Issue #13.
+
+Ab dann ist es Datenarbeit an den JSON-Dateien. Die noch nicht
+übernommenen Produktbilder aus `Wissen/03_Medien/produkte/` haben je gut
+2 MB — vorher durch `tools/bilder-aufbereiten.js` schicken.
 
 **3. POEL braucht noch den Login-Abgleich.** Der Händlerbereich ist
 login-geschützt; die konkrete Verfügbarkeit und Benennung der geschützten
@@ -1278,7 +1556,8 @@ der Fall, weil die Kategorien Einzeletiketten sind („Der Klassiker", „Die
 Falle"). Die Auswertung je Frage passiert ohnehin in `campus_quiz_fragen`.
 
 **7. Die Fragen brauchen noch die abschließende technische Freigabe.** Der
-Bestand umfasst 72 Fragen, davon zwölf auf HIDDENSEE und elf auf FEHMARN, mit den Rubriken „Falsch gewählt?" und „Mitnehmen". Die
+Bestand umfasst 70 Fragen, zehn je Insel, mit den Rubriken „Falsch
+gewählt?" und „Mitnehmen". Die
 Quellen stehen je Insel im Feld `quellen`; das Fachreview aus der Campus-Runde
 ist eingearbeitet.
 

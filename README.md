@@ -53,8 +53,9 @@ Praxis-Halbwahrheiten — Annahmen, die im Support später Zeit kosten.
 
 Fünf Fragetypen: Einfachauswahl, Mehrfachauswahl, Richtig/Falsch, Reihenfolge
 (antippen statt ziehen — mit Werkstatthandschuhen bedienbar) und Zuordnung.
-Bildfragen mit Großansicht sind gebaut; SAMSØ nutzt sie bereits mit echten
-Einbaufotos.
+Bildfragen mit Großansicht sind gebaut; SAMSØ nutzt sie mit echten
+Einbaufotos, USEDOM und VEJRØ mit Produktbildern. FEHMARN hat eine
+Audiofrage — mit Textalternative, nichts spielt von selbst.
 
 **Nach jeder Antwort stehen drei Dinge da**, nicht mehr nur eines:
 
