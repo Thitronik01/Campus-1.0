@@ -1141,6 +1141,21 @@ body.ist-onboarding main { display: flex; }
 /* Solange das Ergebnis im Ausgang liegt, ist auch der Balken nicht Lime.
    Sonst meldet die Kachel oben "noch nicht gesendet" und unten Erfolg. */
 .island-card.is-warten .i-score span { background: var(--th-blue); }
+/* Balken und Zahl in einer Zeile. Die Zahl zeigt sich nur dort, wo die
+   Statuszeile ("Abgeschlossen · 70 %") ausgeblendet ist — auf der Karte —,
+   sonst stünde der Wert zweimal untereinander. */
+.i-fortschritt { display: flex; align-items: center; gap: 8px; width: 100%; }
+.i-fortschritt .i-score { flex: 1 1 auto; width: auto; }
+.i-wert {
+  display: none;
+  flex: 0 0 auto;
+  color: var(--th-lime-text);
+  font-size: .78rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.island-card.is-warten .i-wert { color: var(--th-blue-text); }
 .island-card .i-open {
   position: absolute;
   right: 16px;
@@ -3668,6 +3683,17 @@ body.ist-onboarding main { display: flex; }
 }
 
 .btn-secondary { border-color: var(--th-line-strong); background: #fff; color: var(--th-navy); }
+/* Der Weg zur Arbeitskarte. Neon-Lime statt Navy oder Umriss, weil er auf
+   LANGELAND neben dem navyfarbenen Start und auf der Karte unter
+   "Wissenscheck wiederholen" unterging — dieselbe Farbe wie der Startknopf
+   im kompakten Panel, auf Lime immer Navy als Schrift (Kontrast 10:1). */
+.btn-praxis {
+  border-color: #92B900;
+  background: #B8F500;
+  color: #0A2747;
+  box-shadow: 0 10px 22px rgba(146, 185, 0, .32);
+}
+.btn-praxis:hover { background: #C4FF18; }
 
 .btn-danger {
   border-color: var(--th-red);
@@ -5495,8 +5521,9 @@ body.ist-quiz .masthead { display: none; }
 #screen-islands .orbit-hero-titel { color:#1d3661; font-size:clamp(1.4rem,2vw,2rem); line-height:1.2; font-weight:800; margin:0 0 16px; }
 #screen-islands .overview-description { margin:0 0 20px; line-height:1.55; color:#46586b; }
 #screen-islands .orbit-hero-stand { font-size:.9rem; margin:0 0 20px; }
-#screen-islands .orbit-start, #screen-islands .overview-praxis { width:100%; min-height:58px; white-space:normal; text-align:center; }
-#screen-islands .overview-praxis { margin-top:12px; border:1px solid #1d3661; }
+#screen-islands .orbit-start, #screen-islands .overview-praxis, #screen-islands .overview-fall { width:100%; min-height:58px; white-space:normal; text-align:center; }
+#screen-islands .overview-praxis { margin-top:12px; border:1px solid #92B900; }
+#screen-islands .overview-fall { margin-top:12px; border:1px solid #1d3661; color:#1d3661; background:#fff; }
 .praxis-einstieg { display:flex; gap:24px; align-items:center; justify-content:space-between; margin-top:24px; padding:24px; border:1px solid #b9cada; border-radius:16px; background:#fff; }
 .praxis-einstieg[hidden] { display:none; }
 .praxis-einstieg h2 { margin:6px 0; color:#1d3661; }
@@ -5507,6 +5534,8 @@ body.ist-quiz .masthead { display: none; }
  #screen-islands .orbit-thumbs { grid-template-columns:repeat(4,minmax(0,1fr)); }
  #screen-islands .karten-hinweis { display:none; }
  #screen-islands .island-card .i-title, #screen-islands .island-card .i-state { display:none; }
+ #screen-islands .island-card .i-wert { display:inline; font-size:max(.72rem,1cqw); }
+ #screen-islands .island-card .i-fortschritt { gap:max(6px,.5cqw); }
  #screen-islands .island-card .i-content { width:max-content; min-width:90px; min-height:55px; padding:10px 14px; justify-content:center; }
  #screen-islands .island-card .i-code { font-size:max(.82rem,1.15cqw); }
  #screen-islands .island-card[aria-pressed="true"] .i-content { background:#1d3661; border-color:#1d3661; }
@@ -5530,7 +5559,7 @@ body.ist-quiz .masthead { display: none; }
 #screen-islands .overview-heading p { margin:0; color:#46586b; }
 #screen-islands:not([hidden]) { border:0; box-shadow:none; border-radius:0; }
 #screen-islands .campus-map { border-radius:16px; overflow:hidden; }
-#screen-islands .overview-praxis { color:#1d3661; }
+#screen-islands .overview-praxis { color:#0A2747; }
 #screen-islands .island-card .i-content { min-height:56px; }
 @media(max-width:767px) { #screen-islands .orbit-fortschritt { display:flex; margin-top:20px; } }
 @media (orientation:portrait) and (min-width:768px) and (max-width:1199px) {

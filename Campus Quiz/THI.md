@@ -357,10 +357,17 @@ Wissensstand erreicht das Modell nicht als Block.
 ## Strukturierte Fallaufnahme und Personalisierung
 
 Über **Mit Vorlage arbeiten** öffnet THI eine optionale Fallaufnahme mit sechs
-Feldern: Fahrzeug, Baujahr oder Modelljahr, Produkt und Variante, Seriennummer
-oder Softwarestand, Einbauzeitpunkt sowie Vorhaben oder Fehlerbild. Nur
-ausgefüllte Felder werden als sichtbare Nutzernachricht in den Chat übernommen.
-Damit bleibt jederzeit nachvollziehbar, welche Angaben an THI gesendet werden.
+Feldern in drei Gruppen: Fahrzeug (Hersteller und Modell, Baujahr), Produkt
+(Produkt und Variante, Seriennummer oder Softwarestand, Einbauzeitpunkt) und
+Anliegen (Vorhaben oder Fehlerbild). Nur ausgefüllte Felder werden als
+sichtbare Nutzernachricht in den Chat übernommen. Damit bleibt jederzeit
+nachvollziehbar, welche Angaben an THI gesendet werden.
+
+Auf **FEHMARN**, der Insel der Fehlersuche, gibt es dafür einen eigenen
+Einstieg: den Knopf „Fallaufnahme öffnen" auf dem Startbildschirm und „Fall
+mit THI aufnehmen" auf der Inselkarte. Beide rufen `window.THI.fallaufnahme()`
+— das Panel öffnet sich gleich mit aufgeklappter Vorlage. Die Engine prüft
+erst beim Klick, ob THI da ist, weil `thi.js` nach `engine.js` lädt.
 
 Sind Teilnehmerdaten auf der Quizseite bereits vollständig eingetragen, begrüßt
 THI die Person mit ihrem Namen und zeigt den Händlerbetrieb in der Vorlagenleiste.

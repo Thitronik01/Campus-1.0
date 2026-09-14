@@ -126,6 +126,10 @@
 
   const symbolSchliessen = () => svg("0 0 24 24", [["path", { d: "M6 6l12 12M18 6L6 18" }]]);
   const symbolSenden = () => svg("0 0 24 24", [["path", { d: "M4 12h15M13 6l6 6-6 6" }]]);
+  const symbolSchloss = () => svg("0 0 24 24", [
+    ["rect", { x: 5, y: 11, width: 14, height: 9, rx: 2 }],
+    ["path", { d: "M8 11V8a4 4 0 0 1 8 0v3" }]
+  ]);
   const symbolStop = () => svg("0 0 24 24", [["rect", { x: 6, y: 6, width: 12, height: 12, rx: 2 }]]);
   const symbolFrage = () => svg("0 0 24 24", [["path", { d: "M4 12h14M12 6l6 6-6 6" }]]);
   const symbolPfeil = () => svg("0 0 24 24", [["path", { d: "M5 8v6a3 3 0 0 0 3 3h11M15 13l4 4-4 4" }]]);
@@ -410,6 +414,24 @@
     return eingabe;
   }
 
+  /* Eine Gruppe der Fallaufnahme: nummerierte Überschrift, darunter die
+   *  Felder als weiße Karte. Drei Gruppen — Fahrzeug, Produkt, Anliegen —
+   *  statt sechs gleichförmiger Felder untereinander: Wer am Fahrzeug steht,
+   *  weiß sofort, wo er anfängt, und sieht, wie viel noch kommt. */
+  function vorlagenGruppe(form, nummer, titel) {
+    const gruppe = document.createElement("fieldset");
+    gruppe.className = "thi-vorlagen-gruppe";
+    const legende = document.createElement("legend");
+    const zahl = document.createElement("span");
+    zahl.className = "thi-vorlagen-nummer";
+    zahl.textContent = String(nummer);
+    zahl.setAttribute("aria-hidden", "true");
+    legende.append(zahl, document.createTextNode(titel));
+    gruppe.appendChild(legende);
+    form.appendChild(gruppe);
+    return gruppe;
+  }
+
   function baueVorlage() {
     const bereich = document.createElement("section");
     bereich.className = "thi-vorlage";
@@ -417,32 +439,48 @@
     bereich.hidden = true;
     bereich.setAttribute("aria-labelledby", "thi-vorlage-titel");
 
+    const kopf = document.createElement("header");
+    kopf.className = "thi-vorlage-kopf";
     const titel = document.createElement("h2");
     titel.id = "thi-vorlage-titel";
     titel.textContent = "Strukturierte Fallaufnahme";
     const einleitung = document.createElement("p");
     einleitung.className = "thi-vorlage-einleitung";
-    einleitung.textContent = "Fülle nur aus, was bekannt ist. THI fragt gezielt nach fehlenden Angaben.";
+    einleitung.textContent = "Fülle nur aus, was bekannt ist. THI prüft den Fall und fragt gezielt nach dem, was noch fehlt.";
+    kopf.append(titel, einleitung);
 
     vorlagenFormular = document.createElement("form");
     vorlagenFormular.className = "thi-vorlagen-formular";
     vorlagenFormular.noValidate = true;
-    vorlagenFormular.append(titel, einleitung);
+    vorlagenFormular.appendChild(kopf);
 
-    vorlagenFeld(vorlagenFormular, "thi-vorlage-fahrzeug", "Fahrzeughersteller und Modell", {
+    // Feldnamen und Ids bleiben, wie sie waren — vorlageAbsenden() liest sie.
+    const fahrzeug = vorlagenGruppe(vorlagenFormular, 1, "Fahrzeug");
+    const zeile = document.createElement("div");
+    zeile.className = "thi-vorlagen-zeile";
+    fahrzeug.appendChild(zeile);
+    vorlagenFeld(zeile, "thi-vorlage-fahrzeug", "Hersteller und Modell", {
       hint: "Zum Beispiel Fiat Ducato oder Ford Transit"
     });
-    const baujahr = vorlagenFeld(vorlagenFormular, "thi-vorlage-baujahr", "Baujahr oder Modelljahr", { max: 30 });
+    const baujahr = vorlagenFeld(zeile, "thi-vorlage-baujahr", "Baujahr oder Modelljahr", { max: 30 });
     baujahr.inputMode = "numeric";
-    vorlagenFeld(vorlagenFormular, "thi-vorlage-produkt", "THITRONIK-Produkt und Variante", {
+    baujahr.placeholder = "2024";
+
+    const produkt = vorlagenGruppe(vorlagenFormular, 2, "THITRONIK-Produkt");
+    vorlagenFeld(produkt, "thi-vorlage-produkt", "Produkt und Variante", {
       hint: "Zum Beispiel WiPro III safe.lock"
     });
-    vorlagenFeld(vorlagenFormular, "thi-vorlage-stand", "Seriennummer oder Softwarestand");
-    vorlagenFeld(vorlagenFormular, "thi-vorlage-einbau", "Einbauzeitpunkt", { max: 80 });
-    vorlagenFeld(vorlagenFormular, "thi-vorlage-vorhaben", "Vorhaben oder genaues Fehlerbild", {
+    const zeile2 = document.createElement("div");
+    zeile2.className = "thi-vorlagen-zeile";
+    produkt.appendChild(zeile2);
+    vorlagenFeld(zeile2, "thi-vorlage-stand", "Seriennummer oder Softwarestand");
+    vorlagenFeld(zeile2, "thi-vorlage-einbau", "Einbauzeitpunkt", { max: 80 }).placeholder = "Monat / Jahr";
+
+    const anliegen = vorlagenGruppe(vorlagenFormular, 3, "Anliegen");
+    vorlagenFeld(anliegen, "thi-vorlage-vorhaben", "Vorhaben oder genaues Fehlerbild", {
       mehrzeilig: true,
       max: 1200,
-      hint: "Beschreibe kurz, was du einbauen, prüfen oder beheben möchtest."
+      hint: "Was soll eingebaut, geprüft oder behoben werden? Was passiert genau, seit wann, unter welchen Bedingungen?"
     });
 
     vorlagenFehler = document.createElement("p");
@@ -453,7 +491,10 @@
 
     const datenschutz = document.createElement("p");
     datenschutz.className = "thi-vorlagen-hinweis";
-    datenschutz.textContent = "Nur ausgefüllte Felder werden sichtbar in den Chat übernommen und an THI gesendet.";
+    datenschutz.appendChild(symbolSchloss());
+    datenschutz.appendChild(document.createTextNode(
+      "Nur ausgefüllte Felder werden sichtbar in den Chat übernommen und an THI gesendet. Keine Kundennamen eintragen."
+    ));
 
     const aktionen = document.createElement("div");
     aktionen.className = "thi-vorlagen-aktionen";
@@ -465,7 +506,8 @@
     const uebernehmen = document.createElement("button");
     uebernehmen.type = "submit";
     uebernehmen.className = "thi-vorlagen-uebernehmen";
-    uebernehmen.textContent = "Übernehmen und THI fragen";
+    uebernehmen.appendChild(symbolSenden());
+    uebernehmen.appendChild(document.createTextNode("Übernehmen und THI fragen"));
     aktionen.append(abbrechen, uebernehmen);
 
     vorlagenFormular.append(vorlagenFehler, datenschutz, aktionen);
@@ -1010,6 +1052,9 @@
   window.THI = Object.freeze({
     oeffnen: () => { if (panel) oeffnen(); },
     schliessen: () => { if (panel) schliessen(); },
+    // Öffnet das Panel gleich mit aufgeklappter Fallaufnahme — der Einstieg
+    // von der Insel FEHMARN aus, wo die Fehlersuche zu Hause ist.
+    fallaufnahme: () => { if (!panel) return; oeffnen(); vorlageOeffnen(); },
     kontext: kontextSetzen,
     istOffen: () => offen
   });
