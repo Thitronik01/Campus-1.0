@@ -24,31 +24,29 @@
      nicht wie neue Signalzustände. Die Buchstaben bleiben die primäre,
      farbunabhängige Kennzeichnung. Acht statt sieben seit 1.36: Vier
      richtige und vier falsche Antworten füllen das zweispaltige Raster
-     ohne leere Zelle. */
+     ohne leere Zelle.
+
+     Sichtbar wird von der Palette nur Rahmen und Schatten beim Hover mit
+     Maus (siehe `.answer:hover` in der hover-Medienabfrage) — auf dem
+     Tablet am Fahrzeug also nichts. Textfarben je Buchstabe gab es bis
+     1.46 dazu, gelesen hat sie keine Regel; wer die Palette wieder auf
+     Flächen legt, legt die Textfarben neu an und prüft den Kontrast. */
   --answer-a: #1D3661;
   --answer-a-rgb: 29, 54, 97;
-  --answer-a-text: #FFFFFF;
   --answer-b: #3BA9D3;
   --answer-b-rgb: 59, 169, 211;
-  --answer-b-text: #111111;
   --answer-c: #AFCA05;
   --answer-c-rgb: 175, 202, 5;
-  --answer-c-text: #111111;
   --answer-d: #CE132D;
   --answer-d-rgb: 206, 19, 45;
-  --answer-d-text: #FFFFFF;
   --answer-e: #0A2747;
   --answer-e-rgb: 10, 39, 71;
-  --answer-e-text: #FFFFFF;
   --answer-f: #1B7699;
   --answer-f-rgb: 27, 118, 153;
-  --answer-f-text: #FFFFFF;
   --answer-g: #5E6672;
   --answer-g-rgb: 94, 102, 114;
-  --answer-g-text: #FFFFFF;
   --answer-h: #8A94A3;
   --answer-h-rgb: 138, 148, 163;
-  --answer-h-text: #111111;
   --th-white: #FFFFFF;
   --th-soft: #F0F0F0;
   --th-page: #EAF1F7;
@@ -333,9 +331,6 @@ h2 { font-size: clamp(1.15rem, 1.05rem + .4vw, 1.5rem); letter-spacing: -.015em;
 }
 .masthead-tool .ta-text { display: block; min-width: 0; }
 .masthead-tool .ta-title { color: inherit; font-size: .9rem; line-height: 1.15; }
-.masthead-tool .ta-kicker,
-.masthead-tool .ta-desc,
-.masthead-tool .ta-cta { display: none; }
 .masthead-tool.is-ready {
   border-color: var(--success-line);
   background: var(--success-bg);
@@ -929,8 +924,11 @@ body.ist-onboarding main { display: flex; }
    trug dafuer die Klasse .tagesabschluss. Seit er als Symbol in die
    Kopfzeile gewandert ist, traegt das Element `class="masthead-tool"` und
    nur noch `id="tagesabschluss"` — die Gestaltung steht oben bei
-   .masthead-tool. Die Kindklassen .ta-* sind geblieben und werden von dort
-   angesprochen. */
+   .masthead-tool. Von den Kindklassen sind .ta-icon, .ta-text und .ta-title
+   geblieben (auch der THI-Schalter in thi.js baut sich daraus). Kicker,
+   Beschreibung und der Knopf „Öffnen" der alten Karte sind seit 1.46 auch
+   aus dem Markup heraus: Die Kopfzeile blendete sie ohnehin aus, und
+   engine.js schrieb Sätze hinein, die niemand je sah. */
 
 .ta-icon {
   display: grid;
@@ -952,28 +950,7 @@ body.ist-onboarding main { display: flex; }
   stroke-linejoin: round;
 }
 .ta-text { display: grid; flex: 1 1 300px; gap: 3px; min-width: 0; }
-.ta-kicker {
-  color: var(--th-blue-text);
-  font-size: .72rem;
-  font-weight: 800;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-}
 .ta-title { color: var(--th-navy); font-size: 1.12rem; font-weight: 800; }
-.ta-desc { max-width: 52ch; color: var(--th-muted); font-size: .88rem; line-height: 1.45; }
-
-.ta-cta {
-  display: inline-flex;
-  align-items: center;
-  min-height: var(--tap);
-  padding: 0 20px;
-  border-radius: var(--radius-md);
-  background: var(--th-navy);
-  color: var(--th-white);
-  font-size: .92rem;
-  font-weight: 750;
-  white-space: nowrap;
-}
 
 /* "Alle Inseln erledigt" faerbt heute .masthead-tool.is-ready ein, siehe
    oben. Die Klassen .campus-tool und .campus-tool-icon stammen aus
@@ -981,7 +958,6 @@ body.ist-onboarding main { display: flex; }
 
 @media (max-width: 560px) {
   .ta-icon { flex-basis: 44px; width: 44px; height: 44px; border-radius: 14px; }
-  .ta-cta { justify-content: center; }
 }
 
 .island-card {
@@ -2500,35 +2476,20 @@ body.ist-onboarding main { display: flex; }
   pointer-events: none;
 }
 
-/* Das Motiv darf die Fakten nicht überstrahlen. Die zusätzliche Tiefenblende
-   liegt zwischen Bild und Text und hält die Schrift auch im hellen Fahrzeug
-   lesbar, ohne das Bild als Ganzes abzudunkeln. */
-#screen-start[data-island="samsoe"] .start-intro::before {
-  content: "";
-  position: absolute;
-  z-index: 2;
-  inset: 0;
-  background: linear-gradient(180deg, transparent 24%, rgba(7, 29, 70, .12) 46%, rgba(7, 29, 70, .88) 100%);
-  pointer-events: none;
-}
-
+/* Die Tiefenblende über dem Motiv kommt aus dem gemeinsamen Scrim weiter
+   unten (`#screen-start[data-island]:not(...) .start-intro::before`), ebenso
+   Überschrift und Vorspann aus dem gemeinsamen Typografieblock. SAMSØ hatte
+   bis 1.46 eigene Regeln dafür — einen stärkeren Verlauf, ein breiteres,
+   ab 1100 px einzeiliges Rubrum, 53ch Vorspann. Keine davon hat je
+   gegriffen: der Scrim verliert gegen die :not()-Kette (Spezifität), h1 und
+   Vorspann gegen die gleich starke, spätere gemeinsame Regel. Was seit
+   Wochen auf der Bühne steht, IST die gemeinsame Fassung; sie wurde so
+   abgenommen. Wer SAMSØ wirklich eine eigene Blende oder Typografie geben
+   will: in die :not()-Kette eintragen beziehungsweise die Spezifität mit
+   `#screen-start.screen[data-island="samsoe"]` anheben — und dann messen. */
 #screen-start[data-island="samsoe"] .start-intro > :not(.samsoe-start-visual) {
   position: relative;
   z-index: 3;
-}
-
-#screen-start[data-island="samsoe"] .start-intro h1 {
-  max-width: none;
-  font-size: clamp(2.4rem, 3vw, 3.25rem);
-  line-height: 1.04;
-  letter-spacing: -.04em;
-  text-wrap: balance;
-}
-
-#screen-start[data-island="samsoe"] .start-intro .lead {
-  max-width: 53ch;
-  font-size: clamp(.98rem, 1.25vw, 1.12rem);
-  line-height: 1.55;
 }
 
 #screen-start[data-island="samsoe"] .facts {
@@ -2620,12 +2581,6 @@ body.ist-onboarding main { display: flex; }
   line-height: 1.5;
 }
 
-@media (min-width: 1100px) {
-  #screen-start[data-island="samsoe"] .start-intro h1 {
-    white-space: nowrap;
-    text-wrap: nowrap;
-  }
-}
 
 #screen-start[data-island="hiddensee"] .start-layout {
   min-height: clamp(680px, 72vh, 790px);
@@ -2819,87 +2774,15 @@ body.ist-onboarding main { display: flex; }
   justify-self: start;
 }
 
-/* Mit gespeicherten Angaben wird die rechte Spalte zum eigentlichen
-   Startpanel: Identität oben, Orientierung in der Mitte, Handlung unten. */
-#screen-start[data-island="vejro"] .start-form.has-participant-facts {
-  display: flex;
-  flex-direction: column;
-  align-content: initial;
-  padding-top: clamp(24px, 2.8vw, 38px);
-}
-
-#screen-start[data-island="vejro"] .has-participant-facts .participant-summary {
-  gap: 4px;
-  padding: 18px;
-  border: 1px solid rgba(59, 169, 211, .3);
-  border-radius: 18px;
-  background:
-    radial-gradient(circle at 100% 0, rgba(175, 202, 5, .13), transparent 48%),
-    linear-gradient(145deg, #F4F9FC, #FFFFFF);
-  box-shadow: 0 12px 28px rgba(10, 39, 71, .08);
-}
-
-#screen-start[data-island="vejro"] .has-participant-facts .participant-summary .form-title {
-  margin-bottom: 4px;
-  font-size: 1.28rem;
-}
-
-#screen-start[data-island="vejro"] .has-participant-facts .participant-summary .btn {
-  min-height: 38px;
-  margin-top: 7px;
-  font-size: .84rem;
-}
-
-#screen-start[data-island="vejro"] .has-participant-facts .facts {
-  gap: 13px;
-  margin: 18px 0 24px;
-  padding: 18px 16px;
-  border: 1px solid rgba(29, 54, 97, .12);
-  border-radius: 18px;
-  background: #F6F9FC;
-  box-shadow: inset 0 1px 0 #fff;
-}
-
-#screen-start[data-island="vejro"] .has-participant-facts .facts li {
-  grid-template-columns: 54px minmax(0, 1fr);
-  gap: 11px;
-  min-height: 54px;
-  align-items: center;
-  color: var(--th-navy);
-  font-size: .88rem;
-  font-weight: 750;
-  line-height: 1.35;
-}
-
-#screen-start[data-island="vejro"] .has-participant-facts .facts li::before {
-  width: 54px;
-  height: 54px;
-  border-radius: 0;
-  background-color: transparent;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: contain;
-  box-shadow: none;
-  filter: drop-shadow(0 5px 7px rgba(0, 13, 38, .18));
-}
-
-#screen-start[data-island="vejro"] .has-participant-facts .start-actions {
-  margin-top: auto;
-}
-
-#screen-start[data-island="vejro"] .has-participant-facts #btn-to-islands { order: 1; }
-
-#screen-start[data-island="vejro"] .has-participant-facts #btn-start {
-  order: 2;
-  border-color: #92B900;
-  background: #B8F500;
-  color: #0A2747;
-  box-shadow: 0 12px 28px rgba(146, 185, 0, .32);
-}
-
-#screen-start[data-island="vejro"] .has-participant-facts #btn-start:hover {
-  background: #C4FF18;
-}
+/* Das Startpanel mit gespeicherten Angaben (Identität oben, Orientierung in
+   der Mitte, Handlung unten) gestaltet der gemeinsame `.is-panel`-Block
+   weiter unten für alle Inseln. VEJRØ trug bis 1.46 denselben Block noch
+   einmal unter `.has-participant-facts` — Regel für Regel gleiche Werte,
+   aber eine Stufe weniger spezifisch und früher in der Datei, also nie
+   wirksam. Eine Abweichung steckte doch darin: `min-height: 38px` am
+   Bearbeiten-Knopf, unter `zoom: .8` eine Trefferfläche von 30 px. Der
+   gemeinsame Block hatte das mit `var(--tap)` längst behoben; hier wäre es
+   wieder scharf geworden, sobald jemand die Spezifität anhebt. */
 
 #screen-start[data-island="poel"] .start-layout {
   min-height: clamp(740px, 74vh, 850px);
@@ -4229,14 +4112,14 @@ body.ist-quiz .masthead { display: none; }
 /* Die Positionsklassen bleiben stabil, tragen vor der Auswertung aber keine
    Bedeutungsfarben. Lime und Rot sind im Campus bereits als richtig/falsch
    gelernt und würden die Wahl sonst ungewollt lenken. */
-.answer.opt-1 { --opt: var(--answer-a); --opt-rgb: var(--answer-a-rgb); --opt-text: var(--answer-a-text); }
-.answer.opt-2 { --opt: var(--answer-b); --opt-rgb: var(--answer-b-rgb); --opt-text: var(--answer-b-text); }
-.answer.opt-3 { --opt: var(--answer-c); --opt-rgb: var(--answer-c-rgb); --opt-text: var(--answer-c-text); }
-.answer.opt-4 { --opt: var(--answer-d); --opt-rgb: var(--answer-d-rgb); --opt-text: var(--answer-d-text); }
-.answer.opt-5 { --opt: var(--answer-e); --opt-rgb: var(--answer-e-rgb); --opt-text: var(--answer-e-text); }
-.answer.opt-6 { --opt: var(--answer-f); --opt-rgb: var(--answer-f-rgb); --opt-text: var(--answer-f-text); }
-.answer.opt-7 { --opt: var(--answer-g); --opt-rgb: var(--answer-g-rgb); --opt-text: var(--answer-g-text); }
-.answer.opt-8 { --opt: var(--answer-h); --opt-rgb: var(--answer-h-rgb); --opt-text: var(--answer-h-text); }
+.answer.opt-1 { --opt: var(--answer-a); --opt-rgb: var(--answer-a-rgb); }
+.answer.opt-2 { --opt: var(--answer-b); --opt-rgb: var(--answer-b-rgb); }
+.answer.opt-3 { --opt: var(--answer-c); --opt-rgb: var(--answer-c-rgb); }
+.answer.opt-4 { --opt: var(--answer-d); --opt-rgb: var(--answer-d-rgb); }
+.answer.opt-5 { --opt: var(--answer-e); --opt-rgb: var(--answer-e-rgb); }
+.answer.opt-6 { --opt: var(--answer-f); --opt-rgb: var(--answer-f-rgb); }
+.answer.opt-7 { --opt: var(--answer-g); --opt-rgb: var(--answer-g-rgb); }
+.answer.opt-8 { --opt: var(--answer-h); --opt-rgb: var(--answer-h-rgb); }
 
 .answer::after {
   content: "";
@@ -4386,7 +4269,6 @@ body.ist-quiz .masthead { display: none; }
 .answers-bild[data-layout="product"] .answer {
   --opt: var(--th-navy);
   --opt-rgb: 29, 54, 97;
-  --opt-text: #FFFFFF;
 }
 .answers-bild[data-layout="product"] .answer-bild {
   display: flex;
