@@ -32,13 +32,13 @@
 | | |
 |---|---|
 | Fragen | 10 |
-| Fragensatz-Version | 6 |
+| Fragensatz-Version | 7 |
 | Art | Neuheiten verstehen, passend beraten |
 | Lernziel | CampLock und VanLock sicher abgrenzen, den Fingerprint ehrlich beraten und die neuen Funklösungen gegen Wassereinbruch passend einsetzen. |
 
 **Quellen im Produktwissen:** `produkte/camplock-fingerprint.md`, `produkte/vanlock-fingerprint.md`, `produkte/funk-wassermelder.md`, `produkte/funk-magnetkontakt.md`, `referenz/zugang-bedienung.md`
 
-> **Redaktioneller Hinweis (erscheint nicht im Quiz):** Fragenkatalog v6. Zehn Fragen. Redaktionsrunde 08/2026: Markenname Hartal aus VEJ-01 und VEJ-09 genommen - die Fragen laufen jetzt ueber den Tuertyp. Achtung, das Produktwissen nennt die Hartal-Kompatibilitaet weiterhin als entscheidenden Punkt fuer CampLock (produkte/camplock-fingerprint.md). VEJ-02 ohne Revisionskuerzel V002+. VEJ-03 und VEJ-09 haben je eine weitere falsche Option. VEJ-08 benennt den Einbaupunkt des Fuehlers konkret. Offen: VEJ-06 und VEJ-10 fragen beide, ob der Fahrzeugschluessel zu Hause bleiben darf. Fingerprint-Kompatibilitaet und Sicherheitshinweis vom 27.07.2026 vor jeder Schulung gegen den aktuellen Freigabestand pruefen.
+> **Redaktioneller Hinweis (erscheint nicht im Quiz):** Fragenkatalog v7. Zehn Fragen. Redaktionsrunde 08/2026: Markenname Hartal aus VEJ-01 und VEJ-09 genommen - die Fragen laufen jetzt ueber den Tuertyp. Achtung, das Produktwissen nennt die Hartal-Kompatibilitaet weiterhin als entscheidenden Punkt fuer CampLock (produkte/camplock-fingerprint.md). VEJ-02 ohne Revisionskuerzel V002+. VEJ-03 und VEJ-09 haben je eine weitere falsche Option. VEJ-08 benennt den Einbaupunkt des Fuehlers konkret. Am 05.09.2026 trennt VEJ-06 den praktischen Nachweis des Zweitzugangs vom Sicherheitshinweis in VEJ-10. Fingerprint-Kompatibilitaet und Sicherheitshinweis vom 27.07.2026 vor jeder Schulung gegen den aktuellen Freigabestand pruefen.
 
 #### 1. Ein Kunde hat einen Kastenwagen ohne Aufbautür und möchte biometrischen Zugang. Was empfiehlst du?
 
@@ -234,25 +234,25 @@
 
 **Mitnehmen:** Bei Produktneuheiten gehört die Revision zum Produktnamen. Erst konkrete Ausführung und aktuelle Anleitung zusammenbringen, dann versprechen.
 
-#### 10. Kunde: „Super, dann kann ich den Fahrzeugschlüssel ja zu Hause lassen.“ Deine beste Antwort?
+#### 10. Bei der Übergabe soll der Kunde den unabhängigen zweiten Zugangsweg selbst ausprobieren. Was ist ein belastbarer Nachweis?
 
-`VEJ-06` · Einfachauswahl · Unabhängiger Zweitzugang
+`VEJ-06` · Einfachauswahl · Zweitzugang prüfen
 
-- Ja, der Fingerprint ersetzt den Schlüssel
-- **Nein - immer einen zweiten, unabhängigen Zugangsweg vorsehen** ✓
-- Ja, sofern zusätzlich ein Pro-finder verbaut ist
-- Ja, sobald safe.lock verbaut ist
+- Der Kunde bestätigt, dass er die Erklärung verstanden hat
+- **Der Kunde führt den zweiten Zugangsweg selbst vor; der mechanische Fahrzeugschlüssel bleibt während der Prüfung verfügbar** ✓
+- Der Fingerprint funktioniert dreimal hintereinander
+- Die App zeigt eine aktive Verbindung an
 
-**Auflösung:** Jeder Bedienweg hat einen Ausfallmodus. Nasse Finger, leerer Akku, verlorene Kopplung - keiner davon darf dazu führen, dass der Kunde vor dem Fahrzeug steht.
+**Auflösung:** Ein zweiter Zugangsweg ist erst nachgewiesen, wenn der Kunde ihn tatsächlich bedienen kann. Die Wiederholung desselben Fingerprint- oder App-Wegs prüft keinen unabhängigen Zugang. Während der Vorführung bleibt der mechanische Schlüssel verfügbar, damit ein fehlgeschlagener Versuch nicht zum Aussperren führt.
 
 **Falsch gewählt?**
 
-- *Mit Pro-finder ja:* Naheliegend, aber der Pro-finder ist der **Fernsteuerungs**weg und braucht Mobilfunk. Ohne Netz auf dem Stellplatz ist er kein Zugang. Ein Backup, das dieselbe Voraussetzung wie das Original hat, ist keines.
-  <br>↳ bezogen auf: „Ja, sofern zusätzlich ein Pro-finder verbaut ist“
-- *Mit safe.lock ja:* safe.lock erweitert, was der Fingerprint kann - es macht ihn nicht ausfallsicher.
-  <br>↳ bezogen auf: „Ja, sobald safe.lock verbaut ist“
+- *Erklärung mit Funktionsnachweis verwechselt:* Eine Zustimmung zeigt noch nicht, dass der Kunde den zweiten Weg ohne Hilfe bedienen kann.
+  <br>↳ bezogen auf: „Der Kunde bestätigt, dass er die Erklärung verstanden hat“
+- *Nur den ersten Bedienweg geprüft:* Eine funktionierende App oder ein erneut erfolgreicher Fingerprint belegt keinen unabhängigen zweiten Zugang.
+  <br>↳ bezogen auf: „Der Fingerprint funktioniert dreimal hintereinander“ · „Die App zeigt eine aktive Verbindung an“
 
-**Mitnehmen:** **Prinzip 2 - Ein Zugangsweg ist kein Zugangsweg.** Sauberster Zweitweg: Funk-Handsender 868 (101064), unabhängig vom Smartphone, bis ca. 75 m, CR2032, kein Neuanlernen nach Batteriewechsel. Satz für den Kunden: „Nehmen Sie den Schlüssel trotzdem mit - nicht weil ich dem Finger misstraue, sondern weil Sie sonst nur einen Weg ins Fahrzeug haben.“
+**Mitnehmen:** Den zweiten Weg zeigen, vom Kunden ausführen lassen und das Ergebnis bei der Übergabe festhalten. Den Hinweis zum Mitführen des Fahrzeugschlüssels behandelt VEJ-10.
 
 ---
 
@@ -691,13 +691,13 @@
 | | |
 |---|---|
 | Fragen | 10 |
-| Fragensatz-Version | 11 |
+| Fragensatz-Version | 12 |
 | Art | Wo kommt was hin? |
 | Lernziel | Physik bestimmt den Einbauort, nicht der freie Platz. Wer das verstanden hat, muss keine Liste auswendig lernen. |
 
 **Quellen im Produktwissen:** `produkte/pro-finder.md`, `produkte/gas-pro-iii.md`, `produkte/nfc-modul.md`, `produkte/funk-rauchmelder.md`, `produkte/wipro-iii.md`, `fahrzeuge/*`
 
-> **Redaktioneller Hinweis (erscheint nicht im Quiz):** Fragenkatalog v11. Zehn Fragen. Redaktionsrunde 08/2026: SAM-11 neu (Sicherheitsabstand zu Batterie und Nasszelle). SAM-06 nennt die Praxisempfehlung, das NFC Modul hinter der Umweltplakette zu verstecken. SAM-09 fragt nach der Montage der externen GPS-Antenne: Aufkleber nach unten, Empfangsseite nach oben; die Aufloesung zeigt dazu sam-antenne-unterseite.webp. ACHTUNG bei diesem Bild: Es zeigt die externe GSM-Antenne, nicht die GPS-pro - die Bauform und die Lage des Aufklebers stimmen, der Schriftzug auf dem Etikett liest aber GSM ANTENNA. Deshalb nennen Alt-Text und Bildunterschrift bewusst kein Produkt. Sobald ein Foto der GPS-pro vorliegt, wird es getauscht. Nicht verwendbar sind das alte sam-produkt-gps-pro.webp und seine Quelle Wissen/03_Medien/produkte/GPS-pro.png - beide tragen Fantasietext auf dem Etikett und zeigen den Aufkleber oben. SAM-02, SAM-03 und SAM-10 arbeiten mit echten Produkt- beziehungsweise Einbaufotos. Einbauabstaende und Kabellaengen vor jeder Schulung gegen den aktuellen Anleitungsstand pruefen.
+> **Redaktioneller Hinweis (erscheint nicht im Quiz):** Fragenkatalog v12. Zehn Fragen. Redaktionsrunde 08/2026: SAM-11 neu (Sicherheitsabstand zu Batterie und Nasszelle). SAM-06 nennt die Praxisempfehlung, das NFC Modul hinter der Umweltplakette zu verstecken. SAM-09 erklärt die Ausrichtung der GPS-Antenne ohne Bild. Das bisher verwendete GSM-Antennenfoto wurde am 05.09.2026 aus dieser Frage entfernt. Ein korrektes GPS-pro-Originalfoto kann später ergänzt werden. Nicht verwendbar sind das alte sam-produkt-gps-pro.webp und seine Quelle Wissen/03_Medien/produkte/GPS-pro.png - beide tragen Fantasietext auf dem Etikett und zeigen den Aufkleber oben. SAM-02, SAM-03 und SAM-10 arbeiten mit echten Produkt- beziehungsweise Einbaufotos. Einbauabstaende und Kabellaengen vor jeder Schulung gegen den aktuellen Anleitungsstand pruefen.
 
 #### 1. Ordne jedem Gerät den vorgesehenen Einbauort zu.
 
@@ -858,8 +858,6 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 **Auflösung:** Die Empfangsseite zeigt waagerecht **nach oben** - der Aufkleber sitzt auf der Unterseite und kommt beim Kleben nach unten. Metall unmittelbar über oder um die Antenne schirmt Satellitensignale ab; ein nichtmetallischer Bereich darüber verbessert den Empfang.
 
-**Bild zur Auflösung:** `/media/samsoe/sam-antenne-unterseite.webp` — So sieht die Seite aus, die nach unten kommt: Auf dem Aufkleber wird geklebt. Die glatte Gegenseite ist die Empfangsseite und schaut zum Himmel.
-
 **Falsch gewählt?**
 
 - *Aufkleber nach oben geklebt:* Sieht nach Ordnung aus und dreht die Antenne genau falsch herum. Meist steckt eine Verwechslung mit dem Pro-finder selbst dahinter: Dort muss „GPS inside“ nach **oben** zeigen. Bei der externen Antenne ist es umgekehrt.
@@ -924,13 +922,13 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 | | |
 |---|---|
 | Fragen | 10 |
-| Fragensatz-Version | 8 |
+| Fragensatz-Version | 9 |
 | Art | Erst lesen, dann tauschen |
 | Lernziel | Bevor du tauschst, lies. Jedes Gerät sagt, was los ist - über Blinkcode, Ton, Seriennummer, Spannungsverhalten. Tauschen ist die teuerste Form der Diagnose. |
 
 **Quellen im Produktwissen:** `referenz/stoerungsbeseitigung.md`, `_intern/support-fallaufnahme.md`, `produkte/wipro-iii.md`, `produkte/pro-finder.md`, `referenz/mobilfunk-sim.md`
 
-> **Redaktioneller Hinweis (erscheint nicht im Quiz):** Fragenkatalog v8. Zehn Fragen. Redaktionsrunde 08/2026: FEH-03 (gelbe Status-LED ab 0699-045) entfernt, FEH-01 im Prompt gekuerzt. FEH-05 folgt der internen Praxis - der Test mit unangezuendetem Feuerzeuggas ist zulaessig. FEH-04 nennt ca. 12,0 V als Rueckkehrschwelle, FEH-09 prueft die Smartphone-Kennzeichnung. Diese drei Fragen widersprechen bewusst dem Produktwissen: produkte/gas-pro-iii.md, referenz/gas.md und referenz/stoerungsbeseitigung.md verbieten den Feuerzeuggas-Test weiterhin, produkte/pro-finder.md nennt zweimal 12,5 V. Am 31.08.2026 so entschieden - das Wiki bleibt unveraendert, der Fragensatz gilt. Wer eine dieser Fragen gegen das Wiki prueft, findet dort also den alten Stand und muss nicht neu diskutieren. Blinkcodes und Spannungsschwellen vor jeder Schulung gegen den aktuellen Anleitungsstand pruefen.
+> **Redaktioneller Hinweis (erscheint nicht im Quiz):** Fragenkatalog v9. Zehn Fragen. Redaktionsrunde 08/2026: FEH-03 (gelbe Status-LED ab 0699-045) entfernt, FEH-01 im Prompt gekuerzt. FEH-05 folgt der internen Praxis - der Test mit unangezuendetem Feuerzeuggas ist zulaessig. FEH-04 nennt ca. 12,0 V als Rueckkehrschwelle, FEH-09 prueft die Smartphone-Kennzeichnung. Diese drei Fragen widersprechen bewusst dem Produktwissen: produkte/gas-pro-iii.md, referenz/gas.md und referenz/stoerungsbeseitigung.md verbieten den Feuerzeuggas-Test weiterhin, produkte/pro-finder.md nennt zweimal 12,5 V. Am 31.08.2026 so entschieden - das Wiki bleibt unveraendert, der Fragensatz gilt. Wer eine dieser Fragen gegen das Wiki prueft, findet dort also den alten Stand und muss nicht neu diskutieren. Blinkcodes und Spannungsschwellen vor jeder Schulung gegen den aktuellen Anleitungsstand pruefen. Redaktionsrunde 05.09.2026: FEH-09 fragt nach dem nächsten Prüfschritt, nicht nach einer aus dem Symptom eindeutig ableitbaren Ursache.
 
 #### 1. Eine frisch angeschlossene G.A.S.-pro III: Ordne die LED-Signale ihrer Bedeutung zu.
 
@@ -1030,16 +1028,16 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 **Mitnehmen:** Meldet der Selbsttest einen Fehler, zeigt sich das eindeutig: 1 Ton pro Sekunde und die betroffene Sensor-LED blinkt gelb. Nach dem Gastest ist der grüne Normalzustand der eigentliche Nachweis - er zeigt, dass das Gerät wieder frei misst.
 
-#### 6. „Meine Frau bekommt die Alarm-SMS, ich nie.“ Woran liegt es?
+#### 6. „Meine Frau bekommt die Alarm-SMS, ich nie.“ Welche Einstellung prüfst du als Erstes, bevor du einen Geräte- oder Providerfehler vermutest?
 
 `FEH-09` · Einfachauswahl · Alarmweiterleitung
 
 - Sein Mobilfunkanbieter blockiert automatisiert versendete SMS
 - Nur die Masternummer bekommt Alarm-SMS
-- **Die zweite Nummer muss als Smartphone gekennzeichnet sein** ✓
+- **Die Programmier-SMS der zweiten Zielrufnummer auf die Smartphone-Kennzeichnung S prüfen** ✓
 - Es ist immer nur eine Zielrufnummer möglich
 
-**Auflösung:** Die Nummer ist ohne die Smartphone-Kennzeichnung **S** programmiert. Erst mit ihr wird eine Zielrufnummer als Smartphone geführt. Beispiel Vertragskarte: **DE+S491701234567** mit Kennzeichnung, **DE+491701234567** ohne.
+**Auflösung:** Zuerst die Programmierung prüfen: Ist die zweite Nummer vollständig und mit der Smartphone-Kennzeichnung S hinterlegt? Beispiel Vertragskarte: **DE+S491701234567** mit Kennzeichnung, **DE+491701234567** ohne. Das Symptom allein beweist die Ursache noch nicht; auch ein zu früh beendeter Testalarm kommt infrage.
 
 **Falsch gewählt?**
 
@@ -1145,13 +1143,13 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 | | |
 |---|---|
 | Fragen | 10 |
-| Fragensatz-Version | 6 |
+| Fragensatz-Version | 7 |
 | Art | Vom Einzelprodukt zum System |
 | Lernziel | Wer die vier Ebenen trennt - Zentrale, Fernsteuerung, Lesestelle, Medium -, beantwortet fast jede Kundenfrage von selbst. |
 
 **Quellen im Produktwissen:** `referenz/systemueberblick.md`, `produkte/bt-connect.md`, `produkte/nfc-modul.md`, `referenz/zugang-bedienung.md`
 
-> **Redaktioneller Hinweis (erscheint nicht im Quiz):** Fragenkatalog v6. Zehn Fragen. Redaktionsrunde 08/2026: USE-01 hat zwei weitere falsche Optionen bekommen - Funk-Wassermelder 868 (deckt keinen der drei Wuensche ab) und Fingerprint (deckt einen Wunsch doppelt ab und setzt safe.lock voraus). Damit steht die Frage bei acht Bildoptionen, dem Maximum des Produktlayouts. Die beiden Bilder sind Kopien aus media/vejro; wird dort ein Motiv ausgetauscht, muss media/usedom mitgezogen werden, weil Einzelpakete nur den eigenen Insel-Ordner mitnehmen. USE-01 nutzt ausschliesslich echte Produktbilder. Artikelnummern und Leistungswerte vor jeder Schulung gegen den aktuellen Produktstand pruefen.
+> **Redaktioneller Hinweis (erscheint nicht im Quiz):** Fragenkatalog v7. USE-01 fragt nach allen passenden Beratungsoptionen, nicht nach einer zwingend gemeinsam zu kaufenden Ausstattung. NFC und Fingerprint sind Alternativen. Produktstände vor der Schulung prüfen.
 
 #### 1. Ein Kunde zeigt auf BT-connect, Pro-finder und NFC Modul: „Das ist doch dreimal dasselbe - das Fahrzeug ohne Schlüssel bedienen.“ Welche Erklärung trennt die Produkte sauber?
 
@@ -1173,7 +1171,7 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 
 **Mitnehmen:** Am Display nicht mit Gerätenamen beginnen, sondern mit drei Fragen: nah oder fern, Smartphone oder Medium, bedienen oder orten?
 
-#### 2. Kunde: „Ich will eine Alarmanlage, Ortung bei Diebstahl und bequem ohne Schlüssel öffnen.“ Welche Komponenten brauchst du? Wähle alle zutreffenden.
+#### 2. Kunde: „Ich will eine Alarmanlage, Ortung bei Diebstahl und bequem ohne Schlüssel öffnen.“ Welche Produkte passen zu diesen Wünschen und gehören als mögliche Lösungen ins Beratungsgespräch? Wähle alle zutreffenden.
 
 `USE-01` · Mehrfachauswahl · Bedarfsanalyse
 
@@ -1184,9 +1182,9 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 - `/media/usedom/use-produkt-gas-pro-iii.webp` — G.A.S.-pro III Gaswarner
 - `/media/usedom/use-produkt-tsa-funk-rauchmelder.webp` — T.S.A. Funk-Rauchmelder
 - `/media/usedom/use-produkt-wassermelder.webp` — Funk-Wassermelder 868 mit Sendeeinheit und Sensor am Kabel
-- `/media/usedom/use-produkt-fingerprint.webp` — Runder Fingerprint-Sensor mit grün leuchtendem Ring
+- **`/media/usedom/use-produkt-fingerprint.webp` — Runder Fingerprint-Sensor mit grün leuchtendem Ring** ✓
 
-**Auflösung:** Drei Kundenwünsche, drei Bausteine - plus das Zugangsmedium. Alles Weitere ist Zusatzverkauf und gehört getrennt besprochen, nicht in diese Position.
+**Auflösung:** Die WiPro III deckt die Alarmanlage ab, der Pro-finder die Ortung. Beim Zugang gibt es Alternativen: NFC Modul mit KeyCard, KeyTag oder KeyStrap sowie CampLock oder VanLock Fingerprint (setzt WiPro III safe.lock voraus). Beide Wege gehören ins Beratungsgespräch; für das konkrete Angebot wählt ihr anschließend die passende Lösung. Es müssen nicht beide Zugangswege gekauft werden.
 
 **Falsch gewählt?**
 
@@ -1194,10 +1192,10 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
   <br>↳ bezogen auf: „KeyCard, KeyTag oder KeyStrap“
 - *Gutes Produkt, falscher Wunsch:* Gaswarner, Rauchmelder und Wassermelder sind sinnvolle Produkte - nur deckt keines davon einen der drei genannten Wünsche ab. Zusatzverkauf ja, aber als eigenes Thema und nicht in dieser Position.
   <br>↳ bezogen auf: „G.A.S.-pro III“ · „T.S.A. Funk-Rauchmelder“ · „Funk-Wassermelder 868“
-- *Fingerprint zusätzlich mitangekreuzt:* Der teure Fehler, weil er richtig klingt: Der Fingerprint löst denselben Wunsch wie NFC Modul und KeyCard - nur ein zweites Mal, und er setzt zusätzlich WiPro III safe.lock voraus. Ein Wunsch, ein Weg.
+- *Fingerprint vergessen:* „Ohne Schlüssel öffnen“ endet nicht bei der Karte. Der Fingerprint an der Tür ist der zweite Weg zu demselben Wunsch - und der, den viele Kunden meinen, ohne das Produkt zu kennen. Wer ihn nicht anbietet, lässt den Kunden entscheiden, ohne dass er die Wahl kennt. Vorher klären: Der Fingerprint setzt WiPro III safe.lock voraus.
   <br>↳ bezogen auf: „CampLock oder VanLock Fingerprint“
 
-**Mitnehmen:** Geh die Kundenwünsche einzeln durch und hak sie am Angebot ab. Drei Wünsche, drei Häkchen - plus die Frage: „Womit macht er es auf?“ Jede Position ohne Haken gehört begründet oder gestrichen.
+**Mitnehmen:** Geh die Kundenwünsche einzeln durch und hak sie am Angebot ab. Drei Wünsche, drei Häkchen - und beim Zugang die Frage: „Womit macht er es auf - Karte am Fahrzeug oder Finger an der Tür?“ Jede Position ohne Haken gehört begründet oder gestrichen.
 
 #### 3. Kunde: „Ich nehme nur das BT-connect, eine Alarmanlage brauche ich nicht.“ Geht das?
 
@@ -1501,6 +1499,7 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
 - Dem Kunden die SIM-PIN notieren
 - Einen Ersatzschlüssel im Fahrzeug deponieren
 - Alle DIP-Schaltereinstellungen mit dem Kunden durchgehen
+- Die App einmal vorführen und dem Kunden die Anleitung zum Nachlesen mitgeben
 
 **Auflösung:** Diese vier Punkte entscheiden, ob der Kunde die Anlage im Ernstfall bedienen kann. Dazu gehören Panikfunktion und deren Beenden sowie der Hinweis, dass sich die Batteriewarnung als ca. 2 s Ton aus der Zentrale plus rote Sende-LED für ca. 30 s zeigt.
 
@@ -1510,6 +1509,8 @@ Weitere Auswahlmöglichkeiten, die zu nichts passen: Im abgetrennten Bodenstaura
   <br>↳ bezogen auf: „Alle DIP-Schaltereinstellungen mit dem Kunden durchgehen“
 - *Testalarm weggelassen:* Verständlich, weil laut und unangenehm. Aber ein Kunde, der den Alarm noch nie gehört hat, erkennt ihn im Ernstfall nicht als seinen.
   <br>↳ bezogen auf: „Einen echten Testalarm zeigen, den der Kunde selbst auslöst“
+- *Vorführen statt selbst machen:* Klingt gründlich, ist aber das Gegenteil des Prinzips: Zusehen reicht nicht. Der Kunde bedient jeden Weg - App, Handsender, NFC - einmal selbst, bevor er losfährt. Die Anleitung ist Ergänzung, kein Ersatz.
+  <br>↳ bezogen auf: „Die App einmal vorführen und dem Kunden die Anleitung zum Nachlesen mitgeben“
 
 **Mitnehmen:** Der Kunde muss jeden Bedienweg **einmal selbst** ausgeführt haben. Zusehen reicht nicht - was man nicht selbst gemacht hat, kann man abends auf dem Stellplatz nicht.
 

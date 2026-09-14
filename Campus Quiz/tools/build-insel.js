@@ -76,15 +76,14 @@ const BOGEN_AUSGENOMMEN = new Set(["_headers", "_redirects", "README.txt", "date
    ausschliesslich in der Karten-Medienabfrage als CSS-Hintergrund
    eingebunden, ein Telefon holt sie also nicht.
 
-   `campus-hintergrund-v1.webp` und `campus-kompass-v2.webp` stehen seit dem
-   Umbau der Karte nicht mehr hier: Seegrund und Kompassrose kommen jetzt
-   aus dem Asset-Pack. Die Dateien liegen weiter in public/media/campus/,
-   ausgeliefert werden sie nicht mehr.
-
-   `campus-hex-fragetypen.webp` stand bis September 2026 mit in der Liste und
-   wurde damit in jedes der acht Pakete kopiert, obwohl kein Stylesheet und
-   kein Skript es je einband — eine Handliste faellt nicht auf, wenn sie zu
-   viel enthaelt. Genau das prueft `tools/check-medien.js` jetzt mit. */
+   Seegrund und Kompassrose der alten Karte (`campus-hintergrund-v1.webp`,
+   `campus-kompass-v2.webp`) sind seit dem Umbau durch das Asset-Pack
+   ersetzt und geloescht; ebenso `campus-hex-fragetypen.webp`, das bis
+   September 2026 mit in dieser Liste stand und damit in jedes der acht
+   Pakete kopiert wurde, obwohl kein Stylesheet und kein Skript es je
+   einband — eine Handliste faellt nicht auf, wenn sie zu viel enthaelt.
+   Genau das prueft `tools/check-medien.js` jetzt mit, in beide Richtungen:
+   ein Eintrag ohne Verweis und eine Datei ohne Eintrag sind beides Fehler. */
 const GEMEINSAME_MEDIEN = [
   path.join("media", "campus", "karte", "see.webp"),
   path.join("media", "campus", "karte", "kompass.webp"),

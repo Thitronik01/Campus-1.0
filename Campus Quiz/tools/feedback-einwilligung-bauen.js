@@ -31,11 +31,26 @@ module.exports = function feedbackEinwilligung(ziel, version) {
   // Dieselben Motive wie auf der Campus-Karte helfen beim Wiedererkennen.
   // Das alte Plakat zeigt abweichende Themen und entfällt deshalb.
   html = html.replace(/<figure class="isles__poster">[\s\S]*?<\/figure>/g, "");
+  // Welches Motiv eine Insel hat, sagt allein inseln.json. Eine hier fest
+  // verdrahtete `${slug}.webp` zeigte im Bogen still ein anderes Bild als
+  // die Karte, sobald ein Motiv unter neuem Namen abgelegt wurde — bei
+  // LANGELAND (langeland-horizontal.webp) war das ab September 2026 so.
+  // Im Bogen behaelt die Datei den Slug als Namen, weil die Vorlage die
+  // Verweise so traegt.
   const inselZiel = path.join(ziel, "assets", "campus-inseln");
   fs.mkdirSync(inselZiel, { recursive: true });
-  for (const slug of ["vejro", "poel", "hiddensee", "samsoe", "fehmarn", "usedom", "langeland"]) {
-    fs.copyFileSync(path.join(__dirname, "..", "public", "media", "inseln", `${slug}.webp`), path.join(inselZiel, `${slug}.webp`));
-    html = html.replaceAll(`assets/v12/islands/${slug}.webp`, `assets/campus-inseln/${slug}.webp`);
+  const katalog = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "public", "data", "inseln.json"), "utf8"));
+  for (const insel of katalog.inseln.filter((i) => i.wissenscheck !== false)) {
+    if (!insel.image) throw new Error(`Feedback: ${insel.slug} hat kein Motiv in inseln.json.`);
+    fs.copyFileSync(path.join(__dirname, "..", "public", insel.image), path.join(inselZiel, `${insel.slug}.webp`));
+    html = html.replaceAll(`assets/v12/islands/${insel.slug}.webp`, `assets/campus-inseln/${insel.slug}.webp`);
+  }
+  // Was hier aus dem HTML fällt, fällt auch aus dem Paket: die alten
+  // Inselminiaturen und das Plakat. Sonst reisen rund 200 KB mit, auf die
+  // nichts mehr zeigt — und check-medien.js meldet sie zu Recht als Fehler.
+  fs.rmSync(path.join(ziel, "assets", "v12", "islands"), { recursive: true, force: true });
+  for (const name of ["inselhopping-700.webp", "inselhopping-1100.webp"]) {
+    fs.rmSync(path.join(ziel, "assets", "v12", name), { force: true });
   }
   const script = /<script src="app-v14\.js\?v=[^"]+" defer><\/script>/g;
   if ([...html.matchAll(script)].length !== 1) throw new Error("Feedback: Script-Einbindung hat sich geändert.");
