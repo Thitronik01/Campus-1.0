@@ -13,7 +13,7 @@
 
 (function () {
   const EVENT_SLUG = "campus-2026";
-  const ENGINE_VERSION = "1.45.0";
+  const ENGINE_VERSION = "1.46.0";
   const SUBMIT_ENDPOINT = "/.netlify/functions/submit-quiz";
 
   const LS_PARTICIPANT = "thitronik.campus.2026.participant";
@@ -111,9 +111,7 @@
     ausgang: $("ausgang"),
     ausgangText: $("ausgang-text"),
     btnAusgangSenden: $("btn-ausgang-senden"),
-    taKicker: $("ta-kicker"),
     taTitle: $("ta-title"),
-    taDesc: $("ta-desc"),
 
     profileForm: $("profile-form"),
     profileTitle: $("profile-title"),
@@ -1756,12 +1754,16 @@
       const fertig = total > 0 && abgeschlossen === total;
       el.tagesabschluss.href = state.catalog.feedback;
       el.tagesabschluss.hidden = false;
+      // Der Knopf in der Kopfzeile sagt nur, wohin er führt; dass alle
+      // Inseln erledigt sind, zeigt allein die Färbung über `is-ready`.
+      // Bis 1.46 wurden hier zusätzlich ein Kicker und ein Satz je
+      // Zustand geschrieben („Es fehlt nur noch deine Rückmeldung zum
+      // Tag.") — in Elemente, die das Stylesheet der Kopfzeile ausblendete.
+      // Wer den Abschluss wieder mit Worten belohnen will, braucht dafür
+      // einen Platz, der sichtbar ist: den Ergebnisbildschirm, nicht den
+      // Kopf.
       el.tagesabschluss.classList.toggle("is-ready", fertig);
-      el.taKicker.textContent = fertig ? "Expedition abgeschlossen" : "Tagesabschluss";
       el.taTitle.textContent = "Feedbackbogen";
-      el.taDesc.textContent = fertig
-        ? "Es fehlt nur noch deine Rückmeldung zum Tag."
-        : "Deine Rückmeldung zur Schulung, etwa sechs Minuten. Geht auch, bevor alle Inseln erledigt sind.";
     } else {
       el.tagesabschluss.hidden = true;
     }
