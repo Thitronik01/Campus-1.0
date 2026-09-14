@@ -110,8 +110,11 @@ node tools/check-deploy.js                        # netlify.toml doppelt, Node-V
 die Bilder aus den Fragensätzen — 500 KB je Datei, 12 MB insgesamt, dazu
 Verweise ins Leere. Bis September 2026 gingen die vier Fahrzeugansichten der
 Arbeitskarte mit zusammen 5 MB PNG an jeder Prüfung vorbei; als WebP sind
-es 150 KB. Verwaiste Dateien meldet das Werkzeug nur als Hinweis: Es liest
-Text, und ein zur Laufzeit zusammengesetzter Pfad sähe verwaist aus.
+es 150 KB. Eine Datei, auf die nichts zeigt, ist seit September 2026 ein
+**Fehler**, kein Hinweis mehr — vierzehn Hinweise blieben monatelang
+ungelesen, drei davon reisten als tote Last in jedes Paket. Wer eine Datei
+bewusst ohne Verweis liegen lässt, trägt sie mit Begründung in
+`AUSNAHMEN_VERWAIST` in `check-medien.js` ein.
 
 ---
 

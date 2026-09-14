@@ -17,14 +17,23 @@
    1. Ist eine Datei zu groß?                       → FEHLER ab GRENZE_DATEI
    2. Ist das Ganze zu groß?                        → FEHLER ab GRENZE_GESAMT
    3. Zeigt ein Verweis ins Leere, oder liegt eine Datei herum, auf die
-      nichts zeigt?                                 → FEHLER bzw. Hinweis
+      nichts zeigt?                                 → FEHLER
 
    Verweise werden aus CSS (url()), HTML (src, href, srcset, poster), JS und
-   JSON (jede Zeichenkette, die auf eine Medienendung endet) gelesen. Eine
-   Datei, auf die nichts zeigt, ist nur ein Hinweis: Die Prüfung liest Text,
-   und ein Pfad, der zur Laufzeit zusammengesetzt wird, sähe verwaist aus.
-   Vor dem Löschen gilt weiter die Regel aus AGENTS.md: den ganzen Baum
-   durchsuchen, public/data/ eingeschlossen.
+   JSON (jede Zeichenkette, die auf eine Medienendung endet) gelesen.
+
+   Eine Datei, auf die nichts zeigt, war bis September 2026 nur ein Hinweis —
+   und Hinweise liest niemand: Vierzehn Dateien lagen so monatelang herum,
+   drei alte Startbühnen mit 400 KB reisten in jedes Paket mit (Rückstand
+   R-25). Seitdem ist sie ein Fehler. Ein Pfad, der zur Laufzeit
+   zusammengesetzt wird, sähe zwar verwaist aus — Fragensätze, Katalog und
+   Betreuerliste nennen aber jede Datei wörtlich, und die Bauwerkzeuge
+   lesen ihre Pfade von dort. Der eine Fall, der das nicht tat
+   (feedback-einwilligung-bauen.js mit `${slug}.webp`), fiel genau beim
+   Umstellen auf: Er kopierte für den Bogen ein Motiv, das die Karte längst
+   nicht mehr zeigte. Bleibt eine Datei bewusst ohne Verweis, steht sie mit
+   Begründung in AUSNAHMEN_VERWAIST. Vor dem Löschen gilt weiter die Regel
+   aus AGENTS.md: den ganzen Baum durchsuchen, public/data/ eingeschlossen.
    ========================================================================== */
 
 const fs = require("fs");
@@ -40,10 +49,15 @@ const GRENZE_PNG = 150 * 1024;          // PNG/JPG darüber: als WebP bringen
 const MEDIEN = new Set([".png", ".jpg", ".jpeg", ".webp", ".gif", ".avif", ".svg", ".mp3", ".m4a", ".ogg", ".wav", ".mp4"]);
 const TEXT = new Set([".css", ".html", ".js", ".mjs", ".json"]);
 
-/* Dateien, auf die absichtlich nichts im Paket zeigt: Das Logo im Kopf
-   steht in index.html, aber Einzelpakete ohne Feedbackbogen tragen es
-   trotzdem unter /feedback nicht — deshalb nur die Wurzel prüfen. */
-const AUSNAHMEN_VERWAIST = new Set([]);
+/* Dateien, auf die absichtlich nichts zeigt. Jeder Eintrag braucht einen
+   Grund, sonst ist die Liste nur ein zweiter Weg, Hinweise zu ignorieren.
+
+   RÜGEN ruht: Die Station ohne Wissenscheck steht nicht in inseln.json,
+   ihre Kartenregeln (.island-ruegen in styles.css) und das Motiv aus
+   tools/ruegen-silhouette.js bleiben aber für den Wiedereinbau liegen. */
+const AUSNAHMEN_VERWAIST = new Set([
+  "media/inseln/ruegen.webp"
+]);
 
 let fehler = 0;
 let hinweise = 0;
@@ -134,7 +148,7 @@ for (const datei of texte) {
 for (const datei of medien) {
   const rel = path.relative(WURZEL, datei).split(path.sep).join("/");
   if (referenziert.has(rel) || AUSNAHMEN_VERWAIST.has(rel)) continue;
-  HINWEIS(`${rel} (${kb(fs.statSync(datei).size)}) — kein Verweis gefunden. Vor dem Löschen den ganzen Baum durchsuchen.`);
+  FEHLER(`${rel} (${kb(fs.statSync(datei).size)}) — kein Verweis gefunden. Vor dem Löschen den ganzen Baum durchsuchen; bleibt sie absichtlich, in AUSNAHMEN_VERWAIST eintragen.`);
 }
 
 // ------------------------------------------- 3. GEMEINSAME_MEDIEN ---

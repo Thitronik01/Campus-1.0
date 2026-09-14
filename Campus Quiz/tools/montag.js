@@ -286,6 +286,17 @@ titel("Pakete prüfen");
 paketPruefen("Gesamtpaket", () => "Campus Gesamtpaket");
 paketPruefen("Einzelpakete", (slug) => PAKETE[slug]);
 
+// Dieselbe Medienprüfung wie an der Quelle, jetzt am ausgelieferten Stand:
+// Der Bau kopiert Ordner und schreibt HTML um, und was dabei ohne Verweis
+// bleibt, sieht nur diese Prüfung. Im September 2026 lagen so neun Dateien
+// des Feedbackbogens im Gesamtpaket, auf die sein umgeschriebenes HTML
+// nicht mehr zeigte. Nur das Gesamtpaket: Die Einzelpakete tragen die
+// Bühnenverweise aller sieben Inseln in index.html, liefern aber nur die
+// eigene Insel aus — das ist bekannt und dort kein Fehler.
+const paketMedien = lauf(path.join("tools", "check-medien.js"), [path.join(PROJEKT, "Campus Gesamtpaket", "public")]);
+schritt("Medien im Gesamtpaket", paketMedien,
+  (paketMedien.ausgabe.match(/^Medien: (.*)$/m) || ["", ""])[1]);
+
 // Wurzel-netlify.toml gegen die erzeugte, Node-Version, Action-Pins.
 const deploy = lauf(path.join("tools", "check-deploy.js"), []);
 schritt("Deploy-Konfiguration", deploy,
