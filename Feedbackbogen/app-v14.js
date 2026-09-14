@@ -175,7 +175,14 @@
   /* ----------------------------------------------------------- Bewertungszeilen
      Kommentar ist NUR bei der schlechtesten Note verpflichtend, seit v14 also
      bei der 1. Eine Pflichtbegruendung fuer die Bestnote treibt Teilnehmende
-     systematisch auf die zweitbeste Note aus. */
+     systematisch auf die zweitbeste Note aus.
+
+     Seit dem 14.09.2026 steht das Feld nach JEDER Note offen, nicht nur bei 1
+     und 5. Vorher sprang bei der 5 ein Feld auf, bei der 4 keins — und ein
+     Feld, das nur bei der Bestnote erscheint, liest sich wie eine Auflage,
+     auch wenn "freiwillig" drunter steht. Max hat genau das beobachtet: Die
+     Leute weichen auf die 4 aus, um dem Feld zu entgehen. Jetzt hat jede Note
+     dasselbe freiwillige Feld; nur die 1 verlangt eine Begruendung. */
 
   /* refreshRatingRow ist absichtlich von der Verdrahtung getrennt. Vorher rief
      das Wiederherstellen eines Entwurfs die komplette Einrichtung ein zweites
@@ -191,9 +198,10 @@
     const value = selected ? selected.value : '';
     const wasHidden = box.hidden;
 
-    /* Beide Enden der Skala oeffnen ein Feld, nur mit vertauschten Rollen:
-       die 1 verlangt eine Begruendung, die 5 laedt zu einer ein. */
-    box.hidden = value !== '1' && value !== '5';
+    /* Jede Note oeffnet dasselbe Feld; nur die Rolle wechselt: die 1 verlangt
+       eine Begruendung, alle anderen laden zu einer ein. Ohne Note und bei
+       "nicht besucht" bleibt es zu. */
+    box.hidden = !value || value === 'na';
     box.classList.toggle('rate__comment--must', value === '1');
     box.classList.toggle('rate__comment--good', value === '5');
     textarea.dataset.required = value === '1' ? 'true' : 'false';
@@ -215,6 +223,9 @@
     } else if (value === '5') {
       label.textContent = 'Was hat hier besonders gut funktioniert?';
       help.textContent = 'Freiwillig. Hilft uns aber sehr, das beizubehalten.';
+    } else if (value && value !== 'na') {
+      label.textContent = 'Was fällt dir dazu ein?';
+      help.textContent = 'Freiwillig. Ein Satz reicht — was hat gefehlt, was war gut?';
     }
 
     if (value !== '1') clearFieldError(textarea);

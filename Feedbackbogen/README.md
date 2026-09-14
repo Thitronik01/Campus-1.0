@@ -78,9 +78,14 @@ An der Richtung hängt mehr, als man zunächst sieht:
   leuchtete grün. Jetzt sind sie über `input[value="1"]` und `input[value="5"]`
   angesprochen und wandern von allein mit, falls die Reihenfolge je wieder
   angefasst wird.
-- **Der Pflichtkommentar** hängt an der **1**. An der 5 öffnet sich weiterhin
-  ein Feld, aber als freiwillige Einladung. Eine Pflichtbegründung für die
+- **Der Pflichtkommentar** hängt an der **1**. Eine Pflichtbegründung für die
   Bestnote treibt Teilnehmende systematisch auf die zweitbeste Note aus.
+  Seit dem 14. September 2026 öffnet sich das Feld nach **jeder** Note als
+  freiwillige Einladung, nicht nur bei der 5: Ein Feld, das allein bei der
+  Bestnote aufspringt, liest sich wie eine Auflage, und Teilnehmende wichen
+  beobachtbar auf die 4 aus, um ihm zu entgehen. Die 5 fragt „Was hat hier
+  besonders gut funktioniert?", die 2 bis 4 „Was fällt dir dazu ein?", die 1
+  „Was sollten wir hier verbessern?" — und nur diese Antwort ist Pflicht.
 - **Die Insel-Einträge** im Payload tragen `rating: 5`. Sie sind Marker, keine
   Urteile — aber eine Lieblingsinsel mit der schlechtesten Note zu markieren
   wäre im Bestand nicht mehr lesbar.
