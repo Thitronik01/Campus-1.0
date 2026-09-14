@@ -265,8 +265,11 @@ async function ruf(payload) {
     verweise.length > 0 && verweise.every((v) => v === fassung),
     `HTML: ${[...new Set(verweise)].join(", ")} — Engine: ${fassung}`);
 
-  pruefe("Quiz-Pilotformular ist für Netlify erkennbar",
-    /name="campus-quiz-result"/.test(seite) && /data-netlify="true"/.test(seite));
+  // Bis Engine 1.47 stand hier die Gegenprobe: Das Pilotformular muss für
+  // Netlify erkennbar sein. Seitdem darf es nicht mehr da sein — es nahm
+  // Ergebnisse an der serverseitigen Bewertung vorbei entgegen.
+  pruefe("Kein Netlify-Pilotformular für Quiz-Ergebnisse mehr im Paket",
+    !/<form[^>]*name="campus-quiz-result"/.test(seite));
 
   if (katalog.feedback) {
     pruefe("Feedback-Function ist im Gesamtpaket enthalten",

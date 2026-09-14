@@ -8,8 +8,8 @@
   <meta name="description" content="THITRONIK Campus: Wissenscheck nach jeder Schulungsinsel.">
   <meta name="robots" content="noindex, nofollow">
   <title>THITRONIK Campus: Wissenscheck</title>
-  <link rel="stylesheet" href="/assets/styles.css?v=1.46.0">
-  <link rel="stylesheet" href="/assets/thi.css?v=1.46.0">
+  <link rel="stylesheet" href="/assets/styles.css?v=1.47.0">
+  <link rel="stylesheet" href="/assets/thi.css?v=1.47.0">
 </head>
 <body>
   <svg width="0" height="0" aria-hidden="true" focusable="false"><defs><filter id="island-cutout" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  10 10 10 0 -1"/></filter></defs></svg>
@@ -28,7 +28,7 @@
       </button>
       <div class="brand">
         <a class="brand-home" href="/quiz" aria-label="Zur Campus-Karte">
-          <img class="brand-logo" src="/assets/thitronik-logo.png"
+          <img class="brand-logo" src="/assets/thitronik-logo.png?v=1.47.0"
                alt="THITRONIK, Alarmtechnik made in Germany" width="769" height="214">
         </a>
         <span class="brand-copy">
@@ -81,18 +81,18 @@
           <div class="onboarding-hero">
             <picture class="onboarding-picture">
               <source type="image/webp"
-                      srcset="/media/campus/firmensitz-640.webp?v=1.46.0 640w,
-                              /media/campus/firmensitz-1024.webp?v=1.46.0 1024w,
-                              /media/campus/firmensitz-1600.webp?v=1.46.0 1600w"
+                      srcset="/media/campus/firmensitz-640.webp?v=1.47.0 640w,
+                              /media/campus/firmensitz-1024.webp?v=1.47.0 1024w,
+                              /media/campus/firmensitz-1600.webp?v=1.47.0 1600w"
                       sizes="(min-width: 1200px) 50vw, 100vw">
-              <img src="/media/campus/firmensitz-1600.jpg?v=1.46.0"
+              <img src="/media/campus/firmensitz-1600.jpg?v=1.47.0"
                    alt="Luftaufnahme des THITRONIK-Firmensitzes in Eckernförde"
                    width="1600" height="1198" fetchpriority="high">
             </picture>
             <div class="onboarding-hero-content">
               <div class="onboarding-brand">
                 <span class="onboarding-logo-wrap">
-                  <img src="/assets/thitronik-logo.png"
+                  <img src="/assets/thitronik-logo.png?v=1.47.0"
                        alt="THITRONIK, Alarmtechnik made in Germany"
                        width="769" height="214">
                 </span>
@@ -800,26 +800,19 @@
 
   <div class="toast" id="toast" hidden></div>
 
-  <!-- Netlify erkennt Formulare beim Build an statischem HTML. Dieses
-       unsichtbare Schema nimmt im Pilotbetrieb gültige Quiz-Ergebnisse an,
-       solange die spätere Supabase-Datenbank noch nicht eingerichtet ist. -->
-  <form name="campus-quiz-result" method="POST" data-netlify="true"
-        data-netlify-honeypot="bot-field" hidden aria-hidden="true">
-    <input name="form-name" value="campus-quiz-result">
-    <input name="bot-field">
-    <input name="session_id"><input name="event"><input name="island">
-    <input name="quiz_version"><input name="engine_version">
-    <input name="consent_accepted_at"><input name="consent_version">
-    <input name="participant"><input name="dealer"><input name="dealer_number"><input name="area">
-    <input name="started_at"><input name="finished_at"><input name="page_url">
-    <input name="score"><input name="total"><input name="percent"><input name="answers_json">
-  </form>
+  <!-- Bis 1.47 stand hier ein unsichtbares Netlify-Formular „campus-quiz-result"
+       als Ausweichweg für den Fall, dass die Datenbank ablehnt. Es nahm
+       das vom Browser gemeldete Ergebnis an der serverseitigen Bewertung
+       vorbei entgegen und ließ die Ergebniskarte „gespeichert" sagen, wenn
+       nichts gespeichert war. Seit die Datenbank läuft, bleibt ein
+       abgelehntes Ergebnis im Sende-Ausgang auf dem Gerät (engine.js,
+       sendeEinen). -->
 
-  <script src="/assets/campus-einwilligung.js?v=1.46.0" defer></script>
-  <script src="/assets/engine.js?v=1.46.0" defer></script>
+  <script src="/assets/campus-einwilligung.js?v=1.47.0" defer></script>
+  <script src="/assets/engine.js?v=1.47.0" defer></script>
   <!-- THI haengt seinen Schalter selbst in .masthead-tools ein und baut sein
        Panel an den Seitenkoerper. Faellt das Skript aus, fehlt nur THI —
        Kopfzeile und Quiz bleiben unberuehrt. -->
-  <script src="/assets/thi.js?v=1.46.0" defer></script>
+  <script src="/assets/thi.js?v=1.47.0" defer></script>
 </body>
 </html>

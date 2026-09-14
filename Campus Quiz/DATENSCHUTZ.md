@@ -48,17 +48,21 @@ diese Tabelle **und** den Hinweistext.
 **Das Profilfoto verlässt das Gerät nicht.** Es liegt verkleinert als Data-URL
 im Profil im `localStorage`; `buildPayload()` in `engine.js` nimmt es nicht auf.
 
-**Der Pilotweg über Netlify Forms speichert dieselben Klarnamen.** Fehlen
-`SUPABASE_URL` und `SUPABASE_SECRET_KEY` in Netlify, antwortet `submit-quiz`
-mit `503` und `fallback: "netlify_forms"`; die Engine legt Name, Betrieb,
-Händlernummer, Bereich und alle Antworten dann im Formular
-`campus-quiz-result` ab (`sendeNetlifyPilot()` in `engine.js`). Derselbe Weg
-bleibt nach dem Anschließen als Notfallnetz bestehen, wenn die Datenbank
-einmal nicht erreichbar ist. Deshalb nennt Abschnitt 8 des Hinweises ihn
-ausdrücklich — und deshalb gehören Netlify-Forms-Einträge in dieselbe
-Aufräumroutine wie die Datenbank: **die Frist von zwölf Monaten greift dort
-nicht automatisch.** Wer den Pilotweg produktiv nutzt, muss die Einträge im
-Netlify-Dashboard von Hand räumen.
+**Quiz-Ergebnisse gehen seit Engine 1.47 nur noch in die Datenbank.** Fehlen
+`SUPABASE_URL` und `SUPABASE_SECRET_KEY` in Netlify oder lehnt die Datenbank
+ab, antwortet `submit-quiz` mit `503` beziehungsweise `502`, und die Engine
+behält das Ergebnis im Sende-Ausgang auf dem Gerät. Bis dahin gab es einen
+Pilotweg über Netlify Forms, auf dem die Engine Name, Betrieb, Händlernummer,
+Bereich und alle Antworten im Formular `campus-quiz-result` ablegte — er ist
+aus Function, Engine und Paket entfernt. Was dort vor dem 4. September 2026
+ankam, liegt weiter im Netlify-Dashboard: **die Frist von zwölf Monaten
+greift dort nicht automatisch**, diese Einträge werden von Hand geräumt.
+
+**Der Feedbackbogen hat diesen Ausweichweg noch.** Antwortet `submit-feedback`
+mit `fallback: "netlify_forms"`, legt `Feedbackbogen/app-v14.js` den Bogen im
+Formular `campus-feedback` ab. Deshalb nennt Abschnitt 8 des Hinweises
+Netlify Forms weiterhin, und deshalb gilt die Handräumung auch für diese
+Einträge.
 
 **THI bekommt keine Teilnehmerdaten.** Mitgeschickt werden die laufende Frage
 und der bisherige Verlauf. Der voreingestellte Anymize-Endpunkt

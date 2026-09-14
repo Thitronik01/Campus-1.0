@@ -5,7 +5,8 @@ mit Datenbankmigration, Einwilligungsnachweis, mobilen Verbesserungen und Prüfp
 
 Die digitale Wissenskontrolle nach jeder Schulungsinsel. Statische Seite, kein
 Framework. Die Netlify-Function bewertet serverseitig und speichert seit
-der Inbetriebnahme in Supabase. Netlify Forms bleibt als Ausweichweg erhalten.
+der Inbetriebnahme in Supabase. Einen zweiten Speicher gibt es nicht: Lehnt
+die Datenbank ab, bleibt das Ergebnis im Sende-Ausgang auf dem Gerät.
 
 **Eine Engine, sieben Fragensätze.** Nicht sieben Anwendungen — das ist die
 zentrale Entscheidung dieses Projekts und der Grund, warum es überhaupt neu
@@ -27,7 +28,7 @@ gebaut wurde.
 | `FOTOLISTE-HIDDENSEE.md` | Dasselbe ausführlich für HIDDENSEE, mit Aufnahmehinweisen |
 | `tools/bilder-aufbereiten.js` | Rechnet Bilder auf WebP unter 150 KB um |
 | `tools/karten-assets.js` | Macht aus dem Asset-Pack die Motive der Expeditionskarte |
-| `netlify/functions/submit-quiz.js` | Bewertet serverseitig; schreibt nach Supabase oder gibt den geprüften Netlify-Forms-Ausweichweg frei |
+| `netlify/functions/submit-quiz.js` | Bewertet serverseitig und schreibt nach Supabase; antwortet 502/503, wenn das nicht geht — der Browser behält das Ergebnis dann |
 | `supabase_campus_basis_migration.sql` | Vollständige Feedbackbasis für das neue, leere Campus-Projekt. Am 03.09.2026 eingespielt und geprüft. |
 | `supabase_campus_quiz_migration.sql` | Quiztabelle und gemeinsame Auswertungs-Views. Am 03.09.2026 nach der Basismigration eingespielt und geprüft. |
 | `SUPABASE-NEUAUFBAU.md` | Verbindlicher Klick-, Prüf- und Betriebsablauf für das neue Supabase-Projekt |
@@ -1184,11 +1185,18 @@ ob weiter versucht wird:
 | `5xx`, `408`, `429` | Server war da, konnte aber nicht | bleibt liegen, nächster Anlauf später |
 | übrige `4xx` | Absage an genau diesen Datensatz | wird als abgelehnt markiert, **keine** Automatik mehr |
 
-Fehlen die Supabase-Variablen oder ist die Datenbank nicht erreichbar, liefert
-die Function nach erfolgreicher Prüfung einen klaren Netlify-Forms-Ausweichweg.
-Der Browser speichert das Pilot-Ergebnis dann in `campus-quiz-result`. Ist auch
-Netlify Forms nicht erreichbar, bleibt der Eintrag im Sende-Ausgang und wird
-später erneut versucht.
+Fehlen die Supabase-Variablen (`503`) oder lehnt die Datenbank ab (`502`),
+bleibt der Eintrag im Sende-Ausgang und wird später erneut versucht; die
+Ergebniskarte sagt dann „Der Server konnte gerade nicht speichern" und nennt
+den Grund. Bis Engine 1.47 gab es an dieser Stelle einen Ausweichweg über
+Netlify Forms — der Browser legte das Ergebnis selbst dort ab, an der
+serverseitigen Bewertung vorbei und ohne Duplikatschutz, und die Karte
+meldete „gespeichert", obwohl nichts in der Datenbank stand. Der ist weg.
+
+Kann das Gerät nichts zwischenspeichern (privater Modus, Speicher voll),
+liegt das Ergebnis nur in der geöffneten Seite. Der Statustext sagt dann
+genau das und bittet, die Seite offen zu lassen — statt „liegt auf dem
+Gerät" zu versprechen, was mit dem Schließen des Tabs weg wäre.
 
 Ein `400` wird nicht im Minutentakt wiederholt — daran ändert sich nichts.
 Der Eintrag bleibt trotzdem stehen, sichtbar und rot, mit der Bitte, sich bei
@@ -1237,12 +1245,12 @@ Auswertung — die kommt aus der Datenbank.
 
 ---
 
-## Pilotbetrieb und späteres Backend
+## Das Backend
 
-Vor der Datenbankphase werden gültige Quiz-Ergebnisse in Netlify Forms
-gesammelt. Netlify zeigt sie im Site-Dashboard und exportiert sie als CSV. Die
-Function prüft und bewertet jede Einsendung trotzdem serverseitig; manipulierte
-Prozentwerte aus dem Browser werden weiterhin ignoriert.
+Quiz-Ergebnisse gehen ausschließlich nach Supabase. Die Pilotphase über
+Netlify Forms ist mit Engine 1.47 abgeschlossen; Einträge, die dort vor dem
+3. September 2026 ankamen, bleiben Bestand und werden nicht ausgewertet
+(siehe `INBETRIEBNAHME.md`).
 
 ### Supabase-Neuaufbau
 
@@ -1278,9 +1286,9 @@ das selbst.
 
 Die Variablen sind seit dem 3. September 2026 gesetzt — der Schlüssel nur im
 Kontext Production, damit Deploy Previews nicht in dieselbe Datenbank
-schreiben. Seitdem gehen Einsendungen nach Supabase; Netlify Forms bleibt als
-Netz für den Fall, dass die Datenbank einmal nicht erreichbar ist. Was wann
-tatsächlich lief, steht im Betriebsprotokoll in
+schreiben. Seitdem gehen Einsendungen nach Supabase; ist die Datenbank einmal
+nicht erreichbar, hält der Sende-Ausgang auf dem Gerät das Ergebnis, bis sie
+es wieder ist. Was wann tatsächlich lief, steht im Betriebsprotokoll in
 [`SUPABASE-NEUAUFBAU.md`](SUPABASE-NEUAUFBAU.md).
 
 ### Schutz der Schreibfunktionen

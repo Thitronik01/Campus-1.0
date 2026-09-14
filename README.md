@@ -141,7 +141,7 @@ Dann [http://localhost:8788/quiz](http://localhost:8788/quiz).
 
 > **Für Tests immer `?demo=1` anhängen.** Damit läuft das Quiz vollständig
 > durch, speichert aber absichtlich nichts — sonst landen Testdaten nach dem
-> Deploy in Netlify Forms oder später in Supabase.
+> Deploy in der Produktivdatenbank.
 
 Vor jeder Änderung am Bestand:
 
@@ -197,8 +197,8 @@ manueller Schritt.
 
 | Baustein | Rolle |
 |---|---|
-| **Netlify** | Auslieferung, Function und Forms für die datenbankfreie Pilotphase |
-| **Supabase** | Späterer Ausbau für dauerhafte Ergebnisse und Auswertungs-Views |
+| **Netlify** | Auslieferung und die Functions, die bewerten und speichern |
+| **Supabase** | Der Speicher für Ergebnisse und Feedback samt Auswertungs-Views, seit dem 03.09.2026 im Betrieb |
 | **Browser** | die einzige Anwendung, die der Händler braucht |
 
 Kein Framework, kein Build-Schritt für die Seite selbst, keine App, keine

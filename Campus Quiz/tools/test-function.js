@@ -240,17 +240,19 @@ function buildPayload(mode, overrides = {}) {
   check("Vierte Einsendung im Zeitfenster → 429",
     r.status === 429 && r.body.code === "RATE_LIMIT", JSON.stringify(r.body));
 
-  console.log("\nPilotbetrieb ohne Datenbank\n");
+  console.log("\nOhne Datenbank\n");
   const urlVorher = process.env.SUPABASE_URL;
   const keyVorher = process.env.SUPABASE_SECRET_KEY;
   delete process.env.SUPABASE_URL;
   delete process.env.SUPABASE_SECRET_KEY;
   r = await call(buildPayload("richtig"));
-  check("Ohne Datenbank → 503 mit Netlify-Forms-Ausweichweg",
-    r.status === 503 && r.body.fallback === "netlify_forms", JSON.stringify(r.body));
-  check("Pilot-Zusammenfassung wird serverseitig berechnet",
-    r.body.pilot && r.body.pilot.score === island.questions.length && r.body.pilot.percent === 100,
-    JSON.stringify(r.body.pilot));
+  check("Ohne Datenbank → 503, damit der Browser das Ergebnis behält",
+    r.status === 503 && r.body.code === "BACKEND_NOT_CONFIGURED", JSON.stringify(r.body));
+  // Der Ausweichweg über Netlify Forms ist seit Engine 1.47 weg: Er ließ den
+  // Browser das Ergebnis an der serverseitigen Bewertung vorbei ablegen und
+  // die Ergebniskarte „gespeichert" sagen, wenn nichts gespeichert war.
+  check("Kein Ausweichweg und keine Zusammenfassung mehr in der Antwort",
+    !("fallback" in r.body) && !("pilot" in r.body), JSON.stringify(r.body));
   process.env.SUPABASE_URL = urlVorher;
   process.env.SUPABASE_SECRET_KEY = keyVorher;
 

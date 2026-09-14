@@ -126,9 +126,14 @@ function engineFassung() {
   return treffer[1];
 }
 
-/** Setzt die Fassung in alle ?v=-Verweise der index.html ein. */
+/** Setzt die Fassung in alle ?v=-Verweise der index.html ein — unter
+ *  /assets/ wie unter /media/, denn beide werden ein Jahr immutable
+ *  ausgeliefert (siehe medienUrl() in engine.js). Bis 1.47 traf der
+ *  Ausdruck nur /assets/ und nur Dateinamen aus Kleinbuchstaben, Punkt und
+ *  Strich; die Firmensitz-Bilder im Onboarding behielten dadurch die Marke,
+ *  die zufällig in der Quelle stand. */
 function fassungEinsetzen(html, fassung) {
-  return html.replace(/(\/assets\/[a-z.-]+)\?v=[^"']*/g, `$1?v=${fassung}`);
+  return html.replace(/(\/(?:assets|media)\/[A-Za-z0-9./_-]+)\?v=[^"'\s]*/g, `$1?v=${fassung}`);
 }
 
 function lies(...teile) {
@@ -704,13 +709,14 @@ diesem Ordner mit der Netlify CLI \`netlify deploy --build --prod\` ausführen.
 Ein reines Drag-and-drop von \`public/\` veröffentlicht nur die statischen
 Dateien und reicht für diesen Stand nicht aus.
 
-### Pilotphase ohne Datenbank
+### Datenbank
 
-Unter **Forms → Enable form detection** die Formularerkennung aktivieren und
-danach einmal neu deployen. Die Quiz-Ergebnisse stehen dann in Netlify unter
-**Forms** und lassen sich als CSV exportieren.
-
-Für diesen Stand sind keine Umgebungsvariablen und keine Datenbank nötig.
+Die Function speichert in Supabase und braucht dafür in Netlify die
+Umgebungsvariablen \`SUPABASE_URL\` und \`SUPABASE_SECRET_KEY\` (welche
+Werte, steht in \`Campus Quiz/SUPABASE-NEUAUFBAU.md\`). Fehlen sie, wird
+nichts gespeichert — auch nirgendwo anders: Das Ergebnis bleibt dann im
+Sende-Ausgang auf dem Gerät und geht raus, sobald die Function speichern
+kann.
 
 ---
 
@@ -724,13 +730,14 @@ Dann **einmal ohne** \`?demo=1\`. Unter dem Ergebnis muss stehen:
 
 > Ergebnis gespeichert. Danke!
 
-In Netlify unter **Forms** muss anschließend \`campus-quiz-result\` erscheinen.
-Fehlt eine Einsendung, sind dies die häufigsten Ursachen:
+In Supabase muss anschließend eine neue Zeile in \`campus_quiz_submissions\`
+stehen — dort nachzählen, nicht dem Bildschirm glauben. Fehlt sie, sind dies
+die häufigsten Ursachen:
 
 | Meldung | Ursache |
 |---|---|
-| Formular fehlt im Dashboard | Formularerkennung aktivieren und neu deployen |
-| „Noch keine Verbindung" | Die Function oder Netlify Forms ist nicht erreichbar |
+| „Der Server konnte gerade nicht speichern" | Datenbank lehnt ab oder Variablen fehlen — Netlify → Functions → submit-quiz → Logs |
+| „Noch keine Verbindung" | Die Function ist nicht erreichbar |
 | Einsendung liegt im Sende-Ausgang | Seite nach wiederhergestellter Verbindung erneut öffnen und „Jetzt senden" wählen |
 
 **Ein Ergebnis geht dabei nicht verloren.** Es liegt auf dem Gerät, bis der
@@ -830,13 +837,16 @@ diesem Ordner mit der Netlify CLI \`netlify deploy --build --prod\` ausführen.
 Ein reines Drag-and-drop von \`public/\` veröffentlicht nur die statischen
 Dateien und reicht für diesen Stand nicht aus.
 
-### Pilotphase ohne Datenbank
+### Datenbank
 
-Unter **Forms → Enable form detection** die Formularerkennung aktivieren und
-danach einmal neu deployen. Die Quiz-Ergebnisse und der Feedbackbogen stehen
-dann in Netlify unter **Forms** und lassen sich als CSV exportieren.
-
-Für diesen Stand sind keine Umgebungsvariablen und keine Datenbank nötig.
+Beide Functions speichern in Supabase und brauchen dafür in Netlify die
+Umgebungsvariablen \`SUPABASE_URL\` und \`SUPABASE_SECRET_KEY\` (welche
+Werte, steht in \`Campus Quiz/SUPABASE-NEUAUFBAU.md\`). Fehlen sie, wird
+kein Quiz-Ergebnis gespeichert — auch nirgendwo anders: Es bleibt im
+Sende-Ausgang auf dem Gerät, bis die Function speichern kann. Nur der
+Feedbackbogen kennt noch einen Ausweichweg über Netlify Forms
+(\`campus-feedback\`); dafür bleibt unter **Forms → Enable form detection**
+die Formularerkennung an.
 
 ---
 
@@ -850,14 +860,14 @@ Dann **einmal ohne** \`?demo=1\`. Unter dem Ergebnis muss stehen:
 
 > Ergebnis gespeichert. Danke!
 
-In Netlify unter **Forms** müssen anschließend \`campus-quiz-result\` und
-\`campus-feedback\` erscheinen. Fehlt eine Einsendung, sind dies die
-häufigsten Ursachen:
+In Supabase muss anschließend eine neue Zeile in \`campus_quiz_submissions\`
+stehen, nach dem Feedbackbogen eine in \`campus_feedback\` — dort nachzählen,
+nicht dem Bildschirm glauben. Fehlt sie, sind dies die häufigsten Ursachen:
 
 | Meldung | Ursache |
 |---|---|
-| Formular fehlt im Dashboard | Formularerkennung aktivieren und neu deployen |
-| „Noch keine Verbindung" | Die Function oder Netlify Forms ist nicht erreichbar |
+| „Der Server konnte gerade nicht speichern" | Datenbank lehnt ab oder Variablen fehlen — Netlify → Functions → submit-quiz → Logs |
+| „Noch keine Verbindung" | Die Function ist nicht erreichbar |
 | Einsendung liegt im Sende-Ausgang | Seite nach wiederhergestellter Verbindung erneut öffnen und „Jetzt senden" wählen |
 
 **Ein Ergebnis geht dabei nicht verloren.** Es liegt auf dem Gerät, bis der
