@@ -8,8 +8,8 @@
   <meta name="description" content="THITRONIK Campus: Wissenscheck nach jeder Schulungsinsel.">
   <meta name="robots" content="noindex, nofollow">
   <title>THITRONIK Campus: Wissenscheck</title>
-  <link rel="stylesheet" href="/assets/styles.css?v=1.47.0">
-  <link rel="stylesheet" href="/assets/thi.css?v=1.47.0">
+  <link rel="stylesheet" href="/assets/styles.css?v=1.48.0">
+  <link rel="stylesheet" href="/assets/thi.css?v=1.48.0">
 </head>
 <body>
   <svg width="0" height="0" aria-hidden="true" focusable="false"><defs><filter id="island-cutout" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  10 10 10 0 -1"/></filter></defs></svg>
@@ -28,7 +28,7 @@
       </button>
       <div class="brand">
         <a class="brand-home" href="/quiz" aria-label="Zur Campus-Karte">
-          <img class="brand-logo" src="/assets/thitronik-logo.png?v=1.47.0"
+          <img class="brand-logo" src="/assets/thitronik-logo.png?v=1.48.0"
                alt="THITRONIK, Alarmtechnik made in Germany" width="769" height="214">
         </a>
         <span class="brand-copy">
@@ -81,18 +81,18 @@
           <div class="onboarding-hero">
             <picture class="onboarding-picture">
               <source type="image/webp"
-                      srcset="/media/campus/firmensitz-640.webp?v=1.47.0 640w,
-                              /media/campus/firmensitz-1024.webp?v=1.47.0 1024w,
-                              /media/campus/firmensitz-1600.webp?v=1.47.0 1600w"
+                      srcset="/media/campus/firmensitz-640.webp?v=1.48.0 640w,
+                              /media/campus/firmensitz-1024.webp?v=1.48.0 1024w,
+                              /media/campus/firmensitz-1600.webp?v=1.48.0 1600w"
                       sizes="(min-width: 1200px) 50vw, 100vw">
-              <img src="/media/campus/firmensitz-1600.jpg?v=1.47.0"
+              <img src="/media/campus/firmensitz-1600.jpg?v=1.48.0"
                    alt="Luftaufnahme des THITRONIK-Firmensitzes in Eckernförde"
                    width="1600" height="1198" fetchpriority="high">
             </picture>
             <div class="onboarding-hero-content">
               <div class="onboarding-brand">
                 <span class="onboarding-logo-wrap">
-                  <img src="/assets/thitronik-logo.png?v=1.47.0"
+                  <img src="/assets/thitronik-logo.png?v=1.48.0"
                        alt="THITRONIK, Alarmtechnik made in Germany"
                        width="769" height="214">
                 </span>
@@ -278,7 +278,8 @@
               <section id="overview-location" class="overview-location" aria-label="Standort der Insel"><div class="overview-location-head"><h3>Hier findest du die Insel</h3><span id="overview-location-note">Vorläufig</span></div><dl><div><dt>Gebäude</dt><dd id="overview-building"></dd></div><div><dt>Geschoss</dt><dd id="overview-floor"></dd></div><div><dt>Raum</dt><dd id="overview-room"></dd></div></dl></section>
               <p class="orbit-hero-stand" id="orbit-hero-stand">Noch nicht begonnen</p>
               <a class="btn btn-primary orbit-start" id="orbit-start" href="/quiz/vejro">Starten</a>
-              <a class="btn overview-praxis" id="overview-praxis" href="/arbeitskarte/" hidden>Arbeitskarte öffnen →</a>
+              <a class="btn btn-praxis overview-praxis" id="overview-praxis" href="/arbeitskarte/" hidden>Arbeitskarte öffnen →</a>
+              <button class="btn overview-fall" id="overview-fall" type="button" hidden>Fall mit THI aufnehmen →</button>
             </div>
             <button class="orbit-pfeil orbit-pfeil-links" id="orbit-zurueck" type="button" aria-label="Vorherige Insel">
               <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14.5 5.5 8 12l6.5 6.5"></path></svg>
@@ -503,7 +504,16 @@
         <section class="praxis-einstieg" id="langeland-praxis" hidden>
           <div><p class="eyebrow">LANGELAND · PRAXIS</p><h2>Arbeitskarte</h2>
           <p>Hier öffnest du die digitale Arbeitskarte für Annahme und Übergabe.</p></div>
-          <a class="btn btn-primary" id="langeland-praxis-link" href="/arbeitskarte/">Arbeitskarte öffnen →</a>
+          <a class="btn btn-praxis" id="langeland-praxis-link" href="/arbeitskarte/">Arbeitskarte öffnen →</a>
+        </section>
+        <!-- FEHMARN: die Insel der Fehlersuche bekommt den Einstieg in THIs
+             strukturierte Fallaufnahme — sechs Felder, aus denen THI eine
+             erste Einschätzung baut. Der Knopf öffnet das THI-Panel mit
+             aufgeklappter Vorlage (window.THI.fallaufnahme). -->
+        <section class="praxis-einstieg fall-einstieg" id="fehmarn-fall" hidden>
+          <div><p class="eyebrow">FEHMARN · SUPPORT</p><h2>Fall mit THI aufnehmen</h2>
+          <p>Fahrzeug, Produkt und Fehlerbild in sechs Feldern. THI prüft den Fall und fragt gezielt nach dem, was noch fehlt.</p></div>
+          <button class="btn btn-primary" id="fehmarn-fall-knopf" type="button">Fallaufnahme öffnen →</button>
         </section>
         <section class="betreuung" id="betreuung" aria-labelledby="betreuung-titel" hidden>
           <h2 class="betreuung-titel" id="betreuung-titel">Betreuung auf dieser Insel</h2>
@@ -808,11 +818,11 @@
        abgelehntes Ergebnis im Sende-Ausgang auf dem Gerät (engine.js,
        sendeEinen). -->
 
-  <script src="/assets/campus-einwilligung.js?v=1.47.0" defer></script>
-  <script src="/assets/engine.js?v=1.47.0" defer></script>
+  <script src="/assets/campus-einwilligung.js?v=1.48.0" defer></script>
+  <script src="/assets/engine.js?v=1.48.0" defer></script>
   <!-- THI haengt seinen Schalter selbst in .masthead-tools ein und baut sein
        Panel an den Seitenkoerper. Faellt das Skript aus, fehlt nur THI —
        Kopfzeile und Quiz bleiben unberuehrt. -->
-  <script src="/assets/thi.js?v=1.47.0" defer></script>
+  <script src="/assets/thi.js?v=1.48.0" defer></script>
 </body>
 </html>

@@ -261,51 +261,139 @@
 
 .thi-vorlage[hidden] { display: none; }
 
-.thi-vorlagen-formular { display: grid; gap: 13px; }
+/* Drei nummerierte Karten statt sechs gleichförmiger Felder untereinander:
+   Fahrzeug, Produkt, Anliegen. Die Gliederung sagt, wo man anfängt und wie
+   viel noch kommt; die Nummer steht als Kreis vor der Überschrift, die
+   Felder liegen auf Weiß, die Seite bleibt hellblau. Zusammengehörige
+   Angaben (Modell und Baujahr, Stand und Einbau) teilen sich eine Zeile,
+   sobald das Panel breit genug ist. */
+.thi-vorlagen-formular { display: grid; gap: 14px; }
+
+.thi-vorlage-kopf { display: grid; gap: 4px; padding: 2px 2px 0; }
 
 .thi-vorlagen-formular h2 {
   margin: 0;
   color: var(--th-navy);
-  font-size: 1.08rem;
+  font-size: 1.14rem;
+  font-weight: 800;
   line-height: 1.25;
 }
 
-.thi-vorlage-einleitung,
-.thi-vorlagen-hinweis {
+.thi-vorlage-einleitung {
   margin: 0;
   color: var(--th-muted);
-  font-size: .8rem;
+  font-size: .84rem;
   line-height: 1.45;
 }
 
-.thi-vorlagen-feld { display: grid; gap: 5px; }
+.thi-vorlagen-gruppe {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 14px 14px 16px;
+  border: 1px solid var(--th-line);
+  border-radius: var(--radius-md);
+  background: var(--th-white);
+  box-shadow: 0 8px 22px rgba(10, 39, 71, .06);
+}
+
+.thi-vorlagen-gruppe legend {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 4px;
+  padding: 0;
+  color: var(--th-navy);
+  font-size: .78rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.thi-vorlagen-nummer {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--th-navy);
+  color: var(--th-white);
+  font-size: .74rem;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.thi-vorlagen-zeile { display: grid; gap: 12px; }
+
+@media (min-width: 420px) {
+  .thi-vorlagen-zeile { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); }
+}
+
+.thi-vorlagen-feld { display: grid; gap: 6px; min-width: 0; }
 
 .thi-vorlagen-feld label {
   color: var(--th-navy);
-  font-size: .8rem;
-  font-weight: 800;
+  font-size: .82rem;
+  font-weight: 700;
 }
 
 .thi-vorlagen-feld input,
 .thi-vorlagen-feld textarea {
   width: 100%;
-  min-height: 44px;
-  padding: 10px 11px;
+  min-height: var(--tap);
+  padding: 10px 12px;
   border: 1px solid var(--th-line-strong);
-  border-radius: var(--radius-sm);
-  background: var(--th-white);
+  border-radius: 12px;
+  background: var(--th-page);
   color: var(--th-ink);
   font: inherit;
-  font-size: .88rem;
+  font-size: .92rem;
   line-height: 1.4;
+  transition: border-color var(--duration-fast) var(--ease-out),
+              box-shadow var(--duration-fast) var(--ease-out),
+              background-color var(--duration-fast) var(--ease-out);
 }
 
-.thi-vorlagen-feld textarea { min-height: 88px; resize: vertical; }
+.thi-vorlagen-feld input::placeholder,
+.thi-vorlagen-feld textarea::placeholder { color: #8A94A3; }
+
+.thi-vorlagen-feld input:focus,
+.thi-vorlagen-feld textarea:focus {
+  outline: none;
+  border-color: var(--th-blue);
+  background: var(--th-white);
+  box-shadow: 0 0 0 3px rgba(59, 169, 211, .25);
+}
+
+.thi-vorlagen-feld textarea { min-height: 112px; resize: vertical; }
 
 .thi-vorlagen-feld small {
   color: var(--th-muted);
-  font-size: .72rem;
+  font-size: .74rem;
   line-height: 1.35;
+}
+
+.thi-vorlagen-hinweis {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+  padding: 0 2px;
+  color: var(--th-muted);
+  font-size: .78rem;
+  line-height: 1.45;
+}
+
+.thi-vorlagen-hinweis svg {
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  margin-top: 1px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .thi-vorlagen-fehler {
@@ -321,22 +409,36 @@
 
 .thi-vorlagen-fehler[hidden] { display: none; }
 
+/* Die Aktionen kleben unten am sichtbaren Rand des scrollenden Bereichs:
+   Wer das Anliegen tippt, sieht den Knopf, ohne erst nach unten zu
+   scrollen. Übernehmen in Neon-Lime wie der Startknopf im Campus, damit
+   klar ist, welcher der beiden Knöpfe der Weg nach vorn ist. */
 .thi-vorlagen-aktionen {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  padding-bottom: max(2px, env(safe-area-inset-bottom));
+  position: sticky;
+  bottom: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  margin: 2px -16px -18px;
+  padding: 12px 16px max(14px, env(safe-area-inset-bottom));
+  background: linear-gradient(180deg, rgba(240, 246, 250, 0) 0%, var(--th-page) 34%);
 }
 
 .thi-vorlagen-aktionen button {
-  min-height: 44px;
-  padding: 9px 12px;
-  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: var(--tap);
+  padding: 9px 16px;
+  border-radius: 12px;
   font: inherit;
-  font-size: .8rem;
+  font-size: .86rem;
   font-weight: 800;
   cursor: pointer;
   touch-action: manipulation;
+  transition: background-color var(--duration-fast) var(--ease-out),
+              transform var(--duration-press) var(--ease-out);
 }
 
 .thi-vorlagen-abbrechen {
@@ -346,14 +448,25 @@
 }
 
 .thi-vorlagen-uebernehmen {
-  border: 1px solid var(--th-navy);
-  background: var(--th-navy);
-  color: var(--th-white);
+  border: 1px solid #92B900;
+  background: #B8F500;
+  color: #0A2747;
+  box-shadow: 0 10px 22px rgba(146, 185, 0, .32);
+}
+
+.thi-vorlagen-uebernehmen svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .thi-vorlagen-abbrechen:hover { background: var(--th-soft); }
-.thi-vorlagen-uebernehmen:hover { background: var(--th-navy-deep); }
-.thi-vorlagen-aktionen button:active { opacity: .82; }
+.thi-vorlagen-uebernehmen:hover { background: #C4FF18; }
+.thi-vorlagen-aktionen button:active { transform: scale(.98); }
 
 /* -------------------------------------------------------------- Verlauf --- */
 
@@ -744,7 +857,9 @@
      so bleibt es bei Kanten statt Umrechnung (siehe Kopf der Datei). */
   .thi-panel { left: 0; width: auto; border-left: 0; }
   .thi-blase { max-width: 90%; }
-  .thi-vorlagen-aktionen { display: grid; grid-template-columns: 1fr; }
+  /* Auf dem Telefon nicht klebend: Zwei gestapelte Knöpfe nähmen dem
+     kleinen Schirm ein Viertel und lägen beim Tippen über dem Anliegen. */
+  .thi-vorlagen-aktionen { position: static; display: grid; grid-template-columns: 1fr; margin: 2px 0 0; padding: 0 0 max(4px, env(safe-area-inset-bottom)); background: none; }
   .thi-vorlagen-uebernehmen { grid-row: 1; }
 }
 

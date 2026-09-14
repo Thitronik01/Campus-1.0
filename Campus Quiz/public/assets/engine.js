@@ -13,7 +13,7 @@
 
 (function () {
   const EVENT_SLUG = "campus-2026";
-  const ENGINE_VERSION = "1.47.0";
+  const ENGINE_VERSION = "1.48.0";
   const SUBMIT_ENDPOINT = "/.netlify/functions/submit-quiz";
 
   const LS_PARTICIPANT = "thitronik.campus.2026.participant";
@@ -1439,6 +1439,11 @@
     el.orbit.dataset.slug = aktivSlug;
     $("overview-praxis").hidden = aktivSlug !== "langeland" || !state.catalog.arbeitskarte;
     $("overview-praxis").href = campusUrl(state.catalog.arbeitskarte || "/arbeitskarte/");
+    // FEHMARN ist die Insel der Fehlersuche; dort gehört die strukturierte
+    // Fallaufnahme von THI genauso an die Kachel wie die Arbeitskarte an
+    // LANGELAND. Ob THI da ist, entscheidet sich erst beim Klick — thi.js
+    // lädt nach engine.js.
+    $("overview-fall").hidden = aktivSlug !== "fehmarn";
     el.islandGrid.querySelectorAll(".island-map-item").forEach(li => {
       const button = li.querySelector("button");
       if (button) button.setAttribute("aria-pressed", String(li.dataset.slug === aktivSlug));
@@ -1741,7 +1746,7 @@
             : unterwegs
               ? `Abgeschlossen · ${entry.percent} % - noch nicht gesendet`
               : `Abgeschlossen · ${entry.percent} %`)}</span>
-          ${entry ? `<span class="i-score" aria-hidden="true"><span></span></span>` : ""}
+          ${entry ? `<span class="i-fortschritt" aria-hidden="true"><span class="i-score"><span></span></span><span class="i-wert">${Number(entry.percent) || 0} %</span></span>` : ""}
         </span>
         <span class="i-open" aria-hidden="true"></span>`;
       card.addEventListener("click", () => {
@@ -1878,6 +1883,7 @@
     $("langeland-praxis").hidden = !isLangeland || !state.catalog.arbeitskarte;
     $("langeland-praxis-link").href = campusUrl(state.catalog.arbeitskarte || "/arbeitskarte/");
     const isFehmarn = island.island === "fehmarn";
+    $("fehmarn-fall").hidden = !isFehmarn;
 
     el.screens.start.dataset.island = island.island || "";
     renderBetreuung(island.island || "");
@@ -3282,6 +3288,15 @@
   }
 
   // ------------------------------------------------------------- Ereignisse --
+
+  // Die Fallaufnahme öffnet THI mit aufgeklappter Vorlage. THI hängt sich
+  // selbst an window.THI; fehlt es (Seite ohne Kopfzeile, Skript blockiert),
+  // öffnet sich stattdessen nichts — besser als ein Fehler in der Konsole.
+  ["fehmarn-fall-knopf", "overview-fall"].forEach((id) => {
+    $(id).addEventListener("click", () => {
+      if (window.THI && typeof window.THI.fallaufnahme === "function") window.THI.fallaufnahme();
+    });
+  });
 
   [el.profileFirstName, el.profileLastName, el.profileCompany, el.profileNumber].forEach((input) => {
     input.addEventListener("input", () => {
