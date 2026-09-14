@@ -15,7 +15,7 @@ und ein Fehler dort ist teurer.
 
 Der Deploy schaltet mit Supabase auch die **Speicherung von Klarnamen** scharf
 — Name, Betrieb, Händlernummer, Tätigkeitsbereich, alle Antworten. Drei
-Punkte dazu sind offen und stehen ausführlich in [`BACKLOG.md`](BACKLOG.md):
+Punkte dazu waren offen (Rückstand aus dem Audit vom 30. August):
 
 | | Stand 3. September 2026 |
 |---|---|
@@ -273,6 +273,6 @@ Einträge von Hand räumt (Punkt 2 unter „Was als Nächstes zu tun ist").
 ## Danach
 
 Der Stand ist damit vollständig: Quiz, Feedbackbogen, Arbeitskarte, THI und
-Datenbank. Was danach ansteht, steht nach Schwere geordnet in
-[`BACKLOG.md`](BACKLOG.md) — die drei Punkte aus dem Abschnitt ganz oben
-zuerst.
+Datenbank. Was danach ansteht, läuft als Issue im Repository; vom Rückstand
+des Audits ist in [`BACKLOG.md`](BACKLOG.md) nur noch die Entscheidung zu
+`export/` übrig.
