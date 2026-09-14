@@ -867,7 +867,7 @@ aus.
 > **Geprüft wird das nicht.** `test-paket.js` vergleicht nur, ob die Marken
 > zur Fassung passen — und das tun sie immer, weil der Bau sie von dort
 > nimmt. Ob jemand die Fassung überhaupt *hochgezählt* hat, merkt niemand.
-> Siehe [`BACKLOG.md`](../BACKLOG.md).
+> Offen als Issue #113.
 
 ### Eine Insel ergänzen
 

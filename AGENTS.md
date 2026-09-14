@@ -195,7 +195,7 @@ Entwicklungsserver alte Dateien aus.
 
 Geprüft wird das derzeit **nicht** — die Paketprüfung vergleicht nur, ob die
 Marken zur Fassung passen, und das tun sie immer, weil der Bau sie von dort
-nimmt. Siehe Rückstand in [`BACKLOG.md`](BACKLOG.md).
+nimmt. Offen als Issue #113.
 
 ### Die Wurzel-netlify.toml ist die, die zählt
 

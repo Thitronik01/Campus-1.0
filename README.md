@@ -237,10 +237,10 @@ der Browser wieder Empfang meldet. Solange etwas aussteht, sagt die Insel
 
 **Noch offen**
 
-- THI und Supabase scharfschalten — Ablauf Schritt für Schritt in [`INBETRIEBNAHME.md`](INBETRIEBNAHME.md)
-- **64 Befunde aus dem Audit vom 30.08.2026**, nach Schwere geordnet in [`BACKLOG.md`](BACKLOG.md).
-  Zehn davon sind mit „hoch" bewertet; drei betreffen personenbezogene Daten und
-  gehören vor dem Scharfschalten von Supabase entschieden.
+- THI und Supabase sind seit dem 03.09.2026 scharf — Ablauf und Betriebsprotokoll in [`INBETRIEBNAHME.md`](INBETRIEBNAHME.md)
+- **Vom Audit vom 30.08.2026 ist am 14.09.2026 ein Befund übrig** (eine Entscheidung zu `export/`), siehe [`BACKLOG.md`](BACKLOG.md).
+  Alles Weitere läuft als Issue im Repository — offen sind vor allem Inhalte:
+  Fotos, fachliches Gegenlesen, Tests auf echter Hardware.
 - Weitere Werkstattbilder für Bildfragen, siehe [Wunschliste](Campus%20Quiz/BILDER-WUNSCHLISTE.md)
 - Fachliche Freigabe der Fragen
 
