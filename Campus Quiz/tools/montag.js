@@ -318,8 +318,9 @@ if (fehlgeschlagen) {
 console.log(`  ${gruen(browserExtern ? "Alle hier ausgeführten Prüfungen grün. Browserergebnis separat in GitHub prüfen." : "Alles grün.")}`);
 
 // Seit dem 3. September 2026 schreiben Quiz und Feedback über die geschützten
-// Functions nach Supabase; Netlify Forms bleibt nur noch als Netz für den
-// Fall, dass die Datenbank einmal nicht erreichbar ist. Ob die Variablen in
+// Functions nach Supabase. Für das Quiz gibt es seit Engine 1.47 keinen
+// zweiten Speicher mehr: Lehnt die Datenbank ab, bleibt das Ergebnis im
+// Sende-Ausgang auf dem Gerät. Ob die Variablen in
 // Netlify gesetzt sind, kann dieses Werkzeug nicht sehen — es nennt deshalb
 // die Migrationsreihenfolge für ein frisches Projekt und verweist auf das
 // Betriebsprotokoll, das den tatsächlichen Stand führt.
@@ -360,8 +361,7 @@ console.log(grau("    mit 501 — es geht also nichts an Netlify. Die Engine leg
 console.log(grau("    in den Ausgang, die Inselkachel meldet \"noch nicht gesendet\"."));
 console.log("");
 console.log(`  ${fett("Sonst immer")} ${fett(`http://localhost:${PORT}/quiz?demo=1`)} — speichert absichtlich nichts.`);
-console.log(grau("    Ohne demo=1 landen Testdaten nach dem Deploy in Netlify Forms oder"));
-console.log(grau("    später — wenn eingerichtet — in Supabase."));
+console.log(grau("    Ohne demo=1 landen Testdaten nach dem Deploy in der Produktivdatenbank."));
 console.log(`\n  ${grau("Beenden mit Strg+C")}\n`);
 
 const server = spawn(process.execPath, [path.join("tools", "dev-server.js"), ZIEL], {

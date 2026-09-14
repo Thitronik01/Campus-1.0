@@ -59,10 +59,13 @@ Tag gedauert hat.
 
 ### Drei Fallen, in dieser Reihenfolge
 
-**Der Ausweichweg meldet Erfolg.** Lehnt die Datenbank ab, schickt der Browser
-das Ergebnis an Netlify Forms und hakt es als erledigt ab — die Ergebniskarte
-sagt dann „Ergebnis gespeichert. Danke!". Ein kaputter Schreibweg sieht damit
-aus wie ein funktionierender. **Wer prüft, ob gespeichert wurde, zählt in der
+**Der Ausweichweg meldet Erfolg** — galt bis Engine 1.47. Lehnte die Datenbank
+ab, schickte der Browser das Ergebnis an Netlify Forms und hakte es als
+erledigt ab; die Ergebniskarte sagte „Ergebnis gespeichert. Danke!". Ein
+kaputter Schreibweg sah damit aus wie ein funktionierender. Seit 1.47 gibt es
+den Weg für das Quiz nicht mehr: Bei 502 oder 503 bleibt das Ergebnis im
+Sende-Ausgang, und die Karte sagt „Der Server konnte gerade nicht speichern".
+Die Regel bleibt trotzdem: **Wer prüft, ob gespeichert wurde, zählt in der
 Datenbank nach, nicht auf dem Bildschirm.** Dass die Meldung unterscheidbar
 werden muss, steht als Rückstand.
 
@@ -82,8 +85,8 @@ Ein neuer Bau dauert hier zwanzig Sekunden.
 
 Der schnellste Weg, all das zu prüfen, ist ein Aufruf der Function von außen
 statt eines Durchlaufs im Browser. Antwortet sie `201 {"ok":true}`, steht der
-Weg; antwortet sie `502` mit `fallback: "netlify_forms"`, lehnt die Datenbank
-ab und der Grund steht in Netlify → Functions → `submit-quiz` → Logs.
+Weg; antwortet sie `502`, lehnt die Datenbank ab, bei `503` fehlen die
+Variablen — der Grund steht in Netlify → Functions → `submit-quiz` → Logs.
 
 ### Was als Nächstes zu tun ist
 
@@ -230,20 +233,27 @@ select * from public.campus_quiz_und_feedback;
 delete from public.campus_quiz_submissions where session_id = '…';
 ```
 
-### B5. Danach: Netlify Forms
+### B5. Netlify Forms — für das Quiz abgeschaltet
 
-Der Pilotweg über Netlify Forms bleibt als Sicherheitsnetz bestehen und
-schadet nicht. Er darf abgeschaltet werden, sobald ein paar Tage lang
-zuverlässig in Supabase geschrieben wurde. Vorher nicht — ein Netz nimmt man
-nicht weg, solange man es noch braucht.
+Der Pilotweg über Netlify Forms sollte als Sicherheitsnetz bleiben, bis ein
+paar Tage lang zuverlässig in Supabase geschrieben wurde. Das war am
+14. September 2026 der Fall (sieben Einsendungen an einem Tag, in Langdock
+ausgewertet), und mit Engine 1.47 ist der Weg für das Quiz entfernt — nicht
+abgeschaltet, sondern aus Function, Engine und Paket heraus. Das Netz für
+einen Ausfall ist seither der Sende-Ausgang auf dem Gerät: Das Ergebnis
+bleibt dort, bis die Function speichern kann, und geht von selbst raus.
 
-**Eine Nebenwirkung, die man kennen sollte:** Der Forms-Rückfallweg umgeht die
-serverseitige Bewertung. Was dort ankommt, ist das vom Browser gemeldete
-Ergebnis. Für die Auswertung zählt allein, was in Supabase steht.
+Der Grund, es nicht nur abzuschalten: Der Forms-Rückfallweg umging die
+serverseitige Bewertung (was dort ankam, war das vom Browser gemeldete
+Ergebnis), kannte keinen Duplikatschutz, und er ließ die Ergebniskarte
+„gespeichert" sagen, wenn nichts gespeichert war — die erste der drei Fallen
+oben.
 
-**Und eine zweite, die den Datenschutz betrifft:** Was in Netlify Forms liegt,
-erreicht die Aufräumroutine der Datenbank nicht. Die Zwölf-Monats-Frist gilt
-dort nur, wenn jemand die Einträge von Hand räumt.
+**Was bleibt:** Der Feedbackbogen weicht weiterhin auf Netlify Forms aus
+(`campus-feedback`), deshalb bleibt die Formularerkennung in Netlify an. Und
+was vor dem 4. September in Netlify Forms ankam, erreicht die Aufräumroutine
+der Datenbank nicht; die Zwölf-Monats-Frist gilt dort nur, wenn jemand die
+Einträge von Hand räumt (Punkt 2 unter „Was als Nächstes zu tun ist").
 
 ---
 

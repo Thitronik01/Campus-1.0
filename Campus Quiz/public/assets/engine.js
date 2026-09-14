@@ -13,7 +13,7 @@
 
 (function () {
   const EVENT_SLUG = "campus-2026";
-  const ENGINE_VERSION = "1.46.0";
+  const ENGINE_VERSION = "1.47.0";
   const SUBMIT_ENDPOINT = "/.netlify/functions/submit-quiz";
 
   const LS_PARTICIPANT = "thitronik.campus.2026.participant";
@@ -422,11 +422,13 @@
     if (next.feedbackMedia && next.feedbackMedia.src) quellen.push(next.feedbackMedia.src);
     (next.options || []).forEach((option) => { if (option.image) quellen.push(option.image); });
 
-    quellen.forEach((src) => { new Image().src = src; });
+    // Dieselbe Fassungsmarke wie beim späteren Anzeigen, sonst holt der
+    // Browser das Bild zweimal: einmal ohne, einmal mit ?v=.
+    quellen.forEach((src) => { new Image().src = medienUrl(src); });
     if (next.audio && next.audio.src) {
       const audio = document.createElement("audio");
       audio.preload = "metadata";
-      audio.src = next.audio.src;
+      audio.src = medienUrl(next.audio.src);
     }
   }
 
@@ -733,8 +735,11 @@
      200 { duplicate: true } statt einen zweiten Datensatz anzulegen. */
 
   /** Was sich nicht speichern ließ (privater Modus, Speicher voll). Hält
-   *  nur bis zum Schließen des Tabs - besser als gar nichts, und der
-   *  Statustext sagt in diesem Fall auch nichts anderes. */
+   *  nur bis zum Schließen des Tabs - besser als gar nichts. Solche
+   *  Einträge tragen `fluechtig: true`, und der Statustext sagt es dazu:
+   *  Bis 1.47 stand auch hier „liegt auf dem Gerät und wird nachgesendet",
+   *  und mit dem Schließen des Tabs war das Ergebnis weg, ohne dass es
+   *  jemand erfahren hätte (Rückstand R-16). */
   const fluechtig = [];
 
   function outboxLoad() {
@@ -758,7 +763,10 @@
     const eintrag = { payload, versuche: 0, fehler: null, blockiert: false };
     const liste = outboxLoad();
     liste.push(eintrag);
-    if (!outboxSave(liste)) fluechtig.push(eintrag);
+    if (!outboxSave(liste)) {
+      eintrag.fluechtig = true;
+      fluechtig.push(eintrag);
+    }
   }
 
   function outboxErsetzen(eintrag) {
@@ -1899,7 +1907,7 @@
         image.loading = "eager";
         image.decoding = "async";
         image.fetchPriority = "high";
-        image.src = image.dataset.src;
+        image.src = medienUrl(image.dataset.src);
       });
     });
 
@@ -2190,7 +2198,7 @@
       el.qMediaImg.dataset.layout = q.media.layout || q.layout || "landscape";
       el.qMediaCaption.textContent = q.media.caption || "Zum Vergrößern antippen";
       el.qMedia.hidden = false;
-      el.qMediaImg.src = q.media.src;
+      el.qMediaImg.src = medienUrl(q.media.src);
     } else {
       el.qMedia.hidden = true;
     }
@@ -2304,7 +2312,7 @@
       el.qAudio.hidden = true;
       return;
     }
-    player.src = q.audio.src;
+    player.src = medienUrl(q.audio.src);
     player.load();
     el.qAudioFallbackText.textContent = q.audio.fallbackText || "Für diesen Ton ist keine Textbeschreibung hinterlegt.";
     el.qAudio.hidden = false;
@@ -2410,7 +2418,7 @@
         // vergleicht der Teilnehmer leere Kästen, und die unteren beiden
         // Kacheln lädt der Browser erst beim Scrollen nach.
         button.innerHTML = `
-          <img class="answer-media" src="${escapeHtml(option.image)}" alt="${escapeHtml(alt)}"
+          <img class="answer-media" src="${escapeHtml(medienUrl(option.image))}" alt="${escapeHtml(alt)}"
                decoding="async" fetchpriority="high">
           <span class="answer-letter" aria-hidden="true">${letter}</span>
           ${option.text ? `<span class="answer-bild-text">${escapeHtml(option.text)}</span>` : ""}`;
@@ -2452,7 +2460,7 @@
         zoom.setAttribute("aria-label", `Bild ${letter} vergrößern`);
         zoom.addEventListener("click", (event) => {
           event.stopPropagation();
-          openLightbox(option.image, option.imageAlt || option.text, `Antwort ${letter}`);
+          openLightbox(medienUrl(option.image), option.imageAlt || option.text, `Antwort ${letter}`);
         });
         holder.appendChild(zoom);
 
@@ -2749,7 +2757,7 @@
     // Erklärbild zur Auflösung - im Fehmarn-Quiz zeigt das etwa den
     // „GPS inside"-Aufkleber, auf den es bei der Montage ankommt.
     if (q.feedbackMedia && q.feedbackMedia.src) {
-      el.qFeedbackMediaImg.src = q.feedbackMedia.src;
+      el.qFeedbackMediaImg.src = medienUrl(q.feedbackMedia.src);
       el.qFeedbackMediaImg.alt = q.feedbackMedia.alt || "";
       el.qFeedbackMediaCaption.textContent = q.feedbackMedia.caption || "";
       el.qFeedbackMediaCaption.hidden = !q.feedbackMedia.caption;
@@ -3099,74 +3107,46 @@
     const body = await response.json().catch(() => ({}));
     if (response.ok) return "ok";
 
-    // Vor der späteren Datenbankphase nimmt Netlify Forms die bereits
-    // serverseitig geprüften Ergebnisse als Pilotdaten an. Die Function
-    // liefert dafür ausschließlich die berechnete Zusammenfassung zurück;
-    // die korrekten Antworten selbst bleiben weiterhin im Servercode.
-    if (body.fallback === "netlify_forms") {
-      try {
-        await sendeNetlifyPilot(eintrag.payload, body.pilot || {});
-        return "ok";
-      } catch {
-        eintrag.fehler = "Netlify Forms ist noch nicht aktiviert oder nicht erreichbar.";
-        return "netz";
-      }
-    }
-
     // 5xx, 408 und 429 gehen vorbei - hierher gehört auch der Fall, dass die
-    // Migration noch nicht eingespielt ist: sobald die Tabelle steht, kommen
-    // die liegengebliebenen Ergebnisse von selbst durch. Ein 400 dagegen ist
-    // eine Absage an diesen Datensatz; ihn im Minutentakt erneut zu schicken
-    // ändert daran nichts.
+    // Datenbank ablehnt oder nicht konfiguriert ist (502 und 503 von der
+    // Function): Der Eintrag bleibt auf dem Gerät und geht beim nächsten
+    // Anlauf von selbst raus. Ein 400 dagegen ist eine Absage an diesen
+    // Datensatz; ihn im Minutentakt erneut zu schicken ändert daran nichts.
+    //
+    // Bis 1.47 gab es hier noch einen dritten Weg: Lehnte die Datenbank ab,
+    // schickte der Browser das Ergebnis als Formular an Netlify Forms und
+    // meldete „Ergebnis gespeichert" — die Ergebniskarte sah dann bei einem
+    // kaputten Schreibweg genauso aus wie bei einem heilen, und was dort
+    // ankam, war das vom Browser gemeldete Ergebnis, an der serverseitigen
+    // Bewertung vorbei (Rückstände R-40, R-17). Seit die Datenbank läuft,
+    // ist das Netz für den Ausfall der Ausgang auf dem Gerät, nicht ein
+    // zweiter Speicher, in den niemand schaut.
     const spaeter = response.status >= 500 || response.status === 408 || response.status === 429;
     eintrag.fehler = body.error || `Fehler ${response.status}`;
     return spaeter ? "netz" : "abgelehnt";
-  }
-
-  async function sendeNetlifyPilot(payload, pilot) {
-    const fields = new URLSearchParams({
-      "form-name": "campus-quiz-result",
-      session_id: payload.session_id,
-      event: payload.event,
-      island: payload.island,
-      quiz_version: payload.quiz_version,
-      engine_version: payload.engine_version,
-      participant: payload.participant,
-      dealer: payload.dealer,
-      dealer_number: payload.dealer_number,
-      area: payload.area,
-      started_at: payload.started_at,
-      finished_at: payload.finished_at,
-      page_url: payload.page_url,
-      score: String(pilot.score ?? ""),
-      total: String(pilot.total ?? ""),
-      percent: String(pilot.percent ?? ""),
-      answers_json: JSON.stringify(payload.answers),
-      consent_accepted_at: payload.consent.at,
-      consent_version: payload.consent.version
-    });
-
-    const response = await fetch("/", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: fields.toString()
-    });
-    if (!response.ok) throw new Error(`Netlify Forms: HTTP ${response.status}`);
   }
 
   /** Arbeitet den Ausgang ab. Läuft beim Seitenaufruf, nach jeder Runde,
    *  sobald der Browser wieder online meldet und auf Knopfdruck.
    *  `force` nimmt auch die abgelehnten Einträge noch einmal mit. */
   async function flushOutbox({ force = false } = {}) {
-    if (DEMO || state.sendetGerade) return;
+    if (DEMO) return;
+    // Läuft schon ein Versand, arbeitet der auf einer Momentaufnahme der
+    // Liste. Ein Ergebnis, das währenddessen dazukommt — etwa weil das
+    // online-Ereignis mitten in der Runde gefeuert hat —, würde sonst
+    // liegenbleiben, bis jemand die Seite neu lädt (Rückstand R-49).
+    // Deshalb nur vormerken; der laufende Durchgang holt es am Ende nach.
+    if (state.sendetGerade) { state.nachholen = true; return; }
 
     const offen = outboxAlle().filter((e) => force || !e.blockiert);
     if (!offen.length) { paintAusgang(); return; }
 
     state.sendetGerade = true;
+    state.nachholen = false;
     paintAusgang();
 
     let gesendet = 0;
+    let netzWeg = false;
     for (const eintrag of offen) {
       const ergebnis = await sendeEinen(eintrag);
       if (ergebnis === "ok") {
@@ -3179,12 +3159,20 @@
       outboxErsetzen(eintrag);
       // Kein Netz heißt: für die übrigen gilt dasselbe. Der nächste
       // Anlauf kommt beim online-Ereignis oder beim nächsten Aufruf.
-      if (ergebnis === "netz") break;
+      if (ergebnis === "netz") { netzWeg = true; break; }
     }
 
     state.sendetGerade = false;
     if (!el.screens.islands.hidden) renderIslands();
     paintAusgang();
+
+    // Ist während des Versands etwas dazugekommen, gleich hinterher — außer
+    // das Netz ist gerade weg, dann wartet auch das Neue auf das
+    // online-Ereignis.
+    if (state.nachholen && !netzWeg) {
+      state.nachholen = false;
+      return flushOutbox({ force });
+    }
 
     // Nachgesendet, während der Teilnehmer längst woanders ist: dann sagt
     // es der Toast, denn das Ergebnisbild von damals sieht niemand mehr.
@@ -3224,6 +3212,13 @@
     const kopf = n === 1 ? "Ein Ergebnis liegt" : `${n} Ergebnisse liegen`;
 
     if (state.sendetGerade) return `${kopf} noch auf diesem Gerät - wird gerade gesendet …`;
+
+    // Konnte nichts auf die Platte, gilt das Versprechen „wird nachgesendet"
+    // nur, solange dieser Tab offen ist. Das muss dastehen.
+    if (offen.some((e) => e.fluechtig)) {
+      return `${kopf} nur in dieser geöffneten Seite - dieses Gerät kann nichts zwischenspeichern. `
+        + `Bitte die Seite offen lassen, bis das Ergebnis gesendet ist, oder der Schulungsleitung Bescheid geben.`;
+    }
 
     if (offen.every((e) => e.blockiert)) {
       return `${kopf} auf diesem Gerät und ${n === 1 ? "wurde" : "wurden"} vom Server nicht angenommen `
@@ -3268,7 +3263,12 @@
       return;
     }
 
-    if (eigen.blockiert) {
+    if (eigen.fluechtig) {
+      // Nicht „liegt auf dem Gerät": Es liegt nur in diesem Tab. Auf einem
+      // Telefon mit gesperrtem Speicher ist das der einzige Hinweis, den
+      // der Teilnehmer bekommt, bevor er die Seite schließt.
+      setSaveState(`Noch nicht gespeichert${eigen.fehler ? ` (${eigen.fehler})` : ""}. Dieses Gerät kann nichts zwischenspeichern - bitte diese Seite offen lassen, bis das Ergebnis gesendet ist.`);
+    } else if (eigen.blockiert) {
       setSaveState(`Nicht gespeichert: ${eigen.fehler}. Das Ergebnis bleibt auf dem Gerät - bitte der Schulungsleitung Bescheid geben.`);
     } else if (eigen.fehler && eigen.fehler !== KEIN_NETZ) {
       // Der Server war erreichbar und hat trotzdem nicht gespeichert. Der
@@ -3516,11 +3516,11 @@
   // Frage- und Feedbackbild lassen sich ebenfalls vergrößern.
   el.qMediaImg.addEventListener("click", () => {
     const q = currentQuestion();
-    if (q && q.media) openLightbox(q.media.src, q.media.alt, q.media.caption);
+    if (q && q.media) openLightbox(medienUrl(q.media.src), q.media.alt, q.media.caption);
   });
   el.qFeedbackMediaImg.addEventListener("click", () => {
     const q = currentQuestion();
-    if (q && q.feedbackMedia) openLightbox(q.feedbackMedia.src, q.feedbackMedia.alt, q.feedbackMedia.caption);
+    if (q && q.feedbackMedia) openLightbox(medienUrl(q.feedbackMedia.src), q.feedbackMedia.alt, q.feedbackMedia.caption);
   });
 
   el.lightboxClose.addEventListener("click", closeLightbox);

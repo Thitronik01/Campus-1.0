@@ -8,6 +8,13 @@
    gibt es genau eine Wahrheitsquelle für die richtigen Antworten — und ein
    manipuliertes Ergebnis aus dem Browser landet nicht in der Datenbank.
 
+   Das gilt ohne Hintertür: Bis Engine 1.47 gab diese Function bei einer
+   ablehnenden oder fehlenden Datenbank einen Ausweichweg über Netlify Forms
+   frei, auf dem der Browser das Ergebnis selbst ablegte — an der Bewertung
+   hier vorbei und ohne Duplikatschutz (Rückstände R-40, R-17). Seit die
+   Datenbank läuft, antwortet sie in diesen Fällen mit 502 oder 503, und der
+   Browser behält das Ergebnis in seinem Sende-Ausgang, bis es hier ankommt.
+
    Die JSONs werden statisch eingebunden, damit esbuild sie mitbündelt.
    Eine neue Insel braucht deshalb zwei Zeilen: hier und in inseln.json.
    ========================================================================== */
@@ -265,24 +272,18 @@ exports.handler = async function handler(event) {
     return jsonResponse(400, { error: error instanceof Error ? error.message : "Ungültige Quizdaten." });
   }
 
-  const pilot = {
-    island_code: payload.island_code,
-    score: payload.score,
-    total: payload.total,
-    percent: payload.percent
-  };
   const supabaseUrl = process.env.SUPABASE_URL;
   const supabaseKey = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-  // Die Mitarbeiter-Pilotphase darf vor der Datenbank starten. Der Browser
-  // legt den hier bereits validierten Datensatz dann in Netlify Forms ab.
+  // Ohne Datenbank kein Speichern — und keine stille Ablage anderswo. Ein
+  // 503 lässt den Browser das Ergebnis behalten und später erneut senden;
+  // in Netlify → Functions → submit-quiz → Logs steht, dass die Variablen
+  // fehlen.
   if (!supabaseUrl || !supabaseKey) {
-    console.info("Supabase ist noch nicht konfiguriert; Übergabe an Netlify Forms.");
+    console.error("SUPABASE_URL oder SUPABASE_SECRET_KEY fehlt — Einsendung nicht gespeichert.");
     return jsonResponse(503, {
-      error: "Die Campus-Datenbank ist noch nicht aktiviert.",
-      code: "BACKEND_NOT_CONFIGURED",
-      fallback: "netlify_forms",
-      pilot
+      error: "Die Campus-Datenbank ist nicht konfiguriert.",
+      code: "BACKEND_NOT_CONFIGURED"
     });
   }
 
@@ -317,20 +318,12 @@ exports.handler = async function handler(event) {
          Netlify-Protokoll, das anderen Zugriff und andere Aufbewahrung hat
          als die Datenbank (Rückstand R-41). */
       console.error("Supabase hat abgelehnt:", response.status, await fehlerKurz(response));
-      return jsonResponse(502, {
-        error: "Die Datenbank hat die Speicherung abgelehnt.",
-        fallback: "netlify_forms",
-        pilot
-      });
+      return jsonResponse(502, { error: "Die Datenbank hat die Speicherung abgelehnt." });
     }
 
     return jsonResponse(201, { ok: true, duplicate: false, percent: payload.percent });
   } catch (error) {
     console.error("Speicherung fehlgeschlagen:", error);
-    return jsonResponse(502, {
-      error: "Die Datenbank war nicht erreichbar.",
-      fallback: "netlify_forms",
-      pilot
-    });
+    return jsonResponse(502, { error: "Die Datenbank war nicht erreichbar." });
   }
 };
