@@ -54,6 +54,20 @@ desktop.ini
 /Usedom Quiz/
 /Langeland Quiz/
 
+# Dasselbe Muster beim Feedbackbogen: index-v14.html, die beiden
+# Einzeldateien THITRONIK_Campus_Feedbackbogen_v14_*.html und der Ordner
+# netlify-v14/ sind Ausgabe der drei Werkzeuge unter Feedbackbogen/tools/.
+# montag.js baut sie bei jedem Lauf neu, noch vor build-insel.js — die
+# versionierte Kopie wurde also nie gelesen, tauchte aber bei jeder
+# Aenderung an app-v14.js oder styles-v14.css doppelt im Diff auf.
+#
+#     cd Feedbackbogen
+#     node tools/build-index-v14.js && node tools/build-standalone.js && node tools/build-netlify.js
+# ---------------------------------------------------------------------------
+/Feedbackbogen/index-v14.html
+/Feedbackbogen/THITRONIK_Campus_Feedbackbogen_v14_*.html
+/Feedbackbogen/netlify-v14/
+
 # ---------------------------------------------------------------------------
 # Vorlagen und Zulieferungen, die nicht ins Repository gehoeren
 #
@@ -90,3 +104,7 @@ desktop.ini
 # Werkzeuge der Entwicklungsumgebung
 # ---------------------------------------------------------------------------
 .playwright-mcp/
+
+# Worktrees, die Claude Code fuer Hilfsagenten anlegt. Liegen im Repo-Ordner,
+# gehoeren aber nicht hinein.
+/.claude/worktrees/
