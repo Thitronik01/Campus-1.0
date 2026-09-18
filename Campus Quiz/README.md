@@ -274,6 +274,54 @@ Felder `arbeitskarte` beziehungsweise `feedback` trägt — siehe
 
 ---
 
+## Als App installieren
+
+Der Campus ist eine installierbare Web-App. Auf Windows und Android erscheint
+dafür in der Adressleiste ein Installieren-Knopf, auf dem iPad geht es über
+**Teilen → Zum Home-Bildschirm**. Danach liegt ein Icon auf dem Schreibtisch
+beziehungsweise dem Startbildschirm, und der Campus öffnet sich in einem
+eigenen Fenster ohne Adressleiste.
+
+Dazu gehören drei Dinge:
+
+| Datei | Wozu |
+|---|---|
+| `public/manifest.webmanifest` | Name, Startadresse, Farben, Icons |
+| `public/icons/` | fünf PNG, erzeugt aus dem Logo |
+| Kopfzeilen in `public/index.html` | Manifest verlinkt, `apple-touch-icon` für iOS |
+
+Die Startadresse ist `/quiz`, der Geltungsbereich die ganze Site. Deshalb
+bleiben Feedbackbogen, Arbeitskarte und Datenschutzhinweis im App-Fenster,
+statt einen Browser daneben zu öffnen; ihre `index.html` verweisen aus
+demselben Grund ebenfalls auf das Manifest. Über einen langen Druck auf das
+Icon (Windows: Rechtsklick) führen zwei Abkürzungen direkt in den
+Feedbackbogen und die Arbeitskarte.
+
+**Offline läuft der Campus damit nicht.** Dafür bräuchte es einen Service
+Worker, und der ist bewusst nicht eingebaut: Er müsste an `ENGINE_VERSION`
+hängen, sonst käme zu der Cache-Falle aus `AGENTS.md` eine zweite dazu, die
+schwerer zu räumen ist. Ohne Netz zeigt die installierte App dieselbe
+Fehlerseite wie der Browser.
+
+### Die Icons neu erzeugen
+
+Nach einem Logowechsel:
+
+```bash
+npm install sharp --no-save
+node tools/app-icons.js
+```
+
+Das Werkzeug sucht die rote Segelmarke im Logo selbst — es hat keine
+Ausschnittkoordinaten hinterlegt, die nach dem Wechsel still den falschen
+Bereich träfen. Heraus kommen 32, 180 (Apple), 192, 512 und ein
+randvolles 512er für Android, zusammen rund 45 KB. Die Marke steht weiß auf
+Navy; rot auf Navy erreicht nur 2,0:1 und verschwimmt auf dem
+Startbildschirm. Die Dateien sind versioniert, weil sharp auf dem
+Netlify-Bauserver nicht liegt — dieselbe Ausnahme wie bei `thi-wissen/`.
+
+---
+
 ## Die wichtigste Entscheidung: der Browser bewertet nicht
 
 Der Browser sendet ausschließlich, **was** gewählt wurde — nie, ob es richtig

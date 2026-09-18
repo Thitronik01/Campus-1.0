@@ -79,10 +79,29 @@
      entstehen. Lesbarkeitsgrenzen sitzen deshalb an den jeweiligen Inhalten. */
   /* Die Oberfläche entspricht visuell 80 % Browser-Zoom. Die größere
      Inhaltskappe gleicht die Skalierung aus, damit breite Fenster weiterhin
-     vollständig genutzt werden. Trefferflächen bleiben real mindestens 44 px. */
+     vollständig genutzt werden. Trefferflächen bleiben real mindestens 44 px.
+
+     Der Wert ist die Grundstellung für Telefon und Tablet — die Größe, auf
+     die alles darunter ausgemessen wurde. Auf Arbeitsplatz-Monitoren wächst
+     er mit; die Stufen stehen gleich unter :root. */
   --ui-scale: .8;
   --content: 2400px;
   --tap: 55px;
+
+  /* Die volle Fensterhöhe, ausgedrückt in Layout-Einheiten.
+
+     `zoom` verschiebt beides gegeneinander: 100dvh liefert die Fensterhöhe
+     in Layout-Einheiten, sichtbar sind davon aber nur `--ui-scale` davon
+     (nachgemessen bei 1180 px Fensterhöhe: 944 Bildschirmpixel bei .8). Wer
+     den Schirm füllen will, rechnet also 100 / --ui-scale.
+
+     Bis September 2026 stand an den drei Stellen, die das brauchen, die
+     ausgerechnete 125 — richtig, solange die Skalierung fest bei .8 lag.
+     Seit sie auf großen Monitoren mitwächst, wäre 125dvh dort ein Viertel
+     Fensterhöhe zu viel und damit eine Bildlaufleiste, die nichts
+     verbirgt. */
+  --fenster-hoch: calc(100dvh / var(--ui-scale));
+  --fenster-hoch-vh: calc(100vh / var(--ui-scale));
 
   /* Ebenen der Archipelkarte, von unten nach oben. Benannt statt gezaehlt:
      `z-index: 3` sagt nicht, ob es ueber oder unter der Route liegen soll,
@@ -97,6 +116,33 @@
   --ebene-aktiv: 60;
   --ebene-kopf: 100;
 }
+
+/* Die Oberfläche wächst auf Arbeitsplatz-Monitoren mit.
+
+   Warum überhaupt: Die 80 % sind für das Telefon in der Messehalle gesetzt —
+   dort ist der Schirm klein und nah, und mehr Inhalt je Bildschirm ist genau
+   richtig. Auf einem 27-Zoll-Monitor in Armlänge kehrt sich das um: Die
+   Grundschrift steht dort real bei 12,8 px, und der Campus wirkt wie eine
+   Seite, die jemand herausgezoomt hat.
+
+   Warum Stufen und keine gleitende Formel: Eine unbenannte Zahl lässt sich
+   in CSS nicht aus Längen rechnen — `calc(100vw / 1px)` gibt es nicht. Eine
+   gleitende Skalierung wäre also nur über Javascript zu haben, und dann
+   stünde die Größe der Oberfläche in zwei Quellen.
+
+   Warum erst ab 1500 px: Darunter liegen Telefon und Tablet, und das ist die
+   Größe, gegen die alles darunter ausgemessen wurde — Expeditionskarte,
+   Bühnen, Trefferflächen. Ein iPad quer misst 1180 px, ein iPad Pro quer
+   1366 px; beide bleiben damit bei .8.
+
+   Achtung bei künftigen Änderungen: Medienabfragen sehen den Viewport, das
+   Layout rechnet mit Viewport / --ui-scale. Bei .8 und 1500 px Viewport sind
+   das 1875 Layout-Pixel, bei 1.0 und 1900 px genau 1900 — die zur Verfügung
+   stehende Layoutbreite springt an jeder Stufe also nach UNTEN, obwohl das
+   Fenster breiter wird. Wer hier eine Stufe ergänzt, misst nach, ob an der
+   Kante etwas umbricht. */
+@media (min-width: 1500px) { :root { --ui-scale: .9; } }
+@media (min-width: 1900px) { :root { --ui-scale: 1; } }
 
 * { box-sizing: border-box; }
 
@@ -185,8 +231,8 @@ h2 { font-size: clamp(1.15rem, 1.05rem + .4vw, 1.5rem); letter-spacing: -.015em;
 .shell {
   display: flex;
   flex-direction: column;
-  min-height: 125vh;
-  min-height: 125dvh;
+  min-height: var(--fenster-hoch-vh);
+  min-height: var(--fenster-hoch);
   width: min(calc(100% - clamp(20px, 3vw, 56px)), var(--content));
   margin: 0 auto;
   padding: 16px 0 28px;
@@ -524,7 +570,23 @@ body.ist-onboarding main { display: flex; }
 
 .onboarding {
   width: 100%;
-  min-height: calc(100dvh - 96px);
+  /* Die Fensterhöhe, abzüglich zweier Dinge:
+
+     96px sind die 48px Polster oben und unten aus `body.ist-onboarding
+     .shell`. 2px sind der eigene Rand aus `.screen` — und der ist der
+     eigentliche Grund für diese Zeile: `.onboarding-layout` übernimmt den
+     Wert hier per `min-height: inherit` und zieht den Rand nicht ab. Der
+     Abschnitt wird dadurch zwei Pixel höher als das, was er ausfüllen soll.
+
+     Solange die Skalierung fest bei .8 lag, fiel das nicht auf: Die Shell
+     war dort höher als ihr Inhalt, und main streckte sich ohnehin. Bei 1.0
+     auf einem FHD-Monitor gibt es diesen Spielraum nicht mehr — gemessen
+     blieben 1,33 Bildschirmpixel Überlauf und damit eine Bildlaufleiste,
+     hinter der nichts steht.
+
+     --fenster-hoch statt 100dvh, damit die Rechnung dieselbe Größe meint
+     wie die der Shell; siehe :root. */
+  min-height: calc(var(--fenster-hoch) - 96px - 2px);
   border-radius: 16px;
 }
 .onboarding-layout {
@@ -1245,11 +1307,13 @@ body.ist-onboarding main { display: flex; }
        Karte auf einem 16:9-Monitor unter den Falz, und die untere
        Inselreihe findet niemand.
 
-       125dvh statt 100dvh, weil `body { zoom: .8 }` dazwischenliegt.
-       Nachgemessen: Bei 1180 px Fensterhöhe liefert 100dvh hier 1180
-       Layout-Einheiten, die als 944 Bildschirmpixel ankommen — sichtbar
-       sind also 80 %. 100/0,8 = 125. Dieselbe Rechnung steht in .shell. */
-    width: min(100%, (125dvh - 200px) * var(--karte-ar));
+       --fenster-hoch statt 100dvh, weil `zoom: var(--ui-scale)` am body
+       dazwischenliegt. Nachgemessen: Bei 1180 px Fensterhöhe liefert 100dvh
+       hier 1180 Layout-Einheiten, die bei .8 als 944 Bildschirmpixel
+       ankommen — sichtbar sind also 80 %. Die Variable rechnet 100 /
+       --ui-scale und zieht damit mit, wenn die Skalierung auf großen
+       Monitoren steigt. Dieselbe Rechnung steht in .shell. */
+    width: min(100%, (var(--fenster-hoch) - 200px) * var(--karte-ar));
     aspect-ratio: var(--karte-ar);
     margin-inline: auto;
   }
@@ -1785,9 +1849,10 @@ body.ist-onboarding main { display: flex; }
   .campus-map {
     --anordnung: hoch;
     --karte-ar: 3 / 4;
-    /* Breite und Hoehe zugleich begrenzt, wie am Querformat: 125dvh wegen
-       body { zoom: .8 }, abgezogen sind Kopfzeile und Aktionsleiste. */
-    width: min(100%, (125dvh - 260px) * 3 / 4);
+    /* Breite und Hoehe zugleich begrenzt, wie am Querformat:
+       --fenster-hoch wegen zoom am body, abgezogen sind Kopfzeile und
+       Aktionsleiste. */
+    width: min(100%, (var(--fenster-hoch) - 260px) * 3 / 4);
     aspect-ratio: var(--karte-ar);
     margin-inline: auto;
   }

@@ -8,8 +8,29 @@
   <meta name="description" content="THITRONIK Campus: Wissenscheck nach jeder Schulungsinsel.">
   <meta name="robots" content="noindex, nofollow">
   <title>THITRONIK Campus: Wissenscheck</title>
-  <link rel="stylesheet" href="/assets/styles.css?v=1.48.0">
-  <link rel="stylesheet" href="/assets/thi.css?v=1.48.0">
+
+  <!-- Installierbar als App: Windows und Android zeigen daraufhin den
+       Installieren-Knopf, das iPad "Zum Home-Bildschirm". Das Manifest liegt
+       bewusst NICHT unter /assets/ — dort gilt max-age=31536000, immutable,
+       und ein eingefrorenes Manifest waere ein Jahr lang nicht zu
+       korrigieren. Dasselbe gilt fuer die Icons, deshalb /icons/ statt
+       /assets/icons/; die Cache-Regeln dafuer stehen in netlify.toml.
+       Apple liest weder Manifest-Icons noch purpose, sondern ausschliesslich
+       apple-touch-icon — die Zeile ist also kein Nachtrag, sondern der
+       einzige Weg auf den iPad-Startbildschirm. -->
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/icons/icon-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="/icons/icon-192.png" sizes="192x192" type="image/png">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Campus">
+  <!-- "default", nicht "black-translucent": Der Campus beginnt oben hell
+       (#E7F0F7). Unter black-translucent schriebe iOS weisse Uhrzeit darauf. -->
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+  <link rel="stylesheet" href="/assets/styles.css?v=1.49.0">
+  <link rel="stylesheet" href="/assets/thi.css?v=1.49.0">
 </head>
 <body>
   <svg width="0" height="0" aria-hidden="true" focusable="false"><defs><filter id="island-cutout" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  10 10 10 0 -1"/></filter></defs></svg>
@@ -28,7 +49,7 @@
       </button>
       <div class="brand">
         <a class="brand-home" href="/quiz" aria-label="Zur Campus-Karte">
-          <img class="brand-logo" src="/assets/thitronik-logo.png?v=1.48.0"
+          <img class="brand-logo" src="/assets/thitronik-logo.png?v=1.49.0"
                alt="THITRONIK, Alarmtechnik made in Germany" width="769" height="214">
         </a>
         <span class="brand-copy">
@@ -81,18 +102,18 @@
           <div class="onboarding-hero">
             <picture class="onboarding-picture">
               <source type="image/webp"
-                      srcset="/media/campus/firmensitz-640.webp?v=1.48.0 640w,
-                              /media/campus/firmensitz-1024.webp?v=1.48.0 1024w,
-                              /media/campus/firmensitz-1600.webp?v=1.48.0 1600w"
+                      srcset="/media/campus/firmensitz-640.webp?v=1.49.0 640w,
+                              /media/campus/firmensitz-1024.webp?v=1.49.0 1024w,
+                              /media/campus/firmensitz-1600.webp?v=1.49.0 1600w"
                       sizes="(min-width: 1200px) 50vw, 100vw">
-              <img src="/media/campus/firmensitz-1600.jpg?v=1.48.0"
+              <img src="/media/campus/firmensitz-1600.jpg?v=1.49.0"
                    alt="Luftaufnahme des THITRONIK-Firmensitzes in Eckernförde"
                    width="1600" height="1198" fetchpriority="high">
             </picture>
             <div class="onboarding-hero-content">
               <div class="onboarding-brand">
                 <span class="onboarding-logo-wrap">
-                  <img src="/assets/thitronik-logo.png?v=1.48.0"
+                  <img src="/assets/thitronik-logo.png?v=1.49.0"
                        alt="THITRONIK, Alarmtechnik made in Germany"
                        width="769" height="214">
                 </span>
@@ -818,11 +839,11 @@
        abgelehntes Ergebnis im Sende-Ausgang auf dem Gerät (engine.js,
        sendeEinen). -->
 
-  <script src="/assets/campus-einwilligung.js?v=1.48.0" defer></script>
-  <script src="/assets/engine.js?v=1.48.0" defer></script>
+  <script src="/assets/campus-einwilligung.js?v=1.49.0" defer></script>
+  <script src="/assets/engine.js?v=1.49.0" defer></script>
   <!-- THI haengt seinen Schalter selbst in .masthead-tools ein und baut sein
        Panel an den Seitenkoerper. Faellt das Skript aus, fehlt nur THI —
        Kopfzeile und Quiz bleiben unberuehrt. -->
-  <script src="/assets/thi.js?v=1.48.0" defer></script>
+  <script src="/assets/thi.js?v=1.49.0" defer></script>
 </body>
 </html>

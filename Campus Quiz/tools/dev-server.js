@@ -45,6 +45,12 @@ const MIME = {
   ".css": "text/css; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
   ".json": "application/json; charset=utf-8",
+  /* Ohne eigenen Eintrag ginge das App-Manifest als application/octet-stream
+     hinaus, und Chrome verwirft es dann stillschweigend: Der
+     Installieren-Knopf bleibt aus, obwohl die Datei da ist und mit 200
+     antwortet. Auf Netlify stimmt der Typ von selbst — wer nur lokal
+     probiert, suchte den Fehler sonst im Manifest. */
+  ".webmanifest": "application/manifest+json; charset=utf-8",
   ".png": "image/png",
   ".jpg": "image/jpeg",
   ".jpeg": "image/jpeg",

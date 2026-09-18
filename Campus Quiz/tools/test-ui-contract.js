@@ -29,7 +29,40 @@ pruefe("kein Live-Bereich in verborgener Quizauflösung", !/id="q-feedback"[^>]*
 pruefe("Arbeitskarte ist auf Langeland statt im globalen Kopf erreichbar", /id="langeland-praxis-link"/.test(html) && !/id="arbeitskarte-link"/.test(html));
 pruefe("Feedbackbogen hat zugänglichen Namen", /id="tagesabschluss"[^>]*aria-label="Feedbackbogen öffnen"/.test(html));
 pruefe("THI hat zugänglichen Namen", /setAttribute\("aria-label", "THI fragen"\)/.test(thi));
-pruefe("Shell gleicht den Seitenzoom aus", /\.shell\s*\{[\s\S]*?min-height:\s*125vh;[\s\S]*?min-height:\s*125dvh;/.test(css));
+/* Bis September 2026 stand hier die ausgerechnete 125 (= 100/0,8). Seit
+   --ui-scale auf grossen Monitoren mitwaechst, waere eine feste Zahl falsch:
+   bei Skalierung 1.0 ergaebe 125dvh ein Viertel Fensterhoehe zu viel und
+   damit eine Bildlaufleiste, hinter der nichts steht. Geprueft wird deshalb
+   die Rechnung statt ihres Ergebnisses — und zusaetzlich, dass die feste
+   Zahl nicht zurueckkommt. */
+pruefe("Shell gleicht den Seitenzoom aus",
+  /\.shell\s*\{[\s\S]*?min-height:\s*var\(--fenster-hoch-vh\);[\s\S]*?min-height:\s*var\(--fenster-hoch\);/.test(css));
+pruefe("die volle Fensterhoehe wird aus --ui-scale gerechnet",
+  /--fenster-hoch:\s*calc\(100dvh\s*\/\s*var\(--ui-scale\)\);/.test(css) &&
+  /--fenster-hoch-vh:\s*calc\(100vh\s*\/\s*var\(--ui-scale\)\);/.test(css));
+pruefe("keine ausgerechnete Zoomkonstante mehr im Stylesheet",
+  !/\b125d?vh\b/.test(css.replace(/\/\*[\s\S]*?\*\//g, "")));
+/* Namentlich statt gezaehlt: Eine Zahl von Fundstellen stimmt auch dann
+   noch, wenn die falsche Regel getroffen ist — und sie faellt um, sobald an
+   anderer Stelle eine vierte dazukommt. */
+pruefe("die Expeditionskarte quer rechnet ihre Hoehengrenze mit",
+  /width:\s*min\(100%,\s*\(var\(--fenster-hoch\) - 200px\) \* var\(--karte-ar\)\);/.test(css));
+pruefe("die Expeditionskarte hoch rechnet ihre Hoehengrenze mit",
+  /width:\s*min\(100%,\s*\(var\(--fenster-hoch\) - 260px\) \* 3 \/ 4\);/.test(css));
+pruefe("die Profileinrichtung rechnet Polster und eigenen Rand ab",
+  /\.onboarding\s*\{[\s\S]*?min-height:\s*calc\(var\(--fenster-hoch\) - 96px - 2px\);/.test(css));
+pruefe("die Skalierung waechst auf Arbeitsplatz-Monitoren",
+  /@media \(min-width: 1500px\) \{ :root \{ --ui-scale: \.9; \} \}/.test(css) &&
+  /@media \(min-width: 1900px\) \{ :root \{ --ui-scale: 1; \} \}/.test(css));
+/* Installierbarkeit faellt still aus: Fehlt eine dieser Zeilen, laedt die
+   Seite weiter, das Quiz laeuft weiter — nur der Installieren-Knopf bleibt
+   aus, oder der iPad-Startbildschirm zeigt statt der Marke einen
+   Bildschirmausschnitt. Gemerkt haette man es erst auf dem Geraet. */
+pruefe("die Seite ist als App installierbar", /<link rel="manifest" href="\/manifest\.webmanifest">/.test(html));
+pruefe("das iPad findet ein eigenes Icon", /<link rel="apple-touch-icon" href="\/icons\/apple-touch-icon\.png">/.test(html));
+pruefe("die Statusleiste bleibt auf hellem Grund lesbar",
+  /name="apple-mobile-web-app-status-bar-style" content="default"/.test(html));
+
 pruefe("gemeinsame Inselregeln bleiben überschreibbar", /#screen-start:where\(\[data-island\]\) \.start-layout/.test(css));
 pruefe("Bildantworten behalten ihr Raster", /\.answers:not\(\.answers-bild\)/.test(css));
 pruefe("Dialog-Fallback versteckt geschlossene Dialoge", /\.lightbox:not\(\[open\]\),\s*\n?\.confirm-dialog:not\(\[open\]\)\s*\{\s*display:\s*none;/.test(css));

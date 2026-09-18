@@ -47,7 +47,12 @@ const GRENZE_GESAMT = 12 * 1024 * 1024; // alles unter public/ zusammen
 const GRENZE_PNG = 150 * 1024;          // PNG/JPG darüber: als WebP bringen
 
 const MEDIEN = new Set([".png", ".jpg", ".jpeg", ".webp", ".gif", ".avif", ".svg", ".mp3", ".m4a", ".ogg", ".wav", ".mp4"]);
-const TEXT = new Set([".css", ".html", ".js", ".mjs", ".json"]);
+/* .webmanifest gehoert dazu, obwohl es JSON ist: Die Endung ist eine andere,
+   und das Manifest ist die einzige Stelle, die das maskable-Icon nennt. Ohne
+   den Eintrag haette die Verwaisten-Pruefung es beim ersten Lauf als tote
+   Last gemeldet — und der naheliegende Griff waere dann gewesen, es zu
+   loeschen. */
+const TEXT = new Set([".css", ".html", ".js", ".mjs", ".json", ".webmanifest"]);
 
 /* Dateien, auf die absichtlich nichts zeigt. Jeder Eintrag braucht einen
    Grund, sonst ist die Liste nur ein zweiter Weg, Hinweise zu ignorieren.

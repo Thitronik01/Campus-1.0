@@ -226,6 +226,31 @@ function kopiereDatenschutz(oeff) {
   return kopiereVerzeichnis(DATENSCHUTZ_QUELLE, path.join(oeff, DATENSCHUTZ_ZIEL));
 }
 
+/** Manifest und App-Icons — was aus der Seite eine installierbare App macht.
+ *
+ *  Fehlt eines von beidem, faellt das nicht auf: Die Seite laedt, das Quiz
+ *  laeuft, nur der Installieren-Knopf bleibt aus und der Startbildschirm
+ *  zeigt ein graues Kaestchen. Deshalb wird hier geworfen statt uebersprungen
+ *  — ein stiller Ausfall waere erst auf dem Telefon eines Haendlers
+ *  aufgefallen.
+ *
+ *  Die Icons sind erzeugt, aber versioniert: `tools/app-icons.js` braucht
+ *  sharp, und sharp liegt auf dem Netlify-Bauserver nicht. Dieselbe Begruendung
+ *  wie bei thi-wissen/ und public/media/. */
+function kopiereApp(oeff) {
+  const manifest = path.join(WURZEL, "public", "manifest.webmanifest");
+  if (!fs.existsSync(manifest)) {
+    throw new Error(`Das App-Manifest fehlt: ${manifest}`);
+  }
+  kopiere(manifest, path.join(oeff, "manifest.webmanifest"));
+
+  const quelle = path.join(WURZEL, "public", "icons");
+  if (!fs.existsSync(quelle)) {
+    throw new Error(`Die App-Icons fehlen: ${quelle} — einmal "node tools/app-icons.js" laufen lassen.`);
+  }
+  return 1 + kopiereVerzeichnis(quelle, path.join(oeff, "icons"));
+}
+
 function kopiereGemeinsameMedien(oeff) {
   for (const relativ of GEMEINSAME_MEDIEN) {
     kopiere(path.join(WURZEL, "public", relativ), path.join(oeff, relativ));
@@ -347,6 +372,24 @@ ${mitArbeitskarte ? `[[redirects]]
   for = "/media/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+# Manifest und App-Icons liegen bewusst neben /assets/, nicht darin. Unter
+# /assets/ gilt ein Jahr immutable, und die Fassung kommt dort aus
+# ENGINE_VERSION in die ?v=-Marken der index.html. Fuer das Manifest gibt es
+# diesen Weg nicht: Ein Browser liest es selbst, ohne Marke. Ein falsches
+# Manifest waere damit ein Jahr lang nicht zu korrigieren — und die Icons
+# darin genauso, weil ihre Pfade im Manifest stehen und nicht in der HTML.
+# Deshalb hier eine Stunde mit Rueckfrage statt eines Jahres ohne.
+[[headers]]
+  for = "/manifest.webmanifest"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, must-revalidate"
+    Content-Type = "application/manifest+json; charset=utf-8"
+
+[[headers]]
+  for = "/icons/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800, must-revalidate"
 
 [[headers]]
   for = "/.netlify/functions/*"
@@ -524,6 +567,9 @@ function baue(slug) {
   // --- Datenschutzhinweis unter /datenschutz ------------------------------
   kopiereDatenschutz(oeff);
 
+  // --- Manifest und Icons: macht die Seite installierbar ------------------
+  kopiereApp(oeff);
+
   // --- Daten: Katalog auf genau diese eine Insel eindampfen ---------------
   // Die Engine erkennt daran den Einzelbetrieb und überspringt die Übersicht.
   schreib(path.join(oeff, "data", "inseln.json"),
@@ -612,6 +658,9 @@ function baueGesamt() {
 
   // --- Datenschutzhinweis unter /datenschutz ------------------------------
   kopiereDatenschutz(oeff);
+
+  // --- Manifest und Icons: macht die Seite installierbar ------------------
+  kopiereApp(oeff);
 
   // --- Daten: vollständiger Katalog, alle Fragensätze --------------------
   // Der Gesamtstand liefert den Feedbackbogen tatsächlich mit aus. Das Feld
