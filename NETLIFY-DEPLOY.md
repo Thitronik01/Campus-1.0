@@ -7,6 +7,7 @@ Dieses Repository ist für eine gemeinsame Netlify-Site vorbereitet:
 - `/feedback/` ist der Tagesabschluss.
 - `/arbeitskarte/` ist die digitale Arbeitskarte.
 - `/datenschutz/` ist der Datenschutzhinweis nach Art. 13 DSGVO. Beide Einwilligungsdialoge verlinken dorthin, er darf also nicht wegfallen.
+- `/manifest.webmanifest` und `/icons/` machen die Site installierbar — Startadresse `/quiz`, Geltungsbereich die ganze Site. Sie liegen bewusst neben `/assets/`, weil dort ein Jahr `immutable` gilt; die Cache-Regeln dafür stehen in `netlify.toml`.
 - Quiz-Ergebnisse und Feedback werden immer zuerst an geschützte Netlify Functions gesendet.
 - Supabase ist seit dem 03.09.2026 eingerichtet; beide Functions speichern dort — siehe `Campus Quiz/SUPABASE-NEUAUFBAU.md`. Für Quiz-Ergebnisse gibt es seit Engine 1.47 keinen Ausweichweg über Netlify Forms mehr: Lehnt die Datenbank ab, bleibt das Ergebnis im Sende-Ausgang auf dem Gerät. Nur der Feedbackbogen hat diesen Ausweichweg noch.
 - Langdock wertet über die Supabase-Views aus, nicht über Netlify Forms.
@@ -32,6 +33,7 @@ einem neuen Deploy.
 3. `/feedback/?demo=1` als Vorschau prüfen, danach einmal regulär absenden.
 4. In Supabase muss danach eine neue Zeile in `campus_quiz_submissions` und eine in `campus_feedback` stehen — dort nachzählen, nicht dem Bildschirm glauben (`INBETRIEBNAHME.md`, „Drei Fallen").
 5. In Netlify unter **Forms** muss `campus-feedback` erscheinen; ein Formular `campus-quiz-result` gibt es seit Engine 1.47 nicht mehr.
+6. `/manifest.webmanifest` direkt aufrufen. Es muss mit `application/manifest+json` kommen — mit `application/octet-stream` verwirft Chrome es stillschweigend, und der Installieren-Knopf bleibt ohne Fehlermeldung aus. Danach im Browser installieren und nachsehen, ob das Icon die Segelmarke auf Navy zeigt und nicht einen grauen Platzhalter.
 
 ## Später: THI aktivieren
 

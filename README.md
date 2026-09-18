@@ -201,9 +201,17 @@ manueller Schritt.
 | **Supabase** | Der Speicher für Ergebnisse und Feedback samt Auswertungs-Views, seit dem 03.09.2026 im Betrieb |
 | **Browser** | die einzige Anwendung, die der Händler braucht |
 
-Kein Framework, kein Build-Schritt für die Seite selbst, keine App, keine
-Installation. Je nach Bildanteil sind die Insel-Pakete derzeit rund 3800 bis
-6100 KB groß, das Gesamtpaket rund 16 MB.
+Kein Framework und kein Build-Schritt für die Seite selbst. Je nach
+Bildanteil sind die Insel-Pakete derzeit rund 3800 bis 6100 KB groß, das
+Gesamtpaket rund 16 MB.
+
+**Installiert werden kann der Campus trotzdem** — seit September 2026 trägt
+er ein Manifest und eigene Icons. Auf Windows und Android legt der
+Installieren-Knopf in der Adressleiste ein Symbol an, auf dem iPad *Teilen →
+Zum Home-Bildschirm*; danach öffnet sich der Campus in einem eigenen Fenster
+ohne Adressleiste. Heruntergeladen wird dabei nichts: Es bleibt dieselbe
+Seite, und **ohne Netz läuft sie nicht**. Beschrieben in
+[`Campus Quiz/README.md`](Campus%20Quiz/README.md#als-app-installieren).
 
 **Der Browser bewertet nicht.** Er sendet ausschließlich, *was* gewählt wurde —
 nie, ob es richtig war. Bewertet wird in der Netlify-Function, gegen dieselbe

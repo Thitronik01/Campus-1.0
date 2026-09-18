@@ -270,21 +270,43 @@ einzelne Insel verliert dagegen — sie steht im Stylesheet, greift aber nie.
 Wer eine Insel ausnimmt, trägt sie in die `:not()`-Kette ein **und** gibt ihr
 eine vollständige eigene Regel, `content` und `position` eingeschlossen.
 
-### `body { zoom: .8 }` verschiebt jede Messung
+### `body { zoom: var(--ui-scale) }` verschiebt jede Messung
 
-Layout- und Bildschirmpixel fallen dadurch auseinander:
+**Seit September 2026 ist die Skalierung keine Konstante mehr.** Sie steht
+bei `.8` — der Größe, gegen die Telefon und Tablet ausgemessen sind — und
+wächst auf Arbeitsplatz-Monitoren in zwei Stufen: ab 1500 px auf `.9`, ab
+1900 px auf `1`. Ein iPad quer (1180 px) und ein iPad Pro quer (1366 px)
+bleiben damit bei `.8`.
+
+Wer eine Zahl aus der alten `0,8` ausgerechnet im Stylesheet ablegt, baut
+damit einen Fehler ein, der nur auf großen Bildschirmen sichtbar wird. Die
+volle Fensterhöhe steht deshalb als `--fenster-hoch` in `:root` und wird von
+dort geholt; `tools/test-ui-contract.js` fällt durch, sobald ein festes
+`125dvh` zurückkommt.
+
+Layout- und Bildschirmpixel fallen durch die Skalierung auseinander:
 
 - Eine Klickfläche mit `min-height: 54px` ist physisch **43 px** — unter dem
   Mindestmaß von 44. Deshalb `calc(var(--tap) + 12px)` statt fester Zahlen.
 - `100vw` und `100dvh` verhalten sich uneinheitlich. Statt Breite oder Höhe
   lieber gegenüberliegende Kanten setzen.
 - Muss es doch eine Höhe sein: **`100dvh` liefert die volle Fensterhöhe in
-  Layout-Einheiten, sichtbar sind davon 80 %.** Nachgemessen bei 1180 px
-  Fensterhöhe: `height: 100dvh` ergab 944 Bildschirmpixel. Wer den Schirm
-  füllen will, rechnet `100/0,8 = 125dvh` — so steht es in `.shell` und in
-  der Breitenrechnung der Expeditionskarte.
+  Layout-Einheiten, sichtbar ist davon nur der Anteil `--ui-scale`.**
+  Nachgemessen bei 1180 px Fensterhöhe und `.8`: `height: 100dvh` ergab 944
+  Bildschirmpixel. Wer den Schirm füllen will, nimmt `var(--fenster-hoch)` —
+  so steht es in `.shell`, in der Profileinrichtung und in beiden
+  Breitenrechnungen der Expeditionskarte.
 - Medienabfragen sehen den **Viewport**, das Layout rechnet mit
-  `Viewport / 0.8`. Zwischen 640 und 800 px klaffen die beiden auseinander.
+  `Viewport / --ui-scale`. Zwischen 640 und 800 px klaffen die beiden
+  auseinander — und an jeder Skalierungsstufe springt die Layoutbreite nach
+  **unten**, obwohl das Fenster breiter wird (bei 1499 px sind es 1874
+  Layout-Pixel, bei 1500 px nur noch 1667). Wer eine Stufe ergänzt, misst an
+  ihrer Kante nach.
+- Kleine Überstände, die bei `.8` im Spielraum der Shell verschwanden, werden
+  bei `1` zu einer Bildlaufleiste. So geschehen an der Profileinrichtung:
+  `.onboarding-layout` übernimmt die Höhe per `min-height: inherit` und zog
+  den 2-px-Rand von `.screen` nicht ab — gemessen 1,33 Bildschirmpixel
+  Überlauf auf einem FHD-Monitor, hinter denen nichts stand.
 
 ### Prozent bezieht sich auf den Elternkasten, nicht auf das, was man meint
 
@@ -369,6 +391,35 @@ Zwei Beispiele aus einer einzigen Sitzung:
   gibt sie alle.
 
 Ein Verdacht ist kein Befund. Der Unterschied kostet zwei Minuten.
+
+### Manifest und App-Icons gehören bewusst **nicht** unter `/assets/`
+
+`public/manifest.webmanifest` und `public/icons/` liegen neben `/assets/`,
+nicht darin — und das ist kein Versehen, das jemand aufräumen sollte.
+
+Unter `/assets/` gilt ein Jahr `immutable`, und die Fassung kommt dort aus
+`ENGINE_VERSION` in die `?v=`-Marken der `index.html`. Für das Manifest gibt
+es diesen Weg nicht: Ein Browser liest es selbst, ohne Marke, und die
+Icon-Pfade stehen **im Manifest** statt in der HTML — `fassungEinsetzen()`
+in `build-insel.js` fasst nur `/assets/` und `/media/` an. Ein falsches
+Manifest wäre damit ein Jahr lang nicht zu korrigieren, und ein falsches
+Icon genauso.
+
+Deshalb tragen beide eigene Cache-Regeln (eine Stunde für das Manifest, eine
+Woche für die Icons) — in **beiden** `netlify.toml`, wie jede andere Regel
+auch.
+
+Zwei Nachbarfallen aus derselben Ecke:
+
+- Der Entwicklungsserver lieferte `.webmanifest` als
+  `application/octet-stream` aus. Die Datei antwortet mit 200, sieht im
+  Netzwerkreiter richtig aus — und Chrome verwirft sie stillschweigend, der
+  Installieren-Knopf bleibt einfach aus. Der Eintrag steht jetzt in `MIME`
+  in `tools/dev-server.js`.
+- `check-medien.js` kannte die Endung `.webmanifest` nicht und las sie
+  deshalb nicht nach Verweisen aus. Das maskable-Icon wird **nur** dort
+  genannt und wäre als verwaist gemeldet worden — der naheliegende Griff
+  wäre dann gewesen, es zu löschen.
 
 ### Unter Windows sind Umgebungsvariablen nicht case-sensitiv
 

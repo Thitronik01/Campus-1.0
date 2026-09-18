@@ -58,6 +58,24 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
+# Manifest und App-Icons liegen bewusst neben /assets/, nicht darin. Unter
+# /assets/ gilt ein Jahr immutable, und die Fassung kommt dort aus
+# ENGINE_VERSION in die ?v=-Marken der index.html. Fuer das Manifest gibt es
+# diesen Weg nicht: Ein Browser liest es selbst, ohne Marke. Ein falsches
+# Manifest waere damit ein Jahr lang nicht zu korrigieren — und die Icons
+# darin genauso, weil ihre Pfade im Manifest stehen und nicht in der HTML.
+# Deshalb hier eine Stunde mit Rueckfrage statt eines Jahres ohne.
+[[headers]]
+  for = "/manifest.webmanifest"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, must-revalidate"
+    Content-Type = "application/manifest+json; charset=utf-8"
+
+[[headers]]
+  for = "/icons/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800, must-revalidate"
+
 [[headers]]
   for = "/arbeitskarte/"
   [headers.values]
