@@ -31,8 +31,8 @@ in [`SUPABASE-NEUAUFBAU.md`](SUPABASE-NEUAUFBAU.md), Schritt 5, und in
 | 1. `CAMPUS_AUSWERTUNG_TOKEN` in Supabase | **gesetzt.** Aufruf ohne `Authorization` liefert `401`, vorher `503`. |
 | 2. Integration `THITRONIK Campus 1.0` | **angelegt**, Auth-Typ API Key, ein Feld `token` (Id `token`), Validation request gegen den Endpunkt |
 | 3. Action `Campus-Auswertung abrufen` | **fertig.** Felder `von`, `bis`, `insel`, `bereich`; die Auswahlliste von `bereich` trägt alle vier Werte. Direkttest am 8.9.: `bereich=feedback` → `200` mit `boegen: 2`, `bewertungen: 19`, 16 Positionen, Schnitt 4,63. **28.9.: Die Auswahlliste von `insel` hatte nur sechs Einträge, `poel` fehlte** — das war das Poel-Loch; noch am 28.9. ergänzt, Direkttest mit `bereich = fragen`, `insel = poel`, 30.8. bis 28.9. danach `200`: fünf Einsendungen, zehn Fragen, `auswahl: "alle Fragen des Zeitraums"`. Code im Feld am 28.9. zeichengleich mit dem Repository. |
-| 4. Agent `Campus-Auswertung` | **Anweisung am 8.9. erneuert.** Die alte kannte weder `bereich` noch `feedback` — deshalb rief der Agent den Feedbackbogen nie ab. **Am 28.9. im Repository ergänzt** (sieben Inselkürzel, Notenzähler, Dauerschnitt, „Keine Angabe"); in Langdock nachzuziehen mit dem Teil „Zum Einfügen", danach Abnahmefrage acht stellen. |
-| 5. Abnahme | **offen** — die vier Fragen sind noch nicht gestellt |
+| 4. Agent `Campus-Auswertung` | **Anweisung am 8.9. erneuert.** Die alte kannte weder `bereich` noch `feedback` — deshalb rief der Agent den Feedbackbogen nie ab. **Am 28.9. im Repository ergänzt** (sieben Inselkürzel, Notenzähler, Dauerschnitt, „Keine Angabe") und am selben Tag in Langdock nachgezogen. Abnahmefrage acht bestanden: zehn Poel-Fragen, fünf Einsendungen, Quoten gleich der Datenbank, Grundlage genannt. |
+| 5. Abnahme | **teilweise** — Frage acht (Poel) am 28.9. bestanden; die übrigen sieben Fragen sind noch nicht gestellt |
 
 Verbindung im Betrieb ist **`Campus Produktiv 1`**, und sie funktioniert
 (`200 OK` im Direkttest am 8.9.). Eine `Campus Produktiv 2` gibt es nicht —
