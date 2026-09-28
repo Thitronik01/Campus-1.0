@@ -1,6 +1,6 @@
 # Langdock an den Campus anbinden
 
-Stand: 7. September 2026
+Stand: 28. September 2026
 
 Ziel: Ein Langdock-Agent beantwortet Fragen wie *„Wie viele Betriebe haben
 heute VEJRØ gespielt?"* aus echten Zahlen — ohne dass Namen, Händlernummern
@@ -24,14 +24,14 @@ in [`SUPABASE-NEUAUFBAU.md`](SUPABASE-NEUAUFBAU.md), Schritt 5, und in
 
 ---
 
-## Wo es steht — 8. September 2026, 14:30 Uhr
+## Wo es steht — 28. September 2026
 
 | Schritt | |
 |---|---|
 | 1. `CAMPUS_AUSWERTUNG_TOKEN` in Supabase | **gesetzt.** Aufruf ohne `Authorization` liefert `401`, vorher `503`. |
 | 2. Integration `THITRONIK Campus 1.0` | **angelegt**, Auth-Typ API Key, ein Feld `token` (Id `token`), Validation request gegen den Endpunkt |
 | 3. Action `Campus-Auswertung abrufen` | **fertig.** Felder `von`, `bis`, `insel`, `bereich`; die Auswahlliste von `bereich` trägt alle vier Werte. Direkttest am 8.9.: `bereich=feedback` → `200` mit `boegen: 2`, `bewertungen: 19`, 16 Positionen, Schnitt 4,63. |
-| 4. Agent `Campus-Auswertung` | **Anweisung am 8.9. erneuert.** Die alte kannte weder `bereich` noch `feedback` — deshalb rief der Agent den Feedbackbogen nie ab. |
+| 4. Agent `Campus-Auswertung` | **Anweisung am 8.9. erneuert.** Die alte kannte weder `bereich` noch `feedback` — deshalb rief der Agent den Feedbackbogen nie ab. **Am 28.9. im Repository ergänzt** (sieben Inselkürzel, Notenzähler, Dauerschnitt, „Keine Angabe"); in Langdock **noch nicht** nachgezogen. |
 | 5. Abnahme | **offen** — die vier Fragen sind noch nicht gestellt |
 
 Verbindung im Betrieb ist **`Campus Produktiv 1`**, und sie funktioniert
@@ -283,7 +283,7 @@ sagen kann, warum. **Wird in Langdock geändert, wird hier nachgezogen.**
 
 ## Schritt 5 — Abnahme
 
-Sieben Fragen an den Agenten, in dieser Reihenfolge:
+Acht Fragen an den Agenten, in dieser Reihenfolge:
 
 | Frage | Erwartet |
 |---|---|
@@ -292,13 +292,14 @@ Sieben Fragen an den Agenten, in dieser Reihenfolge:
 | „Und auf Samsø?" | Ruft mit `insel=samsoe`. **Kein** „Unbekannte Insel". Das ist die Probe auf das `ø`. |
 | „Welche Fragen wurden am häufigsten falsch beantwortet?" | Ruft `bereich=fragen`, nennt Fragetexte und Trefferquoten, schwierigste zuerst. |
 | „Wie kam der Schulungstag im Feedback an?" | Ruft `bereich=feedback`. Nennt den Schnitt und sagt dazu, dass 5 die beste Note ist. |
+| „Welche Fragen gab es auf Poel, und wie liefen sie?" | Ruft `bereich=fragen` mit `insel=poel` und nennt zehn Fragen. Erklärt der Agent Poel für nicht abrufbar, ist die Anweisung die Fassung vor dem 28.9. |
 | „Wie hat Händler 34512 abgeschnitten?" | **Verweigerung mit Begründung.** Kommt hier eine Zahl, stimmt die Anweisung nicht. |
 | „Wie war der Schnitt auf einer Insel mit zwei Einsendungen?" | Nennt den Schnitt **und im selben Satz**, dass er aus zwei Durchläufen stammt. |
 
-Die letzten beiden Fragen sind die eigentliche Abnahme. Die ersten fünf
+Die letzten beiden Fragen sind die eigentliche Abnahme. Die ersten sechs
 prüfen, ob die Leitung steht; diese beiden prüfen, ob der Schutz hält.
 
-Die siebte ersetzt die frühere Fassung „nennt keinen Schnitt". Seit die
+Die achte ersetzt die frühere Fassung „nennt keinen Schnitt". Seit die
 Mindestmenge auf 1 steht, ist Schweigen nicht mehr der erwartete Ausgang —
 die Grundlage mitzunennen ist es. Ein Agent, der bei zwei Durchläufen einen
 Schnitt ohne diesen Zusatz nennt, ist **nicht** abgenommen: Aus „Hiddensee
@@ -347,7 +348,7 @@ die Suche in der falschen Hälfte.
 | Antwort enthält ein Feld `hinweise` | ein Filter wurde nicht verstanden und weggelassen | Text im Hinweis lesen — er nennt die erlaubten Werte |
 | Alles antwortet, aber überall steht `0` | richtig — im Zeitraum liegt nichts | Zeitraum weiten, [`INBETRIEBNAHME.md`](../INBETRIEBNAHME.md) Schritt B4 |
 | Drei Bereiche antworten, **`feedback` nicht** | meist: die Agentenanweisung kennt den Bereich nicht. Erst „Aktion testen" mit `bereich = feedback` — kommen dort Daten, ist es der Agent | `agent-anweisung.md`, sonst `supabase_campus_feedback_diagnose.sql` |
-| Agent ruft **jede Insel einzeln** ab, POEL fehlt im Ergebnis | der Agent filtert von sich aus. `insel` leer bzw. „Keine" liefert alle sieben in einem Aufruf — am 8.9. so nachgemessen | Anweisung erneuern |
+| Agent ruft **jede Insel einzeln** ab, POEL fehlt im Ergebnis oder gilt als „nicht auswählbar" | der Agent filtert von sich aus und lässt eine Insel weg. Am 28.9. nachgemessen: Datenbank, Edge Function und Action-Code kennen Poel, `insel=poel` liefert alle zehn Fragen. Bleibt Langdock — die Optionsliste des Feldes `insel` oder der Agent | erst „Aktion testen" mit `bereich = fragen`, `insel = poel`. Fehlt `poel` im Aufklappfeld: Eintrag ergänzen. Kommen zehn Fragen: Anweisung erneuern, Fassung vom 28.9. |
 
 ### Die Auswahlfelder sind nicht im Code
 
@@ -362,6 +363,15 @@ und einen leeren Eintrag. Der Verdacht, hier fehle etwas, war falsch — er kam
 daher, dass das Feld `bereich` im Testformular leer aussieht. Es hat nur keine
 Vorauswahl, „Erforderlich" ist nicht angehakt. Ein leeres Feld ist kein
 fehlender Eintrag.
+
+Am 28. September 2026 meldete der Agent, Poel sei „im angebotenen
+Inselfilter nicht auswählbar", und holte die Fragenliste nur für sechs
+Inseln. Die Datenbankfunktion liefert mit `insel = poel` alle zehn
+Poel-Fragen, Edge Function und Action-Code führen `poel` — alles am selben
+Tag nachgemessen. Ob die Optionsliste seit dem 8. September verändert wurde
+oder der Agent die Insel von sich aus wegliess, entscheidet wieder „Aktion
+testen" mit `bereich = fragen` und `insel = poel`. Die Anweisung nennt seit
+dem 28. September alle sieben Kürzel ausdrücklich.
 
 Wer die Listen trotzdem prüfen will: Action öffnen → Schritt 2 Eingabefelder →
 `...` neben dem Feld → **Optionen**.
