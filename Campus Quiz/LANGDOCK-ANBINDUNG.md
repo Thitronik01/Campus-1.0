@@ -30,7 +30,7 @@ in [`SUPABASE-NEUAUFBAU.md`](SUPABASE-NEUAUFBAU.md), Schritt 5, und in
 |---|---|
 | 1. `CAMPUS_AUSWERTUNG_TOKEN` in Supabase | **gesetzt.** Aufruf ohne `Authorization` liefert `401`, vorher `503`. |
 | 2. Integration `THITRONIK Campus 1.0` | **angelegt**, Auth-Typ API Key, ein Feld `token` (Id `token`), Validation request gegen den Endpunkt |
-| 3. Action `Campus-Auswertung abrufen` | **fertig.** Felder `von`, `bis`, `insel`, `bereich`; die Auswahlliste von `bereich` trägt alle vier Werte. Direkttest am 8.9.: `bereich=feedback` → `200` mit `boegen: 2`, `bewertungen: 19`, 16 Positionen, Schnitt 4,63. **28.9.: Die Auswahlliste von `insel` hatte nur sechs Einträge, `poel` fehlte** — das war das Poel-Loch. Code im Feld am 28.9. zeichengleich mit dem Repository, Direkttest ohne Felder `200`. |
+| 3. Action `Campus-Auswertung abrufen` | **fertig.** Felder `von`, `bis`, `insel`, `bereich`; die Auswahlliste von `bereich` trägt alle vier Werte. Direkttest am 8.9.: `bereich=feedback` → `200` mit `boegen: 2`, `bewertungen: 19`, 16 Positionen, Schnitt 4,63. **28.9.: Die Auswahlliste von `insel` hatte nur sechs Einträge, `poel` fehlte** — das war das Poel-Loch; noch am 28.9. ergänzt, Direkttest mit `insel = poel` danach `200` mit `insel_filter: "poel"`. Code im Feld am 28.9. zeichengleich mit dem Repository. |
 | 4. Agent `Campus-Auswertung` | **Anweisung am 8.9. erneuert.** Die alte kannte weder `bereich` noch `feedback` — deshalb rief der Agent den Feedbackbogen nie ab. **Am 28.9. im Repository ergänzt** (sieben Inselkürzel, Notenzähler, Dauerschnitt, „Keine Angabe"); in Langdock **noch nicht** nachgezogen. |
 | 5. Abnahme | **offen** — die vier Fragen sind noch nicht gestellt |
 
@@ -377,7 +377,9 @@ Tag nachgemessen. Der Blick in die Optionen des Feldes zeigte dann die
 Ursache: **sechs Einträge, `poel` fehlte**, und einen leeren Eintrag zeigte
 die Liste auch nicht mehr. Ob sie seit dem 8. September verändert wurde
 oder die Prüfung damals daneben lag, lässt sich nicht mehr feststellen;
-Langdock führt darüber keine Historie. Der Agent hatte also recht, und die
+Langdock führt darüber keine Historie. Der Eintrag wurde noch am 28.
+September ergänzt; der Direkttest mit `insel = poel` kam danach mit `200`
+und `insel_filter: "poel"` zurück. Der Agent hatte also recht, und die
 Zeile in der Fehlertabelle verdächtigte mit „der Agent filtert von sich
 aus" die falsche Hälfte. Deshalb gehört die Liste jetzt zur Abnahme: Nach
 jeder Änderung an der Action die Optionen von `insel` zählen — sieben
