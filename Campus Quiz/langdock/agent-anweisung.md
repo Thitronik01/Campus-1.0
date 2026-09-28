@@ -33,8 +33,12 @@ mit `-` überstehen den Weg; Tabellen nicht.
 Fragenliste für sechs Inseln einzeln und erklärte Poel für „im Inselfilter
 nicht auswählbar". Die Datenbank liefert mit `insel=poel` alle zehn
 Poel-Fragen, nachgemessen; Edge Function und Action-Code kennen die Insel
-ebenso. Der Text nennt deshalb jetzt die sieben Kürzel ausdrücklich und
-verbietet, eine Insel stillschweigend auszulassen. Derselbe Abruf zeigte
+ebenso. Die Ursache sass am Ende in der Optionsliste des Feldes `insel`,
+die nur sechs Kürzel trug (siehe
+[`LANGDOCK-ANBINDUNG.md`](../LANGDOCK-ANBINDUNG.md), „Die Auswahlfelder
+sind nicht im Code"). Der Text nennt deshalb jetzt die sieben Kürzel
+ausdrücklich und verbietet, eine Insel stillschweigend auszulassen: Ein
+fehlender Eintrag soll als Meldung auffallen, nicht als stilles Loch. Derselbe Abruf zeigte
 drei weitere Lücken: `beste_note` und `schlechteste_note` waren dem Agenten
 unerklärt, „Keine Angabe" im Tätigkeitsvergleich ebenso, und ein einzelner
 Durchlauf von fünf Stunden zog den Dauerschnitt einer Insel auf 3.839

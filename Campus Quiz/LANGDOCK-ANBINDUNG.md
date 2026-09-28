@@ -30,7 +30,7 @@ in [`SUPABASE-NEUAUFBAU.md`](SUPABASE-NEUAUFBAU.md), Schritt 5, und in
 |---|---|
 | 1. `CAMPUS_AUSWERTUNG_TOKEN` in Supabase | **gesetzt.** Aufruf ohne `Authorization` liefert `401`, vorher `503`. |
 | 2. Integration `THITRONIK Campus 1.0` | **angelegt**, Auth-Typ API Key, ein Feld `token` (Id `token`), Validation request gegen den Endpunkt |
-| 3. Action `Campus-Auswertung abrufen` | **fertig.** Felder `von`, `bis`, `insel`, `bereich`; die Auswahlliste von `bereich` trägt alle vier Werte. Direkttest am 8.9.: `bereich=feedback` → `200` mit `boegen: 2`, `bewertungen: 19`, 16 Positionen, Schnitt 4,63. |
+| 3. Action `Campus-Auswertung abrufen` | **fertig.** Felder `von`, `bis`, `insel`, `bereich`; die Auswahlliste von `bereich` trägt alle vier Werte. Direkttest am 8.9.: `bereich=feedback` → `200` mit `boegen: 2`, `bewertungen: 19`, 16 Positionen, Schnitt 4,63. **28.9.: Die Auswahlliste von `insel` hatte nur sechs Einträge, `poel` fehlte** — das war das Poel-Loch. Code im Feld am 28.9. zeichengleich mit dem Repository, Direkttest ohne Felder `200`. |
 | 4. Agent `Campus-Auswertung` | **Anweisung am 8.9. erneuert.** Die alte kannte weder `bereich` noch `feedback` — deshalb rief der Agent den Feedbackbogen nie ab. **Am 28.9. im Repository ergänzt** (sieben Inselkürzel, Notenzähler, Dauerschnitt, „Keine Angabe"); in Langdock **noch nicht** nachgezogen. |
 | 5. Abnahme | **offen** — die vier Fragen sind noch nicht gestellt |
 
@@ -283,6 +283,11 @@ sagen kann, warum. **Wird in Langdock geändert, wird hier nachgezogen.**
 
 ## Schritt 5 — Abnahme
 
+Vor den Fragen einmal zählen: Die Optionsliste des Feldes `insel` in der
+Action muss sieben Kürzel tragen (Action → Schritt 2 → `...` → Optionen).
+Am 28. September fehlte dort `poel`, und kein Test am Agenten hätte das
+anders als durch Auslassen gezeigt.
+
 Acht Fragen an den Agenten, in dieser Reihenfolge:
 
 | Frage | Erwartet |
@@ -348,7 +353,7 @@ die Suche in der falschen Hälfte.
 | Antwort enthält ein Feld `hinweise` | ein Filter wurde nicht verstanden und weggelassen | Text im Hinweis lesen — er nennt die erlaubten Werte |
 | Alles antwortet, aber überall steht `0` | richtig — im Zeitraum liegt nichts | Zeitraum weiten, [`INBETRIEBNAHME.md`](../INBETRIEBNAHME.md) Schritt B4 |
 | Drei Bereiche antworten, **`feedback` nicht** | meist: die Agentenanweisung kennt den Bereich nicht. Erst „Aktion testen" mit `bereich = feedback` — kommen dort Daten, ist es der Agent | `agent-anweisung.md`, sonst `supabase_campus_feedback_diagnose.sql` |
-| Agent ruft **jede Insel einzeln** ab, POEL fehlt im Ergebnis oder gilt als „nicht auswählbar" | der Agent filtert von sich aus und lässt eine Insel weg. Am 28.9. nachgemessen: Datenbank, Edge Function und Action-Code kennen Poel, `insel=poel` liefert alle zehn Fragen. Bleibt Langdock — die Optionsliste des Feldes `insel` oder der Agent | erst „Aktion testen" mit `bereich = fragen`, `insel = poel`. Fehlt `poel` im Aufklappfeld: Eintrag ergänzen. Kommen zehn Fragen: Anweisung erneuern, Fassung vom 28.9. |
+| Agent ruft **jede Insel einzeln** ab, POEL fehlt im Ergebnis oder gilt als „nicht auswählbar" | **die Optionsliste des Feldes `insel` ist unvollständig.** Am 28.9. so gefunden: sechs Einträge, `poel` fehlte. Datenbank, Edge Function und Action-Code kannten die Insel, `insel=poel` lieferte alle zehn Fragen. Der Agent kann nur wählen, was die Liste anbietet, und meldet das Fehlende als „nicht auswählbar" | Action → Schritt 2 → `...` neben `insel` → Optionen → `poel` ergänzen, Fertig, Speichern. Dann „Aktion testen" mit `bereich = fragen`, `insel = poel`: zehn Fragen. Zuletzt die Anweisung erneuern, Fassung vom 28.9. |
 
 ### Die Auswahlfelder sind nicht im Code
 
@@ -368,10 +373,16 @@ Am 28. September 2026 meldete der Agent, Poel sei „im angebotenen
 Inselfilter nicht auswählbar", und holte die Fragenliste nur für sechs
 Inseln. Die Datenbankfunktion liefert mit `insel = poel` alle zehn
 Poel-Fragen, Edge Function und Action-Code führen `poel` — alles am selben
-Tag nachgemessen. Ob die Optionsliste seit dem 8. September verändert wurde
-oder der Agent die Insel von sich aus wegliess, entscheidet wieder „Aktion
-testen" mit `bereich = fragen` und `insel = poel`. Die Anweisung nennt seit
-dem 28. September alle sieben Kürzel ausdrücklich.
+Tag nachgemessen. Der Blick in die Optionen des Feldes zeigte dann die
+Ursache: **sechs Einträge, `poel` fehlte**, und einen leeren Eintrag zeigte
+die Liste auch nicht mehr. Ob sie seit dem 8. September verändert wurde
+oder die Prüfung damals daneben lag, lässt sich nicht mehr feststellen;
+Langdock führt darüber keine Historie. Der Agent hatte also recht, und die
+Zeile in der Fehlertabelle verdächtigte mit „der Agent filtert von sich
+aus" die falsche Hälfte. Deshalb gehört die Liste jetzt zur Abnahme: Nach
+jeder Änderung an der Action die Optionen von `insel` zählen — sieben
+Kürzel. Die Anweisung nennt seit dem 28. September alle sieben ausdrücklich,
+damit ein fehlender Eintrag als Meldung auffällt statt als stilles Loch.
 
 Wer die Listen trotzdem prüfen will: Action öffnen → Schritt 2 Eingabefelder →
 `...` neben dem Feld → **Optionen**.
