@@ -11,10 +11,10 @@
 
 <p align="center">
   <img alt="Inseln" src="https://img.shields.io/badge/Inseln-7-1D3661?style=flat-square">
-  <img alt="Fragen" src="https://img.shields.io/badge/Fragen-72-1D3661?style=flat-square">
-  <img alt="Stack" src="https://img.shields.io/badge/Stack-Netlify%20Forms%20%2B%20Supabase%20später-3BA9D3?style=flat-square">
+  <img alt="Fragen" src="https://img.shields.io/badge/Fragen-70-1D3661?style=flat-square">
+  <img alt="Stack" src="https://img.shields.io/badge/Stack-Netlify%20Functions%20%2B%20Supabase-3BA9D3?style=flat-square">
   <img alt="Framework" src="https://img.shields.io/badge/Framework-keins-AFCA05?style=flat-square">
-  <img alt="Stand" src="https://img.shields.io/badge/Stand-vor%20dem%20ersten%20Deploy-CE132D?style=flat-square">
+  <img alt="Stand" src="https://img.shields.io/badge/Stand-live%20seit%2003.09.2026-AFCA05?style=flat-square">
   <a href="https://github.com/Thitronik01/Campus-1.0/actions/workflows/campus.yml"><img alt="Campus CI/CD" src="https://github.com/Thitronik01/Campus-1.0/actions/workflows/campus.yml/badge.svg"></a>
 </p>
 
@@ -172,7 +172,7 @@ Alle sieben Einzelpakete auf einmal: `node tools/build-insel.js alle`
 Der Workflow [`.github/workflows/campus.yml`](.github/workflows/campus.yml)
 läuft bei jedem Pull Request gegen `main` und bei jedem Push auf `main`.
 
-1. Er prüft alle 72 Fragen und die Bewertungslogik.
+1. Er prüft alle 70 Fragen und die Bewertungslogik.
 2. Er baut und prüft das Gesamtpaket sowie alle Einzelpakete.
 3. Er speichert `Campus Gesamtpaket/` für 14 Tage als geprüftes Artefakt.
 4. Bei einem Push auf `main` deployt er genau dieses Artefakt nach Netlify.
@@ -233,8 +233,8 @@ der Browser wieder Empfang meldet. Solange etwas aussteht, sagt die Insel
 **Fertig und geprüft**
 
 - Ein Gesamtpaket (alle Inseln, eine Site) **und** sieben Einzelpakete, alle direkt hochladbar
-- 72 Fragen, alle fünf Fragetypen, aus dem Produktwissen mit Quellenangabe
-- 390 Paketprüfungen für Gesamt- und Einzelpakete (223 + 167), dazu 28 Prüfungen der Bewertungslogik
+- 70 Fragen, alle fünf Fragetypen, aus dem Produktwissen mit Quellenangabe
+- 493 Paketprüfungen für Gesamt- und Einzelpakete (278 + 215), dazu 38 Prüfungen der Bewertungslogik (Stand 28.09.2026, `node tools/montag.js --ohne-server`)
 - Mobil geprüft bei 375 px: kein horizontaler Scroll, alle Trefferflächen ≥ 44 px
 - Arbeitsregeln in [`AGENTS.md`](AGENTS.md) — was Quelle ist, was erzeugt, was vor jedem Commit läuft, und die Fallen, die schon Zeit gekostet haben
 - Syntaxprüfung aller 33 ausgelieferten Dateien vor allen anderen Prüfungen (`tools/check-syntax.js`)
